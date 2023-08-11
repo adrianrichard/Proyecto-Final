@@ -36,7 +36,7 @@ class Login:
         self.frame_login.resizable(width= 0, height= 0)    
         utl.centrar_ventana(self.frame_login, 600, 500)
         
-        logo =utl.leer_imagen("./GUILogin/imagenes/logo1.png", (250, 200))
+        logo =utl.leer_imagen("./imagenes/logo1.png", (250, 200))
         # frame_logo
         frame_logo = tk.Frame(self.frame_login, bd= 0, width= 300, relief= tk.SOLID, padx= 10, pady= 10, bg= '#1F704B')
         frame_logo.pack(side= "left", expand= tk.YES, fill= tk.BOTH)

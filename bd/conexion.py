@@ -4,10 +4,10 @@ import os
 class Conexion():
      
     def comprobar_bd(self):
-        return os.path.isfile('./GUILogin/bd/consultorio.sqlite3')
+        return os.path.isfile('./bd/consultorio.sqlite3')
         
     def conectar(self):        
-        self.db = sqlite3.connect('./GUILogin/bd/consultorio.sqlite3')
+        self.db = sqlite3.connect('./bd/consultorio.sqlite3')
         self.cur = self.db.cursor()
     
     def buscar_usuario(self, username, password):

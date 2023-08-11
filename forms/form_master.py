@@ -100,17 +100,17 @@ class MasterPanel:
                 self.menu = True
 
     def widgets(self):
-        self.imagen_inicio = PhotoImage(file ='./GUILogin/imagenes/inicio2.png')
-        self.imagen_menu = PhotoImage(file ='./GUILogin/imagenes/menu3.png')
-        self.imagen_paciente = PhotoImage(file ='./GUILogin/imagenes/agregar3.png')
-        self.imagen_calendario = PhotoImage(file ='./GUILogin/imagenes/calendario.png')
-        self.imagen_historia_clinica = PhotoImage(file ='./GUILogin/imagenes/historial3.png')
-        self.imagen_buscar = PhotoImage(file ='./GUILogin/imagenes/buscar.png')
-        self.imagen_ajustes = PhotoImage(file ='./GUILogin/imagenes/configuracion.png')
-        self.imagen_agregar_paciente = PhotoImage(file ='./GUILogin/imagenes/agregar_paciente.png')
-        self.imagen_editar_paciente = PhotoImage(file ='./GUILogin/imagenes/editar_paciente.png')
+        self.imagen_inicio = PhotoImage(file ='./imagenes/inicio2.png')
+        self.imagen_menu = PhotoImage(file ='./imagenes/menu3.png')
+        self.imagen_paciente = PhotoImage(file ='./imagenes/agregar3.png')
+        self.imagen_calendario = PhotoImage(file ='./imagenes/calendario.png')
+        self.imagen_historia_clinica = PhotoImage(file ='./imagenes/historial3.png')
+        self.imagen_buscar = PhotoImage(file ='./imagenes/buscar.png')
+        self.imagen_ajustes = PhotoImage(file ='./imagenes/configuracion.png')
+        self.imagen_agregar_paciente = PhotoImage(file ='./imagenes/agregar_paciente.png')
+        self.imagen_editar_paciente = PhotoImage(file ='./imagenes/editar_paciente.png')
 
-        self.logo = PhotoImage(file ='./GUILogin/imagenes/logo1.png')
+        self.logo = PhotoImage(file ='./imagenes/logo1.png')
 
         self.bt_inicio = Button(self.frame_inicio, image= self.imagen_inicio, bg= '#1F704B', activebackground='black', bd= 0, command= self.menu_lateral)
         self.bt_inicio.grid(column= 0, row= 0, padx= 5, pady= 10)
