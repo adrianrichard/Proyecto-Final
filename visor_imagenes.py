@@ -10,7 +10,7 @@ root.title('Tkinter Hub')
 
 def display_image(index):
     image_display_lb.config(image=images_list[index][1])
-    
+
 def popup_menu(e):
     menu_bar.tk_popup( x=e.x_root, y=e.y_root)
 
@@ -24,14 +24,14 @@ def load_images():
         images_list.append([
             ImageTk.PhotoImage(Image.open(dir_path + '/' + images_files[r]).resize((50, 50), Image.Resampling.LANCZOS)),
             ImageTk.PhotoImage(Image.open(dir_path + '/'+ images_files[r]).resize((480,360), Image.Resampling.LANCZOS))
-        
+
         ])
         images_vars.append(f'imag_{r}')
-    
+
     for n in range(len(images_vars)):
         globals()[images_vars[n]] = tk.Button(slider, image=images_list[n][0], bd=0, command= lambda n=n: display_image(n))
         globals()[images_vars[n]].pack(side=tk.LEFT)
-    
+
 menu_btn = tk.Button(root, text= '≡', bd=0, font=('Bold', 15))
 menu_btn.pack( side=tk.TOP, anchor=tk.W, padx=20, pady=20)
 menu_btn.bind('<Button>', popup_menu)

@@ -7,12 +7,12 @@ from tkinter.messagebox import showinfo,showerror
 from bd.conexion import Conexion
 
 class Login:
-        
+
     def verificar(self):
         username = self.usuario.get()
         password = self.password.get()
         db = Conexion()
-       
+
         if(db.comprobar_bd()):
             db.conectar()
             if db.buscar_usuario(username, password):
@@ -23,31 +23,31 @@ class Login:
             else:
                 showerror(title= "Advertencia", message= "Usuario o contraseña incorrectos")
             db.cerrar_bd()
-            
+
         else:
             showerror(title= "Advertencia", message= "Error de conexión a base de datos")
-        
-        
-                       
-    def __init__(self):        
-        self.frame_login = tk.Tk()                             
+
+
+
+    def __init__(self):
+        self.frame_login = tk.Tk()
         self.frame_login.title('DENTALMATIC')
         self.frame_login.geometry('500x500')
-        self.frame_login.resizable(width= 0, height= 0)    
+        self.frame_login.resizable(width= 0, height= 0)
         utl.centrar_ventana(self.frame_login, 600, 500)
-        
+
         logo =utl.leer_imagen("./imagenes/logo1.png", (250, 200))
         # frame_logo
         frame_logo = tk.Frame(self.frame_login, bd= 0, width= 300, relief= tk.SOLID, padx= 10, pady= 10, bg= '#1F704B')
         frame_logo.pack(side= "left", expand= tk.YES, fill= tk.BOTH)
         label = tk.Label(frame_logo, image= logo, bg= '#1F704B')
         label.place(x= 0, y= 0, relwidth= 1, relheight= 1)
-        
+
         #frame_form
         frame_form = tk.Frame(self.frame_login, bd= 0, relief= tk.SOLID, bg= '#fcfcfc')
         frame_form.pack(side= "right", expand= tk.YES, fill= tk.BOTH)
         #frame_form
-        
+
         #frame_form_top
         frame_form_top = tk.Frame(frame_form, height= 50, bd= 0, relief= tk.SOLID, bg= '#fcfcfc')
         frame_form_top.pack(side= "top", fill= tk.X)
@@ -71,10 +71,10 @@ class Login:
         self.password.config(show= "*")
 
         inicio = tk.Button(frame_form_fill, text= "Ingresar", font= ('Comic Sans MS', 15, BOLD), bg='#1F704B', bd=0, fg="#fff", command= self.verificar)
-        inicio.pack(fill= tk.X, padx= 20, pady= 20)        
+        inicio.pack(fill= tk.X, padx= 20, pady= 20)
         inicio.bind("<Return>", (lambda event: self.verificar()))
         #end frame_form_fill
         self.frame_login.mainloop()
-        
+
 if __name__ == "__main__":
    Login()
