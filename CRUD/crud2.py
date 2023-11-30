@@ -157,8 +157,9 @@ class Ventana(Frame):
         datos = self.base_datos.mostrar_datos()
         self.tabla.delete(*self.tabla.get_children())
         i = -1
-        for dato in datos: i= i+1
-        self.tabla.insert('',i, text = datos[i][1:2][0], values=datos[i][2:5])
+        for dato in datos:
+            i= i+1
+            self.tabla.insert('',i, text = datos[i][1:2][0], values=datos[i][2:5])
 
     def actualizar_datos(self):
         item = self.tabla.focus()
@@ -186,14 +187,14 @@ class Ventana(Frame):
     def guardar_datos(self):
         self.limpiar_campos()
         datos = self.base_datos.mostrar_datos()
-        i = -1
+        #i = -1
         nombre, edad, correo, telefono= [],[],[],[]
-        for dato in datos:
-            i= i+1
-            nombre.append(datos[i][1])
-            edad.append(datos[i][2])
-            correo.append(datos[i][3])
-            telefono.append(datos[i][4])
+        for i in datos:
+            #i= i+1
+            nombre.append(i[1])
+            edad.append(i[2])
+            correo.append(i[3])
+            telefono.append(i[4])
         fecha = str(strftime('%d-%m-%y_%H-%M-%S'))
         datos = {'Nombres':nombre, 'Edad':edad, 'Correo':correo, 'Telefono':telefono }
         df = pd.DataFrame(datos, columns = ['Nombres', 'Edad', 'Correo', 'Telefono'])
