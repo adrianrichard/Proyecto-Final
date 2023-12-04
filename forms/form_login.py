@@ -36,12 +36,19 @@ class Login:
         self.frame_login.resizable(width= 0, height= 0)
         utl.centrar_ventana(self.frame_login, 600, 500)
 
-        logo =utl.leer_imagen("./imagenes/logo1.png", (250, 200))
+        try:
+            logo =utl.leer_imagen("./imagenes/logo1.png", (250, 200))
+            frame_logo = tk.Frame(self.frame_login, bd= 0, width= 300, relief= tk.SOLID, padx= 10, pady= 10, bg= '#1F704B')
+            frame_logo.pack(side= "left", expand= tk.YES, fill= tk.BOTH)
+            label = tk.Label(frame_logo, image= logo, bg= '#1F704B')
+            label.place(x= 0, y= 0, relwidth= 1, relheight= 1)            
+        except:
         # frame_logo
-        frame_logo = tk.Frame(self.frame_login, bd= 0, width= 300, relief= tk.SOLID, padx= 10, pady= 10, bg= '#1F704B')
-        frame_logo.pack(side= "left", expand= tk.YES, fill= tk.BOTH)
-        label = tk.Label(frame_logo, image= logo, bg= '#1F704B')
-        label.place(x= 0, y= 0, relwidth= 1, relheight= 1)
+            frame_logo = tk.Frame(self.frame_login, bd= 0, width= 300, relief= tk.SOLID, padx= 10, pady= 10, bg= '#1F704B')
+            frame_logo.pack(side= "left", expand= tk.YES, fill= tk.BOTH)
+            label = tk.Label(frame_logo, text= "DENTALMATIC", font= ('Comic Sans MS', 25), fg="white", bg='#1F704B', anchor= "w")
+            label.place(x= 0, y= 0, relwidth= 1, relheight= 1)
+        
 
         #frame_form
         frame_form = tk.Frame(self.frame_login, bd= 0, relief= tk.SOLID, bg= '#fcfcfc')

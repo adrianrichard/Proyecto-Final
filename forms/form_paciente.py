@@ -18,7 +18,7 @@ class Paciente:
         utl.centrar_ventana(self.frame_paciente, 900, 600)
         self.menu = True
         self.color = True
-        self.frame_top = Frame(self.frame_paciente, bg= 'black', height= 50)
+        self.frame_top = Frame(self.frame_paciente, bg= '#1F704B', height= 50)
 
         self.frame_top.grid(column= 1, row= 0, sticky= 'nsew')        
         self.frame_principal = Frame(self.frame_paciente, bg= 'white')
@@ -27,9 +27,22 @@ class Paciente:
         self.frame_paciente.rowconfigure(1, weight= 1)
         self.frame_principal.columnconfigure(1, weight= 1)
         self.frame_principal.rowconfigure(1, weight= 1)
-        self.titulo = Label(self.frame_top, text= 'Consultorio Odóntologico MyM', bg= 'black', fg= 'white', font= ('Comic Sans MS', 15, 'bold')).grid(column= 1, row=0, pady= 20, padx= 10)
-        Button(self.frame_top, text= 'Cerrar', fg= 'white', bg= 'black', activebackground= 'black', bd= 0, command= self.frame_paciente.destroy).grid(column= 2, row=0, pady= 20, padx= 10)
+        self.titulo = Label(self.frame_top, text= 'Consultorio Odóntologico MyM', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold')).grid(column= 1, row=0, pady= 20, padx= 10)
+        Button(self.frame_top, text= 'Cerrar',  font= ('Comic Sans MS', 15, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 0, command= self.frame_paciente.destroy).grid(column= 2, row=0, pady= 20, padx= 500)
+        #BOTONES Y ETIQUETAS DATOS DEL PACIENTE
+        Entry(self.frame_principal, font= ('Comic Sans MS', 14)).grid(column=0, row=1, pady=20, padx=100)
+        #Entry(self.frame_principal, text= 'Pacientes', fg= 'white', bg='black',activebackground='black', bd=0 ).grid(column=0, row=2, pady=20,padx=10)
+        #Entry(self.frame_principal, text= 'Pacientes', fg= 'white', bg= 'black',activebackground='black', bd=0 ).grid(column=0, row=3, pady=20,padx=10)
+        Button(self.frame_principal, text= 'Pacientes', fg= 'white', bg= 'black',activebackground='black', bd=0).grid(column=0, row=4, pady=20, padx=10)
+        Button(self.frame_principal, text= 'Pacientes', fg= 'white', bg= 'black',activebackground='black', bd=0).grid(column=0, row=5, pady=20, padx=10)
 
+        Label(self.frame_principal, text= 'Pacientes', bg= 'black', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=1, pady=20, padx=2)
+        Label(self.frame_principal, text= 'Calendario', bg= 'black', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=2, pady=20, padx=2)
+        Label(self.frame_principal, text= 'Historia \nClinica', bg= 'black', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=3, pady=20, padx=2)
+        Label(self.frame_principal, text= 'Eliminar', bg= 'black', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=4, pady=20, padx=2)
+        Label(self.frame_principal, text= 'Versión', bg= 'black', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=5, pady=20, padx=2)
+        
+        self.frame_paciente.mainloop()
 
     #def pantalla_inicial(self):
     
@@ -47,19 +60,7 @@ class Paciente:
     
     #def agregar_paciente():
         
-		#BOTONES Y ETIQUETAS DEL MENU LATERAL
-        Button(self.frame_principal, text= 'Pacientes', fg= 'white', bg='black', activebackground='black', bd=0).grid(column=0, row=1, pady=20,padx=10)
-        Button(self.frame_principal, text= 'Pacientes', fg= 'white', bg='black',activebackground='black', bd=0 ).grid(column=0, row=2, pady=20,padx=10)
-        Button(self.frame_principal, text= 'Pacientes', fg= 'white', bg= 'black',activebackground='black', bd=0 ).grid(column=0, row=3, pady=20,padx=10)
-        Button(self.frame_principal, text= 'Pacientes', fg= 'white', bg= 'black',activebackground='black', bd=0).grid(column=0, row=4, pady=20,padx=10)
-        Button(self.frame_principal, text= 'Pacientes', fg= 'white', bg= 'black',activebackground='black', bd=0).grid(column=0, row=5, pady=20,padx=10)
-
-        Label(self.frame_principal, text= 'Pacientes', bg= 'black', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=1, pady=20, padx=2)
-        Label(self.frame_principal, text= 'Calendario', bg= 'black', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=2, pady=20, padx=2)
-        Label(self.frame_principal, text= 'Historia \nClinica', bg= 'black', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=3, pady=20, padx=2)
-        Label(self.frame_principal, text= 'Eliminar', bg= 'black', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=4, pady=20, padx=2)
-        Label(self.frame_principal, text= 'Versión', bg= 'black', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=5, pady=20, padx=2)
-        self.frame_paciente.mainloop()
+		
 
 if __name__ == "__main__":
     Paciente()
