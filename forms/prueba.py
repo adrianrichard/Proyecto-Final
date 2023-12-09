@@ -1,12 +1,13 @@
 import tkinter as tk
 from tkinter import *
 from tkinter.font import BOLD
-from tkinter import  ttk, Button, Label, Frame
+from tkinter import  messagebox, Button, Label, Frame
+import sqlite3
 
-class Paciente:    
-        
+class Paciente():    
+
     def __init__(self):        
-
+        
         self.frame_paciente= tk.Tk()
         self.frame_paciente.title('DentalMatic')
         self.frame_paciente.geometry('1000x500')
@@ -31,6 +32,9 @@ class Paciente:
         email_paciente =  StringVar()
         obrasocial_paciente =  StringVar()
         nrosocio_paciente =  StringVar()
+    
+        conexionBBDD()
+
         #Entradas Y ETIQUETAS DATOS DEL PACIENTE
         Entry(self.frame_principal,  textvariable=nombre_paciente, font= ('Comic Sans MS', 14)).grid(column=1, row=1, pady=5, padx=10)
         Entry(self.frame_principal, textvariable=apellido_paciente, font= ('Comic Sans MS', 14)).grid(column=1, row=2, pady=5, padx=10)
@@ -54,8 +58,39 @@ class Paciente:
         Button(self.frame_principal, text= 'Limpiar datos',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 0, command= self.frame_paciente.destroy).grid(column= 3, row=2, pady= 5, padx= 200)
 
         self.frame_paciente.mainloop()
-    def only_numbers(char):
-        return char.isdigit()    
+def conexionBBDD():
+	miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+	miCursor=miConexion.cursor()
+
+	try:
+		miCursor.execute('''
+			CREATE TABLE Paciente (
+			ID INTEGER PRIMARY KEY AUTOINCREMENT,
+			NOMBRE VARCHAR(50) NOT NULL,
+   			APELLIDO VARCHAR(50) NOT NULL,
+            DNI INT NOT NULL,
+			DOMICILIO VARCHAR(50) NOT NULL,
+            TELEFONO INT NOT NULL,
+			EMAIL VARCHAR(50) NOT NULL,
+            OBRASOCIAL VARCHAR(50) NOT NULL, 
+            NROSOCIO INT NOT NULL)
+			''')
+		messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
+	except:
+		messagebox.showinfo("CONEXION", "Conexión exitosa con la base de datos")
+
+def crear():
+	miConexion=sqlite3.connect("base")
+	miCursor=miConexion.cursor()
+ 
+	try:
+		datos=nombre_paciente.get(),apellido_paciente.get(),dni_paciente.get(), domicilio_paciente.get(),telefono_paciente.get(),email_paciente.get(),obrasocial_paciente.get(),nrosocio_paciente.get()
+		miCursor.execute("INSERT INTO Paciente VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
+		miConexion.commit()
+	except:
+		messagebox.showwarning("ADVERTENCIA","Ocurrió un error al crear el registro, verifique conexión con BBDD")
+def only_numbers(char):
+    return char.isdigit()    
 		
 if __name__ == "__main__":
     Paciente()
