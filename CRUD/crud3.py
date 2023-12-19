@@ -8,7 +8,7 @@ import sqlite3
 class Paciente():
     
     def conexionBBDD(self):
-        self.miConexion=sqlite3.connect("./bd/DBpaciente2.sqlite3")
+        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
 
         try:
@@ -16,8 +16,10 @@ class Paciente():
                 CREATE TABLE Paciente (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 NOMBRE VARCHAR(50) NOT NULL,
-                APELLIDO VARCHAR(50) NOT NULL
+                APELLIDO VARCHAR(50) NOT NULL)
                 ''')
+            #self.miConexion.commit()
+            #self.miConexion.close()
 
             messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
 
@@ -25,12 +27,12 @@ class Paciente():
             messagebox.showinfo("CONEXION", "Conexión exitosa con la base de datos")
 
     def crear(self):
-        #self.miConexion=sqlite3.connect("./bd/DBpaciente2.sqlite3")
-        #self.miCursor=self.miConexion.cursor()
+        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+        self.miCursor=self.miConexion.cursor()
         datos=self.nombre_paciente.get(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get()
         print(datos)
-##        self.miCursor.execute("INSERT INTO Paciente VALUES(NULL,?,?)", (self.nombre_paciente.get(), self.apellido_paciente.get()))
-##        self.miConexion.commit()
+        self.miCursor.execute("INSERT INTO Paciente VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
+        self.miConexion.commit()
 
 
     def __init__(self, *args, **kwargs):
@@ -57,6 +59,7 @@ class Paciente():
         self.email_paciente =  StringVar()
         self.obrasocial_paciente =  StringVar()
         self.nrosocio_paciente =  StringVar()
+        self.conexionBBDD()
         self.crear_w()
     
     def crear_w(self):
