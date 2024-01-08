@@ -31,8 +31,13 @@ class Paciente():
         self.miCursor=self.miConexion.cursor()
         datos=self.nombre_paciente.get(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get()
         print(datos)
-        self.miCursor.execute("INSERT INTO Paciente VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
-        self.miConexion.commit()
+        try:
+            self.miCursor.execute("INSERT INTO Paciente VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
+            self.miConexion.commit()
+            messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
+        except:
+            messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
+        
 
 
     def __init__(self, *args, **kwargs):
