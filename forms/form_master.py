@@ -4,6 +4,7 @@ import util.generic as utl
 from tkinter import  Button, Entry, Label, ttk, PhotoImage
 from tkinter import  StringVar, Scrollbar, Frame
 from forms.form_paciente import Paciente
+import sqlite3
 
 class MasterPanel:    
                                       
@@ -43,8 +44,8 @@ class MasterPanel:
         self.frame_pacientes.columnconfigure(0, weight= 1)
         self.frame_pacientes.columnconfigure(1, weight= 1)
         self.frame_pacientes.rowconfigure(2, weight= 1)
-        self.frame_tabla_uno.columnconfigure(0, weight= 1)
-        self.frame_tabla_uno.rowconfigure(0, weight= 1)
+        self.frame_tabla_paciente.columnconfigure(0, weight= 1)
+        self.frame_tabla_paciente.rowconfigure(0, weight= 1)
 
     def pantalla_escribir(self):
         self.paginas.select([self.frame_tres])
@@ -70,8 +71,7 @@ class MasterPanel:
     
     def agregar_paciente(self):
         Paciente()
-        #paciente.agregar_paciente
-
+        
     def menu_lateral(self):
         if self.menu is True:
             for i in range(50, 170, 10):
@@ -98,7 +98,22 @@ class MasterPanel:
                     self.bt_cerrar.config(width= i)
                     self.pantalla_inicial()
                 self.menu = True
-
+    
+    def mostrar_datos(self):
+        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+        self.miCursor=self.miConexion.cursor()
+        #cursor = self.conexion.cursor()
+        bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente"
+        self.miCursor.execute(bd)
+        datos = self.miCursor.fetchall()
+        #print(self.miCursor.fetchall())
+        self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+        i = -1
+        for dato in datos:
+            i= i+1
+            self.tabla_paciente.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2],datos[i][3],datos[i][4]))
+        #return datos
+    
     def widgets(self):
         self.imagen_inicio = PhotoImage(file ='./imagenes/inicio2.png')
         self.imagen_menu = PhotoImage(file ='./imagenes/menu3.png')
@@ -109,6 +124,8 @@ class MasterPanel:
         self.imagen_ajustes = PhotoImage(file ='./imagenes/configuracion.png')
         self.imagen_agregar_paciente = PhotoImage(file ='./imagenes/agregar_paciente.png')
         self.imagen_editar_paciente = PhotoImage(file ='./imagenes/editar_paciente.png')
+        self.imagen_refrescar = PhotoImage(file ='./imagenes/refrescar.png')
+
 
         self.logo = PhotoImage(file ='./imagenes/logo1.png')
 
@@ -157,22 +174,22 @@ class MasterPanel:
 
 		##############################         PAGINAS       #############################################
 		######################## FRAME TITULO #################
-        self.titulo = Label(self.frame_top, text= 'Consultorio Odóntologico MyM', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold'))
+        self.titulo = Label(self.frame_top, text= 'Consultorio Odontológico MyM', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold'))
         self.titulo.pack(expand=1)
 
 		######################## VENTANA PRINCIPAL #################
         Label(self.frame_principal, image= self.logo, bg= 'white').pack(expand= 1)
 
-		######################## MOSTRAR TODOS LOS PACIENTES #################
-        #Label(self.frame_pacientes, text= 'Listado de pacientes', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 0, row= 0)
-        Button(self.frame_pacientes, image= self.imagen_editar_paciente, text= 'ACTUALIZAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2).grid(column= 1, row= 0, pady= 5)
+		######################## PACIENTES #################
+        Button(self.frame_pacientes, image= self.imagen_editar_paciente, text= 'EDITAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2).grid(column= 1, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Editar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
         Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'NUEVO', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 2, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Agregar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
         self.busqueda = ttk.Entry(self.frame_pacientes, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 0, row= 0, pady= 5)
         Button(self.frame_pacientes, text= 'Buscar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 0, row= 1)
-        #command= self.datos_totales, 
-  
+        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_datos).grid(column= 3, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Refrescar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 3, row= 1)
+        
 
 		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()
@@ -182,30 +199,32 @@ class MasterPanel:
         estilo_tabla.configure('Item', foreground = 'white', focuscolor ='white')
         estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
 
-		#TABLA UNO
-        self.frame_tabla_uno = Frame(self.frame_pacientes, bg='gray90')
-        self.frame_tabla_uno.grid(columnspan=3, row=2, sticky='nsew')
-        self.tabla_uno = ttk.Treeview(self.frame_tabla_uno)
-        self.tabla_uno.grid(column=0, row=0, sticky='nsew')
-        ladox = ttk.Scrollbar(self.frame_tabla_uno, orient = 'horizontal', command= self.tabla_uno.xview)
+		#TABLA PACIENTE
+        self.frame_tabla_paciente = Frame(self.frame_pacientes, bg='gray90')
+        self.frame_tabla_paciente.grid(columnspan=4, row=2, sticky='nsew')
+        self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente)
+        self.tabla_paciente.grid(column=0, row=0, sticky='nsew')
+        ladox = ttk.Scrollbar(self.frame_tabla_paciente, orient = 'horizontal', command= self.tabla_paciente.xview)
         ladox.grid(column=0, row = 1, sticky='ew')
-        ladoy = ttk.Scrollbar(self.frame_tabla_uno, orient ='vertical', command = self.tabla_uno.yview)
+        ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient ='vertical', command = self.tabla_paciente.yview)
         ladoy.grid(column = 1, row = 0, sticky='ns')
 
-        self.tabla_uno.configure(xscrollcommand = ladox.set, yscrollcommand = ladoy.set)
-        self.tabla_uno['columns'] = ('Nombre', 'Modelo', 'Precio', 'Cantidad')
-        self.tabla_uno.column('#0', minwidth=100, width=120, anchor='center')
-        self.tabla_uno.column('Nombre', minwidth=100, width=130 , anchor='center')
-        self.tabla_uno.column('Modelo', minwidth=100, width=120, anchor='center' )
-        self.tabla_uno.column('Precio', minwidth=100, width=120 , anchor='center')
-        self.tabla_uno.column('Cantidad', minwidth=100, width=105, anchor='center')
+        self.tabla_paciente.configure(xscrollcommand = ladox.set, yscrollcommand = ladoy.set)
+        self.tabla_paciente['columns'] = ('Nombre', 'D.N.I.', 'Teléfono', 'Obra Social')
+        self.tabla_paciente.column('#0', minwidth=100, width=120, anchor='center')
+        self.tabla_paciente.column('Nombre', minwidth=100, width=130 , anchor='center')
+        self.tabla_paciente.column('D.N.I.', minwidth=100, width=120, anchor='center' )
+        self.tabla_paciente.column('Teléfono', minwidth=100, width=120 , anchor='center')
+        self.tabla_paciente.column('Obra Social', minwidth=100, width=105, anchor='center')
 
-        self.tabla_uno.heading('#0', text='Codigo', anchor ='center')
-        self.tabla_uno.heading('Nombre', text='Nombre', anchor ='center')
-        self.tabla_uno.heading('Modelo', text='Modelo', anchor ='center')
-        self.tabla_uno.heading('Precio', text='Precio', anchor ='center')
-        self.tabla_uno.heading('Cantidad', text='Cantidad', anchor ='center')
-#		self.tabla_uno.bind("<<TreeviewSelect>>", self.obtener_fila)
+        self.tabla_paciente.heading('#0', text='Apellido', anchor ='center')
+        self.tabla_paciente.heading('Nombre', text='Nombre', anchor ='center')
+        self.tabla_paciente.heading('D.N.I.', text='D.N.I.', anchor ='center')
+        self.tabla_paciente.heading('Teléfono', text='Teléfono', anchor ='center')
+        self.tabla_paciente.heading('Obra Social', text='Obra Social', anchor ='center')
+        self.mostrar_datos()
+        
+#		self.tabla_paciente.bind("<<TreeviewSelect>>", self.obtener_fila)
 
 		######################## REGISTRAR  NUEVOS PRODUCTOS #################
         Label(self.frame_tres, text = 'Agregar Nuevos Datos', fg='blue', bg ='white', font=('Comic Sans MS',24,'bold')).grid(columnspan=2, column=0, row=0, pady=5)

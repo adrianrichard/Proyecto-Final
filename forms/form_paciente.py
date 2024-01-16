@@ -36,6 +36,7 @@ class Paciente:
             self.miCursor.execute("INSERT INTO Paciente VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
             self.miConexion.commit()
             messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
+            self.frame_paciente.destroy()
         except:
             messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
     

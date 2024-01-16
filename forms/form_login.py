@@ -58,7 +58,7 @@ class Login:
         #frame_form_top
         frame_form_top = tk.Frame(frame_form, height= 50, bd= 0, relief= tk.SOLID, bg= '#fcfcfc')
         frame_form_top.pack(side= "top", fill= tk.X)
-        title = tk.Label(frame_form_top, text= "Inicio de sesion", font= ('Comic Sans MS', 30), fg= "#666a88", bg='#fcfcfc', pady= 50)
+        title = tk.Label(frame_form_top, text= "Inicio de sesión", font= ('Comic Sans MS', 30), fg= "#666a88", bg='#fcfcfc', pady= 50)
         title.pack(expand= tk.YES,fill= tk.BOTH)
         #end frame_form_top
 
