@@ -95,11 +95,7 @@ class Ventana(Frame):
         Button(self.frame_uno, text= 'ACTUALIZAR DATOS' ,font = ('Arial', 9,'bold'), bg= 'deep sky blue', width=20, bd=3, command = self.actualizar_datos).grid(column=2, row=4, pady=5,padx=5)
         Button(self.frame_uno, text= 'EXPORTAR A EXCEL' ,font = ('Arial', 9,'bold'), bg= 'deep sky blue', width=20, bd=3, command = self.guardar_datos ).grid(column=2, row=5, pady=5,padx=5)
 
-        estilo_tabla = ttk.Style()
-        estilo_tabla.configure("Treeview", font= ('Helvetica', 10, 'bold'), foreground='black', background='white')
-        estilo_tabla.map("Treeview", background=[('selected', 'deep sky blue')], foreground=[('selected','black')] )
-        estilo_tabla.configure('Heading',background = 'white', foreground='deep sky blue', padding=3, font= ('Arial', 10, 'bold'))
-
+       
         self.tabla = ttk.Treeview(self.frame_dos)
         self.tabla.grid(column=0, row=0, sticky='nsew')
         ladox = ttk.Scrollbar(self.frame_dos, orient = 'horizontal', command= self.tabla.xview)

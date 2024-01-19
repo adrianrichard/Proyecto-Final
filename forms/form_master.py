@@ -4,6 +4,8 @@ import util.generic as utl
 from tkinter import  Button, Entry, Label, ttk, PhotoImage
 from tkinter import  StringVar, Scrollbar, Frame
 from forms.form_paciente import Paciente
+from forms.form_paciente_editar import Paciente_update
+
 import sqlite3
 
 class MasterPanel:    
@@ -18,7 +20,8 @@ class MasterPanel:
         utl.centrar_ventana(self.ventana, 900, 600)            
         self.menu = True
         self.color = True
-        
+        self.dni_paciente =  StringVar()
+
         self.frame_inicio = Frame(self.ventana, bg= '#1F704B', width= 50, height= 45)
         self.frame_inicio.grid_propagate(0)
         self.frame_inicio.grid(column= 0, row= 0, sticky='nsew')
@@ -72,6 +75,9 @@ class MasterPanel:
     def agregar_paciente(self):
         Paciente()
         
+    def editar_paciente(self):
+        Paciente_update(self.dni_paciente)
+            
     def menu_lateral(self):
         if self.menu is True:
             for i in range(50, 170, 10):
@@ -114,6 +120,11 @@ class MasterPanel:
             self.tabla_paciente.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2],datos[i][3],datos[i][4]))
         #return datos
     
+    def obtener_fila(self, event):
+        item = self.tabla_paciente.focus()
+        self.data = self.tabla_paciente.item(item)
+        self.dni_paciente=self.data['values'][1]
+        
     def widgets(self):
         self.imagen_inicio = PhotoImage(file ='./imagenes/inicio2.png')
         self.imagen_menu = PhotoImage(file ='./imagenes/menu3.png')
@@ -155,7 +166,8 @@ class MasterPanel:
         estilo_paginas.configure("TNotebook.Tab", background="#1F704B", borderwidth= 0)
         estilo_paginas.map("TNotebook", background=[("selected", '#1F704B')])
         estilo_paginas.map("TNotebook.Tab", background=[("selected", '#1F704B')], foreground=[("selected", '#1F704B')]);
-
+        
+        
 		#CREACCION DE LAS PAGINAS
         self.paginas = ttk.Notebook(self.frame_raiz, style= 'TNotebook')
         self.paginas.grid(column= 0, row= 0, sticky='nsew')
@@ -181,7 +193,7 @@ class MasterPanel:
         Label(self.frame_principal, image= self.logo, bg= 'white').pack(expand= 1)
 
 		######################## PACIENTES #################
-        Button(self.frame_pacientes, image= self.imagen_editar_paciente, text= 'EDITAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2).grid(column= 1, row= 0, pady= 5)
+        Button(self.frame_pacientes, image= self.imagen_editar_paciente, text= 'EDITAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.editar_paciente).grid(column= 1, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Editar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
         Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'NUEVO', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 2, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Agregar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
@@ -189,12 +201,11 @@ class MasterPanel:
         Button(self.frame_pacientes, text= 'Buscar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 0, row= 1)
         Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_datos).grid(column= 3, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Refrescar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 3, row= 1)
-        
 
 		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()
         estilo_tabla.configure("Treeview", font= ('Comic Sans MS', 10, 'bold'), foreground='black', background='white')  #, fieldbackground='yellow'
-        estilo_tabla.map('Treeview', background=[('selected', 'white')], foreground=[('selected','black')] )
+        estilo_tabla.map('Treeview', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
         estilo_tabla.configure('Heading', background = 'white', foreground='navy', padding= 3, font= ('Comic Sans MS', 10, 'bold'))
         estilo_tabla.configure('Item', foreground = 'white', focuscolor ='white')
         estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
@@ -223,8 +234,7 @@ class MasterPanel:
         self.tabla_paciente.heading('Teléfono', text='Teléfono', anchor ='center')
         self.tabla_paciente.heading('Obra Social', text='Obra Social', anchor ='center')
         self.mostrar_datos()
-        
-#		self.tabla_paciente.bind("<<TreeviewSelect>>", self.obtener_fila)
+        self.tabla_paciente.bind("<<TreeviewSelect>>", self.obtener_fila)
 
 		######################## REGISTRAR  NUEVOS PRODUCTOS #################
         Label(self.frame_tres, text = 'Agregar Nuevos Datos', fg='blue', bg ='white', font=('Comic Sans MS',24,'bold')).grid(columnspan=2, column=0, row=0, pady=5)
