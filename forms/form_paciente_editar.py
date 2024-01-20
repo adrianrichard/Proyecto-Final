@@ -33,7 +33,7 @@ class Paciente_update:
         datos=self.nombre_paciente.get(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get()
         #print(datos)
         try:
-            self.miCursor.execute("UPDATE Paciente VALUES(NULL,?,?,?,?,?,?,?,?) where dni=?", (datos), self.dni_paciente)
+            self.miCursor.execute("UPDATE Paciente SET VALUES(NULL,?,?,?,?,?,?,?,?) where dni=?", (datos), self.dni_paciente)
             self.miConexion.commit()
             messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
             self.frame_paciente.destroy()
