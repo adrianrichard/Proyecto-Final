@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter.font import BOLD
 import util.generic as utl
-from tkinter import  Button, Entry, Label, ttk, PhotoImage
+from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Scrollbar, Frame
 from forms.form_paciente import Paciente
 from forms.form_paciente_editar import Paciente_update
@@ -77,7 +77,7 @@ class MasterPanel:
         
     def editar_paciente(self):
         Paciente_update(self.dni_paciente)
-            
+                    
     def menu_lateral(self):
         if self.menu is True:
             for i in range(50, 170, 10):
