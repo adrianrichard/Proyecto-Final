@@ -39,7 +39,18 @@ class Paciente_update:
             self.frame_paciente.destroy()
         except:
             messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
-    def cargar_datos(dni):
+    
+    def cargar_datos(self, dni):
+        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+        self.miCursor=self.miConexion.cursor()
+        print(dni)
+        self.miCursor.execute("SELECT * FROM paciente WHERE dni=?", (dni))
+        #self.miConexion.commit()
+
+        #print(campos)		
+		#for fila in compromisos:
+		#	self.tabla_historial.insert("", END, text=compromisos[cont][0], values=(compromisos[cont][1],compromisos[cont][2],compromisos[cont][3],compromisos[cont][4]))
+		#	cont+=1
         
         
     def Salir(self): 
@@ -47,7 +58,7 @@ class Paciente_update:
         if answer:
             self.frame_paciente.destroy()
                                                  
-    def __init__(self,dni, *args, **kwargs):
+    def __init__(self, dni, *args, **kwargs):
         super().__init__(*args, **kwargs)        
         self.frame_paciente= tk.Toplevel()
         self.frame_paciente.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
@@ -98,7 +109,7 @@ class Paciente_update:
         Label(self.frame_principal, text= 'Nro de socio', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=8, pady=5, padx=2)
         Button(self.frame_principal, text= 'Crear',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 0, command= self.guardar).grid(column= 3, row=1, pady= 5, padx= 200)
         Button(self.frame_principal, text= 'cargar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 0 ).grid(column= 3, row=2, pady= 5, padx= 200)
-        self.cargar_datos
+        self.cargar_datos(dni)
 
         self.frame_paciente.mainloop()
         
