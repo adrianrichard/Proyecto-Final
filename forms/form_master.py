@@ -77,7 +77,18 @@ class MasterPanel:
         
     def editar_paciente(self):
         Paciente_update(self.dni_paciente)
-                    
+    
+    def eliminar_paciente(self):
+        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+        self.miCursor=self.miConexion.cursor()
+        
+        #try:
+            self.miCursor.execute("DELETE FROM Paciente WHERE dni = ?", (self.dni_paciente))
+            self.miConexion.commit()
+            messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
+        #except:
+            #messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")                
+    
     def menu_lateral(self):
         if self.menu is True:
             for i in range(50, 170, 10):
@@ -136,6 +147,8 @@ class MasterPanel:
         self.imagen_agregar_paciente = PhotoImage(file ='./imagenes/agregar_paciente.png')
         self.imagen_editar_paciente = PhotoImage(file ='./imagenes/editar_paciente.png')
         self.imagen_refrescar = PhotoImage(file ='./imagenes/refrescar.png')
+        self.imagen_eliminar_paciente = PhotoImage(file ='./imagenes/eliminar1.png')
+
 
 
         self.logo = PhotoImage(file ='./imagenes/logo1.png')
@@ -193,14 +206,16 @@ class MasterPanel:
         Label(self.frame_principal, image= self.logo, bg= 'white').pack(expand= 1)
 
 		######################## PACIENTES #################
+        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 0, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Agregar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 0, row= 1)
         Button(self.frame_pacientes, image= self.imagen_editar_paciente, text= 'EDITAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.editar_paciente).grid(column= 1, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Editar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
-        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'NUEVO', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 2, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Agregar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
-        self.busqueda = ttk.Entry(self.frame_pacientes, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 0, row= 0, pady= 5)
-        Button(self.frame_pacientes, text= 'Buscar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 0, row= 1)
+        Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 2, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Eliminar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
         Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_datos).grid(column= 3, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Refrescar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 3, row= 1)
+        self.busqueda = ttk.Entry(self.frame_pacientes, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 4, row= 0, pady= 5)
+        Button(self.frame_pacientes, text= 'Buscar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 4, row= 1)
 
 		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()
@@ -212,7 +227,7 @@ class MasterPanel:
 
 		#TABLA PACIENTE
         self.frame_tabla_paciente = Frame(self.frame_pacientes, bg='gray90')
-        self.frame_tabla_paciente.grid(columnspan=4, row=2, sticky='nsew')
+        self.frame_tabla_paciente.grid(columnspan=5, row=2, sticky='nsew')
         self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente)
         self.tabla_paciente.grid(column=0, row=0, sticky='nsew')
         ladox = ttk.Scrollbar(self.frame_tabla_paciente, orient = 'horizontal', command= self.tabla_paciente.xview)
@@ -238,11 +253,11 @@ class MasterPanel:
 
 		######################## REGISTRAR  NUEVOS PRODUCTOS #################
         Label(self.frame_tres, text = 'Agregar Nuevos Datos', fg='blue', bg ='white', font=('Comic Sans MS',24,'bold')).grid(columnspan=2, column=0, row=0, pady=5)
-        Label(self.frame_tres, text = 'Codigo', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=1, pady=15, padx=5)
-        Label(self.frame_tres, text = 'Nombre', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=2, pady=15)
-        Label(self.frame_tres, text = 'Modelo', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=3, pady=15)
-        Label(self.frame_tres, text = 'Precio', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=4, pady=15)
-        Label(self.frame_tres, text = 'Cantidad', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=5, pady=15)  ##E65561
+        #Label(self.frame_tres, text = 'Codigo', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=1, pady=15, padx=5)
+        #Label(self.frame_tres, text = 'Nombre', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=2, pady=15)
+        #Label(self.frame_tres, text = 'Modelo', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=3, pady=15)
+        #Label(self.frame_tres, text = 'Precio', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=4, pady=15)
+        #Label(self.frame_tres, text = 'Cantidad', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=5, pady=15)  ##E65561
 
         #Entry(self.frame_tres, textvariable=self.codigo , font=('Comic Sans MS', 12), highlightbackground = "DarkOrchid1", highlightcolor= "green2", highlightthickness=5).grid(column=1, row=1)
        # Entry(self.frame_tres, textvariable=self.nombre , font=('Comic Sans MS', 12), highlightbackground = "DarkOrchid1", highlightcolor= "green2", highlightthickness=5).grid(column=1, row=2)

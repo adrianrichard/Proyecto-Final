@@ -26,7 +26,7 @@ class Login:
 
         else:
             showerror(title= "Advertencia", message= "Error de conexión a base de datos")
-
+    
 
 
     def __init__(self):
