@@ -79,15 +79,24 @@ class MasterPanel:
         Paciente_update(self.dni_paciente)
     
     def eliminar_paciente(self):
-        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
-        self.miCursor=self.miConexion.cursor()
+        #self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+        #self.miCursor=self.miConexion.cursor()
+        #self.miCursor.execute("SELECT * FROM Paciente WHERE dni=?", (self.dni_paciente,))
+        #campos=self.miCursor.fetchall()
+        #print(campos)
+
         
-        #try:
-            self.miCursor.execute("DELETE FROM Paciente WHERE dni = ?", (self.dni_paciente))
+        try:
+            self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+            self.miCursor=self.miConexion.cursor()
+            dni =self.dni_paciente
+            #sql="DELETE FROM Paciente WHERE dni = ?"
+            self.miCursor.execute("DELETE FROM Paciente WHERE dni = ?", (self.dni_paciente,))
             self.miConexion.commit()
             messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
-        #except:
-            #messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")                
+        except:
+            messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")
+        self.mostrar_datos()         
     
     def menu_lateral(self):
         if self.menu is True:
