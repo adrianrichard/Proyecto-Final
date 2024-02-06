@@ -2,7 +2,7 @@ from datetime import datetime
 from functools import partial
 from tkinter import *
 
-##from events.eventdbcontroller import EventController
+from events.eventdbcontroller import EventController
 from datehandler.datehandler import DateHandler as dH
 from tkconfiguration.eventcolor import EventColor
 from tkwidgetclasses.hover_button import HoverButton
@@ -33,8 +33,8 @@ class TKCalendar(Tk):
         self.dh = dH()
 
         """ Image Anchors """  # Need to anchor images from garbage collection on mainloop
-        self.up_chevron = PhotoImage(file="img/chevron_up.png")
-        self.down_chevron = PhotoImage(file="img/chevron_down.png")
+        self.up_chevron = PhotoImage(file='./img/chevron_up.png')
+        self.down_chevron = PhotoImage(file="./img/chevron_down.png")
 
         """ Internal Functions """
         self._make_header()
@@ -73,7 +73,7 @@ class TKCalendar(Tk):
 
     def _make_legend_button(self):
         """ Creates legend button """
-        self.menu_img = PhotoImage(file="img/menu.png")
+        self.menu_img = PhotoImage(file="menu.png")
         Button(self, image=self.menu_img, command=self.open_legend, bg="#CAF1DE", height=30,
                width=30, relief=FLAT).grid(row=0, column=6)
 
@@ -99,14 +99,14 @@ class TKCalendar(Tk):
                     and self.year == datetime.today().year:
                 self.date_buttons[i].configure(bg="#D9FFE3")
 
-##    def _event_color_buttons(self):
-##        for button in self.date_buttons:
-##            if button["text"] != 0:
-##                query = {"year": self.year, "month": self.month, "day": button["text"]}
-##                date_events = EventController.find_by_elements(query)
-##                if date_events:
-##                    categories = [event.category for event in date_events]
-##                    EventColor().colorize(button, categories)
+    def _event_color_buttons(self):
+        for button in self.date_buttons:
+            if button["text"] != 0:
+                query = {"year": self.year, "month": self.month, "day": button["text"]}
+                date_events = EventController.find_by_elements(query)
+                if date_events:
+                    categories = [event.category for event in date_events]
+                    EventColor().colorize(button, categories)
 
     def _configure_rows_columns(self):
         """ Configures rows and columns to expand with resize of window """

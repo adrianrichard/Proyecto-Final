@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter.font import BOLD
+from tkinter import ttk
 import util.generic as utl
 from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Scrollbar, Frame
@@ -21,6 +22,7 @@ class MasterPanel:
         self.menu = True
         self.color = True
         self.dni_paciente =  StringVar()
+        self.dato_paciente =  StringVar()
 
         self.frame_inicio = Frame(self.ventana, bg= '#1F704B', width= 50, height= 45)
         self.frame_inicio.grid_propagate(0)
@@ -42,7 +44,7 @@ class MasterPanel:
     def pantalla_inicial(self):
         self.paginas.select([self.frame_principal])
 
-    def pantalla_datos(self):
+    def pacientes(self):
         self.paginas.select([self.frame_pacientes])
         self.frame_pacientes.columnconfigure(0, weight= 1)
         self.frame_pacientes.columnconfigure(1, weight= 1)
@@ -128,17 +130,28 @@ class MasterPanel:
     def mostrar_datos(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
-        #cursor = self.conexion.cursor()
         bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
-        #print(self.miCursor.fetchall())
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
         i = -1
         for dato in datos:
             i= i+1
             self.tabla_paciente.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2],datos[i][3],datos[i][4]))
-        #return datos
+    
+    def buscar_paciente(self):
+        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+        self.miCursor=self.miConexion.cursor()
+        self.buscar =self.dato_paciente.get()
+        
+        bd =f"SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' ORDER BY Nombre DESC"
+        self.miCursor.execute(bd)
+        datos = self.miCursor.fetchall()
+        self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+        i = -1
+        for dato in datos:
+            i= i+1
+            self.tabla_paciente.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2],datos[i][3],datos[i][4]))
     
     def obtener_fila(self, event):
         item = self.tabla_paciente.focus()
@@ -157,9 +170,6 @@ class MasterPanel:
         self.imagen_editar_paciente = PhotoImage(file ='./imagenes/editar_paciente.png')
         self.imagen_refrescar = PhotoImage(file ='./imagenes/refrescar.png')
         self.imagen_eliminar_paciente = PhotoImage(file ='./imagenes/eliminar1.png')
-
-
-
         self.logo = PhotoImage(file ='./imagenes/logo1.png')
 
         self.bt_inicio = Button(self.frame_inicio, image= self.imagen_inicio, bg= '#1F704B', activebackground='black', bd= 0, command= self.menu_lateral)
@@ -168,7 +178,7 @@ class MasterPanel:
         self.bt_cerrar.grid(column= 0, row= 0, padx= 5, pady= 10)
 
 		#BOTONES Y ETIQUETAS DEL MENU LATERAL
-        Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_datos).grid(column= 0, row= 1, pady= 20, padx= 10)
+        Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pacientes).grid(column= 0, row= 1, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_escribir ).grid(column= 0, row= 2, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_actualizar).grid(column= 0, row= 3, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_buscar, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_buscar).grid(column=0, row=4, pady=20, padx=10)
@@ -215,16 +225,17 @@ class MasterPanel:
         Label(self.frame_principal, image= self.logo, bg= 'white').pack(expand= 1)
 
 		######################## PACIENTES #################
-        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 0, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Agregar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 0, row= 1)
+        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 4, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Agregar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 4, row= 1)
         Button(self.frame_pacientes, image= self.imagen_editar_paciente, text= 'EDITAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.editar_paciente).grid(column= 1, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Editar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
         Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 2, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Eliminar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
         Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_datos).grid(column= 3, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Refrescar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 3, row= 1)
-        self.busqueda = ttk.Entry(self.frame_pacientes, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 4, row= 0, pady= 5)
-        Button(self.frame_pacientes, text= 'Buscar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 4, row= 1)
+        self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 0, row= 0, pady= 5)
+        Button(self.frame_pacientes, text= 'Buscar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold'), command= self.buscar_paciente).grid(column= 0, row= 1)
+        #self.Buscar.bind("<Return>", (lambda event: self.buscar_paciente()))
 
 		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()

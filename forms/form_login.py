@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk
 from tkinter.font import BOLD
 import util.generic as utl
 from forms.form_master import MasterPanel
