@@ -1,2 +1,2 @@
-from forms.form_login import Login 
+from forms.form_login import Login
 Login()
