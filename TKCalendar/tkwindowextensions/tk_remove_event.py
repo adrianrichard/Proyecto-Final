@@ -1,12 +1,10 @@
 from tkinter import Label, Tk, Toplevel, S, Frame, NSEW, PhotoImage, Button, GROOVE, FLAT
 from events.eventdbcontroller import EventController
 
-
 class TKRemoveEvent:
     """
     Extends an instantiated Tk or Toplevel window starting from the last grid row with
     additional widgets to remove Event data
-
     ...
     Parameters
     ----------
@@ -16,7 +14,6 @@ class TKRemoveEvent:
         Id of event from event TinyDB
     callback : callable
         Callback for use on extension completion for desired updates to root window
-
     """
 
     def __init__(self, root_window: Tk or Toplevel, id: int, callback: callable = None):
@@ -45,13 +42,12 @@ class TKRemoveEvent:
         self.border_frame = Frame(self.root, bg=self.root["bg"])
         self.border_frame.grid(row=self.grid_row_start, column=0, columnspan=self.column_count, sticky=NSEW)
         self.main_frame = Frame(self.root, bg="#BDC1BE")
-        self.main_frame.grid(row=self.grid_row_start, column=0, columnspan=self.column_count, sticky=NSEW, padx=10,
-                             pady=10)
+        self.main_frame.grid(row=self.grid_row_start, column=0, columnspan=self.column_count, sticky=NSEW, padx=10, pady=10)
 
     def _make_header(self):
         """ Create Add Event header """
         Label(
-            self.main_frame, text="REMOVE EVENT", font="Courier 18 underline", bg="#BDC1BE") \
+            self.main_frame, text="ELIMINAR CITA", font="Courier 13 underline", bg="#BDC1BE") \
             .grid(row=0, column=1, pady=5, sticky=S)
 
     def _get_event_data(self):
@@ -63,11 +59,11 @@ class TKRemoveEvent:
         event_data_frame = Frame(self.main_frame, bg="#D1D6D3", relief=GROOVE)
         event_data_frame.grid(row=1, column=1, padx=8, pady=8)
         e = self.event
-        event_data = f"Title: {e.title}\n" \
-                     f"Date: {e.month}/{e.day}/{e.year}\n" \
-                     f"Time: {e.time_hours}:{e.time_minutes}\n" \
-                     f"Category: {e.category}\n" \
-                     f"Details: {e.details}" \
+        event_data = f"Paciente: {e.title}\n" \
+                     f"Fecha: {e.month}/{e.day}/{e.year}\n" \
+                     f"Horario: {e.time_hours}:{e.time_minutes}\n" \
+                     f"Categoria: {e.category}\n" \
+                     f"Detalles: {e.details}" \
 
         Label(event_data_frame, bg="#D1D6D3", text=event_data, font="Helvetica 12") \
             .grid(row=0, column=0, ipady=20, ipadx=20)
@@ -114,4 +110,3 @@ class TKRemoveEvent:
         self.root.confirmation.grid(row=6, column=1, pady=10)
         self.root.extension = None
         self.callback()
-

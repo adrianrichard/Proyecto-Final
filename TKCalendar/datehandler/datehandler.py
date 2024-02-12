@@ -47,13 +47,9 @@ class DateHandler:
     def days_in_month(month: int, year: int) -> int:
         """
         Returns number of days in a given month/year
-
         Parameters:
-            month:
-                month represented numerically
-            year:
-                year represented numerically
-
+            month: month represented numerically
+            year:  year represented numerically
         Returns:
             int equal to number of days in given month
         """
@@ -62,15 +58,14 @@ class DateHandler:
     @staticmethod
     def month_num_to_string(month: int) -> str:
         """
-        Dictionary reference for transposing month nums to names
-
-        Parameters:
+        Diccionario para transformar número del mes en nombre
+        Parametros:
             month:
-                month represented numerically
+                mes representado numericamente
         Returns:
-            month represented by name
+            mes representado por nombre
         """
-        month_dict = {1: "January", 2: "February", 3: "March", 4: "April", 5: "May",
-                      6: "June", 7: "July", 8: "August", 9: "September", 10: "October",
-                      11: "November", 12: "December"}
+        month_dict = {1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril", 5: "Mayo",
+                      6: "Junio", 7: "Julio", 8: "Agosto", 9: "Septiembre", 10: "Octubre",
+                      11: "Noviembre", 12: "Diciembre"}
         return month_dict[month]

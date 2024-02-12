@@ -65,17 +65,17 @@ class DayTopWindow(Toplevel):
     def _make_event_buttons(self):
         """ Creates event interaction buttons """
         self.add_img = PhotoImage(file="img/add_event.png")
-        self.remove_img = PhotoImage(file="img/remove_event.png")
+        self.remove_img = PhotoImage(file="img/cancel_call.png")
         self.change_img = PhotoImage(file="img/change_event.png")
 
         HoverButton(
-            self, image=self.add_img, text="Add Image", bg="gray", command=self.add_event,
+            self, image=self.add_img, text="Add cita", bg="#D1D6D3", command=self.add_event,
             relief=FLAT).grid(row=2, column=0)
         HoverButton(
-            self, image=self.remove_img, text="Remove Event", bg="gray", command=self.remove_event,
+            self, image=self.remove_img, text="Eliminar Cita", bg="#D1D6D3", command=self.remove_event,
             relief=FLAT).grid(row=2, column=1)
         HoverButton(
-            self, image=self.change_img, text="Change Event", bg="gray", command=self.change_event,
+            self, image=self.change_img, text="Editar Cita", bg="#D1D6D3", command=self.change_event,
             relief=FLAT).grid(row=2, column=2)
 
     def _configure_header(self):
@@ -89,12 +89,12 @@ class DayTopWindow(Toplevel):
         query = {"year": self.year, "month": self.month, "day": self.day}
         event_data = EventController.find_by_elements(query)
         list_data = [
-            f"Time: {ev.time_hours}:{ev.time_minutes} - Event: {ev.title} [{ev.id}] " for ev in event_data]
+            f"Horario: {ev.time_hours}:{ev.time_minutes} - Evento {ev.title} [{ev.id}] " for ev in event_data]
 
         if not list_data:
-            list_data = ["No Events"]
+            list_data = ["No hay citas"]
         else:
-            list_data.insert(0, "Select An Event")
+            list_data.insert(0, "Elegir cita")
         [self.event_box.insert(END, ev_data) for ev_data in list_data]
 
     """ _______________________________________ Button Functions ____________________________________________________"""
@@ -138,9 +138,7 @@ class DayTopWindow(Toplevel):
     def add_event(self):
         """ Opens add event extension """
         if not self.extension:
-
             self.confirmation.destroy() if self.confirmation else None
-
             self.extension = True
             self.extension = TKAddEventExtension(self, self.day, self.month, self.year, self._configure_event_box)
 
@@ -150,14 +148,14 @@ class DayTopWindow(Toplevel):
             if not self.event_box.curselection():
                 if self.confirmation:
                     self.confirmation.destroy()
-                self.confirmation = Label(self, text="Choose an event.", font="Courier 10")
+                self.confirmation = Label(self, text="Elegir cita", font="Courier 10")
                 self.confirmation.grid(row=self.grid_size()[1], column=1, pady=10)
                 return
 
             self.confirmation.destroy() if self.confirmation else None
 
             selection = self.event_box.get(self.event_box.curselection()).strip()
-            if selection not in ["No Events", "Select An Event"]:
+            if selection not in ["No hay citas", "Elija una cita"]:
                 self.extension = True
                 str_id = selection.split(" ")[-1]
                 int_id = int(str_id[1:-1])
@@ -169,14 +167,14 @@ class DayTopWindow(Toplevel):
             if not self.event_box.curselection():
                 if self.confirmation:
                     self.confirmation.destroy()
-                self.confirmation = Label(self, text="Choose an event.", font="Courier 10")
+                self.confirmation = Label(self, text="Elija una cita", font="Courier 10")
                 self.confirmation.grid(row=self.grid_size()[1], column=1, pady=10)
                 return
 
             self.confirmation.destroy() if self.confirmation else None
 
             selection = self.event_box.get(self.event_box.curselection()).strip()
-            if selection not in ["No Events", "Select An Event"]:
+            if selection not in ["No hay citas", "Elija una cita"]:
                 self.extension = True
                 str_id = selection.split(" ")[-1]
                 int_id = int(str_id[1:-1])
