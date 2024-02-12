@@ -1,6 +1,7 @@
 from datetime import datetime
 from functools import partial
 from tkinter import *
+import tkinter as tk
 
 from events.eventdbcontroller import EventController
 from datehandler.datehandler import DateHandler as dH
@@ -10,19 +11,20 @@ from toplevels.daytoplevel import DayTopWindow
 from tkwindowextensions.tk_legend import TKLegend
 
 
-class TKCalendar(Tk):
+class TKCalendar():
     """ TKinter Calendar """
 
     def __init__(self):
-        super().__init__()
+        #super().__init__()
+        self.frame_login = tk.Tk()
 
         """ Window Attributes """
-        self.minsize(width=700, height=700)
-        self.title("TK Calendar")
+        self.frame_login.minsize(width=700, height=700)
+        self.frame_login.title("TK Calendar")
         self.date_buttons = []
-        self.toplevel = None
-        self.legend = None
-        self.header = None
+        self.frame_login.toplevel = None
+        self.frame_login.legend = None
+        self.frame_login.header = None
 
         """ Functional Variables """
         self.year = datetime.now().year  # Returns 4-digit int(year)
@@ -33,8 +35,8 @@ class TKCalendar(Tk):
         self.dh = dH()
 
         """ Image Anchors """  # Need to anchor images from garbage collection on mainloop
-        self.up_chevron = PhotoImage(file='./img/chevron_up.png')
-        self.down_chevron = PhotoImage(file="./img/chevron_down.png")
+        #self.up_chevron = PhotoImage(file='menu.png')
+        #self.down_chevron = PhotoImage(file="chevron_down.png")
 
         """ Internal Functions """
         self._make_header()
@@ -43,38 +45,40 @@ class TKCalendar(Tk):
         self._make_legend_button()
         self._configure_day_buttons()
 ##        self._event_color_buttons()
-        self._configure_rows_columns()
+        #self._configure_rows_columns()
+        self.frame_login.mainloop()
+        
 
     def _make_header(self):
         """ Creates calendar header label """
         header_text = f"{self.dh.month_num_to_string(self.month)} {self.year}"
-        self.header = Label(self, text=header_text, font="Arvo 20", justify=CENTER)
+        self.header = Label(self.frame_login, text=header_text, font="Arvo 20", justify=CENTER)
         self.header.grid(row=0, column=1, columnspan=5, sticky=EW, ipady=20)
 
         day_list = ["Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"]
         for i, j in enumerate(day_list):
-            Label(self, text=day_list[i], bd=1, relief=SOLID).grid(row=1, column=i, sticky=NSEW, ipady=20)
+            Label(self.frame_login, text=day_list[i], bd=1, relief=SOLID).grid(row=1, column=i, sticky=NSEW, ipady=20)
 
     def _make_month_adjust_buttons(self):
         """ Creates buttons for moving month up or down """
         Button(
-            self, text=">", command=self.month_up, bg="#808080", height=2, width=8).grid(row=0, column=5)
+            self.frame_login, text=">", command=self.month_up, bg="#808080", height=2, width=8).grid(row=0, column=5)
         Button(
-            self, text="<", command=self.month_down, bg="#808080", height=2, width=8).grid(row=0, column=1)
+            self.frame_login, text="<", command=self.month_down, bg="#808080", height=2, width=8).grid(row=0, column=1)
 
     def _make_day_buttons(self):
         """ Creates date buttons """
         coords = [(i, j) for i in range(2, 8) for j in range(0, 7)]
         for coord in coords:
             btn = HoverButton(
-                self, bg="gray", relief=SUNKEN, bd=2, height=6, width=10)
+                self.frame_login, bg="gray", relief=SUNKEN, bd=2, height=6, width=10)
             btn.grid(row=coord[0], column=coord[1], sticky=NSEW)
             self.date_buttons.append(btn)
 
     def _make_legend_button(self):
         """ Creates legend button """
-        self.menu_img = PhotoImage(file="menu.png")
-        Button(self, image=self.menu_img, command=self.open_legend, bg="#CAF1DE", height=30,
+        #self.menu_img = PhotoImage(file="menu.png")
+        Button(self.frame_login, command=self.open_legend, bg="#CAF1DE", height=30,
                width=30, relief=FLAT).grid(row=0, column=6)
 
     def _configure_header(self):
