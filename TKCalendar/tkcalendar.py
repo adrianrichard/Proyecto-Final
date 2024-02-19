@@ -9,6 +9,11 @@ from tkwidgetclasses.hover_button import HoverButton
 from toplevels.daytoplevel import DayTopWindow
 from tkwindowextensions.tk_legend import TKLegend
 
+from pathlib import Path
+
+script_location = Path(__file__).absolute().parent
+#file_location = script_location / 'file.yaml'
+#file = file_location.open()
 
 class TKCalendar(Tk):
     """ TKinter Calendar """
@@ -17,8 +22,8 @@ class TKCalendar(Tk):
         super().__init__()
 
         """ Window Attributes """
-        #self.minsize(width=700, height=700)
-        #self.title("TK Calendar")
+        self.minsize(width=700, height=700)
+        self.title("TK Calendar")
         self.date_buttons = []
         self.toplevel = None
         self.legend = None
@@ -33,8 +38,12 @@ class TKCalendar(Tk):
         self.dh = dH()
 
         """ Image Anchors """  # Need to anchor images from garbage collection on mainloop
-        self.up_chevron = PhotoImage(file="img/chevron_up.png")
-        self.down_chevron = PhotoImage(file="img/chevron_down.png")
+        #self.up_chevron_path=script_location / 'chevron_up.png'
+        file_location = script_location / 'chevron_up.png'
+        #file = file_location.open()
+        self.up_chevron = PhotoImage(file_location.open())
+        file_location = script_location / 'chevron_down.png'
+        self.down_chevron = PhotoImage(file_location.open())
 
         """ Internal Functions """
         self._make_header()

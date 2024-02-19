@@ -81,13 +81,7 @@ class MasterPanel:
         Paciente_update(self.dni_paciente)
     
     def eliminar_paciente(self):
-        #self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
-        #self.miCursor=self.miConexion.cursor()
-        #self.miCursor.execute("SELECT * FROM Paciente WHERE dni=?", (self.dni_paciente,))
-        #campos=self.miCursor.fetchall()
-        #print(campos)
-
-        
+               
         try:
             self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()

@@ -1,13 +1,11 @@
 """
 DayTopLevel holds DayTopWindow a class to create a GUI to manipulate event information from the TK Calendar and
 Event DB
-
 Classes:
     DayTopWindow
-
 """
-
-from tkinter import Toplevel, Label, CENTER, END, FLAT, Listbox, SINGLE, EW, PhotoImage
+import util.generic as utl
+from tkinter import Toplevel, Label, CENTER, END, FLAT, Listbox, SINGLE, EW
 from datehandler.datehandler import DateHandler
 from tkwidgetclasses.hover_button import HoverButton
 from tkwindowextensions.tk_add_event import TKAddEventExtension
@@ -15,12 +13,11 @@ from tkwindowextensions.tk_remove_event import TKRemoveEvent
 from tkwindowextensions.tk_change_event import TKChangeEvent
 from events.eventdbcontroller import EventController
 
-
 class DayTopWindow(Toplevel):
     """ Toplevel class for event operations on the TKCalendar """
-
+    
     def __init__(self, day: int, month: int, year: int):
-        super().__init__()
+        super().__init__()        
 
         """ Window Attributes """
         self.attributes = ("-topmost", True)
@@ -64,9 +61,9 @@ class DayTopWindow(Toplevel):
 
     def _make_event_buttons(self):
         """ Creates event interaction buttons """
-        self.add_img = PhotoImage(file="img/add_event.png")
-        self.remove_img = PhotoImage(file="img/cancel_call.png")
-        self.change_img = PhotoImage(file="img/change_event.png")
+        self.add_img =utl.leer_imagen("./imagenes/agregar.png", (50, 50))
+        self.remove_img = utl.leer_imagen('./imagenes/noche.png', (50, 50))
+        self.change_img = utl.leer_imagen('./imagenes/back.png', (50, 50))
 
         HoverButton(
             self, image=self.add_img, text="Add cita", bg="#D1D6D3", command=self.add_event,

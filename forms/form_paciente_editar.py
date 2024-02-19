@@ -6,11 +6,9 @@ from tkinter import  StringVar, Frame
 #from bd.conexion import Conexion
 import sqlite3
 
-
 class Paciente_update:    
     
-    def conexionBBDD(self):
-        
+    def conexionBBDD(self):        
         try:
             self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
@@ -22,8 +20,6 @@ class Paciente_update:
                 NOMBRE VARCHAR(50) NOT NULL,
                 APELLIDO VARCHAR(50) NOT NULL)
                 ''')
-            #self.miConexion.commit()
-            #self.miConexion.close()
 
             messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")    
     
@@ -47,18 +43,13 @@ class Paciente_update:
 
     def actualizar(self):
         datos=self.nombre_paciente.get(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get(),self.dni_actual
-        #print(datos, self.dni_actual)
-        #parametros=(datos, self.dni_actual)
-        #print(parametros)
-        
+             
         try:
-            #self.miCursor.execute("UPDATE Paciente SET nombre =?, apellido=?, dni=?, domicilio=?, telefono=?, email=?, obrasocial=?, nrosocio=? where dni=?", (datos, self.dni_actual))
             sql="UPDATE Paciente SET nombre =?, apellido=?, dni=?, domicilio=?, telefono=?, email=?, obrasocial=?, nrosocio=? where dni=?"
-            #parametros=(datos, self.dni_actual)
             self.miCursor.execute(sql, datos)
-
             self.miConexion.commit()
-            #messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
+            print("editado")
+            messagebox.showinfo("GUARDAR","Paciente actualizado exitosamente")
             self.frame_paciente.destroy()
         except:
             messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
