@@ -17,8 +17,8 @@ class TKCalendar(Tk):
         super().__init__()
 
         """ Window Attributes """
-        self.minsize(width=700, height=700)
-        self.title("TK Calendar")
+        #self.minsize(width=700, height=700)
+        #self.title("TK Calendar")
         self.date_buttons = []
         self.toplevel = None
         self.legend = None

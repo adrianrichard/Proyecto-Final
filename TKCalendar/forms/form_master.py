@@ -6,6 +6,8 @@ from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Scrollbar, Frame
 from forms.form_paciente import Paciente
 from forms.form_paciente_editar import Paciente_update
+from tkcalendar import TKCalendar
+
 
 import sqlite3
 
@@ -52,10 +54,20 @@ class MasterPanel:
         self.frame_tabla_paciente.columnconfigure(0, weight= 1)
         self.frame_tabla_paciente.rowconfigure(0, weight= 1)
 
-    def pantalla_escribir(self):
-        self.paginas.select([self.frame_tres])
-        self.frame_tres.columnconfigure(0, weight= 1)
-        self.frame_tres.columnconfigure(1, weight= 1)
+    def pantalla_calendario(self):        
+        self.paginas.select([self.frame_calendario])
+        #self.frame_calendario.minsize(width=700, height=700)
+        #self.frame_calendario.title("TK Calendar")
+        #self.date_buttons = []
+        #self.frame_calendario.toplevel = None
+        #self.frame_calendario.legend = None
+        #self.frame_calendario.header = None
+        
+        Tcal = TKCalendar()
+        Tcal.mainloop()
+        
+        #self.frame_calendario.columnconfigure(0, weight= 1)
+        #self.frame_calendario.columnconfigure(1, weight= 1)
 
     def pantalla_actualizar(self):
         self.paginas.select([self.frame_cuatro])
@@ -172,7 +184,7 @@ class MasterPanel:
 
 		#BOTONES Y ETIQUETAS DEL MENU LATERAL
         Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pacientes).grid(column= 0, row= 1, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_escribir ).grid(column= 0, row= 2, pady= 20, padx= 10)
+        Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 2, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_actualizar).grid(column= 0, row= 3, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_buscar, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_buscar).grid(column=0, row=4, pady=20, padx=10)
         Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_ajustes).grid(column=0, row=5, pady=20,padx=10)
@@ -198,13 +210,13 @@ class MasterPanel:
         self.paginas.grid(column= 0, row= 0, sticky='nsew')
         self.frame_principal = Frame(self.paginas, bg='#fcfcfc') #color de fondo
         self.frame_pacientes = Frame(self.paginas, bg='#fcfcfc') #color de fondo
-        self.frame_tres = Frame(self.paginas, bg='#fcfcfc')
+        self.frame_calendario = Frame(self.paginas, bg='#fcfcfc')
         self.frame_cuatro = Frame(self.paginas, bg='#fcfcfc')
         self.frame_cinco = Frame(self.paginas, bg='#fcfcfc')
         self.frame_seis = Frame(self.paginas, bg='#fcfcfc')
         self.paginas.add(self.frame_principal)
         self.paginas.add(self.frame_pacientes)
-        self.paginas.add(self.frame_tres)
+        self.paginas.add(self.frame_calendario)
         self.paginas.add(self.frame_cuatro)
         self.paginas.add(self.frame_cinco)
         self.paginas.add(self.frame_seis)
@@ -265,7 +277,8 @@ class MasterPanel:
         self.tabla_paciente.bind("<<TreeviewSelect>>", self.obtener_fila)
 
 		######################## REGISTRAR  NUEVOS PRODUCTOS #################
-        Label(self.frame_tres, text = 'Agregar Nuevos Datos', fg='blue', bg ='white', font=('Comic Sans MS',24,'bold')).grid(columnspan=2, column=0, row=0, pady=5)
+        Label(self.frame_calendario, text = 'Agregar Nuevos Datos', fg='blue', bg ='white', font=('Comic Sans MS',24,'bold')).grid(columnspan=2, column=0, row=0, pady=5)
+        
         #Label(self.frame_tres, text = 'Codigo', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=1, pady=15, padx=5)
         #Label(self.frame_tres, text = 'Nombre', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=2, pady=15)
         #Label(self.frame_tres, text = 'Modelo', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=3, pady=15)
@@ -279,7 +292,7 @@ class MasterPanel:
        # Entry(self.frame_tres, textvariable=self.cantidad , font=('Comic Sans MS', 12), highlightbackground = "DarkOrchid1", highlightcolor= "green2", highlightthickness=5).grid(column=1, row=5)
 
 		#Button(self.frame_tres,command= self.agregar_datos, text='REGISTRAR', font=('Arial',10,'bold'), bg='magenta2').grid(column=3,row=6, pady=10, padx=4)
-        self.aviso_guardado = Label(self.frame_tres, bg= 'white', font=('Comic Sans MS', 12), fg= 'black')
+        self.aviso_guardado = Label(self.frame_calendario, bg= 'white', font=('Comic Sans MS', 12), fg= 'black')
         self.aviso_guardado.grid(columnspan= 2, column= 0, row= 6, padx= 5)
 
 		########################   ACTUALIZAR LOS PRODUCTOS REGISTRADOS     #################
