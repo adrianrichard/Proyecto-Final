@@ -64,12 +64,12 @@ class MasterPanel:
     
     def pantalla_buscar(self):
         self.paginas.select([self.frame_cinco])
-        self.frame_cinco.columnconfigure(0, weight= 1)
-        self.frame_cinco.columnconfigure(1, weight =1)
-        self.frame_cinco.columnconfigure(2, weight= 1)
-        self.frame_cinco.rowconfigure(2, weight= 1)
-        self.frame_tabla_dos.columnconfigure(0, weight= 1)
-        self.frame_tabla_dos.rowconfigure(0, weight= 1)
+        #self.frame_cinco.columnconfigure(0, weight= 1)
+        #self.frame_cinco.columnconfigure(1, weight =1)
+        #self.frame_cinco.columnconfigure(2, weight= 1)
+        #self.frame_cinco.rowconfigure(2, weight= 1)
+        #self.frame_tabla_dos.columnconfigure(0, weight= 1)
+        #self.frame_tabla_dos.rowconfigure(0, weight= 1)
 
     def pantalla_ajustes(self):
         self.paginas.select([self.frame_seis])
@@ -81,21 +81,14 @@ class MasterPanel:
         Paciente_update(self.dni_paciente)
     
     def eliminar_paciente(self):
-        #self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
-        #self.miCursor=self.miConexion.cursor()
-        #self.miCursor.execute("SELECT * FROM Paciente WHERE dni=?", (self.dni_paciente,))
-        #campos=self.miCursor.fetchall()
-        #print(campos)
-
-        
         try:
             self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
-            dni =self.dni_paciente
-            #sql="DELETE FROM Paciente WHERE dni = ?"
-            self.miCursor.execute("DELETE FROM Paciente WHERE dni = ?", (self.dni_paciente,))
-            self.miConexion.commit()
-            messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
+            msg_box = messagebox.askquestion('Eliminar paciente', '¿Desea elminar al paciente?', icon='warning')
+            if msg_box == 'yes':
+                self.miCursor.execute("DELETE FROM Paciente WHERE dni = ?", (self.dni_paciente,))
+                self.miConexion.commit()
+                messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
         except:
             messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")
         self.mostrar_datos()         
@@ -169,7 +162,7 @@ class MasterPanel:
         self.imagen_agregar_paciente = PhotoImage(file ='./imagenes/agregar_paciente.png')
         self.imagen_editar_paciente = PhotoImage(file ='./imagenes/editar_paciente.png')
         self.imagen_refrescar = PhotoImage(file ='./imagenes/refrescar.png')
-        self.imagen_eliminar_paciente = PhotoImage(file ='./imagenes/eliminar1.png')
+        self.imagen_eliminar_paciente = PhotoImage(file ='./imagenes/eliminar22.png')
         self.logo = PhotoImage(file ='./imagenes/logo1.png')
 
         self.bt_inicio = Button(self.frame_inicio, image= self.imagen_inicio, bg= '#1F704B', activebackground='black', bd= 0, command= self.menu_lateral)
@@ -234,7 +227,7 @@ class MasterPanel:
         Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_datos).grid(column= 3, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Refrescar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 3, row= 1)
         self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 0, row= 0, pady= 5)
-        Button(self.frame_pacientes, text= 'Buscar', bg= 'white', fg= 'black', font= ('Comic Sans MS', 12, 'bold'), command= self.buscar_paciente).grid(column= 0, row= 1)
+        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= ('Comic Sans MS', 12, 'bold'), command= self.buscar_paciente).grid(column= 0, row= 1)
         #self.Buscar.bind("<Return>", (lambda event: self.buscar_paciente()))
 
 		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
@@ -314,34 +307,10 @@ class MasterPanel:
         #Entry(self.frame_cinco, textvariable= self.buscar, font=('Comic Sans MS', 12), highlightbackground = "DarkOrchid1", highlightcolor= "deep sky blue", highlightthickness=5).grid(column=0, row=1, sticky='nsew', padx=2)
 		#Button(self.frame_cinco,command = self.buscar_nombre, text='BUSCAR POR NOMBRE', font=('Arial',8,'bold'), bg='deep sky blue').grid(column = 1, row=1, sticky='nsew', padx=2)
 		#Button(self.frame_cinco,command = self.eliminar_fila, text='ELIMINAR', font=('Arial',8,'bold'), bg='red').grid(column = 2, row=1, sticky='nsew',padx=2)
-        self.indica_busqueda= Label(self.frame_cinco, width= 15, text= '', fg= 'blue', bg= 'white', font=('Comic Sans MS', 12,'bold'))
-        self.indica_busqueda.grid(column= 3, row= 1, padx= 2)
+        #self.indica_busqueda= Label(self.frame_cinco, width= 15, text= '', fg= 'blue', bg= 'white', font=('Comic Sans MS', 12,'bold'))
+        #self.indica_busqueda.grid(column= 3, row= 1, padx= 2)
 
-		#TABLA DOS
-        self.frame_tabla_dos = Frame(self.frame_cinco, bg= 'gray90')
-        self.frame_tabla_dos.grid(columnspan= 4, row= 2, sticky='nsew')
-        self.tabla_dos = ttk.Treeview(self.frame_tabla_dos)
-        self.tabla_dos.grid(column= 0, row= 0, sticky='nsew')
-        ladox = ttk.Scrollbar(self.frame_tabla_dos, orient= 'horizontal', command= self.tabla_dos.xview)
-        ladox.grid(column= 0, row= 1, sticky='ew')
-        ladoy = ttk.Scrollbar(self.frame_tabla_dos, orient='vertical', command= self.tabla_dos.yview)
-        ladoy.grid(column= 1, row= 0, sticky='ns')
-
-        self.tabla_dos.configure(xscrollcommand= ladox.set, yscrollcommand= ladoy.set)
-        self.tabla_dos['columns'] = ('Nombre', 'Modelo', 'Precio', 'Cantidad')
-        self.tabla_dos.column('#0', minwidth= 100, width= 120, anchor= 'center')
-        self.tabla_dos.column('Nombre', minwidth= 100, width= 130 , anchor= 'center')
-        self.tabla_dos.column('Modelo', minwidth= 100, width= 120, anchor= 'center' )
-        self.tabla_dos.column('Precio', minwidth= 100, width= 120 , anchor= 'center')
-        self.tabla_dos.column('Cantidad', minwidth= 100, width= 105, anchor= 'center')
-
-        self.tabla_dos.heading('#0', text= 'Codigo', anchor= 'center')
-        self.tabla_dos.heading('Nombre', text= 'Nombre', anchor= 'center')
-        self.tabla_dos.heading('Modelo', text= 'Modelo', anchor= 'center')
-        self.tabla_dos.heading('Precio', text= 'Precio', anchor= 'center')
-        self.tabla_dos.heading('Cantidad', text= 'Cantidad', anchor= 'center')
-#		self.tabla_dos.bind("<<TreeviewSelect>>", self.obtener_fila)
-
+		
 		######################## AJUSTES #################
         self.text_ajustes = Label(self.frame_seis, text= 'Configuracion', fg='blue', bg='white', font=('Comic Sans MS', 28,'bold'))
         self.text_ajustes.pack(expand= 1)
