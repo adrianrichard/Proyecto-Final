@@ -6,8 +6,15 @@ from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Scrollbar, Frame
 from forms.form_paciente import Paciente
 from forms.form_paciente_editar import Paciente_update
-from tkcalendar import TKCalendar
-
+from tkcalendar import *
+from datetime import datetime
+from functools import partial
+from events.eventdbcontroller import EventController
+from datehandler.datehandler import DateHandler as dH
+from tkconfiguration.eventcolor import EventColor
+from tkwidgetclasses.hover_button import HoverButton
+from toplevels.daytoplevel import DayTopWindow
+from tkwindowextensions.tk_legend import TKLegend
 
 import sqlite3
 
@@ -56,15 +63,31 @@ class MasterPanel:
 
     def pantalla_calendario(self):        
         self.paginas.select([self.frame_calendario])
-        #self.frame_calendario.minsize(width=700, height=700)
-        #self.frame_calendario.title("TK Calendar")
-        #self.date_buttons = []
-        #self.frame_calendario.toplevel = None
-        #self.frame_calendario.legend = None
-        #self.frame_calendario.header = None
-        
+        self.date_buttons = []
+        self.toplevel = None
+        self.legend = None
+        self.header = None
+
+        """ Functional Variables """
+        self.year = datetime.now().year  # Returns 4-digit int(year)
+        self.month = datetime.now().month  # Returns int(month)
+        self.dates = []
+
+        """ Helper Classes """
+        self.dh = dH()
+        self.up_chevron = PhotoImage(file="img/chevron_up.png")
+        self.down_chevron = PhotoImage(file="img/chevron_down.png")
         Tcal = TKCalendar()
-        Tcal.mainloop()
+        Tcal._make_header(self.frame_calendario)
+        Tcal._make_day_buttons(self.frame_calendario)
+        Tcal._make_month_adjust_buttons(self.frame_calendario)
+        #self._configure_day_buttons()
+        #self._event_color_buttons()
+        #self._configure_rows_columns()
+
+        
+        #Tcal = TKCalendar()
+        #Tcal.mainloop()
         
         #self.frame_calendario.columnconfigure(0, weight= 1)
         #self.frame_calendario.columnconfigure(1, weight= 1)
@@ -277,7 +300,7 @@ class MasterPanel:
         self.tabla_paciente.bind("<<TreeviewSelect>>", self.obtener_fila)
 
 		######################## REGISTRAR  NUEVOS PRODUCTOS #################
-        Label(self.frame_calendario, text = 'Agregar Nuevos Datos', fg='blue', bg ='white', font=('Comic Sans MS',24,'bold')).grid(columnspan=2, column=0, row=0, pady=5)
+        #Label(self.frame_calendario, text = 'Agregar Nuevos Datos', fg='blue', bg ='white', font=('Comic Sans MS',24,'bold')).grid(columnspan=2, column=0, row=0, pady=5)
         
         #Label(self.frame_tres, text = 'Codigo', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=1, pady=15, padx=5)
         #Label(self.frame_tres, text = 'Nombre', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=2, pady=15)
@@ -292,8 +315,8 @@ class MasterPanel:
        # Entry(self.frame_tres, textvariable=self.cantidad , font=('Comic Sans MS', 12), highlightbackground = "DarkOrchid1", highlightcolor= "green2", highlightthickness=5).grid(column=1, row=5)
 
 		#Button(self.frame_tres,command= self.agregar_datos, text='REGISTRAR', font=('Arial',10,'bold'), bg='magenta2').grid(column=3,row=6, pady=10, padx=4)
-        self.aviso_guardado = Label(self.frame_calendario, bg= 'white', font=('Comic Sans MS', 12), fg= 'black')
-        self.aviso_guardado.grid(columnspan= 2, column= 0, row= 6, padx= 5)
+        #self.aviso_guardado = Label(self.frame_calendario, bg= 'white', font=('Comic Sans MS', 12), fg= 'black')
+        #self.aviso_guardado.grid(columnspan= 2, column= 0, row= 6, padx= 5)
 
 		########################   ACTUALIZAR LOS PRODUCTOS REGISTRADOS     #################
         Label(self.frame_cuatro, text = 'Actualizar Datos', fg= 'blue', bg='white', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
