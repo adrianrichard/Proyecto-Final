@@ -3,18 +3,10 @@ from tkinter.font import BOLD
 from tkinter import ttk
 import util.generic as utl
 from tkinter import  Button, messagebox, Label, ttk, PhotoImage
-from tkinter import  StringVar, Scrollbar, Frame
+from tkinter import  StringVar, Frame
 from forms.form_paciente import Paciente
 from forms.form_paciente_editar import Paciente_update
 from tkcalendar import *
-from datetime import datetime
-from functools import partial
-from events.eventdbcontroller import EventController
-from datehandler.datehandler import DateHandler as dH
-from tkconfiguration.eventcolor import EventColor
-from tkwidgetclasses.hover_button import HoverButton
-from toplevels.daytoplevel import DayTopWindow
-from tkwindowextensions.tk_legend import TKLegend
 
 import sqlite3
 
@@ -63,34 +55,14 @@ class MasterPanel:
 
     def pantalla_calendario(self):        
         self.paginas.select([self.frame_calendario])
-        self.date_buttons = []
-        self.toplevel = None
-        self.legend = None
-        self.header = None
-
-        """ Functional Variables """
-        self.year = datetime.now().year  # Returns 4-digit int(year)
-        self.month = datetime.now().month  # Returns int(month)
-        self.dates = []
-
-        """ Helper Classes """
-        self.dh = dH()
-        self.up_chevron = PhotoImage(file="img/chevron_up.png")
-        self.down_chevron = PhotoImage(file="img/chevron_down.png")
+        
         Tcal = TKCalendar()
         Tcal._make_header(self.frame_calendario)
         Tcal._make_day_buttons(self.frame_calendario)
         Tcal._make_month_adjust_buttons(self.frame_calendario)
-        #self._configure_day_buttons()
-        #self._event_color_buttons()
-        #self._configure_rows_columns()
-
-        
-        #Tcal = TKCalendar()
-        #Tcal.mainloop()
-        
-        #self.frame_calendario.columnconfigure(0, weight= 1)
-        #self.frame_calendario.columnconfigure(1, weight= 1)
+        Tcal._configure_day_buttons()
+        Tcal._event_color_buttons()
+        Tcal._configure_rows_columns(self.frame_calendario)
 
     def pantalla_actualizar(self):
         self.paginas.select([self.frame_cuatro])
@@ -98,13 +70,7 @@ class MasterPanel:
         self.frame_cuatro.columnconfigure(1, weight= 1)
     
     def pantalla_buscar(self):
-        self.paginas.select([self.frame_cinco])
-        #self.frame_cinco.columnconfigure(0, weight= 1)
-        #self.frame_cinco.columnconfigure(1, weight =1)
-        #self.frame_cinco.columnconfigure(2, weight= 1)
-        #self.frame_cinco.rowconfigure(2, weight= 1)
-        #self.frame_tabla_dos.columnconfigure(0, weight= 1)
-        #self.frame_tabla_dos.rowconfigure(0, weight= 1)
+        self.paginas.select([self.frame_cinco])        
 
     def pantalla_ajustes(self):
         self.paginas.select([self.frame_seis])
@@ -187,22 +153,29 @@ class MasterPanel:
         self.dni_paciente=self.data['values'][1]
         
     def widgets(self):
-        self.imagen_inicio = PhotoImage(file ='./imagenes/inicio2.png')
-        self.imagen_menu = PhotoImage(file ='./imagenes/menu3.png')
+        #self.imagen_inicio = PhotoImage(file ='./imagenes/home-removebg-preview.png')
+        #tself.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
         self.imagen_paciente = PhotoImage(file ='./imagenes/agregar3.png')
-        self.imagen_calendario = PhotoImage(file ='./imagenes/calendario.png')
+        self.imagen_calendario = PhotoImage(file ='./imagenes/calendario-removebg-preview.png')
         self.imagen_historia_clinica = PhotoImage(file ='./imagenes/historial3.png')
-        self.imagen_buscar = PhotoImage(file ='./imagenes/buscar.png')
-        self.imagen_ajustes = PhotoImage(file ='./imagenes/configuracion.png')
+        self.imagen_buscar = PhotoImage(file ='./imagenes/foto-removebg-preview.png')
+        self.imagen_ajustes = PhotoImage(file ='./imagenes/info_icon_white.png')
         self.imagen_agregar_paciente = PhotoImage(file ='./imagenes/agregar_paciente.png')
         self.imagen_editar_paciente = PhotoImage(file ='./imagenes/editar_paciente.png')
         self.imagen_refrescar = PhotoImage(file ='./imagenes/refrescar.png')
         self.imagen_eliminar_paciente = PhotoImage(file ='./imagenes/eliminar22.png')
         self.logo = PhotoImage(file ='./imagenes/logo1.png')
 
-        self.bt_inicio = Button(self.frame_inicio, image= self.imagen_inicio, bg= '#1F704B', activebackground='black', bd= 0, command= self.menu_lateral)
-        self.bt_inicio.grid(column= 0, row= 0, padx= 5, pady= 10)
-        self.bt_cerrar = Button(self.frame_inicio, image= self.imagen_menu, bg= '#1F704B', activebackground='black', bd= 0, command= self.menu_lateral)
+        try:
+            self.imagen_inicio = PhotoImage(file ='./imagenes/home-removebg-previe.png')
+            self.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-previe.png')
+            self.bt_inicio = Button(self.frame_inicio, image= self.imagen_inicio, bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
+            self.bt_cerrar = Button(self.frame_inicio, image= self.imagen_menu, bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
+        except:
+            self.bt_inicio = Button(self.frame_inicio, text= 'INICIO', font= ('Comic Sans MS', 12, 'bold'), bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
+            self.bt_cerrar = Button(self.frame_inicio, text= 'INICIO', font= ('Comic Sans MS', 12, 'bold'), bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
+        
+        self.bt_inicio.grid(column= 0, row= 0, padx= 5, pady= 10)        
         self.bt_cerrar.grid(column= 0, row= 0, padx= 5, pady= 10)
 
 		#BOTONES Y ETIQUETAS DEL MENU LATERAL
@@ -215,7 +188,7 @@ class MasterPanel:
         Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=1, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=2, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row= 3, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Eliminar', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=4, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=4, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Versión', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
 
 		#############################  CREAR  PAGINAS  ##############################
@@ -299,58 +272,15 @@ class MasterPanel:
         self.mostrar_datos()
         self.tabla_paciente.bind("<<TreeviewSelect>>", self.obtener_fila)
 
-		######################## REGISTRAR  NUEVOS PRODUCTOS #################
-        #Label(self.frame_calendario, text = 'Agregar Nuevos Datos', fg='blue', bg ='white', font=('Comic Sans MS',24,'bold')).grid(columnspan=2, column=0, row=0, pady=5)
+		######################## HISTORIA CLINICA #################
+        Label(self.frame_cuatro, text = 'HISTORIA CLINICA', fg= '#1F704B', bg='white', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
         
-        #Label(self.frame_tres, text = 'Codigo', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=1, pady=15, padx=5)
-        #Label(self.frame_tres, text = 'Nombre', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=2, pady=15)
-        #Label(self.frame_tres, text = 'Modelo', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=3, pady=15)
-        #Label(self.frame_tres, text = 'Precio', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=4, pady=15)
-        #Label(self.frame_tres, text = 'Cantidad', fg='navy', bg ='white', font=('Comic Sans MS',13,'bold')).grid(column=0,row=5, pady=15)  ##E65561
-
-        #Entry(self.frame_tres, textvariable=self.codigo , font=('Comic Sans MS', 12), highlightbackground = "DarkOrchid1", highlightcolor= "green2", highlightthickness=5).grid(column=1, row=1)
-       # Entry(self.frame_tres, textvariable=self.nombre , font=('Comic Sans MS', 12), highlightbackground = "DarkOrchid1", highlightcolor= "green2", highlightthickness=5).grid(column=1, row=2)
-        #Entry(self.frame_tres, textvariable=self.modelo , font=('Comic Sans MS', 12), highlightbackground = "DarkOrchid1", highlightcolor= "green2", highlightthickness=5).grid(column=1, row=3)
-        #Entry(self.frame_tres, textvariable=self.precio , font=('Comic Sans MS', 12), highlightbackground = "DarkOrchid1", highlightcolor= "green2", highlightthickness=5).grid(column=1, row=4)
-       # Entry(self.frame_tres, textvariable=self.cantidad , font=('Comic Sans MS', 12), highlightbackground = "DarkOrchid1", highlightcolor= "green2", highlightthickness=5).grid(column=1, row=5)
-
-		#Button(self.frame_tres,command= self.agregar_datos, text='REGISTRAR', font=('Arial',10,'bold'), bg='magenta2').grid(column=3,row=6, pady=10, padx=4)
-        #self.aviso_guardado = Label(self.frame_calendario, bg= 'white', font=('Comic Sans MS', 12), fg= 'black')
-        #self.aviso_guardado.grid(columnspan= 2, column= 0, row= 6, padx= 5)
-
-		########################   ACTUALIZAR LOS PRODUCTOS REGISTRADOS     #################
-        Label(self.frame_cuatro, text = 'Actualizar Datos', fg= 'blue', bg='white', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
-        Label(self.frame_cuatro, text = 'Ingrese el nombre del producto a actualizar', fg= 'black', bg= 'white', font=('Comic Sans MS', 12)).grid(columnspan=2, row=1)
-        #Entry(self.frame_cuatro, textvariable= self.buscar_actualiza, font=('Comic Sans MS', 12), highlightbackground = "magenta2", width=12, highlightthickness=5).grid(column=2, row=1, padx=5)
-		#Button(self.frame_cuatro, command= self.actualizar_datos, text='BUSCAR', font=('Arial',12,'bold'), bg='deep sky blue').grid(column=3,row=1, pady=5, padx=15)
-        self.aviso_actualizado = Label(self.frame_cuatro, fg= 'black', bg= 'white', font=('Comic Sans MS', 12,'bold'))
-        self.aviso_actualizado.grid(columnspan= 2, row= 7, pady= 10, padx= 5)
-        
-        Label(self.frame_cuatro, text= 'Codigo', fg='navy', bg='white', font=('Comic Sans MS',13,'bold')).grid(column= 0, row= 2, pady= 15, padx= 10)
-        Label(self.frame_cuatro, text= 'Nombre', fg='navy', bg='white', font=('Comic Sans MSl',13,'bold')).grid(column= 0, row= 3, pady= 15)
-        Label(self.frame_cuatro, text= 'Modelo', fg='navy', bg='white', font=('Comic Sans MS',13,'bold')).grid(column= 0, row= 4, pady= 15)
-        Label(self.frame_cuatro, text= 'Precio', fg='navy',bg='white', font=('Comic Sans MS',13,'bold')).grid(column= 0, row= 5, pady= 15)
-        Label(self.frame_cuatro, text= 'Cantidad', fg='navy', bg='white', font=('Comic Sans MS',13,'bold')).grid(column= 0, row= 6, pady= 15)  ##E65561
-
-        #Entry(self.frame_cuatro, textvariable=self.codigo, font=('Comic Sans MS', 12), highlightbackground = "deep sky blue", highlightcolor= "green", highlightthickness=5).grid(column=1,row=2)
-        #Entry(self.frame_cuatro, textvariable=self.nombre, font=('Comic Sans MS', 12), highlightbackground = "deep sky blue", highlightcolor= "green", highlightthickness=5).grid(column=1,row=3)
-        #Entry(self.frame_cuatro, textvariable=self.modelo, font=('Comic Sans MS', 12), highlightbackground = "deep sky blue", highlightcolor= "green", highlightthickness=5).grid(column=1,row=4)
-        #Entry(self.frame_cuatro, textvariable=self.precio, font=('Comic Sans MS', 12), highlightbackground = "deep sky blue", highlightcolor= "green", highlightthickness=5).grid(column=1,row=5)
-        #Entry(self.frame_cuatro, textvariable=self.cantidad, font=('Comic Sans MS', 12), highlightbackground = "deep sky blue", highlightcolor= "green", highlightthickness=5).grid(column=1,row=6)
-		
-		######################## BUSCAR y ELIMINAR DATOS #################
-        Label(self.frame_cinco, text = 'Buscar y Eliminar Datos', fg='blue', bg='white', font=('Comic Sans MS', 24,'bold')).grid(columnspan= 4,  row= 0, sticky= 'nsew', padx= 2)
-        #Entry(self.frame_cinco, textvariable= self.buscar, font=('Comic Sans MS', 12), highlightbackground = "DarkOrchid1", highlightcolor= "deep sky blue", highlightthickness=5).grid(column=0, row=1, sticky='nsew', padx=2)
-		#Button(self.frame_cinco,command = self.buscar_nombre, text='BUSCAR POR NOMBRE', font=('Arial',8,'bold'), bg='deep sky blue').grid(column = 1, row=1, sticky='nsew', padx=2)
-		#Button(self.frame_cinco,command = self.eliminar_fila, text='ELIMINAR', font=('Arial',8,'bold'), bg='red').grid(column = 2, row=1, sticky='nsew',padx=2)
-        #self.indica_busqueda= Label(self.frame_cinco, width= 15, text= '', fg= 'blue', bg= 'white', font=('Comic Sans MS', 12,'bold'))
-        #self.indica_busqueda.grid(column= 3, row= 1, padx= 2)
-
-		
+		######################## GALERIA #################
+        Label(self.frame_cinco, text = 'GALERIA', fg='#1F704B', bg='white', font=('Comic Sans MS', 24,'bold')).grid(columnspan= 4,  row= 0)
+        		
 		######################## AJUSTES #################
-        self.text_ajustes = Label(self.frame_seis, text= 'Configuracion', fg='blue', bg='white', font=('Comic Sans MS', 28,'bold'))
-        self.text_ajustes.pack(expand= 1)
-        self.texto= Label(self.frame_seis, text= '@autor:AdriaTech \n Desarrollado en Python', fg='red', bg='white', font=('Comic Sans MS', 18))
-        self.texto.pack(expand= 1)
+        self.name = Label(self.frame_seis, text= 'DENTALMATIC', fg='#1F704B', bg='white', font=('Comic Sans MS', 30,'bold')).pack(expand= 1)
+        self.version = Label(self.frame_seis, text= 'Versión 1.0 - 2024', fg='#1F704B', bg='white', font=('Comic Sans MS', 15,'bold')).pack(expand= 1)
+        self.autor= Label(self.frame_seis, text= 'Autor:Rodrigo Adrian Richard\nDesarrollado en Python', fg='black', bg='white', font=('Comic Sans MS', 10)).pack(expand= 1)
                 
         self.ventana.mainloop()

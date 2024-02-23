@@ -49,7 +49,7 @@ class TKCalendar():
         """ Creates calendar header label """        
         header_text = f"{self.dh.month_num_to_string(self.month)} {self.year}"
         self.header = Label(frame, text=header_text, font="Arvo 15", justify=CENTER)
-        self.header.grid(row=0, column=1, columnspan=7, sticky=EW, ipady=10)
+        self.header.grid(row=0, column=0, columnspan=7, sticky=EW, ipady=10)
 
         day_list = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado", "Domingo"]
         for i, j in enumerate(day_list):
@@ -64,7 +64,7 @@ class TKCalendar():
         """ Creates date buttons """
         coords = [(i, j) for i in range(2, 8) for j in range(0, 7)]
         for coord in coords:
-            btn = HoverButton(frame, bg="gray", relief=SUNKEN, bd=2, height=4, width=16)
+            btn = HoverButton(frame, bg="gray", relief=SUNKEN, bd=2, height=4, width=10)
             btn.grid(row=coord[0], column=coord[1], sticky=NSEW)
             self.date_buttons.append(btn)
     
@@ -75,8 +75,7 @@ class TKCalendar():
     def _configure_day_buttons(self):
         """ Set button text to date numbers """
         self.dates = self.dh.date_list(self.year, self.month)  # Returns 35 dates (5 week calendar)
-        self.dates.extend(
-            [0 for _ in range(42 - len(self.dates))])  # Add zeros to dates to compensate for 42 date buttons
+        self.dates.extend([0 for _ in range(42 - len(self.dates))])  # Add zeros to dates to compensate for 42 date buttons
 
         for i, j in enumerate(self.dates):  # Configure button text to show dates
             if j == 0:
@@ -99,10 +98,10 @@ class TKCalendar():
                     categories = [event.category for event in date_events]
                     EventColor().colorize(button, categories)
 
-    def _configure_rows_columns(self):
+    def _configure_rows_columns(self, frame):
         """ Configures rows and columns to expand with resize of window """
-        [self.rowconfigure(i, weight=1) for i in range(self.grid_size()[1])]
-        [self.columnconfigure(i, weight=1) for i in range(self.grid_size()[0])]
+        [frame.rowconfigure(i, weight=1) for i in range(frame.grid_size()[1])]
+        [frame.columnconfigure(i, weight=1) for i in range(frame.grid_size()[0])]
 
     """ ______________________________________Button Functions ________________________________________________"""
 

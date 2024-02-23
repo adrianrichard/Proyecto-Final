@@ -1,12 +1,10 @@
 """
 This module contains the DateHandler class. A collection of necessary functions to obtain
 formatted data with respect to calendar operations.
-
 """
 
 from calendar import monthcalendar, monthrange
 from typing import List
-
 
 class DateHandler:
     """
