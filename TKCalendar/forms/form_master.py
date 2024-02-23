@@ -47,11 +47,9 @@ class MasterPanel:
 
     def pacientes(self):
         self.paginas.select([self.frame_pacientes])
-        self.frame_pacientes.columnconfigure(0, weight= 1)
-        self.frame_pacientes.columnconfigure(1, weight= 1)
-        self.frame_pacientes.rowconfigure(2, weight= 1)
-        self.frame_tabla_paciente.columnconfigure(0, weight= 1)
-        self.frame_tabla_paciente.rowconfigure(0, weight= 1)
+        [self.frame_pacientes.columnconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[0])]
+        [self.frame_tabla_paciente.columnconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[0])]
+        [self.frame_tabla_paciente.rowconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[1])]
 
     def pantalla_calendario(self):        
         self.paginas.select([self.frame_calendario])
@@ -64,7 +62,7 @@ class MasterPanel:
         Tcal._event_color_buttons()
         Tcal._configure_rows_columns(self.frame_calendario)
 
-    def pantalla_actualizar(self):
+    def pantalla_historia(self):
         self.paginas.select([self.historia])
         self.historia.columnconfigure(0, weight= 1)
         self.historia.columnconfigure(1, weight= 1)
@@ -181,7 +179,7 @@ class MasterPanel:
 		#BOTONES Y ETIQUETAS DEL MENU LATERAL
         Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pacientes).grid(column= 0, row= 1, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 2, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_actualizar).grid(column= 0, row= 3, pady= 20, padx= 10)
+        Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 3, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_buscar, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_buscar).grid(column=0, row=4, pady=20, padx=10)
         Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_ajustes).grid(column=0, row=5, pady=20,padx=10)
 
@@ -250,13 +248,13 @@ class MasterPanel:
         self.frame_tabla_paciente = Frame(self.frame_pacientes, bg='gray90')
         self.frame_tabla_paciente.grid(columnspan=5, row=2, sticky='nsew')
         self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente)
-        self.tabla_paciente.grid(column=0, row=0, sticky='nsew')
-        ladox = ttk.Scrollbar(self.frame_tabla_paciente, orient = 'horizontal', command= self.tabla_paciente.xview)
-        ladox.grid(column=0, row = 1, sticky='ew')
+        self.tabla_paciente.grid(column=0, row=2, columnspan=5, sticky='nsew')
+        #ladox = ttk.Scrollbar(self.frame_pacientes, orient = 'horizontal', command= self.tabla_paciente.xview)
+        #ladox.grid(column=0, row = 3, sticky='ew')
         ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient ='vertical', command = self.tabla_paciente.yview)
-        ladoy.grid(column = 1, row = 0, sticky='ns')
+        ladoy.grid(column = 5, row = 2, sticky='ns')
 
-        self.tabla_paciente.configure(xscrollcommand = ladox.set, yscrollcommand = ladoy.set)
+        self.tabla_paciente.configure(yscrollcommand = ladoy.set)
         self.tabla_paciente['columns'] = ('Nombre', 'D.N.I.', 'Teléfono', 'Obra Social')
         self.tabla_paciente.column('#0', minwidth=100, width=120, anchor='center')
         self.tabla_paciente.column('Nombre', minwidth=100, width=130 , anchor='center')

@@ -14,7 +14,7 @@ class DayTopWindow(Toplevel):
         super().__init__()        
 
         self.attributes = ("-topmost", True)
-        utl.centrar_ventana(self, 400, 400)
+        utl.centrar_ventana(self, 300, 600)
         self.title(f"{month}/{day}/{year} Events")
         self.resizable(width=False, height=False)
         self.event_box = None
@@ -33,26 +33,26 @@ class DayTopWindow(Toplevel):
         self._configure_event_box()
 
     def _make_header(self):
-        """ Creates date header """
+        """ Crea encabezado """
         header_text = f"{self.month}/{self.day}/{self.year}"
         self.header = Label(self, text=header_text, font="Courier 15", justify=CENTER, borderwidth=3, bd=3, bg="#D1D6D3")
         self.header.grid(row=0, column=1, ipady=3)
 
     def _make_day_adjust_buttons(self):
-        """ Creates day increase/decrease buttons """
+        """ Crea botones para cambiar fecha """
         HoverButton(self, text=">", command=self.day_up, bg="#BDC1BE", height=1, width=4).grid(row=0, column=2)
         HoverButton(self, text="<", command=self.day_down, bg="#BDC1BE", height=1, width=4).grid(row=0, column=0)
 
     def _make_event_listbox(self):
         """ Creates event listbox to display day events """
-        self.event_box = Listbox(self, bg="#BDC1BE", height=5, selectmode=SINGLE, font="Arvo 12", justify=CENTER)
-        self.event_box.grid(row=1, column=0, columnspan=5, padx=10, pady=10, sticky=EW)
+        self.event_box = Listbox(self, bg="#BDC1BE", height=10, width=30, selectmode=SINGLE, font="Arvo 12", justify=CENTER, activestyle='none')
+        self.event_box.grid(row=1, column=0, columnspan=3, padx=10, pady=10, sticky=EW)
 
     def _make_event_buttons(self):
         """ Crea botones de interaccion  """
         self.add_img =utl.leer_imagen("./imagenes/add.png", (50, 50))
-        self.remove_img = utl.leer_imagen('./imagenes/noche.png', (50, 50))
-        self.change_img = utl.leer_imagen('./imagenes/back.png', (50, 50))
+        self.remove_img = utl.leer_imagen('./imagenes/eliminar2.png', (50, 50))
+        self.change_img = utl.leer_imagen('./imagenes/next.png', (50, 50))
 
         HoverButton(self, image=self.add_img, text="Agendar cita", bg="#D1D6D3", command=self.add_event,
             relief=FLAT).grid(row=2, column=0)

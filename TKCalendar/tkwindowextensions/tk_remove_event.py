@@ -46,8 +46,7 @@ class TKRemoveEvent:
 
     def _make_header(self):
         """ Create Add Event header """
-        Label(
-            self.main_frame, text="ELIMINAR CITA", font="Courier 13 underline", bg="#BDC1BE") \
+        Label(self.main_frame, text="ELIMINAR CITA", font="Courier 13 underline", bg="#BDC1BE") \
             .grid(row=0, column=1, pady=5, sticky=S)
 
     def _get_event_data(self):
@@ -66,7 +65,7 @@ class TKRemoveEvent:
                      f"Detalles: {e.details}" \
 
         Label(event_data_frame, bg="#D1D6D3", text=event_data, font="Helvetica 12") \
-            .grid(row=0, column=0, ipady=20, ipadx=20)
+            .grid(row=0, column=1, ipady=20, ipadx=20)
 
     def _make_confirm_deny_buttons(self):
         """ Create final add button """
@@ -74,14 +73,14 @@ class TKRemoveEvent:
         self.add = Button(self.main_frame, image=self.confirm_img, command=self._remove_event, relief=FLAT,
                           bg="#BDC1BE")
         self.add.image = self.confirm_img
-        self.add.grid(row=1, column=0)
+        self.add.grid(row=2, column=0)
 
         """ Create cancel button """
         self.deny_img = PhotoImage(file="img/deny.png")
         self.deny = Button(self.main_frame, image=self.deny_img, command=self._cancel_event, relief=FLAT,
                            bg="#BDC1BE")
         self.deny.image = self.deny_img
-        self.deny.grid(row=1, column=2)
+        self.deny.grid(row=2, column=2)
 
     def _configure_rows_cols(self):
         """ Configure rows to 1:1 weight """
