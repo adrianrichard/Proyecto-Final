@@ -16,46 +16,31 @@ script_location = Path(__file__).absolute().parent
 #file = file_location.open()
 
 class TKCalendar():
-    """ TKinter Calendar """
 
     def __init__(self):
         super().__init__()
 
-        """ Window Attributes """
-        self.minsize(width=700, height=700)
-        self.title("TK Calendar")
         self.date_buttons = []
         self.toplevel = None
         self.legend = None
         self.header = None
 
-        """ Functional Variables """
-        self.year = datetime.now().year  # Returns 4-digit int(year)
-        self.month = datetime.now().month  # Returns int(month)
+        self.year = datetime.now().year  # Devuelve entero de 4-digit (year)
+        self.month = datetime.now().month  # Devuelve entero(month)
         self.dates = []
 
-        """ Helper Classes """
+        """ Clases soporte """
         self.dh = dH()
 
-        """ Image Anchors """  # Need to anchor images from garbage collection on mainloop
         #self.up_chevron_path=script_location / 'chevron_up.png'
         file_location = script_location / 'chevron_up.png'
         #file = file_location.open()
         self.up_chevron = PhotoImage(file_location.open())
         file_location = script_location / 'chevron_down.png'
         self.down_chevron = PhotoImage(file_location.open())
-
-        """ Internal Functions """
-        #self._make_header()
-        #self._make_day_buttons()
-        #self._make_month_adjust_buttons()
-        #self._make_legend_button()
-        #self._configure_day_buttons()
-        #self._event_color_buttons()
-        #self._configure_rows_columns()
-
+        
     def _make_header(self, frame):
-        """ Creates calendar header label """        
+        """ Crea el encabezado """        
         header_text = f"{self.dh.month_num_to_string(self.month)} {self.year}"
         self.header = Label(frame, text=header_text, font="Arvo 15", justify=CENTER)
         self.header.grid(row=0, column=0, columnspan=7, sticky=EW, ipady=10)
@@ -65,7 +50,7 @@ class TKCalendar():
             Label(frame, text=day_list[i], bd=1, relief=SOLID).grid(row=1, column=i, sticky=NSEW, ipady=10)
 
     def _make_month_adjust_buttons(self, frame):
-        """ Creates buttons for moving month up or down """
+        """ Crea los botones para cambiar el mes """
         Button(frame, text="<", command=self.month_down, bg="#808080", height=2, width=8).grid(row=0, column=1)
         Button(frame, text=">", command=self.month_up, bg="#808080", height=2, width=8).grid(row=0, column=5)        
 
@@ -78,12 +63,12 @@ class TKCalendar():
             self.date_buttons.append(btn)
     
     def _configure_header(self):
-        """ Set header to display updated month """
+        """ Actualiza el encabezado del mes """
         self.header.configure(text=f"{self.dh.month_num_to_string(self.month)} {self.year}")
 
     def _configure_day_buttons(self):
         """ Set button text to date numbers """
-        self.dates = self.dh.date_list(self.year, self.month)  # Returns 35 dates (5 week calendar)
+        self.dates = self.dh.date_list(self.year, self.month)  # Devuelve 35 dias (5 semanas)
         self.dates.extend([0 for _ in range(42 - len(self.dates))])  # Add zeros to dates to compensate for 42 date buttons
 
         for i, j in enumerate(self.dates):  # Configure button text to show dates
