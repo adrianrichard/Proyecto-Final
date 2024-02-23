@@ -47,18 +47,12 @@ class Paciente_update:
 
     def actualizar(self):
         datos=self.nombre_paciente.get(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get(),self.dni_actual
-        #print(datos, self.dni_actual)
-        #parametros=(datos, self.dni_actual)
-        #print(parametros)
         
         try:
-            #self.miCursor.execute("UPDATE Paciente SET nombre =?, apellido=?, dni=?, domicilio=?, telefono=?, email=?, obrasocial=?, nrosocio=? where dni=?", (datos, self.dni_actual))
             sql="UPDATE Paciente SET nombre =?, apellido=?, dni=?, domicilio=?, telefono=?, email=?, obrasocial=?, nrosocio=? where dni=?"
-            #parametros=(datos, self.dni_actual)
             self.miCursor.execute(sql, datos)
-
             self.miConexion.commit()
-            #messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
+            messagebox.showinfo("GUARDAR","Paciente actualizado exitosamente")
             self.frame_paciente.destroy()
         except:
             messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")

@@ -3,10 +3,17 @@ from tkinter.font import BOLD
 from tkinter import ttk
 import util.generic as utl
 from tkinter import  Button, messagebox, Label, ttk, PhotoImage
+<<<<<<< HEAD
 from tkinter import  StringVar, Frame
 from forms.form_paciente import Paciente
 from forms.form_paciente_editar import Paciente_update
 from tkcalendar import *
+=======
+from tkinter import  StringVar, Frame #, Scrollbar
+from forms.form_paciente import Paciente
+from forms.form_paciente_editar import Paciente_update
+from tkcalendar import TKCalendar
+>>>>>>> 7b54692ad69f49405ca9d0821a10776684914047
 
 import sqlite3
 
