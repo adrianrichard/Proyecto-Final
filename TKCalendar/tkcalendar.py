@@ -55,7 +55,7 @@ class TKCalendar():
         Button(frame, text=">", command=self.month_up, bg="#808080", height=2, width=8).grid(row=0, column=5)        
 
     def _make_day_buttons(self, frame):
-        """ Creates date buttons """
+        """ Crea botones de fechas """
         coords = [(i, j) for i in range(2, 8) for j in range(0, 7)]
         for coord in coords:
             btn = HoverButton(frame, bg="gray", relief=SUNKEN, bd=2, height=4, width=10)
@@ -69,15 +69,14 @@ class TKCalendar():
     def _configure_day_buttons(self):
         """ Set button text to date numbers """
         self.dates = self.dh.date_list(self.year, self.month)  # Devuelve 35 dias (5 semanas)
-        self.dates.extend([0 for _ in range(42 - len(self.dates))])  # Add zeros to dates to compensate for 42 date buttons
+        self.dates.extend([0 for _ in range(42 - len(self.dates))])  # agrega ceros en las fechas porque son 42 botones de fecha
 
-        for i, j in enumerate(self.dates):  # Configure button text to show dates
+        for i, j in enumerate(self.dates):  # Configure el texto del boton para mostrar la fecha
             if j == 0:
                 self.date_buttons[i].configure(text="", state=DISABLED, bg="#808080")
             else:
-                """ We use a partial function here to send day num (j) to our function """
                 self.date_buttons[i].configure(text=j, command=partial(self.day_info, j), bg="white", state=NORMAL)
-
+            #Marca la fecha actual
             if j == datetime.today().day \
                     and self.month == datetime.today().month \
                     and self.year == datetime.today().year:
@@ -93,14 +92,12 @@ class TKCalendar():
                     EventColor().colorize(button, categories)
 
     def _configure_rows_columns(self, frame):
-        """ Configures rows and columns to expand with resize of window """
+        """ Configura filas y columnas para expandandirlas al tamaño de la ventana """
         [frame.rowconfigure(i, weight=1) for i in range(frame.grid_size()[1])]
         [frame.columnconfigure(i, weight=1) for i in range(frame.grid_size()[0])]
 
-    """ ______________________________________Button Functions ________________________________________________"""
-
     def month_up(self):
-        """ Increment month up and reconfigure calendar interface """
+        """ Aumenta el mes y reconfigura la interface del calendario """
         self.month += 1
         if self.month == 13:
             self.month = 1
@@ -110,7 +107,7 @@ class TKCalendar():
         self._configure_header()
 
     def month_down(self):
-        """ Increment month down and reconfigure calendar interface """
+        """ Disminuye el mes y reconfigura la interface del calendario """
         self.month -= 1
         if self.month == 0:
             self.month = 12
@@ -120,7 +117,7 @@ class TKCalendar():
         self._configure_header()
 
     def day_info(self, day_num):
-        """ Opens top window for event interaction, destroys previous top window"""
+        """ Abre una ventana para guardar la cita """
         try:
             self.toplevel.destroy()
             self.toplevel = DayTopWindow(day_num, self.month, self.year)
