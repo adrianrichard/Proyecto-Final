@@ -6,7 +6,6 @@ from tkinter import  StringVar, Frame
 #from bd.conexion import Conexion
 import sqlite3
 
-
 class Paciente:    
     
     def conexionBBDD(self):
@@ -22,8 +21,8 @@ class Paciente:
                 NOMBRE VARCHAR(50) NOT NULL,
                 APELLIDO VARCHAR(50) NOT NULL)
                 ''')
-            #self.miConexion.commit()
-            #self.miConexion.close()
+            self.miConexion.commit()
+            self.miConexion.close()
 
             messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
     
@@ -95,9 +94,7 @@ class Paciente:
         Label(self.frame_principal, text= 'Obra Social', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=7, pady=5, padx=2)
         Label(self.frame_principal, text= 'Nro de socio', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=8, pady=5, padx=2)
         Button(self.frame_principal, text= 'Crear',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 0, command= self.guardar).grid(column= 3, row=1, pady= 5, padx= 200)
-        Button(self.frame_principal, text= 'cargar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 0 ).grid(column= 3, row=2, pady= 5, padx= 200)
-        #Button(self.frame_principal, text= 'Crear',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 0, command= self.crear).grid(column= 3, row=3, pady= 5, padx= 200)
-
+        
         self.frame_paciente.mainloop()
         
 if __name__ == "__main__":

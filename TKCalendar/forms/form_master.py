@@ -45,7 +45,7 @@ class MasterPanel:
     def pantalla_inicial(self):
         self.paginas.select([self.frame_principal])
 
-    def pacientes(self):
+    def pantalla_pacientes(self):
         self.paginas.select([self.frame_pacientes])
         [self.frame_pacientes.columnconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[0])]
         [self.frame_tabla_paciente.columnconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[0])]
@@ -67,17 +67,17 @@ class MasterPanel:
         self.historia.columnconfigure(0, weight= 1)
         self.historia.columnconfigure(1, weight= 1)
     
-    def pantalla_buscar(self):
-        self.paginas.select([self.frame_cinco])        
+    def pantalla_galeria(self):
+        self.paginas.select([self.frame_galeria])        
 
-    def pantalla_ajustes(self):
-        self.paginas.select([self.frame_seis])
+    def pantalla_info(self):
+        self.paginas.select([self.frame_info])
     
     def agregar_paciente(self):
         Paciente()
         
     def editar_paciente(self):
-        Paciente_update(self.dni_paciente)
+        Paciente_update(self.dni_paciente)        
     
     def eliminar_paciente(self):
         try:
@@ -177,17 +177,20 @@ class MasterPanel:
         self.bt_cerrar.grid(column= 0, row= 0, padx= 5, pady= 10)
 
 		#BOTONES Y ETIQUETAS DEL MENU LATERAL
-        Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pacientes).grid(column= 0, row= 1, pady= 20, padx= 10)
+        Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_pacientes).grid(column= 0, row= 1, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 2, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 3, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_buscar, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_buscar).grid(column=0, row=4, pady=20, padx=10)
-        Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_ajustes).grid(column=0, row=5, pady=20,padx=10)
+        Button(self.frame_menu, image= self.imagen_buscar, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=4, pady=20, padx=10)
+        Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_info).grid(column=0, row=5, pady=20,padx=10)
+        Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0).grid(column=0, row=6, pady=20,padx=10)
+
 
         Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=1, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=2, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row= 3, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=4, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Versión', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
 
 		#############################  CREAR  PAGINAS  ##############################
         estilo_paginas = ttk.Style()
@@ -198,7 +201,6 @@ class MasterPanel:
         estilo_paginas.map("TNotebook", background=[("selected", '#1F704B')])
         estilo_paginas.map("TNotebook.Tab", background=[("selected", '#1F704B')], foreground=[("selected", '#1F704B')]);
         
-        
 		#CREACCION DE LAS PAGINAS
         self.paginas = ttk.Notebook(self.frame_raiz, style= 'TNotebook')
         self.paginas.grid(column= 0, row= 0, sticky='nsew')
@@ -206,14 +208,14 @@ class MasterPanel:
         self.frame_pacientes = Frame(self.paginas, bg='gray90') #color de fondo
         self.frame_calendario = Frame(self.paginas, bg='gray90')
         self.historia = Frame(self.paginas, bg='gray90')
-        self.frame_cinco = Frame(self.paginas, bg='gray90')
-        self.frame_seis = Frame(self.paginas, bg='gray90')
+        self.frame_galeria = Frame(self.paginas, bg='gray90')
+        self.frame_info = Frame(self.paginas, bg='gray90')
         self.paginas.add(self.frame_principal)
         self.paginas.add(self.frame_pacientes)
         self.paginas.add(self.frame_calendario)
         self.paginas.add(self.historia)
-        self.paginas.add(self.frame_cinco)
-        self.paginas.add(self.frame_seis)
+        self.paginas.add(self.frame_galeria)
+        self.paginas.add(self.frame_info)
 
 		##############################         PAGINAS       #############################################
 		######################## FRAME TITULO #################
@@ -238,7 +240,7 @@ class MasterPanel:
 
 		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()
-        estilo_tabla.configure("Treeview", font= ('Comic Sans MS', 10, 'bold'), foreground='black', background='white')  #, fieldbackground='yellow'
+        estilo_tabla.configure("Treeview", font= ('Comic Sans MS', 10, 'bold'), foreground='black', background='white', rowheight=40)
         estilo_tabla.map('Treeview', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
         estilo_tabla.configure('Heading', background = 'white', foreground='navy', padding= 3, font= ('Comic Sans MS', 10, 'bold'))
         estilo_tabla.configure('Item', foreground = 'white', focuscolor ='white')
@@ -249,11 +251,8 @@ class MasterPanel:
         self.frame_tabla_paciente.grid(columnspan=5, row=2, sticky='nsew')
         self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente)
         self.tabla_paciente.grid(column=0, row=2, columnspan=5, sticky='nsew')
-        #ladox = ttk.Scrollbar(self.frame_pacientes, orient = 'horizontal', command= self.tabla_paciente.xview)
-        #ladox.grid(column=0, row = 3, sticky='ew')
         ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient ='vertical', command = self.tabla_paciente.yview)
         ladoy.grid(column = 5, row = 2, sticky='ns')
-
         self.tabla_paciente.configure(yscrollcommand = ladoy.set)
         self.tabla_paciente['columns'] = ('Nombre', 'D.N.I.', 'Teléfono', 'Obra Social')
         self.tabla_paciente.column('#0', minwidth=100, width=120, anchor='center')
@@ -274,11 +273,11 @@ class MasterPanel:
         Label(self.historia, text = 'HISTORIA CLINICA', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
         
 		######################## GALERIA #################
-        Label(self.frame_cinco, text = 'GALERIA', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 24,'bold')).grid(columnspan= 4,  row= 0)
+        Label(self.frame_galeria, text = 'GALERIA', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 24,'bold')).grid(columnspan= 4,  row= 0)
         		
 		######################## INFO #################
-        self.name = Label(self.frame_seis, text= 'DENTALMATIC', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 30,'bold')).pack(expand= 1)
-        self.version = Label(self.frame_seis, text= 'Versión 1.0 - 2024', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 15,'bold')).pack(expand= 1)
-        self.autor= Label(self.frame_seis, text= 'Autor:Rodrigo Adrian Richard\nDesarrollado en Python', fg='black', bg='gray90', font=('Comic Sans MS', 10)).pack(expand= 1)
+        self.name = Label(self.frame_info, text= 'DENTALMATIC', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 30,'bold')).pack(expand= 1)
+        self.version = Label(self.frame_info, text= 'Versión 1.0 - 2024', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 15,'bold')).pack(expand= 1)
+        self.autor= Label(self.frame_info, text= 'Autor:Rodrigo Adrian Richard\nDesarrollado en Python', fg='black', bg='gray90', font=('Comic Sans MS', 10)).pack(expand= 1)
                 
         self.ventana.mainloop()
