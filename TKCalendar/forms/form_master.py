@@ -73,6 +73,11 @@ class MasterPanel:
     def pantalla_info(self):
         self.paginas.select([self.frame_info])
     
+    def salir(self):
+        answer = messagebox.askokcancel(title='Salir', message='¿Desea salir?', icon='warning')
+        if answer:
+            self.ventana.destroy()
+    
     def agregar_paciente(self):
         Paciente()
         
@@ -162,6 +167,7 @@ class MasterPanel:
         self.imagen_editar_paciente = PhotoImage(file ='./imagenes/editar_paciente.png')
         self.imagen_refrescar = PhotoImage(file ='./imagenes/refrescar.png')
         self.imagen_eliminar_paciente = PhotoImage(file ='./imagenes/eliminar22.png')
+        self.imagen_salir = PhotoImage(file ='./imagenes/salir.png')
         self.logo = PhotoImage(file ='./imagenes/logo1.png')
 
         try:
@@ -182,7 +188,7 @@ class MasterPanel:
         Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 3, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_buscar, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=4, pady=20, padx=10)
         Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_info).grid(column=0, row=5, pady=20,padx=10)
-        Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0).grid(column=0, row=6, pady=20,padx=10)
+        Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column=0, row=6, pady=20,padx=10)
 
 
         Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=1, pady= 20, padx= 2)
@@ -190,7 +196,7 @@ class MasterPanel:
         Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row= 3, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=4, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Versión', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 12, 'bold')).grid(column=1, row=6, pady= 20, padx= 2)
 
 		#############################  CREAR  PAGINAS  ##############################
         estilo_paginas = ttk.Style()
