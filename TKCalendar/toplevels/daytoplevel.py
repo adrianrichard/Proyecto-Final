@@ -44,7 +44,6 @@ class DayTopWindow(Toplevel):
         Button(self, text="<", command=self.day_down, bg="#BDC1BE", height=1, width=4).grid(row=0, column=0)
 
     def _make_event_listbox(self):
-        """ Creates event listbox to display day events """
         self.event_box = Listbox(self, bg="#BDC1BE", height=10, width=40, selectmode=SINGLE, font="Arvo 12", justify=CENTER, activestyle='none')
         self.event_box.grid(row=1, column=0, columnspan=3, padx=10, pady=10, sticky=EW)
 
