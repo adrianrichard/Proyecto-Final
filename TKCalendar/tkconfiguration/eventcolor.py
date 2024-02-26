@@ -1,20 +1,14 @@
 from tkinter import Button
 from typing import List
 
-
 class EventColor:
     """
     Colors a TK button widget background to a specific color based on color criteria
-
     Attributes: #noqa
-        cody_work:
-            hexadecimal color to display if 'c-work' category is present
-        sam_work:
-            hexadecimal color to display if 's-work' category is present
-        both_work:
-            hexadecimal color to display if 'c-work' and 's-work' category is present
-        other:
-            hexadecimal color to display if any other category is present
+        cody_work: hexadecimal color to display if 'c-work' category is present
+        sam_work: hexadecimal color to display if 's-work' category is present
+        both_work: hexadecimal color to display if 'c-work' and 's-work' category is present
+        other: hexadecimal color to display if any other category is present
     """
     cody_work = "#F7D8BA"
     sam_work = "#FEF8DD"

@@ -1,7 +1,7 @@
 import util.generic as utl
-from tkinter import Toplevel, Label, CENTER, END, FLAT, Listbox, SINGLE, EW
+from tkinter import *
 from datehandler.datehandler import DateHandler
-from tkwindowextensions.tk_add_event import TKAddEventExtension
+from tkwindowextensions.tk_add_event import NuevaCita
 from tkwindowextensions.tk_remove_event import TKRemoveEvent
 from tkwindowextensions.tk_change_event import TKChangeEvent
 from events.eventdbcontroller import EventController
@@ -10,42 +10,43 @@ from tkinter import Button
 class DayTopWindow(Toplevel):
     """ Toplevel class for event operations on the TKCalendar """
     
-    def __init__(self, day: int, month: int, year: int):
+    def __init__(self, dia: int, month: int, year: int):
         super().__init__()        
 
         self.attributes = ("-topmost", True)
-        utl.centrar_ventana(self, 400, 550)
-        self.title(f"{month}/{day}/{year} Events")
+        utl.centrar_ventana(self, 480, 550)
+        self.title(f"{month}/{dia}/{year} Events")
         self.resizable(width=False, height=False)
         self.event_box = None
         self.configure(bg="#D1D6D3")
+        self.grab_set_global()
         self.extension = None
         self.confirmation = None
 
-        self.day = day
+        self.dia = dia
         self.month = month
         self.year = year
 
-        self._make_header()
-        self._make_day_adjust_buttons()
+        self.crear_header()
+        self.crear_botones_cambio_fecha()
         self._make_event_listbox()
         self._make_event_buttons()
         self._configure_event_box()
 
-    def _make_header(self):
+    def crear_header(self):
         """ Crea encabezado """
-        header_text = f"{self.month}/{self.day}/{self.year}"
+        header_text = f"{self.month}/{self.dia}/{self.year}"
         self.header = Label(self, text=header_text, font="Courier 15", justify=CENTER, borderwidth=3, bd=3, bg="#D1D6D3")
-        self.header.grid(row=0, column=1, ipady=3)
+        self.header.grid(row=0, column=1, columnspan=2, ipady=3)
 
-    def _make_day_adjust_buttons(self):
+    def crear_botones_cambio_fecha(self):
         """ Crea botones para cambiar fecha """
-        Button(self, text=">", command=self.day_up, bg="#BDC1BE", height=1, width=4).grid(row=0, column=2)
+        Button(self, text=">", command=self.day_up, bg="#BDC1BE", height=1, width=4).grid(row=0, column=3)
         Button(self, text="<", command=self.day_down, bg="#BDC1BE", height=1, width=4).grid(row=0, column=0)
 
     def _make_event_listbox(self):
-        self.event_box = Listbox(self, bg="#BDC1BE", height=10, width=40, selectmode=SINGLE, font="Arvo 12", justify=CENTER, activestyle='none')
-        self.event_box.grid(row=1, column=0, columnspan=3, padx=10, pady=10, sticky=EW)
+        self.event_box = Listbox(self, bg="#BDC1BE", height=10, width=50, selectmode=SINGLE, font="Arvo 12", justify=CENTER, activestyle='none')
+        self.event_box.grid(row=1, column=0, columnspan=4, padx=10, pady=10, sticky=EW)
 
     def _make_event_buttons(self):
         """ Crea botones de interaccion  """
@@ -53,19 +54,21 @@ class DayTopWindow(Toplevel):
         self.remove_img = utl.leer_imagen('./imagenes/eliminar2.png', (50, 50))
         self.change_img = utl.leer_imagen('./imagenes/next.png', (50, 50))
 
-        Button(self, text="Agregar cita", bg="#D1D6D3", bd= 2, borderwidth= 2, command=self.agregar_cita).grid(row=2, column=0)
-        Button(self, text="Eliminar Cita", bg="#D1D6D3", bd= 2, borderwidth= 2, command=self.remove_event).grid(row=2, column=1)
-        Button(self, text="Editar Cita", bg="#D1D6D3", bd= 2, borderwidth= 2, command=self.change_event).grid(row=2, column=2)
+        Button(self, text="Agregar cita", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.agregar_cita).grid(row=2, column=0)
+        Button(self, text="Eliminar Cita", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.remove_event).grid(row=2, column=1)
+        Button(self, text="Editar Cita", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.change_event).grid(row=2, column=2)
+        Button(self, text="Salir", bg="orange", bd= 2, borderwidth= 2, width=10, command=self.destroy).grid(row=2, column=3)
+
 
     def _configure_header(self):
         """ Actualiza el header de la fecha """
-        header_text = f"{self.month}/{self.day}/{self.year}"
+        header_text = f"{self.month}/{self.dia}/{self.year}"
         self.header.configure(text=header_text)
 
     def _configure_event_box(self):
         """ Carga la lista con citas del dia """
         self.event_box.delete(0, END)
-        query = {"year": self.year, "month": self.month, "day": self.day}
+        query = {"year": self.year, "month": self.month, "day": self.dia}
         event_data = EventController.find_by_elements(query)
         list_data = [
             f"{ev.time_hours}:{ev.time_minutes} - {ev.title} - {ev.category} [{ev.id}]" for ev in event_data]
@@ -79,9 +82,9 @@ class DayTopWindow(Toplevel):
     def day_up(self):
         """ AVANZAR 1 DIA """
         num_of_days = DateHandler().days_in_month(self.month, self.year)
-        self.day += 1
-        if self.day > num_of_days:
-            self.day = 1
+        self.dia += 1
+        if self.dia > num_of_days:
+            self.dia = 1
             self.month += 1
             if self.month > 12:
                 self.month = 1
@@ -97,12 +100,12 @@ class DayTopWindow(Toplevel):
 
     def day_down(self):
         """ RETROCEDER 1 DIA """
-        self.day -= 1
-        if self.day < 1:
+        self.dia -= 1
+        if self.dia < 1:
             self.month -= 1
             if self.month < 1:
                 self.year -= 1
-            self.day = DateHandler().days_in_month(self.month, self.year)
+            self.dia = DateHandler().days_in_month(self.month, self.year)
         self._configure_header()
         self.event_box.destroy()
         self._make_event_listbox()
@@ -117,7 +120,7 @@ class DayTopWindow(Toplevel):
         if not self.extension:
             self.confirmation.destroy() if self.confirmation else None
             self.extension = True
-            self.extension = TKAddEventExtension(self, self.day, self.month, self.year, self._configure_event_box)
+            self.extension = NuevaCita(self, self.dia, self.month, self.year, self._configure_event_box)
 
     def remove_event(self):
         if not self.extension:

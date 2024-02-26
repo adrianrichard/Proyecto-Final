@@ -5,9 +5,7 @@ from tkinter import *
 from events.eventdbcontroller import EventController
 from datehandler.datehandler import DateHandler as dH
 from tkconfiguration.eventcolor import EventColor
-from tkwidgetclasses.hover_button import HoverButton
 from toplevels.daytoplevel import DayTopWindow
-from tkwindowextensions.tk_legend import TKLegend
 
 from pathlib import Path
 
@@ -20,14 +18,13 @@ class TKCalendar():
     def __init__(self):
         super().__init__()
 
-        self.date_buttons = []
+        self.botones_fecha = []
         self.toplevel = None
-        self.legend = None
-        self.header = None
+        self.encabezado = None
 
-        self.year = datetime.now().year  # Devuelve entero de 4-digit (year)
-        self.month = datetime.now().month  # Devuelve entero(month)
-        self.dates = []
+        self.anio = datetime.now().year  # Devuelve entero de 4-digit (anio)
+        self.mes = datetime.now().month  # Devuelve entero(mes)
+        self.fechas = []
 
         """ Clases soporte """
         self.dh = dH()
@@ -39,87 +36,85 @@ class TKCalendar():
         file_location = script_location / 'chevron_down.png'
         self.down_chevron = PhotoImage(file_location.open())
         
-    def _make_header(self, frame):
+    def crear_encabezado(self, frame):
         """ Crea el encabezado """        
-        header_text = f"{self.dh.month_num_to_string(self.month)} {self.year}"
-        self.header = Label(frame, text=header_text, font="Arvo 15", justify=CENTER)
-        self.header.grid(row=0, column=0, columnspan=7, sticky=EW, ipady=10)
+        encabezado_texto = f"{self.dh.month_num_to_string(self.mes)} {self.anio}"
+        self.encabezado = Label(frame, text=encabezado_texto, font="Arvo 15", justify=CENTER)
+        self.encabezado.grid(row=0, column=0, columnspan=7, sticky=EW, ipady=10)
 
-        day_list = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado", "Domingo"]
-        for i, j in enumerate(day_list):
-            Label(frame, text=day_list[i], bd=1, relief=SOLID).grid(row=1, column=i, sticky=NSEW, ipady=10)
+        dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado", "Domingo"]
+        for i, j in enumerate(dias):
+            Label(frame, text=dias[i], bd=1, relief=SOLID).grid(row=1, column=i, sticky=NSEW, ipady=10)
 
-    def _make_month_adjust_buttons(self, frame):
-        """ Crea los botones para cambiar el mes """
-        Button(frame, text="<", command=self.month_down, bg="#808080", height=2, width=8).grid(row=0, column=1)
-        Button(frame, text=">", command=self.month_up, bg="#808080", height=2, width=8).grid(row=0, column=5)        
+        Button(frame, text="<", command=self.mes_anterior, bg="#808080", height=2, width=8).grid(row=0, column=1)
+        Button(frame, text=">", command=self.mes_siguiente, bg="#808080", height=2, width=8).grid(row=0, column=5)        
 
-    def _make_day_buttons(self, frame):
-        """ Crea botones de fechas """
+    def crear_botones_fechas(self, frame):
+        """ Crea botones de fechas mes actual """
         coords = [(i, j) for i in range(2, 8) for j in range(0, 7)]
         for coord in coords:
-            btn = HoverButton(frame, bg="gray", relief=SUNKEN, bd=2, height=4, width=10)
+            btn = Button(frame, bg="gray", relief=SUNKEN, bd=2, height=4, width=10)
             btn.grid(row=coord[0], column=coord[1], sticky=NSEW)
-            self.date_buttons.append(btn)
+            self.botones_fecha.append(btn)
     
-    def _configure_header(self):
+    def actualizar_encabezado(self):
         """ Actualiza el encabezado del mes """
-        self.header.configure(text=f"{self.dh.month_num_to_string(self.month)} {self.year}")
+        self.encabezado.configure(text=f"{self.dh.month_num_to_string(self.mes)} {self.anio}")
 
-    def _configure_day_buttons(self):
+    def actualizar_botones_fechas(self):
         """ Set button text to date numbers """
-        self.dates = self.dh.date_list(self.year, self.month)  # Devuelve 35 dias (5 semanas)
-        self.dates.extend([0 for _ in range(42 - len(self.dates))])  # agrega ceros en las fechas porque son 42 botones de fecha
+        self.fechas = self.dh.date_list(self.anio, self.mes)  # Devuelve 35 dias (5 semanas)
+        self.fechas.extend([0 for _ in range(42 - len(self.fechas))])  # agrega ceros en las fechas porque son 42 botones de fecha
 
-        for i, j in enumerate(self.dates):  # Configure el texto del boton para mostrar la fecha
+        for i, j in enumerate(self.fechas):  # Configure el texto del boton para mostrar la fecha
             if j == 0:
-                self.date_buttons[i].configure(text="", state=DISABLED, bg="#808080")
+                self.botones_fecha[i].configure(text="", state=DISABLED, bg="#808080")
             else:
-                self.date_buttons[i].configure(text=j, command=partial(self.day_info, j), bg="white", state=NORMAL)
+                self.botones_fecha[i].configure(text=j, command=partial(self.info_dia, j), bg="white", state=NORMAL)
             #Marca la fecha actual
             if j == datetime.today().day \
-                    and self.month == datetime.today().month \
-                    and self.year == datetime.today().year:
-                self.date_buttons[i].configure(bg="#D9FFE3")
+                    and self.mes == datetime.today().month \
+                    and self.anio == datetime.today().year:
+                self.botones_fecha[i].configure(bg="orange")
 
     def _event_color_buttons(self):
-        for button in self.date_buttons:
+        for button in self.botones_fecha:
             if button["text"] != 0:
-                query = {"year": self.year, "month": self.month, "day": button["text"]}
+                query = {"year": self.anio, "month": self.mes, "day": button["text"]}
                 date_events = EventController.find_by_elements(query)
                 if date_events:
                     categories = [event.category for event in date_events]
                     EventColor().colorize(button, categories)
 
-    def _configure_rows_columns(self, frame):
+    def configurar_filas_columnas(self, frame):
         """ Configura filas y columnas para expandandirlas al tamaño de la ventana """
         [frame.rowconfigure(i, weight=1) for i in range(frame.grid_size()[1])]
         [frame.columnconfigure(i, weight=1) for i in range(frame.grid_size()[0])]
 
-    def month_up(self):
+    def mes_siguiente(self):
         """ Aumenta el mes y reconfigura la interface del calendario """
-        self.month += 1
-        if self.month == 13:
-            self.month = 1
-            self.year += 1
-        self._configure_day_buttons()
+        self.mes += 1
+        if self.mes == 13:
+            self.mes = 1
+            self.anio += 1
+        self.actualizar_botones_fechas()
         self._event_color_buttons()
-        self._configure_header()
+        self.actualizar_encabezado()
 
-    def month_down(self):
+    def mes_anterior(self):
         """ Disminuye el mes y reconfigura la interface del calendario """
-        self.month -= 1
-        if self.month == 0:
-            self.month = 12
-            self.year -= 1
-        self._configure_day_buttons()
+        self.mes -= 1
+        if self.mes == 0:
+            self.mes = 12
+            self.anio -= 1
+        self.actualizar_botones_fechas()
         self._event_color_buttons()
-        self._configure_header()
+        self.actualizar_encabezado()
 
-    def day_info(self, day_num):
+    def info_dia(self, dia):
         """ Abre una ventana para guardar la cita """
         try:
             self.toplevel.destroy()
-            self.toplevel = DayTopWindow(day_num, self.month, self.year)
+            self.toplevel = DayTopWindow(dia, self.mes, self.anio)
         except AttributeError:
-            self.toplevel = DayTopWindow(day_num, self.month, self.year)
+            self.toplevel = DayTopWindow(dia, self.mes, self.anio)

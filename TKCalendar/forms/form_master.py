@@ -55,12 +55,11 @@ class MasterPanel:
         self.paginas.select([self.frame_calendario])
         
         Tcal = TKCalendar()
-        Tcal._make_header(self.frame_calendario)
-        Tcal._make_day_buttons(self.frame_calendario)
-        Tcal._make_month_adjust_buttons(self.frame_calendario)
-        Tcal._configure_day_buttons()
+        Tcal.crear_encabezado(self.frame_calendario)
+        Tcal.crear_botones_fechas(self.frame_calendario)
+        Tcal.actualizar_botones_fechas()
         Tcal._event_color_buttons()
-        Tcal._configure_rows_columns(self.frame_calendario)
+        Tcal.configurar_filas_columnas(self.frame_calendario)
 
     def pantalla_historia(self):
         self.paginas.select([self.historia])

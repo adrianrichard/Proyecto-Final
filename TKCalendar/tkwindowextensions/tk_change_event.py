@@ -1,9 +1,8 @@
-from tkinter import Label, Tk, Toplevel, E, S, Frame, NSEW, PhotoImage, Button, CENTER, FLAT, END
+from tkinter import *
 from tkinter.ttk import Combobox, Style
 from events.events import Event
 from events.eventdbcontroller import EventController
-from tkwidgetclasses.number_only_combobox import NumberOnlyCombobox
-from tkwidgetclasses.textfilled_entry import TextFilledEntry
+#from tkwidgetclasses.textfilled_entry import TextFilledEntry
 
 class TKChangeEvent:
    
@@ -20,27 +19,28 @@ class TKChangeEvent:
 
         self._create_main_frame()
         self._make_header()
-        self._make_title_entry()
+        self._make_name_entry()
         self._make_time_widgets()
         self._make_category_combobox()
         self._make_confirm_deny_buttons()
         self._get_event_data()
         self._configure_time()
-        self._configure_title()
+        self._configure_name()
         self._configure_category()
+        self._configure_rows_cols()
 
     def _create_main_frame(self):
         self.border_frame = Frame(self.root, bg=self.root["bg"])
-        self.border_frame.grid(row=self.grid_row_start, column=0, columnspan=3, sticky=NSEW)
+        self.border_frame.grid(row=self.grid_row_start, column=0, columnspan=self.column_count, sticky=NSEW)
         self.main_frame = Frame(self.root, bg="#BDC1BE")
-        self.main_frame.grid(row=self.grid_row_start, column=0, columnspan=3, sticky=NSEW, padx=10, pady=10)
+        self.main_frame.grid(row=self.grid_row_start, column=0, columnspan=self.column_count, sticky=NSEW, padx=10, pady=10)
 
     def _make_header(self):
-        Label(self.main_frame, text="MODIFICAR CITA", font="Courier 18 underline", bg="#BDC1BE").grid(row=0, column=0, columnspan=2, pady=5, sticky=S)
+        Label(self.main_frame, text="MODIFICAR CITA", font="Courier 12 underline", bg="#BDC1BE").grid(pady=5)
 
-    def _make_title_entry(self):
-        self.title_entry = TextFilledEntry(self.main_frame, "Title", justify=CENTER)
-        self.title_entry.grid(pady=8)
+    def _make_name_entry(self):
+        self.name_entry = Entry(self.main_frame, justify=CENTER)
+        self.name_entry.grid(pady=8)
 
     def _make_time_widgets(self):
         time_frame = Frame(self.main_frame)
@@ -48,13 +48,13 @@ class TKChangeEvent:
 
         hour_nums = [ 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
 
-        self.hour_selector = Combobox(time_frame, values=hour_nums, justify=CENTER, background="white")
+        self.hour_selector = Combobox(time_frame, values=hour_nums, state="readonly", justify=CENTER, background="white")
         self.hour_selector.set("Hora")
         self.hour_selector.grid(row=0, column=0)
 
         minute_nums = ["00"]
         minute_nums.extend([str(num * 10) for num in range(1, 6)])
-        self.minute_selector =Combobox(time_frame, values=minute_nums, justify=CENTER, background="white")
+        self.minute_selector =Combobox(time_frame, values=minute_nums, state="readonly", justify=CENTER, background="white")
         self.minute_selector.set("00")
         self.minute_selector.grid(row=0, column=1, sticky=E)
 
@@ -63,7 +63,7 @@ class TKChangeEvent:
 
     def _make_category_combobox(self):
         categories = ["Consulta", "Extracción", "Tratamiento de conducto", "Reparación"]
-        self.category_selector = Combobox(self.main_frame, values=categories, justify=CENTER, background="white")
+        self.category_selector = Combobox(self.main_frame, values=categories, state="readonly", justify=CENTER, background="white")
         self.category_selector.grid(pady=8)
         self.category_selector.set("Categoria")
         self.category_selector.bind("<<ComboboxSelected>>", lambda e: self.main_frame.focus())
@@ -83,9 +83,9 @@ class TKChangeEvent:
     def _get_event_data(self):
         self.event = EventController.find_by_id(self.id)
 
-    def _configure_title(self):
-        self.title_entry.delete(0, END)
-        self.title_entry.insert(0, self.event.title)
+    def _configure_name(self):
+        self.name_entry.delete(0, END)
+        self.name_entry.insert(0, self.event.title)
 
     def _configure_time(self):
         self.hour_selector.set(self.event.time_hours)
@@ -102,7 +102,7 @@ class TKChangeEvent:
 
     def _change_event(self):
         ev_dict = {
-            "title": self.title_entry.get(),
+            "title": self.name_entry.get(),
             "time_hours": self.hour_selector.get(),
             "time_minutes": self.minute_selector.get(),
             "category": self.category_selector.get()
@@ -111,13 +111,13 @@ class TKChangeEvent:
         style = Style()
         if ev_dict["time_hours"] == "Hour" or ev_dict["time_minutes"] == "Minutes" or ev_dict["title"] == "Title":
             style.configure("TCombobox", fieldbackground="red", background="white")
-            self.title_entry.configure(bg="red")
+            self.name_entry.configure(bg="red")
             self.warning = Label(self.main_frame, text="Complete la información", bg="#BDC1BE", fg="red", font="Helvetica 13")
             self.warning.grid(row=6, column=0, pady=10)
             return
 
         """ Reconfigure red zones if triggered """
-        self.title_entry.configure(bg="white")
+        self.name_entry.configure(bg="white")
         style.configure("TCombobox", fieldbackground="white", background="white")
 
         event = Event.create(ev_dict)
@@ -128,7 +128,7 @@ class TKChangeEvent:
         else:
             self.root.confirmation = Label(self.root, text="Ocurrio un error", font="Courier 15")
 
-        self.root.confirmation.grid(row=self.grid_row_start+1, column=1, pady=10)
+        self.root.confirmation.grid(row=self.grid_row_start+1, column=0, columnspan=4, pady=10)
         self.root.extension = None
         self.callback()
 

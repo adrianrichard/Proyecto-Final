@@ -1,4 +1,4 @@
-from tkinter import Label, Tk, Toplevel, S, Frame, NSEW, PhotoImage, Button, GROOVE, FLAT
+from tkinter import *
 from events.eventdbcontroller import EventController
 
 class TKRemoveEvent:
@@ -15,27 +15,26 @@ class TKRemoveEvent:
         self.confirm = None
         self.deny = None
 
-        self._create_main_frame()
-        self._make_header()
-        self._get_event_data()
-        self._make_data_display()
-        self._make_confirm_deny_buttons()
-        self._configure_rows_cols()
+        self.crear_main_frame()
+        self.crear_header()
+        self.obtener_info_evento()
+        self.crear_data_display()
+        self.crear_botones()
+        self.configurar_filas_columnas()
 
-    def _create_main_frame(self):
+    def crear_main_frame(self):
         self.border_frame = Frame(self.root, bg=self.root["bg"])
         self.border_frame.grid(row=self.grid_row_start, column=0, columnspan=self.column_count, sticky=NSEW)
         self.main_frame = Frame(self.root, bg="#BDC1BE")
         self.main_frame.grid(row=self.grid_row_start, column=0, columnspan=self.column_count, sticky=NSEW, padx=10, pady=10)
 
-    def _make_header(self):
+    def crear_header(self):
         Label(self.main_frame, text="ELIMINAR CITA", font="Courier 12 underline", bg="#BDC1BE").grid(row=0, column=1, pady=5, sticky=S)
 
-    def _get_event_data(self):
+    def obtener_info_evento(self):
         self.event = EventController.find_by_id(self.id)
 
-    def _make_data_display(self):
-        """ Displays event data in an extension"""
+    def crear_data_display(self):
         event_data_frame = Frame(self.main_frame, bg="#D1D6D3", relief=GROOVE)
         event_data_frame.grid(row=1, column=0, columnspan=3)
         
@@ -47,18 +46,18 @@ class TKRemoveEvent:
 
         Label(event_data_frame, bg="#D1D6D3", text=event_data, font="Helvetica 12").grid(row=0, column=0, columnspan=3, ipady=20, ipadx=20)
 
-    def _make_confirm_deny_buttons(self):
+    def crear_botones(self):
         self.confirm_img = PhotoImage(file="img/confirm.png")
         self.add = Button(self.main_frame, image=self.confirm_img, command=self._remove_event, relief=FLAT, bg="#BDC1BE")
-        self.add.image = self.confirm_img
+        #self.add.image = self.confirm_img
         self.add.grid(row=2, column=0)
 
         self.deny_img = PhotoImage(file="img/deny.png")
         self.deny = Button(self.main_frame, image=self.deny_img, command=self._cancel_event, relief=FLAT, bg="#BDC1BE")
-        self.deny.image = self.deny_img
+        #self.deny.image = self.deny_img
         self.deny.grid(row=2, column=2)
 
-    def _configure_rows_cols(self):
+    def configurar_filas_columnas(self):
         """ Configure rows to 1:1 weight """
         [self.main_frame.rowconfigure(i, weight=1) for i in range(self.main_frame.grid_size()[1])]
         [self.main_frame.columnconfigure(i, weight=1) for i in range(self.main_frame.grid_size()[0])]
@@ -74,10 +73,10 @@ class TKRemoveEvent:
         self.main_frame.destroy()
 
         if EventController.remove_doc(self.id):
-            self.root.confirmation = Label(self.root, text="¡Cita eleminada!", font="Courier 10")
+            self.root.confirmation = Label(self.root, text="¡Cita eleminada!", font="Courier 15")
         else:
-            self.root.confirmation = Label(self.root, text="Ocurrió un error", font="Courier 10")
+            self.root.confirmation = Label(self.root, text="Ocurrió un error", font="Courier 15")
 
-        self.root.confirmation.grid(row=6, column=1, pady=10)
+        self.root.confirmation.grid(row=6, column=0, columnspan=4, pady=10)
         self.root.extension = None
         self.callback()

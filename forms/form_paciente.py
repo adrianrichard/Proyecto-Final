@@ -30,7 +30,6 @@ class Paciente:
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
         datos=self.nombre_paciente.get(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get()
-        #print(datos)
         try:
             self.miCursor.execute("INSERT INTO Paciente VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
             self.miConexion.commit()
