@@ -58,7 +58,7 @@ class MasterPanel:
         Tcal.crear_encabezado(self.frame_calendario)
         Tcal.crear_botones_fechas(self.frame_calendario)
         Tcal.actualizar_botones_fechas()
-        Tcal._event_color_buttons()
+        Tcal.event_color_buttons()
         Tcal.configurar_filas_columnas(self.frame_calendario)
 
     def pantalla_historia(self):

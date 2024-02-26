@@ -39,12 +39,12 @@ class TKCalendar():
     def crear_encabezado(self, frame):
         """ Crea el encabezado """        
         encabezado_texto = f"{self.dh.month_num_to_string(self.mes)} {self.anio}"
-        self.encabezado = Label(frame, text=encabezado_texto, font="Arvo 15", justify=CENTER)
+        self.encabezado = Label(frame, text=encabezado_texto, font="Arvo 20", justify=CENTER)
         self.encabezado.grid(row=0, column=0, columnspan=7, sticky=EW, ipady=10)
 
         dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado", "Domingo"]
         for i, j in enumerate(dias):
-            Label(frame, text=dias[i], bd=1, relief=SOLID).grid(row=1, column=i, sticky=NSEW, ipady=10)
+            Label(frame, text=dias[i], bd=1, font="Arvo 15", relief=SOLID).grid(row=1, column=i, sticky=NSEW, ipady=10)
 
         Button(frame, text="<", command=self.mes_anterior, bg="#808080", height=2, width=8).grid(row=0, column=1)
         Button(frame, text=">", command=self.mes_siguiente, bg="#808080", height=2, width=8).grid(row=0, column=5)        
@@ -77,14 +77,14 @@ class TKCalendar():
                     and self.anio == datetime.today().year:
                 self.botones_fecha[i].configure(bg="orange")
 
-    def _event_color_buttons(self):
+    def event_color_buttons(self):
         for button in self.botones_fecha:
             if button["text"] != 0:
                 query = {"year": self.anio, "month": self.mes, "day": button["text"]}
                 date_events = EventController.find_by_elements(query)
                 if date_events:
-                    categories = [event.category for event in date_events]
-                    EventColor().colorize(button, categories)
+                    prestaciones = [event.category for event in date_events]
+                    EventColor().colorize(button, prestaciones)
 
     def configurar_filas_columnas(self, frame):
         """ Configura filas y columnas para expandandirlas al tamaño de la ventana """
@@ -98,7 +98,7 @@ class TKCalendar():
             self.mes = 1
             self.anio += 1
         self.actualizar_botones_fechas()
-        self._event_color_buttons()
+        self.event_color_buttons()
         self.actualizar_encabezado()
 
     def mes_anterior(self):
@@ -108,7 +108,7 @@ class TKCalendar():
             self.mes = 12
             self.anio -= 1
         self.actualizar_botones_fechas()
-        self._event_color_buttons()
+        self.event_color_buttons()
         self.actualizar_encabezado()
 
     def info_dia(self, dia):

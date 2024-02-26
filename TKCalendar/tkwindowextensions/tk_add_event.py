@@ -4,7 +4,7 @@ from tkinter.ttk import Combobox, Style
 from events.events import Event
 from events.eventdbcontroller import EventController
 
-class NuevaCita:
+class TurnoNuevo:
 
     def __init__(self, ventana: Tk or Toplevel, dia: int, mes: int, anio: int, callback: callable = None):
 
@@ -22,7 +22,7 @@ class NuevaCita:
         self.crear_nombre_entry()
         self.crear_tiempo_widgets()
         self.crear_prestacion_combobox()
-        self._make_add_cancel_buttons()
+        self.crear_botones()
 
     def crear_main_frame(self):
         self.border_frame = Frame(self.root, bg=self.root["bg"])
@@ -31,7 +31,7 @@ class NuevaCita:
         self.main_frame.grid(row=self.grid_row_start, column=0, columnspan=self.column_count, sticky=NSEW, padx=10, pady=10)
 
     def crear_header(self):
-        Label(self.main_frame, text="AGREGAR CITA", font="Courier 12 underline", bg="#BDC1BE").pack(pady=8)
+        Label(self.main_frame, text="AGREGAR TURNO", font="Courier 12 underline", bg="#BDC1BE").pack(pady=8)
 
     def crear_nombre_entry(self):
         self.nombre_entry = Entry(self.main_frame, justify=CENTER)
@@ -63,19 +63,17 @@ class NuevaCita:
         self.selector_prestacion.set("Prestación")
         self.selector_prestacion.bind("<<ComboboxSelected>>", lambda e: self.main_frame.focus())
 
-    def _make_add_cancel_buttons(self):
+    def crear_botones(self):
         button_frame = Frame(self.main_frame, bg="#BDC1BE")
         button_frame.pack(pady=10)
 
         self.confirm_img = PhotoImage(file="img/confirm.png")
-        self.agregar = Button(button_frame, image=self.confirm_img, command=self._add_event, relief=FLAT, bg="#BDC1BE")
-        self.agregar.grid(row=0, column=0)
+        Button(button_frame, image=self.confirm_img, command=self.agregar_turno, relief=FLAT, bg="#BDC1BE").grid(row=0, column=0)
 
         self.cancelar_img = PhotoImage(file="img/deny.png")
-        self.cancelar = Button(button_frame, image=self.cancelar_img, command=self._cancel_event, relief=FLAT, bg="#BDC1BE")
-        self.cancelar.grid(row=0, column=1)
+        Button(button_frame, image=self.cancelar_img, command=self.cancelar, relief=FLAT, bg="#BDC1BE").grid(row=0, column=1)
 
-    def _add_event(self):
+    def agregar_turno(self):
         
         ev_dict = {
             "day": self.dia,
@@ -88,12 +86,10 @@ class NuevaCita:
         }
 
         style = Style()
-        if ev_dict["time_hours"] == "Hora" or ev_dict["time_minutes"] == "00" or ev_dict["title"] == "Paciente":
+        if ev_dict["time_hours"] == "Hora" or ev_dict["title"] == "Paciente":
             style.configure("TCombobox", fieldbackground="red", background="white")
             self.nombre_entry.configure(bg="red")
             messagebox.showinfo(message="Completar campos", title="Advertencia")
-            #self.warning = Label(self.main_frame, text="Completar campos", bg="#BDC1BE", fg="red", font="Helvetica 13")
-            #self.warning.grid(row=6, column=0, pady=10)
             return
 
         """ Reconfigure red zones if triggered """
@@ -108,7 +104,7 @@ class NuevaCita:
             self.root.confirmation.destroy()
 
         if EventController.insert(e):
-            self.root.confirmation = Label(self.root, text="¡Cita guardada!", font="Courier 15")
+            self.root.confirmation = Label(self.root, text="¡Turno guardado!", font="Courier 15")
         else:
             self.root.confirmation = Label(self.root, text="Ocurrió un error", font="Courier 15")
 
@@ -116,7 +112,7 @@ class NuevaCita:
         self.root.extension = None
         self.callback()
 
-    def _cancel_event(self):
+    def cancelar(self):
         self.main_frame.destroy()
         self.root.extension = None
         self.callback()
