@@ -30,11 +30,11 @@ class TKCalendar():
         self.dh = dH()
 
         #self.up_chevron_path=script_location / 'chevron_up.png'
-        file_location = script_location / 'chevron_up.png'
+        #file_location = script_location / 'chevron_up.png'
         #file = file_location.open()
-        self.up_chevron = PhotoImage(file_location.open())
-        file_location = script_location / 'chevron_down.png'
-        self.down_chevron = PhotoImage(file_location.open())
+        #self.up_chevron = PhotoImage(file_location.open())
+        #file_location = script_location / 'chevron_down.png'
+        #self.down_chevron = PhotoImage(file_location.open())
         
     def crear_encabezado(self, frame):
         """ Crea el encabezado """        

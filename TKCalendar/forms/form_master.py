@@ -7,6 +7,7 @@ from tkinter import  StringVar, Frame
 from forms.form_paciente import Paciente
 from forms.form_paciente_editar import Paciente_update
 from tkcalendar import TKCalendar
+from visorimagenes import ImageGalleryApp
 
 import sqlite3
 
@@ -67,7 +68,10 @@ class MasterPanel:
         self.historia.columnconfigure(1, weight= 1)
     
     def pantalla_galeria(self):
-        self.paginas.select([self.frame_galeria])        
+        self.paginas.select([self.frame_galeria])
+        Gallery=ImageGalleryApp(self.frame_galeria)
+        Gallery.configurar_filas_columnas(self.frame_galeria)
+        
 
     def pantalla_info(self):
         self.paginas.select([self.frame_info])
@@ -278,7 +282,8 @@ class MasterPanel:
         Label(self.historia, text = 'HISTORIA CLINICA', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
         
 		######################## GALERIA #################
-        Label(self.frame_galeria, text = 'GALERIA', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 24,'bold')).grid(columnspan= 4,  row= 0)
+        Label(self.frame_galeria, text = 'GALERIA', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 24,'bold')).grid(column= 0,  row= 0)
+        
         		
 		######################## INFO #################
         self.name = Label(self.frame_info, text= 'DENTALMATIC', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 30,'bold')).pack(expand= 1)

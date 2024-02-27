@@ -5,33 +5,38 @@ import tkinter.filedialog as tk_file
 import os
 root = tk.Tk()
 
-root.geometry('580x550')
+root.geometry('800x550')
 
 root.title('Tkinter Hub')
 
 def display_image(index):
     image_display_lb.config(image=images_list[index][1])
 
-#def popup_menu(e):
-    #menu_bar.tk_popup( x=e.x_root, y=e.y_root)
-
 images_list=[]
 images_vars=[]
 
 def load_images():
     
-    try:
-        dir_path = tk_file.askdirectory()
-        images_files = os.listdir(dir_path)
-        for r in range(0, len(images_files)):
-            images_list.append([
-                ImageTk.PhotoImage(Image.open(dir_path + '/' + images_files[r]).resize((50, 50), Image.Resampling.LANCZOS)),
-                ImageTk.PhotoImage(Image.open(dir_path + '/'+ images_files[r]).resize((480,360), Image.Resampling.LANCZOS))
+    dir_path = tk_file.askdirectory()
+    images_files = os.listdir(dir_path)
+    for r in range(0, len(images_files)):
+        image = Image.open(dir_path + '/' + images_files[r])
+        ancho, alto = image.size
+        ratio = ancho / alto
+        if ratio > 1:
+            new_altura = 300
+            new_ancho = int(ratio * new_altura)
+        elif ratio <= 1:
+            new_ancho = 400
+            new_altura = int(ratio * new_ancho)
+                            
+        image_resize = image.resize((new_ancho, new_altura))
 
+        images_list.append([
+            ImageTk.PhotoImage(Image.open(dir_path + '/' + images_files[r]).resize((50, 50), Image.Resampling.LANCZOS)),
+            ImageTk.PhotoImage(image_resize, Image.Resampling.LANCZOS)
             ])
-            images_vars.append(f'imag_{r}')
-    except:
-        tk.messagebox.showwarning("Advertencia", "Este es un mensaje de advertencia.")
+        images_vars.append(f'imag_{r}')
 
     for n in range(len(images_vars)):
         globals()[images_vars[n]] = tk.Button(slider, image=images_list[n][0], bd=0, command= lambda n=n: display_image(n))
@@ -39,12 +44,6 @@ def load_images():
 
 menu_btn = tk.Button(root, text= 'Open Folder', bd=0, font=('Bold', 15), command=load_images)
 menu_btn.pack( side=tk.TOP, anchor=tk.W, padx=20, pady=20)
-#menu_btn.bind('<Button>', popup_menu)
-
-
-#menu_bar = tk.Menu(root, tearoff=False)
-
-#menu_bar.add_command(label='Open Folder')
 
 image_display_lb = tk.Label(root)
 image_display_lb.pack(anchor=tk.CENTER)
