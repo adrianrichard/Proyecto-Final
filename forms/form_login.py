@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.font import BOLD
 import util.generic as utl
-from forms.form_master import MasterPanel
+from forms.form_administrador import MasterPanel
 from tkinter.messagebox import showinfo,showerror
 from bd.conexion import Conexion
 
@@ -16,10 +16,17 @@ class Login:
         if(db.comprobar_bd()):
             db.conectar()
             if db.buscar_usuario(username, password):
-                showinfo(title= "Ingreso", message= "Ingreso autorizado")
-                db.cerrar_bd()
-                self.frame_login.destroy()
-                MasterPanel()
+                #showinfo(title= "Ingreso", message= "Ingreso autorizado")
+                tipo_user =db.determinar_usuario(username, password)
+                print(tipo_user[0][0])
+                if tipo_user[0][0]== 'administrador':
+                    db.cerrar_bd()
+                    self.frame_login.destroy()
+                    MasterPanel()
+                    
+                if tipo_user[0][0] == 'odontologo':
+                    showinfo(title= "Ingreso", message= "odontologo")
+                    
             else:
                 showerror(title= "Advertencia", message= "Usuario o contraseña incorrectos")
             db.cerrar_bd()

@@ -1,8 +1,13 @@
 from PIL import ImageTk, Image
+path_relativo=""
 
-def leer_imagen( path, size): 
-        return ImageTk.PhotoImage(Image.open(path).resize(size, Image.Resampling.LANCZOS))  
-
+def obtener_path(path):
+        path_relativo=path
+        return path_relativo
+        
+def leer_imagen(path, size):
+        path_absoluto=path_relativo+path
+        return ImageTk.PhotoImage(Image.open(path_absoluto).resize(size, Image.Resampling.LANCZOS))
 
 def centrar_ventana(ventana,aplicacion_ancho,aplicacion_largo):    
     pantalla_ancho = ventana.winfo_screenwidth()
