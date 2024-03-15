@@ -7,7 +7,8 @@ images_list=[]
 images_vars=[]  
 class ImageGalleryApp:
     def __init__(self, root):
-        
+        canvas = tk.Canvas(root, height=50, width=500)
+        canvas.grid(row=3, column=0, columnspan=2, pady=0)
         def display_image(index):
             image_display_lb.config(image=images_list[index][1], height=360)
 
@@ -49,17 +50,18 @@ class ImageGalleryApp:
             for n in range(len(images_vars)):
                 globals()[images_vars[n]] = tk.Button(slider, image=images_list[n][0], bd=0, command= lambda n=n: display_image(n))
                 globals()[images_vars[n]].grid(row=2, column=n)
+            n =len(images_list)+1
+            canvas.config(scrollregion=(0,0,n*50,500))
 
         menu_btn = tk.Button(root, text= 'Abrir carpeta', font=('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command=load_images)
         menu_btn.grid( row=0, column=1)        
         image_display_lb = tk.Label(root, height=20, bg='gray90')
         image_display_lb.grid(row=1, column=0, columnspan=2, pady=0)
-        canvas = tk.Canvas(root, height=50, width=500)
-        canvas.grid(row=3, column=0, columnspan=2, pady=0)
-        #x_scroll_bar = tk.Scrollbar(root, orient=tk.HORIZONTAL)
-        #x_scroll_bar.grid(column = 0, row = 3, columnspan=2, sticky='ns')
-        #x_scroll_bar.config(borderwidth=2, command=canvas.xview)
-        #canvas.config(xscrollcommand=x_scroll_bar.set)
+        
+        x_scroll_bar = tk.Scrollbar(root, orient=tk.HORIZONTAL, width=20)
+        x_scroll_bar.grid(column = 0, row = 2, columnspan=2, sticky='ns')
+        x_scroll_bar.config(borderwidth=2, command=canvas.xview, width=20)        
+        canvas.config(xscrollcommand=x_scroll_bar.set)
         canvas.bind('<Configure>', lambda e: canvas.bbox('all'))
         slider = tk.Frame(canvas)
         canvas.create_window((0, 0), window=slider, anchor=tk.NW)
