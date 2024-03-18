@@ -9,7 +9,7 @@ from bd.conexion import Conexion
 fuente='Comic Sans MS'
 fuente2=utl.definir_fuente(20)
 color_fuente = 'black'
-color_fondo1 = '#1F704B'
+color_fondo1 = utl.definir_color_fondo()
 color_fondo2 = 'gray90'
 
 class Login:
@@ -59,7 +59,7 @@ class Login:
             logo =utl.leer_imagen("./imagenes/logo1.png", (250, 200))
             frame_logo = tk.Frame(self.frame_login, bd= 0, width= 300, relief= tk.SOLID, padx= 10, pady= 10, bg= color_fondo1)
             frame_logo.pack(side= "left", expand= tk.YES, fill= tk.BOTH)
-            label = tk.Label(frame_logo, image= logo, bg= '#1F704B').place(x= 0, y= 0, relwidth= 1, relheight= 1)
+            label = tk.Label(frame_logo, image= logo, bg= color_fondo1).place(x= 0, y= 0, relwidth= 1, relheight= 1)
         except:
             frame_logo = tk.Frame(self.frame_login, bd= 0, width= 300, relief= tk.SOLID, padx= 10, pady= 10, bg= color_fondo1)
             frame_logo.pack(side= "left", expand= tk.YES, fill= tk.BOTH)
@@ -83,13 +83,13 @@ class Login:
         self.usuario = ttk.Entry(frame_form_fill, font= (fuente, 14))
         self.usuario.pack(fill= tk.X, padx= 20, pady= 10)
 
-        etiqueta_password = tk.Label(frame_form_fill, text= "Contraseña", font= (fuente, 14), fg=color_fuente, bg=color_fondo2, anchor= "w")
+        etiqueta_password = tk.Label(frame_form_fill, text= "Contraseña", font= fuente2, fg=color_fuente, bg=color_fondo2, anchor= "w")
         etiqueta_password.pack(fill= tk.X, padx= 20, pady= 5)
         self.password = ttk.Entry(frame_form_fill, font= (fuente, 14))
         self.password.pack(fill= tk.X, padx= 20, pady= 10)
         self.password.config(show= "*")
 
-        inicio = tk.Button(frame_form_fill, text= "Ingresar", font= (fuente, 15, BOLD), bg=color_fondo1, bd=0, fg="white", command= self.verificar)
+        inicio = tk.Button(frame_form_fill, text= "Ingresar", font= fuente2, bg=color_fondo1, bd=0, fg="white", command= self.verificar)
         inicio.pack(fill= tk.X, padx= 20, pady= 20)
         inicio.bind("<Return>", (lambda event: self.verificar()))
 

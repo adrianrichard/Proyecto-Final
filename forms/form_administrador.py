@@ -12,7 +12,7 @@ from visorimagenes import ImageGalleryApp
 import sqlite3
 fuente= 'Comic Sans MS'
 color_fuente = 'black'
-color_fondo1 = '#1F704B'
+color_fondo1 = utl.definir_color_fondo()
 color_fondo2 = 'gray90'
 
 class MasterPanel:
@@ -29,15 +29,15 @@ class MasterPanel:
         self.dni_paciente =  StringVar()
         self.dato_paciente =  StringVar()
 
-        self.frame_inicio = Frame(self.ventana, bg= '#1F704B', width= 50, height= 45)
+        self.frame_inicio = Frame(self.ventana, bg= color_fondo1, width= 50, height= 45)
         self.frame_inicio.grid_propagate(0)
         self.frame_inicio.grid(column= 0, row= 0, sticky='nsew')
-        self.frame_menu = Frame(self.ventana, bg= '#1F704B', width= 50)
+        self.frame_menu = Frame(self.ventana, bg= color_fondo1, width= 50)
         self.frame_menu.grid_propagate(0)
         self.frame_menu.grid(column= 0, row= 1, sticky= 'nsew')
-        self.frame_top = Frame(self.ventana, bg= '#1F704B', height= 50)
+        self.frame_top = Frame(self.ventana, bg= color_fondo1, height= 50)
         self.frame_top.grid(column= 1, row= 0, sticky= 'nsew')
-        self.frame_raiz = Frame(self.ventana, bg= '#1F704B')
+        self.frame_raiz = Frame(self.ventana, bg= color_fondo1)
         self.frame_raiz.grid(column= 1, row= 1, sticky= 'nsew')
         self.ventana.columnconfigure(1, weight= 1)
         self.ventana.rowconfigure(1, weight= 1)
@@ -196,7 +196,6 @@ class MasterPanel:
         Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_info).grid(column=0, row=5, pady=20,padx=10)
         Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column=0, row=6, pady=20,padx=10)
 
-
         Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=1, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=2, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row= 3, pady= 20, padx= 2)
@@ -213,7 +212,6 @@ class MasterPanel:
 ##        estilo_paginas.map("TNotebook", background=[("selected", '#1F704B')])
 ##        estilo_paginas.map("TNotebook.Tab", background=[("selected", '#1F704B')], foreground=[("selected", '#1F704B')]);
 
-		#CREACCION DE LAS PAGINAS
         self.paginas = ttk.Notebook(self.frame_raiz, style= 'TNotebook')
         self.paginas.grid(column= 0, row= 0, sticky='nsew')
         self.frame_principal = Frame(self.paginas, bg='gray90') #color de fondo
@@ -252,11 +250,11 @@ class MasterPanel:
 
 		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()
-        estilo_tabla.configure("Treeview", font= (fuente, 10, 'bold'), foreground='black', background='white', rowheight=40)
-        estilo_tabla.map('Treeview', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
-        estilo_tabla.configure('Heading', background = color_fondo1, foreground='navy', padding= 3, font= (fuente, 10, 'bold'))
-        estilo_tabla.configure('Item', foreground = 'white', focuscolor ='white')
-        estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
+        estilo_tabla.configure("Treeview", font= (fuente, 10, 'bold'), foreground='black', rowheight=40)
+##        estilo_tabla.map('Treeview', background=[('selected', color_fondo1)], foreground=[('selected','white')] )
+        estilo_tabla.configure('Treeview.Heading', background='black', foreground=color_fondo1, padding= 3, font= (fuente, 10, 'bold'))
+##        estilo_tabla.configure('Item', foreground = 'red', focuscolor ='green')
+##        estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
 
 		#TABLA PACIENTE
         self.frame_tabla_paciente = Frame(self.frame_pacientes, bg='gray90')
