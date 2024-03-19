@@ -6,14 +6,14 @@ from tkinter import  StringVar, Frame
 #from bd.conexion import Conexion
 import sqlite3
 
-class Paciente:    
-    
+class Paciente:
+
     def conexionBBDD(self):
-        
+
         try:
             self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
-            
+
         except:
             self.miCursor.execute('''
                 CREATE TABLE Paciente (
@@ -25,7 +25,7 @@ class Paciente:
             self.miConexion.close()
 
             messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
-    
+
     def guardar(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
@@ -37,17 +37,17 @@ class Paciente:
             self.frame_paciente.destroy()
         except:
             messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
-    
-    def Salir(self): 
+
+    def Salir(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
         if answer:
             self.frame_paciente.destroy()
-                                                 
+
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)        
+        super().__init__(*args, **kwargs)
         self.frame_paciente= tk.Toplevel()
         self.frame_paciente.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
-        self.frame_paciente.focus_set() # Mantiene el foco cuando se abre la ventana.        
+        self.frame_paciente.focus_set() # Mantiene el foco cuando se abre la ventana.
 
         self.frame_paciente.title('DentalMatic')
         self.frame_paciente.geometry('800x300')
@@ -71,10 +71,10 @@ class Paciente:
         self.obrasocial_paciente =  StringVar()
         self.nrosocio_paciente =  StringVar()
         self.conexionBBDD()
-        
+
         self.titulo = Label(self.frame_top, text= 'Datos del paciente', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row=0, pady= 20, padx= 10)
         Button(self.frame_principal, text= 'Cerrar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.Salir).grid(column= 2, row=3, pady= 5, padx= 100)
-        
+
         #Entradas Y ETIQUETAS DATOS DEL PACIENTE
         Entry(self.frame_principal, textvariable=self.nombre_paciente, font= ('Comic Sans MS', 14)).grid(column=1, row=1, pady=5, padx=10)
         Entry(self.frame_principal, textvariable=self.apellido_paciente, font= ('Comic Sans MS', 14)).grid(column=1, row=2, pady=5, padx=10)
@@ -94,8 +94,8 @@ class Paciente:
         Label(self.frame_principal, text= 'Obra Social', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=7, pady=5, padx=2)
         Label(self.frame_principal, text= 'Nro de socio', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=8, pady=5, padx=2)
         Button(self.frame_principal, text= 'Guardar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.guardar).grid(column= 2, row=1, pady= 5, padx= 100)
-        
+
         self.frame_paciente.mainloop()
-        
+
 if __name__ == "__main__":
     Paciente()
