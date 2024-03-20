@@ -1,5 +1,5 @@
 from tkinter import *
-from events.eventdbcontroller import EventController
+from paginas.events.eventdbcontroller import EventController
 
 class TurnoEliminar:
    

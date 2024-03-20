@@ -1,10 +1,10 @@
 import util.generic as utl
 from tkinter import *
-from datehandler.datehandler import DateHandler
-from tkwindowextensions.tk_add_event import TurnoNuevo
-from tkwindowextensions.tk_remove_event import TurnoEliminar
-from tkwindowextensions.tk_change_event import TurnoModificar
-from events.eventdbcontroller import EventController
+from paginas.datehandler.datehandler import DateHandler
+from paginas.tkwindowextensions.tk_add_event import TurnoNuevo
+from paginas.tkwindowextensions.tk_remove_event import TurnoEliminar
+from paginas.tkwindowextensions.tk_change_event import TurnoModificar
+from paginas.events.eventdbcontroller import EventController
 from tkinter import Button
 
 class DayTopWindow(Toplevel):

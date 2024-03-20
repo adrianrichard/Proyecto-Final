@@ -6,7 +6,7 @@ from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Frame
 from forms.form_paciente import Paciente
 from forms.form_paciente_editar import Paciente_update
-from tkcalendar import TKCalendar
+from paginas.tkcalendar import TKCalendar
 
 import sqlite3
 fuente='Comic Sans MS'

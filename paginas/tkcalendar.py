@@ -2,10 +2,10 @@ from datetime import datetime
 from functools import partial
 from tkinter import *
 
-from events.eventdbcontroller import EventController
-from datehandler.datehandler import DateHandler as dH
-from tkconfiguration.eventcolor import EventColor
-from toplevels.daytoplevel import DayTopWindow
+from paginas.events.eventdbcontroller import EventController
+from paginas.datehandler.datehandler import DateHandler as dH
+from paginas.tkconfiguration.eventcolor import EventColor
+from paginas.toplevels.daytoplevel import DayTopWindow
 
 from pathlib import Path
 
