@@ -12,6 +12,10 @@ from pathlib import Path
 script_location = Path(__file__).absolute().parent
 #file_location = script_location / 'file.yaml'
 #file = file_location.open()
+fuente= 'Comic Sans MS'
+color_fuente = 'black'
+#color_fondo1 = utl.definir_color_fondo()
+color_fondo2 = 'gray90'
 
 class TKCalendar():
 
@@ -35,19 +39,19 @@ class TKCalendar():
         #self.up_chevron = PhotoImage(file_location.open())
         #file_location = script_location / 'chevron_down.png'
         #self.down_chevron = PhotoImage(file_location.open())
-        
+
     def crear_encabezado(self, frame):
-        """ Crea el encabezado """        
+        """ Crea el encabezado """
         encabezado_texto = f"{self.dh.month_num_to_string(self.mes)} {self.anio}"
-        self.encabezado = Label(frame, text=encabezado_texto, font="Arvo 20", justify=CENTER)
+        self.encabezado = Label(frame, text=encabezado_texto,  font= (fuente, 15), justify=CENTER)
         self.encabezado.grid(row=0, column=0, columnspan=7, sticky=EW, ipady=10)
 
         dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado", "Domingo"]
         for i, j in enumerate(dias):
-            Label(frame, text=dias[i], bd=1, font="Arvo 15", relief=SOLID).grid(row=1, column=i, sticky=NSEW, ipady=10)
+            Label(frame, text=dias[i], bd=1, font= (fuente, 15), relief=SOLID).grid(row=1, column=i, sticky=NSEW, ipady=10)
 
         Button(frame, text="<", command=self.mes_anterior, bg="#808080", height=2, width=8).grid(row=0, column=1)
-        Button(frame, text=">", command=self.mes_siguiente, bg="#808080", height=2, width=8).grid(row=0, column=5)        
+        Button(frame, text=">", command=self.mes_siguiente, bg="#808080", height=2, width=8).grid(row=0, column=5)
 
     def crear_botones_fechas(self, frame):
         """ Crea botones de fechas mes actual """
@@ -56,7 +60,7 @@ class TKCalendar():
             btn = Button(frame, bg="gray", relief=SUNKEN, bd=2, height=4, width=10)
             btn.grid(row=coord[0], column=coord[1], sticky=NSEW)
             self.botones_fecha.append(btn)
-    
+
     def actualizar_encabezado(self):
         """ Actualiza el encabezado del mes """
         self.encabezado.configure(text=f"{self.dh.month_num_to_string(self.mes)} {self.anio}")
