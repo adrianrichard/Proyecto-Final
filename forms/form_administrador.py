@@ -49,7 +49,13 @@ class MasterPanel:
 
     def pantalla_inicial(self):
         self.paginas.select([self.frame_principal])
-
+        
+    def pantalla_usuarios(self):
+        self.paginas.select([self.frame_usuarios])
+        [self.frame_usuarios.columnconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[0])]
+        #[self.frame_tabla_paciente.columnconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[0])]
+        #[self.frame_tabla_paciente.rowconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[1])]
+        
     def pantalla_pacientes(self):
         self.paginas.select([self.frame_pacientes])
         [self.frame_pacientes.columnconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[0])]
@@ -163,7 +169,8 @@ class MasterPanel:
         self.dni_paciente=self.data['values'][1]
 
     def widgets(self):
-        #self.imagen_inicio = PhotoImage(file ='./imagenes/home-removebg-preview.png')
+        
+        self.imagen_usuario = utl.leer_imagen('./imagenes/dentist-icon2-removebg-preview.png', (40, 40))
         #tself.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
         self.imagen_paciente = PhotoImage(file ='./imagenes/agregar3.png')
         self.imagen_calendario = PhotoImage(file ='./imagenes/calendario-removebg-preview.png')
@@ -190,19 +197,21 @@ class MasterPanel:
         self.bt_cerrar.grid(column= 0, row= 0, padx= 5, pady= 10)
 
 		#BOTONES Y ETIQUETAS DEL MENU LATERAL
-        Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_pacientes).grid(column= 0, row= 1, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 2, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 3, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_buscar, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=4, pady=20, padx=10)
-        Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_info).grid(column=0, row=5, pady=20,padx=10)
-        Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column=0, row=6, pady=20,padx=10)
+        Button(self.frame_menu, image= self.imagen_usuario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_usuarios).grid(column= 0, row= 1, pady= 20, padx= 10)
+        Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_pacientes).grid(column= 0, row= 2, pady= 20, padx= 10)
+        Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)
+        Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 4, pady= 20, padx= 10)
+        Button(self.frame_menu, image= self.imagen_buscar, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
+        Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_info).grid(column=0, row=6, pady=20,padx=10)
+        Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column=0, row=7, pady=20,padx=10)
 
-        Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=1, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=2, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row= 3, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=4, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Versión', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=6, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Usuarios', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=1, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=2, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=3, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row= 4, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Versión', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=6, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=7, pady= 20, padx= 2)
 
 		#############################  CREAR  PAGINAS  ##############################
 ##        estilo_paginas = ttk.Style()
@@ -216,12 +225,14 @@ class MasterPanel:
         self.paginas = ttk.Notebook(self.frame_raiz, style= 'TNotebook')
         self.paginas.grid(column= 0, row= 0, sticky='nsew')
         self.frame_principal = Frame(self.paginas, bg='gray90') #color de fondo
+        self.frame_usuarios = Frame(self.paginas, bg='gray90') #color de fondo
         self.frame_pacientes = Frame(self.paginas, bg='gray90') #color de fondo
         self.frame_calendario = Frame(self.paginas, bg='gray90')
         self.historia = Frame(self.paginas, bg='gray90')
         self.frame_galeria = Frame(self.paginas, bg='gray90')
         self.frame_info = Frame(self.paginas, bg='gray90')
         self.paginas.add(self.frame_principal)
+        self.paginas.add(self.frame_usuarios)
         self.paginas.add(self.frame_pacientes)
         self.paginas.add(self.frame_calendario)
         self.paginas.add(self.historia)
