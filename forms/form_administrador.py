@@ -6,6 +6,7 @@ from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Frame
 from forms.form_paciente import Paciente
 from forms.form_paciente_editar import Paciente_update
+from forms.form_usuario import *
 from paginas.tkcalendar import TKCalendar
 from util.visorimagenes import ImageGalleryApp
 
