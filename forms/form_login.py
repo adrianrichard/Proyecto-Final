@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter.font import BOLD
 import util.generic as utl
 from forms.form_administrador import MasterPanel
-from forms.form_secretario import SecretarioPanel
+#from forms.form_secretario import SecretarioPanel
 from tkinter.messagebox import showinfo, showerror
 from bd.conexion import Conexion
 fuente='Comic Sans MS'
