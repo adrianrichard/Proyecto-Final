@@ -18,7 +18,7 @@ color_fondo2 = 'gray90'
 
 class MasterPanel:
 
-    def __init__(self):
+    def __init__(self):        
         self.ventana = tk.Tk()
         self.ventana.title('DentalMatic')
         self.ventana.geometry('1000x500+180+80')
@@ -109,7 +109,7 @@ class MasterPanel:
         except:
             messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")
         self.mostrar_datos()
-
+            
     def menu_lateral(self):
         if self.menu is True:
             for i in range(50, 170, 10):
@@ -152,14 +152,14 @@ class MasterPanel:
     def mostrar_usuarios(self):
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
-        bd = "SELECT Nombre_usuario, Clave, Tipo_usuario FROM Usuarios"
+        bd = "SELECT ID, Nombre_usuario, Clave, Tipo_usuario FROM Usuarios"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
         self.tabla_usuario.delete(*self.tabla_usuario.get_children())
         i = -1
         for dato in datos:
             i= i+1
-            self.tabla_usuario.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2]))
+            self.tabla_usuario.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2],datos[i][3]))
 
     def buscar_paciente(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -180,11 +180,21 @@ class MasterPanel:
         self.data = self.tabla_paciente.item(item)
         self.dni_paciente=self.data['values'][1]
 
+    def agregar_usuario(self):
+        user = Usuario()
+        user.conexionBBDD()
+        user.ventana()
+    
     def editar_usuario(self, event):
         item = self.tabla_usuario.focus()
         self.data = self.tabla_usuario.item(item)
         self.usuario=self.data['values'][0]
-        print("you clicked on", self.usuario)
+        #print("you clicked on", self.usuario)
+        user = Usuario()
+        user.conexionBBDD()
+        user.cargar_datos(self.usuario)
+        user.ventana()
+        
 ##        print("editar usuario")
 
     def widgets(self):
@@ -266,7 +276,7 @@ class MasterPanel:
 		######################## VENTANA PRINCIPAL #################
         Label(self.frame_principal, image= self.logo, bg= 'gray90').pack(expand= 1)
         ######################## USUARIOS #################
-        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 4, row= 0, pady= 5)
+        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 4, row= 0, pady= 5)
         Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 4, row= 1)
         Button(self.frame_usuarios, image= self.imagen_editar_paciente, text= 'EDITAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.editar_paciente).grid(column= 1, row= 0, pady= 5)
         Label(self.frame_usuarios, text= 'Editar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
@@ -284,14 +294,16 @@ class MasterPanel:
         ladoy = ttk.Scrollbar(self.frame_tabla_usuario, orient ='vertical', command = self.tabla_usuario.yview)
         ladoy.grid(column = 5, row = 2, sticky='ns')
         self.tabla_usuario.configure(yscrollcommand = ladoy.set)
-        self.tabla_usuario['columns'] = ( 'Clave', 'Privilegio')
+        self.tabla_usuario['columns'] = ('Nombre_usuario', 'Clave', 'Tipo_usuario')
         self.tabla_usuario.column('#0', minwidth=100, width=120, anchor='center')
         self.tabla_usuario.column('Clave', minwidth=100, width=120, anchor='center' )
-        self.tabla_usuario.column('Privilegio', minwidth=100, width=120, anchor='center' )
+        self.tabla_usuario.column('Clave', minwidth=100, width=120, anchor='center' )
+        self.tabla_usuario.column('Tipo_usuario', minwidth=100, width=120, anchor='center' )
 
-        self.tabla_usuario.heading('#0', text='Nombre usuario', anchor ='center')
+        self.tabla_usuario.heading('#0', text='ID', anchor ='center')
+        self.tabla_usuario.heading('Nombre_usuario', text='Usuario', anchor ='center')
         self.tabla_usuario.heading('Clave', text='Clave', anchor ='center')
-        self.tabla_usuario.heading('Privilegio', text='Privilegio', anchor ='center')
+        self.tabla_usuario.heading('Tipo_usuario', text='Tipo de usuario', anchor ='center')
         self.mostrar_usuarios()
         #self.tabla_usuario.bind("<<TreeviewSelect>>", self.obtener_fila)
         self.tabla_usuario.bind("<Double-1>", self.editar_usuario)
