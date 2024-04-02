@@ -1,8 +1,9 @@
 import tkinter as tk
+from tkinter import ttk
+
 from tkinter.font import BOLD
 import util.generic as utl
-from tkinter import messagebox, Button, Entry, Label
-from tkinter import  StringVar, Frame
+from tkinter import *
 #from bd.conexion import Conexion
 import sqlite3
 
@@ -30,9 +31,9 @@ class Usuario:
     def guardar(self):
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
-        datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
+        datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get(), 1
         try:
-            self.miCursor.execute("INSERT INTO Usuario VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
+            self.miCursor.execute("INSERT INTO Usuarios VALUES(?,?,?,?)", (datos))
             self.miConexion.commit()
             messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
             self.frame_usuario.destroy()
@@ -64,11 +65,14 @@ class Usuario:
 
         #Entradas Y ETIQUETAS DATOS DEL PACIENTE
         Entry(self.frame_principal, textvariable=self.nombre_usuario, font= ('Comic Sans MS', 14)).grid(column=1, row=1, pady=5, padx=10)
-        Entry(self.frame_principal, textvariable=self.clave, font= ('Comic Sans MS', 14)).grid(column=1, row=2, pady=5, padx=10)
-        Entry(self.frame_principal, textvariable=self.tipo_usuario, font= ('Comic Sans MS', 14)).grid(column=1, row=3, pady=5, padx=10)
+        Entry(self.frame_principal, textvariable=self.clave, font= ('Comic Sans MS', 14)).grid(column=1, row=2, pady=5, padx=10)        
         
         Label(self.frame_principal, text= 'Nombre del usuario', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=1, pady=5, padx=2)
         Label(self.frame_principal, text= 'Clave', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=2, pady=5, padx=2)
+        combo=ttk.Combobox(self.frame_principal, textvariable=self.tipo_usuario, font= ('Comic Sans MS', 14), state="readonly", values=["administrador", "odontologo", "secretario"])
+        combo.grid(column=1, row=3, pady=5, padx=10)
+        #combo.place(x=50, y=50)
+
         Label(self.frame_principal, text= 'Tipo de usuario', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=3, pady=5, padx=2)
         if(self.nombre_usuario.get()==''):
             self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row=0, pady= 20, padx= 10)

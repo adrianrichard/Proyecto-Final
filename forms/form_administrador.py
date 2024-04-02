@@ -275,11 +275,10 @@ class MasterPanel:
 
 		######################## VENTANA PRINCIPAL #################
         Label(self.frame_principal, image= self.logo, bg= 'gray90').pack(expand= 1)
+        
         ######################## USUARIOS #################
-        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 4, row= 0, pady= 5)
-        Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 4, row= 1)
-        Button(self.frame_usuarios, image= self.imagen_editar_paciente, text= 'EDITAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.editar_paciente).grid(column= 1, row= 0, pady= 5)
-        Label(self.frame_usuarios, text= 'Editar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
+        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 1, row= 0, pady= 5)
+        Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
         Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 2, row= 0, pady= 5)
         Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
         Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_datos).grid(column= 3, row= 0, pady= 5)
@@ -288,11 +287,11 @@ class MasterPanel:
         Button(self.frame_usuarios, text= 'Buscar', bg= '#1F704B', fg= 'black', font= ('Comic Sans MS', 12, 'bold'), command= self.buscar_paciente).grid(column= 0, row= 1)
         #TABLA USUARIO
         self.frame_tabla_usuario = Frame(self.frame_usuarios, bg='gray90')
-        self.frame_tabla_usuario.grid(columnspan=5, row=2, sticky='nsew')
+        self.frame_tabla_usuario.grid(columnspan=4, row=2, sticky='nsew')
         self.tabla_usuario = ttk.Treeview(self.frame_tabla_usuario)
-        self.tabla_usuario.grid(column=0, row=2, columnspan=5, sticky='nsew')
+        self.tabla_usuario.grid(column=0, row=2, columnspan=4, sticky='nsew')
         ladoy = ttk.Scrollbar(self.frame_tabla_usuario, orient ='vertical', command = self.tabla_usuario.yview)
-        ladoy.grid(column = 5, row = 2, sticky='ns')
+        ladoy.grid(column = 4, row = 2, sticky='ns')
         self.tabla_usuario.configure(yscrollcommand = ladoy.set)
         self.tabla_usuario['columns'] = ('Nombre_usuario', 'Clave', 'Tipo_usuario')
         self.tabla_usuario.column('#0', minwidth=100, width=120, anchor='center')
