@@ -1,9 +1,9 @@
 import util.generic as utl
 from tkinter import *
 from paginas.datehandler.datehandler import DateHandler
-from paginas.tkwindowextensions.tk_add_event import TurnoNuevo
-from paginas.tkwindowextensions.tk_remove_event import TurnoEliminar
-from paginas.tkwindowextensions.tk_change_event import TurnoModificar
+from paginas.tk_add_event import TurnoNuevo
+from paginas.tk_remove_event import TurnoEliminar
+from paginas.tk_change_event import TurnoModificar
 from paginas.events.eventdbcontroller import EventController
 from tkinter import Button
 
@@ -49,9 +49,9 @@ class DayTopWindow(Toplevel):
 
     def crear_event_buttons(self):
         """ Crea botones de interaccion  """
-        self.agregar_img =utl.leer_imagen("./imagenes/add.png", (50, 50))
-        self.eliminar_img = utl.leer_imagen('./imagenes/eliminar2.png', (50, 50))
-        self.cambiar_img = utl.leer_imagen('./imagenes/next.png', (50, 50))
+        self.agregar_img =utl.leer_imagen("add.png", (50, 50))
+        self.eliminar_img = utl.leer_imagen('eliminar2.png', (50, 50))
+        self.cambiar_img = utl.leer_imagen('next.png', (50, 50))
 
         Button(self, text="Agregar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.agregar_turno).grid(row=2, column=0)
         Button(self, text="Eliminar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.eliminar_turno).grid(row=2, column=1)

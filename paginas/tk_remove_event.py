@@ -1,4 +1,5 @@
 from tkinter import *
+import util.generic as utl
 from paginas.events.eventdbcontroller import EventController
 
 class TurnoEliminar:
@@ -47,11 +48,11 @@ class TurnoEliminar:
         Label(event_data_frame, bg="#D1D6D3", text=event_data, font="Helvetica 12").grid(row=0, column=0, columnspan=3, ipady=20, ipadx=20)
 
     def crear_botones(self):
-        self.confirm_img = PhotoImage(file="img/confirm.png")
+        self.confirm_img = utl.leer_imagen("confirm.png", (70,50))
         Button(self.main_frame, image=self.confirm_img, command=self.eliminar_turno, relief=FLAT, bg="#BDC1BE").grid(row=2, column=0)
 
-        self.deny_img = PhotoImage(file="img/deny.png")
-        Button(self.main_frame, image=self.deny_img, command=self.cancelar, relief=FLAT, bg="#BDC1BE").grid(row=2, column=2)
+        self.cancelar_img = utl.leer_imagen("deny.png", (70,50))
+        Button(self.main_frame, image=self.cancelar_img, command=self.cancelar, relief=FLAT, bg="#BDC1BE").grid(row=2, column=2)
 
     def configurar_filas_columnas(self):
         """ Configure rows to 1:1 weight """

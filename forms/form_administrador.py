@@ -9,7 +9,6 @@ from forms.form_paciente_editar import Paciente_update
 from forms.form_usuario import *
 from paginas.tkcalendar import TKCalendar
 from util.visorimagenes import ImageGalleryApp
-
 import sqlite3
 fuente= 'Comic Sans MS'
 color_fuente = 'black'
@@ -30,20 +29,20 @@ class MasterPanel:
         self.dni_paciente =  StringVar()
         self.dato_paciente =  StringVar()
 
-        self.frame_inicio = Frame(self.ventana, bg= color_fondo1, width= 50, height= 45)
+        self.frame_inicio = Frame(self.ventana, bg=color_fondo1, width=50, height=45)
         self.frame_inicio.grid_propagate(0)
-        self.frame_inicio.grid(column= 0, row= 0, sticky='nsew')
-        self.frame_menu = Frame(self.ventana, bg= color_fondo1, width= 50)
+        self.frame_inicio.grid(column=0, row=0, sticky='nsew')
+        self.frame_menu = Frame(self.ventana, bg=color_fondo1, width=60)
         self.frame_menu.grid_propagate(0)
-        self.frame_menu.grid(column= 0, row= 1, sticky= 'nsew')
-        self.frame_top = Frame(self.ventana, bg= color_fondo1, height= 50)
-        self.frame_top.grid(column= 1, row= 0, sticky= 'nsew')
-        self.frame_raiz = Frame(self.ventana, bg= color_fondo1)
-        self.frame_raiz.grid(column= 1, row= 1, sticky= 'nsew')
-        self.ventana.columnconfigure(1, weight= 1)
-        self.ventana.rowconfigure(1, weight= 1)
-        self.frame_raiz.columnconfigure(0, weight= 1)
-        self.frame_raiz.rowconfigure(0, weight= 1)
+        self.frame_menu.grid(column=0, row=1, sticky= 'nsew')
+        self.frame_top = Frame(self.ventana, bg=color_fondo1, height=50)
+        self.frame_top.grid(column=1, row=0, sticky= 'nsew')
+        self.frame_raiz = Frame(self.ventana, bg=color_fondo1)
+        self.frame_raiz.grid(column=1, row=1, sticky='nsew')
+        self.ventana.columnconfigure(1, weight=1)
+        self.ventana.rowconfigure(1, weight=1)
+        self.frame_raiz.columnconfigure(0, weight=1)
+        self.frame_raiz.rowconfigure(0, weight=1)
 
         self.widgets()
 
@@ -52,9 +51,9 @@ class MasterPanel:
 
     def pantalla_usuarios(self):
         self.paginas.select([self.frame_usuarios])
+        [self.frame_tabla_usuario.columnconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[0])]
         [self.frame_usuarios.columnconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[0])]
-        #[self.frame_tabla_paciente.columnconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[0])]
-        #[self.frame_tabla_paciente.rowconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[1])]
+        [self.frame_tabla_usuario.rowconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[1])]
 
     def pantalla_pacientes(self):
         self.paginas.select([self.frame_pacientes])

@@ -7,7 +7,7 @@ def obtener_path(path):
 
 def leer_imagen(nombre_imagen, size):
         path_absoluto="./imagenes/"+nombre_imagen
-        print(path_absoluto)
+        #print(path_absoluto)
         return ImageTk.PhotoImage(Image.open(path_absoluto).resize(size, Image.Resampling.LANCZOS))
 
 def centrar_ventana(ventana,aplicacion_ancho,aplicacion_largo):
