@@ -5,8 +5,9 @@ def obtener_path(path):
         path_relativo=path
         return path_relativo
 
-def leer_imagen(path, size):
-        path_absoluto=path_relativo+path
+def leer_imagen(nombre_imagen, size):
+        path_absoluto="./imagenes/"+nombre_imagen
+        print(path_absoluto)
         return ImageTk.PhotoImage(Image.open(path_absoluto).resize(size, Image.Resampling.LANCZOS))
 
 def centrar_ventana(ventana,aplicacion_ancho,aplicacion_largo):
@@ -21,3 +22,4 @@ def definir_fuente(size):
 def definir_color_fondo():
     return '#1F704B'
 #print(definir_fuente(30))
+#leer_imagen("add.jpg",(50,50))

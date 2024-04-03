@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter.font import BOLD
 import util.generic as utl
 from forms.form_administrador import MasterPanel
-#from forms.form_secretario import SecretarioPanel
+from forms.form_secretario import SecretarioPanel
 from tkinter.messagebox import showinfo, showerror
 from bd.conexion import Conexion
 fuente='Comic Sans MS'
@@ -56,7 +56,7 @@ class Login:
 
         # frame_logo
         try:
-            logo =utl.leer_imagen("./imagenes/logo1.png", (250, 200))
+            logo =utl.leer_imagen("logo1.png", (250, 200))
             frame_logo = tk.Frame(self.frame_login, bd= 0, width= 300, relief= tk.SOLID, padx= 10, pady= 10, bg= color_fondo1)
             frame_logo.pack(side= "left", expand= tk.YES, fill= tk.BOTH)
             label = tk.Label(frame_logo, image= logo, bg= color_fondo1).place(x= 0, y= 0, relwidth= 1, relheight= 1)

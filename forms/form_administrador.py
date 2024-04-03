@@ -195,11 +195,9 @@ class MasterPanel:
         user.cargar_datos(self.usuario)
         user.ventana()
         
-##        print("editar usuario")
-
     def widgets(self):
 
-        self.imagen_usuario = utl.leer_imagen('./imagenes/dentist-icon2-removebg-preview.png', (40, 40))
+        self.imagen_usuario = utl.leer_imagen('dentist-icon2-removebg-preview.png', (38, 38))
         #tself.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
         self.imagen_paciente = PhotoImage(file ='./imagenes/agregar3.png')
         self.imagen_calendario = PhotoImage(file ='./imagenes/calendario-removebg-preview.png')

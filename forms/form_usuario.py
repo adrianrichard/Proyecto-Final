@@ -1,9 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-
 from tkinter.font import BOLD
 import util.generic as utl
-from tkinter import *
+from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
 #from bd.conexion import Conexion
 import sqlite3
 
@@ -63,7 +62,7 @@ class Usuario:
         
         Button(self.frame_principal, text= 'Cerrar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.Salir).grid(column= 2, row=3, pady= 5, padx= 50)
 
-        #Entradas Y ETIQUETAS DATOS DEL PACIENTE
+        #Entradas Y ETIQUETAS DATOS DEL USUARIO
         Entry(self.frame_principal, textvariable=self.nombre_usuario, font= ('Comic Sans MS', 14)).grid(column=1, row=1, pady=5, padx=10)
         Entry(self.frame_principal, textvariable=self.clave, font= ('Comic Sans MS', 14)).grid(column=1, row=2, pady=5, padx=10)        
         
@@ -71,14 +70,12 @@ class Usuario:
         Label(self.frame_principal, text= 'Clave', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=2, pady=5, padx=2)
         combo=ttk.Combobox(self.frame_principal, textvariable=self.tipo_usuario, font= ('Comic Sans MS', 14), state="readonly", values=["administrador", "odontologo", "secretario"])
         combo.grid(column=1, row=3, pady=5, padx=10)
-        #combo.place(x=50, y=50)
 
         Label(self.frame_principal, text= 'Tipo de usuario', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=3, pady=5, padx=2)
         if(self.nombre_usuario.get()==''):
             self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row=0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Guardar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.guardar).grid(column= 2, row=1, pady= 5, padx= 50)
         else:
-            #print(self.nombre_usuario.get())
             self.titulo = Label(self.frame_top, text= 'Actualizar usuario', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row=0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Actualizar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.actualizar).grid(column= 2, row=1, pady= 5, padx= 50)
         self.frame_usuario.mainloop()
@@ -101,9 +98,8 @@ class Usuario:
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
         user = self.nombre_usuario.get()
-        #print(self.nombre_usuario)
         datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get(), self.id_usuario.get(), user
-        print(datos)
+        #print(datos)
         try:
             sql="UPDATE Usuarios SET Nombre_usuario =?, Clave=?, Tipo_usuario=?, ID=? where Nombre_usuario=?"
             self.miCursor.execute(sql, datos)
@@ -124,8 +120,7 @@ class Usuario:
         self.clave = StringVar()
         self.tipo_usuario =  StringVar()
         self.id_usuario =  StringVar()
-        #self.nombre_usuario.set('')
-        
+        #self.nombre_usuario.set('')        
 
 if __name__ == "__main__":
     Usuario()
