@@ -5,8 +5,8 @@ import util.generic as utl
 from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Frame
 from forms.form_paciente import Paciente
-from forms.form_paciente_editar import Paciente_update
-from forms.form_usuario import *
+#from forms.form_paciente_editar import Paciente_update
+from forms.form_usuario import Usuario
 from paginas.tkcalendar import TKCalendar
 from util.visorimagenes import ImageGalleryApp
 import sqlite3
@@ -25,10 +25,11 @@ class MasterPanel:
         self.ventana.resizable(width= 0, height= 0)
         utl.centrar_ventana(self.ventana, 900, 600)
         self.menu = True
-        self.color = True
+        
         self.dni_paciente =  StringVar()
         self.dato_paciente =  StringVar()
-
+        self.nombre_usuario =  StringVar()
+ 
         self.frame_inicio = Frame(self.ventana, bg=color_fondo1, width=50, height=45)
         self.frame_inicio.grid_propagate(0)
         self.frame_inicio.grid(column=0, row=0, sticky='nsew')
@@ -46,69 +47,6 @@ class MasterPanel:
 
         self.widgets()
 
-    def pantalla_inicial(self):
-        self.paginas.select([self.frame_principal])
-
-    def pantalla_usuarios(self):
-        self.paginas.select([self.frame_usuarios])
-        [self.frame_tabla_usuario.columnconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[0])]
-        [self.frame_usuarios.columnconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[0])]
-        [self.frame_tabla_usuario.rowconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[1])]
-
-    def pantalla_pacientes(self):
-        self.paginas.select([self.frame_pacientes])
-        [self.frame_pacientes.columnconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[0])]
-        [self.frame_tabla_paciente.columnconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[0])]
-        [self.frame_tabla_paciente.rowconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[1])]
-
-    def pantalla_calendario(self):
-        self.paginas.select([self.frame_calendario])
-
-        Tcal = TKCalendar()
-        Tcal.crear_encabezado(self.frame_calendario)
-        Tcal.crear_botones_fechas(self.frame_calendario)
-        Tcal.actualizar_botones_fechas()
-        Tcal.event_color_buttons()
-        Tcal.configurar_filas_columnas(self.frame_calendario)
-
-    def pantalla_historia(self):
-        self.paginas.select([self.historia])
-
-        self.historia.columnconfigure(0, weight= 1)
-        self.historia.columnconfigure(1, weight= 1)
-
-    def pantalla_galeria(self):
-        self.paginas.select([self.frame_galeria])
-        Gallery=ImageGalleryApp(self.frame_galeria)
-        Gallery.configurar_filas_columnas(self.frame_galeria)
-
-    def pantalla_info(self):
-        self.paginas.select([self.frame_info])
-
-    def salir(self):
-        answer = messagebox.askokcancel(title='Salir', message='¿Desea salir?', icon='warning')
-        if answer:
-            self.ventana.destroy()
-
-    def agregar_paciente(self):
-        Paciente()
-
-    def editar_paciente(self):
-        Paciente_update(self.dni_paciente)
-
-    def eliminar_paciente(self):
-        try:
-            self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
-            self.miCursor=self.miConexion.cursor()
-            msg_box = messagebox.askquestion('Eliminar paciente', '¿Desea elminar al paciente?', icon='warning')
-            if msg_box == 'yes':
-                self.miCursor.execute("DELETE FROM Paciente WHERE dni = ?", (self.dni_paciente,))
-                self.miConexion.commit()
-                messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
-        except:
-            messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")
-        self.mostrar_datos()
-            
     def menu_lateral(self):
         if self.menu is True:
             for i in range(50, 170, 10):
@@ -136,7 +74,74 @@ class MasterPanel:
                     self.pantalla_inicial()
                 self.menu = True
 
-    def mostrar_datos(self):
+    def pantalla_inicial(self):
+        self.paginas.select([self.frame_principal])
+
+    def pantalla_usuarios(self):
+        self.paginas.select([self.frame_usuarios])
+        [self.frame_tabla_usuario.columnconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[0])]
+        [self.frame_usuarios.columnconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[0])]
+        [self.frame_tabla_usuario.rowconfigure(i, weight=1) for i in range(self.frame_usuarios.grid_size()[1])]
+
+    def pantalla_pacientes(self):
+        self.paginas.select([self.frame_pacientes])
+        [self.frame_pacientes.columnconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[0])]
+        [self.frame_tabla_paciente.columnconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[0])]
+        [self.frame_tabla_paciente.rowconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[1])]
+
+    def pantalla_calendario(self):
+        self.paginas.select([self.frame_calendario])
+        Tcal = TKCalendar()
+        Tcal.crear_encabezado(self.frame_calendario)
+        Tcal.crear_botones_fechas(self.frame_calendario)
+        Tcal.actualizar_botones_fechas()
+        Tcal.event_color_buttons()
+        Tcal.configurar_filas_columnas(self.frame_calendario)
+
+    def pantalla_historia(self):
+        self.paginas.select([self.historia])
+        self.historia.columnconfigure(0, weight= 1)
+        self.historia.columnconfigure(1, weight= 1)
+
+    def pantalla_galeria(self):
+        self.paginas.select([self.frame_galeria])
+        Gallery=ImageGalleryApp(self.frame_galeria)
+        Gallery.configurar_filas_columnas(self.frame_galeria)
+
+    def pantalla_info(self):
+        self.paginas.select([self.frame_info])
+
+    def salir(self):
+        answer = messagebox.askokcancel(title='Salir', message='¿Desea salir?', icon='warning')
+        if answer:
+            self.ventana.destroy()
+
+    def agregar_paciente(self):
+        paciente=Paciente()
+        paciente.ventana_paciente()
+
+    def editar_paciente(self, event):
+        paciente=Paciente()
+        item = self.tabla_paciente.focus()
+        self.data = self.tabla_paciente.item(item)
+        self.dni_paciente=self.data['values'][1]        
+        paciente.cargar_datos(self.dni_paciente)
+        paciente.ventana_paciente()        
+
+    def eliminar_paciente(self):
+        try:
+            self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+            self.miCursor=self.miConexion.cursor()
+            msg_box = messagebox.askquestion('Eliminar paciente', '¿Desea elminar al paciente?', icon='warning')
+            if msg_box == 'yes':
+                self.miCursor.execute("DELETE FROM Paciente WHERE dni = ?", (self.dni_paciente,))
+                self.miConexion.commit()
+                messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
+        except:
+            messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")
+        self.mostrar_pacientes()
+            
+    def mostrar_pacientes(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente"
@@ -174,10 +179,15 @@ class MasterPanel:
             i= i+1
             self.tabla_paciente.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2],datos[i][3],datos[i][4]))
 
-    def obtener_fila(self, event):
+    def seleccionar_paciente(self, event):
         item = self.tabla_paciente.focus()
         self.data = self.tabla_paciente.item(item)
         self.dni_paciente=self.data['values'][1]
+
+    def seleccionar_usuario(self, event):
+        item = self.tabla_usuario.focus()
+        self.data = self.tabla_usuario.item(item)        
+        self.nombre_usuario=self.data['values'][0]
 
     def agregar_usuario(self):
         user = Usuario()
@@ -193,9 +203,13 @@ class MasterPanel:
         user.conexionBBDD()
         user.cargar_datos(self.usuario)
         user.ventana()
+    
+    def eliminar_usuario(self):
+        user = Usuario()
+        user.conexionBBDD()
+        user.eliminar_usuario(self.nombre_usuario)
         
     def widgets(self):
-
         self.imagen_usuario = utl.leer_imagen('dentist-icon2-removebg-preview.png', (38, 38))
         #tself.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
         self.imagen_paciente = PhotoImage(file ='./imagenes/agregar3.png')
@@ -276,12 +290,12 @@ class MasterPanel:
         ######################## USUARIOS #################
         Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 1, row= 0, pady= 5)
         Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
-        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 2, row= 0, pady= 5)
+        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 2, row= 0, pady= 5)
         Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
-        Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_datos).grid(column= 3, row= 0, pady= 5)
+        Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 3, row= 0, pady= 5)
         Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 3, row= 1)
         self.busqueda = ttk.Entry(self.frame_usuarios, textvariable=self.dato_paciente, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 0, row= 0, pady= 5)
-        Button(self.frame_usuarios, text= 'Buscar', bg= '#1F704B', fg= 'black', font= ('Comic Sans MS', 12, 'bold'), command= self.buscar_paciente).grid(column= 0, row= 1)
+        #Button(self.frame_usuarios, text= 'Buscar', bg= '#1F704B', fg= 'black', font= ('Comic Sans MS', 12, 'bold'), command= self.buscar_usuario).grid(column= 0, row= 1)
         #TABLA USUARIO
         self.frame_tabla_usuario = Frame(self.frame_usuarios, bg='gray90')
         self.frame_tabla_usuario.grid(columnspan=4, row=2, sticky='nsew')
@@ -303,6 +317,7 @@ class MasterPanel:
         self.mostrar_usuarios()
         #self.tabla_usuario.bind("<<TreeviewSelect>>", self.obtener_fila)
         self.tabla_usuario.bind("<Double-1>", self.editar_usuario)
+        self.tabla_usuario.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
 
 		######################## PACIENTES #################
         Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 4, row= 0, pady= 5)
@@ -311,7 +326,7 @@ class MasterPanel:
         Label(self.frame_pacientes, text= 'Editar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
         Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 2, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
-        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_datos).grid(column= 3, row= 0, pady= 5)
+        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 3, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 3, row= 1)
         self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 0, row= 0, pady= 5)
         Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= ('Comic Sans MS', 12, 'bold'), command= self.buscar_paciente).grid(column= 0, row= 1)
@@ -344,15 +359,16 @@ class MasterPanel:
         self.tabla_paciente.heading('D.N.I.', text='D.N.I.', anchor ='center')
         self.tabla_paciente.heading('Teléfono', text='Teléfono', anchor ='center')
         self.tabla_paciente.heading('Obra Social', text='Obra Social', anchor ='center')
-        self.mostrar_datos()
-        self.tabla_paciente.bind("<<TreeviewSelect>>", self.obtener_fila)
+        self.mostrar_pacientes()
+        self.tabla_paciente.bind("<<TreeviewSelect>>", self.seleccionar_paciente)
+        self.tabla_paciente.bind("<Double-1>", self.editar_paciente)
+
 
 		######################## HISTORIA CLINICA #################
         Label(self.historia, text = 'HISTORIA CLINICA', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
 
 		######################## GALERIA #################
         Label(self.frame_galeria, text = 'GALERIA', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 24,'bold')).grid(column= 0,  row= 0)
-
 
 		######################## INFO #################
         self.name = Label(self.frame_info, text= 'DENTALMATIC', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 30,'bold')).pack(expand= 1)

@@ -26,6 +26,36 @@ class Paciente:
 
             messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
 
+    def cargar_datos(self, dni):
+        try:
+            self.miCursor.execute("SELECT * FROM paciente WHERE dni=?", (dni,))
+            campos=self.miCursor.fetchall()
+        
+            self.nombre_paciente.set(campos[0][1])
+            self.apellido_paciente.set(campos[0][2])
+            self.dni_paciente.set(dni)
+            self.domicilio_paciente.set(campos[0][4])
+            self.telefono_paciente.set(campos[0][5])
+            self.email_paciente.set(campos[0][6])
+            self.obrasocial_paciente.set(campos[0][7])
+            self.nrosocio_paciente.set(campos[0][8])
+        except:
+            messagebox.showinfo("Buscar paciente", "No se ha podido encontrar el paciente")
+            self.frame_paciente.destroy()
+
+    def actualizar(self):
+        self.dni_actual=self.dni_paciente.get()
+        datos=self.nombre_paciente.get(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get(), self.dni_actual
+        
+        try:
+            sql="UPDATE Paciente SET nombre =?, apellido=?, dni=?, domicilio=?, telefono=?, email=?, obrasocial=?, nrosocio=? where dni=?"
+            self.miCursor.execute(sql, datos)
+            self.miConexion.commit()
+            messagebox.showinfo("GUARDAR","Paciente actualizado exitosamente")
+            self.frame_paciente.destroy()
+        except:
+            messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
+            
     def guardar(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
@@ -42,9 +72,8 @@ class Paciente:
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
         if answer:
             self.frame_paciente.destroy()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    
+    def ventana_paciente(self):
         self.frame_paciente= tk.Toplevel()
         self.frame_paciente.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.frame_paciente.focus_set() # Mantiene el foco cuando se abre la ventana.
@@ -62,16 +91,6 @@ class Paciente:
         self.frame_principal = Frame(self.frame_paciente)
         self.frame_principal.config(bg='gray90')
         self.frame_principal.grid(column= 1, row= 1, sticky= 'nsew')
-        self.nombre_paciente = StringVar()
-        self.apellido_paciente = StringVar()
-        self.dni_paciente =  StringVar()
-        self.domicilio_paciente =  StringVar()
-        self.telefono_paciente =  StringVar()
-        self.email_paciente =  StringVar()
-        self.obrasocial_paciente =  StringVar()
-        self.nrosocio_paciente =  StringVar()
-        self.conexionBBDD()
-
         self.titulo = Label(self.frame_top, text= 'Datos del paciente', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row=0, pady= 20, padx= 10)
         Button(self.frame_principal, text= 'Cerrar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.Salir).grid(column= 2, row=3, pady= 5, padx= 100)
 
@@ -93,9 +112,25 @@ class Paciente:
         Label(self.frame_principal, text= 'Email', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=6, pady=5, padx=2)
         Label(self.frame_principal, text= 'Obra Social', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=7, pady=5, padx=2)
         Label(self.frame_principal, text= 'Nro de socio', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=8, pady=5, padx=2)
-        Button(self.frame_principal, text= 'Guardar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.guardar).grid(column= 2, row=1, pady= 5, padx= 100)
-
+        if(self.dni_paciente.get()==''):
+            Button(self.frame_principal, text= 'Guardar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.guardar).grid(column= 2, row=1, pady= 5, padx= 100)
+        else:
+            self.titulo = Label(self.frame_top, text= 'Actualizar paciente', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row=0, pady= 20, padx= 10)
+            Button(self.frame_principal, text= 'Actualizar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.actualizar).grid(column= 2, row=1, pady= 5, padx= 50)
         self.frame_paciente.mainloop()
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.nombre_paciente = StringVar()
+        self.apellido_paciente = StringVar()
+        self.dni_paciente =  StringVar()
+        self.domicilio_paciente =  StringVar()
+        self.telefono_paciente =  StringVar()
+        self.email_paciente =  StringVar()
+        self.obrasocial_paciente =  StringVar()
+        self.nrosocio_paciente =  StringVar()
+        self.conexionBBDD()
 
 if __name__ == "__main__":
     Paciente()

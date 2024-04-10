@@ -30,14 +30,14 @@ class Usuario:
     def guardar(self):
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
-        datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get(), 1
+        datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
         try:
-            self.miCursor.execute("INSERT INTO Usuarios VALUES(?,?,?,?)", (datos))
+            self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
             self.miConexion.commit()
-            messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
+            messagebox.showinfo("GUARDAR","Usuario guardado exitosamente")
             self.frame_usuario.destroy()
         except:
-            messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
+            messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
     
     def ventana(self):
         self.frame_usuario= tk.Toplevel()
@@ -81,15 +81,14 @@ class Usuario:
         self.frame_usuario.mainloop()
     
     def cargar_datos(self, usuario):
-        self.nombre_usuario.set(usuario)
-        
+        self.nombre_usuario.set(usuario)        
         try:
             self.miCursor.execute("SELECT * FROM Usuarios WHERE Nombre_usuario=?", (usuario,))
             campos=self.miCursor.fetchall()        
             #self.nombre_usuario.set(usuario)
-            self.clave.set(campos[0][1])
-            self.tipo_usuario.set(campos[0][2])
-            self.id_usuario.set(campos[0][3])
+            self.clave.set(campos[0][2])
+            self.tipo_usuario.set(campos[0][3])
+            #self.id_usuario.set(campos[0][2])
         except:
             messagebox.showinfo("Buscar paciente", "No se ha podido encontrar el paciente")            
             self.frame_usuario.destroy()
@@ -98,17 +97,24 @@ class Usuario:
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
         user = self.nombre_usuario.get()
-        datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get(), self.id_usuario.get(), user
+        datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get(), user
         #print(datos)
         try:
-            sql="UPDATE Usuarios SET Nombre_usuario =?, Clave=?, Tipo_usuario=?, ID=? where Nombre_usuario=?"
+            sql="UPDATE Usuarios SET Nombre_usuario =?, Clave=?, Tipo_usuario=? where Nombre_usuario=?"
             self.miCursor.execute(sql, datos)
             self.miConexion.commit()
             messagebox.showinfo("GUARDAR","Paciente actualizado exitosamente")
             self.frame_usuario.destroy()
         except:
             messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
-                
+    
+    def eliminar_usuario(self, nombre):
+        msg_box = messagebox.askquestion('Eliminar usuario', '¿Desea elminar al usuario?', icon='warning')
+        if msg_box == 'yes':
+            self.miCursor.execute("DELETE FROM Usuarios WHERE Nombre_usuario = ?", (nombre,))
+            self.miConexion.commit()
+            messagebox.showinfo("ELIMINAR","Usuario eliminado exitosamente")
+        
     def Salir(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
         if answer:
