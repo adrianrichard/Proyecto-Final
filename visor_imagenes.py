@@ -57,7 +57,7 @@ canvas.config(xscrollcommand=x_scroll_bar.set)
 canvas.bind('<Configure>', lambda e: canvas.bbox('all'))
 slider = tk.Frame(canvas)
 canvas.create_window((0, 0), window=slider, anchor=tk.NW)
-print(len(images_vars))
+#print(len(images_vars))
 
 menu_btn = tk.Button(root, text= 'Open Folder', bd=0, font=('Bold', 15), command=load_images(canvas))
 menu_btn.pack( side=tk.TOP, anchor=tk.W, padx=20, pady=20)
