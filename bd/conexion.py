@@ -15,47 +15,6 @@ class Conexion():
         registro = self.cur.fetchall()
         return registro
 
-    def determinar_usuario(self, username, password):
-        self.cur.execute('SELECT Tipo_usuario FROM Usuarios WHERE Nombre_usuario = ? AND Clave = ?', (username, password))
-        tipo_usuario = self.cur.fetchall()
-        return tipo_usuario
-
     def cerrar_bd(self):
         self.cur.close()
-
-    def inserta_producto(self, codigo, nombre, modelo, precio, cantidad):
-        #sql='''INSERT INTO productos (CODIGO, NOMBRE, MODELO, PRECIO, CANTIDAD) VALUES('{}', '{}','{}', '{}','{}')'''.format(codigo, nombre, modelo, precio, cantidad)
-        self.cur.close()
-
-    '''def mostrar_productos(self):
-        cursor = self.conexion.cursor()
-        sql = "SELECT * FROM productos "
-        cursor.execute(sql)
-        registro = cursor.fetchall()
-        return registro
-
-    def busca_producto(self, nombre_producto):
-        cur = self.conexion.cursor()
-        sql = "SELECT * FROM productos WHERE NOMBRE = {}".format(nombre_producto)
-        cur.execute(sql)
-        nombreX = cur.fetchall()
-        cur.close()
-        return nombreX
-
-    def elimina_productos(self, nombre):
-        cur = self.conexion.cursor()
-        #sql='DELETE FROM productos WHERE NOMBRE = {}'.format(nombre)
-        cur.execute(sql)
-        self.conexion.commit()
-        cur.close()
-
-    def actualiza_productos(self,Id, codigo, nombre, modelo, precio, cantidad):
-        cur = self.conexion.cursor()
-        sql ='UPDATE productos SET  CODIGO ='{}', NOMBRE = '{}' , MODELO = '{}', PRECIO = '{}', CANTIDAD = '{}'
-        WHERE ID = '{}' .format(codigo, nombre, modelo, precio, cantidad, Id)
-        cur.execute(sql)
-        a = cur.rowcount
-        self.conexion.commit()
-        cur.close()
-        return a
-    '''
+ 
