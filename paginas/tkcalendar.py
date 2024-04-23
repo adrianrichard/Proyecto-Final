@@ -12,7 +12,7 @@ from pathlib import Path
 script_location = Path(__file__).absolute().parent
 #file_location = script_location / 'file.yaml'
 #file = file_location.open()
-fuente= 'Comic Sans MS'
+fuente= 'Arial'
 color_fuente = 'black'
 #color_fondo1 = utl.definir_color_fondo()
 color_fondo2 = 'gray90'
@@ -57,7 +57,7 @@ class TKCalendar():
         """ Crea botones de fechas mes actual """
         coords = [(i, j) for i in range(2, 8) for j in range(0, 7)]
         for coord in coords:
-            btn = Button(frame, bg="gray", relief=SUNKEN, bd=2, height=4, width=10)
+            btn = Button(frame, font= (fuente, 10), bg="gray", relief=SUNKEN, bd=2, height=4, width=10)
             btn.grid(row=coord[0], column=coord[1], sticky=NSEW)
             self.botones_fecha.append(btn)
 

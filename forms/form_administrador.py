@@ -5,12 +5,12 @@ import util.generic as utl
 from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Frame
 from forms.form_paciente import Paciente
-#from forms.form_paciente_editar import Paciente_update
 from forms.form_usuario import Usuario
 from paginas.tkcalendar import TKCalendar
 from util.visorimagenes import ImageGalleryApp
 import sqlite3
-fuente= 'Comic Sans MS'
+fuente= 'Arial'
+fuente2= 'Comic Sans MS'
 color_fuente = 'black'
 color_fondo1 = utl.definir_color_fondo()
 color_fondo2 = 'gray90'
@@ -245,13 +245,13 @@ class MasterPanel:
         Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_info).grid(column=0, row=6, pady=20,padx=10)
         Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column=0, row=7, pady=20,padx=10)
 
-        Label(self.frame_menu, text= 'Usuarios', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=1, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=2, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=3, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row= 4, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Versión', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=6, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=7, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Usuarios', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=1, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=2, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=3, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row= 4, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Versión', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=6, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=7, pady= 20, padx= 2)
 
 		#############################  CREAR  PAGINAS  ##############################
 ##        estilo_paginas = ttk.Style()
@@ -288,13 +288,13 @@ class MasterPanel:
         Label(self.frame_principal, image= self.logo, bg= 'gray90').pack(expand= 1)
         
         ######################## USUARIOS #################
-        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 1, row= 0, pady= 5)
-        Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
-        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 2, row= 0, pady= 5)
-        Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
-        Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 3, row= 0, pady= 5)
-        Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 3, row= 1)
-        self.busqueda = ttk.Entry(self.frame_usuarios, textvariable=self.dato_paciente, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 0, row= 0, pady= 5)
+        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 0, pady= 5)
+        Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 0, row= 1)
+        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 0, pady= 5)
+        Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
+        Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 0, pady= 5)
+        Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
+        #self.busqueda = ttk.Entry(self.frame_usuarios, textvariable=self.dato_paciente, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 0, row= 0, pady= 5)
         #Button(self.frame_usuarios, text= 'Buscar', bg= '#1F704B', fg= 'black', font= ('Comic Sans MS', 12, 'bold'), command= self.buscar_usuario).grid(column= 0, row= 1)
         #TABLA USUARIO
         self.frame_tabla_usuario = Frame(self.frame_usuarios, bg='gray90')
@@ -320,16 +320,14 @@ class MasterPanel:
         self.tabla_usuario.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
 
 		######################## PACIENTES #################
-        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 4, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Agregar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 4, row= 1)
-        Button(self.frame_pacientes, image= self.imagen_editar_paciente, text= 'EDITAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.editar_paciente).grid(column= 1, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Editar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
-        Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 2, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
-        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 3, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 3, row= 1)
-        self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 0, row= 0, pady= 5)
-        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= ('Comic Sans MS', 12, 'bold'), command= self.buscar_paciente).grid(column= 0, row= 1)
+        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= (fuente, 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 3, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Agregar', bg= 'gray90', fg= 'black', font= (fuente, 12, 'bold')).grid(column= 3, row= 1)
+        Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= (fuente, 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 1, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= (fuente, 12, 'bold')).grid(column= 1, row= 1)
+        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = (fuente, 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 2, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= (fuente, 12, 'bold')).grid(column= 2, row= 1)
+        self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 10 ,font= (fuente, 14)).grid(column= 0, row= 0, pady= 5)
+        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= (fuente, 12, 'bold'), command= self.buscar_paciente).grid(column= 0, row= 1)
 
 		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()
