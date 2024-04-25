@@ -9,7 +9,7 @@ from forms.form_usuario import Usuario
 from paginas.tkcalendar import TKCalendar
 from util.visorimagenes import ImageGalleryApp
 import sqlite3
-fuente= 'Arial'
+fuente= utl.definir_fuente('MS Sans Serif', 12,'nada')
 fuente2= 'Comic Sans MS'
 color_fuente = 'black'
 color_fondo1 = utl.definir_color_fondo()
@@ -230,7 +230,7 @@ class MasterPanel:
             self.bt_inicio = Button(self.frame_inicio, image= self.imagen_inicio, bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
             self.bt_cerrar = Button(self.frame_inicio, image= self.imagen_menu, bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
         except:
-            self.bt_inicio = Button(self.frame_inicio, text= 'INICIO', font= (fuente, 12, 'bold'), bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
+            self.bt_inicio = Button(self.frame_inicio, text= 'INICIO', font= (fuente2, 12, 'bold'), bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
             self.bt_cerrar = Button(self.frame_inicio, text= 'INICIO', font= ('Comic Sans MS', 12, 'bold'), bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
 
         self.bt_inicio.grid(column= 0, row= 0, padx= 5, pady= 10)
@@ -288,12 +288,12 @@ class MasterPanel:
         Label(self.frame_principal, image= self.logo, bg= 'gray90').pack(expand= 1)
         
         ######################## USUARIOS #################
-        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 0, pady= 5)
-        Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 0, row= 1)
-        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 0, pady= 5)
-        Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
-        Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 0, pady= 5)
-        Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
+        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= fuente, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 0, pady= 5)
+        Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= fuente).grid(column= 0, row= 1)
+        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= fuente, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 0, pady= 5)
+        Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= fuente).grid(column= 1, row= 1)
+        Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = fuente, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 0, pady= 5)
+        Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuente).grid(column= 2, row= 1)
         #TABLA USUARIO
         self.frame_tabla_usuario = Frame(self.frame_usuarios, bg='gray90')
         self.frame_tabla_usuario.grid(columnspan=4, row=2, sticky='nsew')

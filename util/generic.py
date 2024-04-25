@@ -17,9 +17,12 @@ def centrar_ventana(ventana,aplicacion_ancho,aplicacion_largo):
     y = int((pantalla_largo/2) - (aplicacion_largo/2))
     return ventana.geometry(f"{aplicacion_ancho}x{aplicacion_largo}+{x}+{y}")
 
-def definir_fuente(nombre, size):
-    return (nombre, size)
+def definir_fuente(nombre, size, bold):
+    if bold=='BOLD':
+        return (nombre, size, 'bold')
+    else:
+        return (nombre, size)
 def definir_color_fondo():
     return '#1F704B'
-#print(definir_fuente(30))
+print(definir_fuente('Arial',30, 'BOLD'))
 #leer_imagen("add.jpg",(50,50))

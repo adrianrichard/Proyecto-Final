@@ -5,7 +5,7 @@ from tkinter import messagebox, Button, Entry, Label
 from tkinter import  StringVar, Frame
 #from bd.conexion import Conexion
 import sqlite3
-fuente= utl.definir_fuente('Arial', 12)
+fuente= utl.definir_fuente('Arial', 12,'BOLD')
 ancho=15
 
 class Paciente:
