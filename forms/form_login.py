@@ -52,7 +52,7 @@ class Login:
         self.frame_login.geometry('500x500')
         self.frame_login.resizable(width = 0, height = 0)
         utl.centrar_ventana(self.frame_login, 600, 500)
-        fuente2=utl.definir_fuente(15)
+        fuente2=utl.definir_fuente('Comic Sans MS', 15)
         fuente='Comic Sans MS'
         color_fuente = 'black'
         color_fondo1 = utl.definir_color_fondo()

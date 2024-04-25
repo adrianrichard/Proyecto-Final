@@ -17,8 +17,8 @@ def centrar_ventana(ventana,aplicacion_ancho,aplicacion_largo):
     y = int((pantalla_largo/2) - (aplicacion_largo/2))
     return ventana.geometry(f"{aplicacion_ancho}x{aplicacion_largo}+{x}+{y}")
 
-def definir_fuente(size):
-    return ('Comic Sans MS', size)
+def definir_fuente(nombre, size):
+    return (nombre, size)
 def definir_color_fondo():
     return '#1F704B'
 #print(definir_fuente(30))

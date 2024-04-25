@@ -5,6 +5,7 @@ import util.generic as utl
 from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
 #from bd.conexion import Conexion
 import sqlite3
+fuente= utl.definir_fuente('Arial', 12)
 
 class Usuario:
 
@@ -60,24 +61,24 @@ class Usuario:
 
         self.conexionBBDD()
         
-        Button(self.frame_principal, text= 'Cerrar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.Salir).grid(column= 2, row=3, pady= 5, padx= 50)
+        Button(self.frame_principal, text= 'Cerrar',  font= fuente, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.Salir).grid(column= 2, row=3, pady= 5, padx= 50)
 
         #Entradas Y ETIQUETAS DATOS DEL USUARIO
-        Entry(self.frame_principal, textvariable=self.nombre_usuario, font= ('Comic Sans MS', 14)).grid(column=1, row=1, pady=5, padx=10)
-        Entry(self.frame_principal, textvariable=self.clave, font= ('Comic Sans MS', 14)).grid(column=1, row=2, pady=5, padx=10)        
+        Entry(self.frame_principal, textvariable=self.nombre_usuario, width=25, font= fuente).grid(column=1, row=1, pady=5, padx=10)
+        Entry(self.frame_principal, textvariable=self.clave, width=25, font= fuente).grid(column=1, row=2, pady=5, padx=10)        
         
-        Label(self.frame_principal, text= 'Nombre del usuario', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=1, pady=5, padx=2)
-        Label(self.frame_principal, text= 'Clave', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=2, pady=5, padx=2)
-        combo=ttk.Combobox(self.frame_principal, textvariable=self.tipo_usuario, font= ('Comic Sans MS', 14), state="readonly", values=["administrador", "odontologo", "secretario"])
+        Label(self.frame_principal, text= 'Nombre del usuario', anchor="e", width=20, bg='gray90', fg= 'black', font= fuente).grid(column=0, row=1, pady=5)
+        Label(self.frame_principal, text= 'Clave', anchor="e", width=20, bg='gray90', fg= 'black', font= fuente).grid(column=0, row=2, pady=5, padx=2)
+        combo=ttk.Combobox(self.frame_principal, textvariable=self.tipo_usuario, width=23, font= fuente, state="readonly", values=["administrador", "odontologo", "secretario"])
         combo.grid(column=1, row=3, pady=5, padx=10)
 
-        Label(self.frame_principal, text= 'Tipo de usuario', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=3, pady=5, padx=2)
+        Label(self.frame_principal, text= 'Tipo de usuario', anchor="e", width=20, bg='gray90', fg= 'black', font= fuente).grid(column=0, row=3, pady=5, padx=2)
         if(self.nombre_usuario.get()==''):
-            self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row=0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Guardar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.guardar).grid(column= 2, row=1, pady= 5, padx= 50)
+            self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= fuente).grid(column= 0, row=0, pady= 20, padx= 10)
+            Button(self.frame_principal, text= 'Guardar',  font= fuente, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.guardar).grid(column= 2, row=1, pady= 5, padx= 50)
         else:
-            self.titulo = Label(self.frame_top, text= 'Actualizar usuario', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row=0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Actualizar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.actualizar).grid(column= 2, row=1, pady= 5, padx= 50)
+            self.titulo = Label(self.frame_top, text= 'Actualizar usuario', bg= '#1F704B', fg= 'white', font= fuente).grid(column= 0, row=0, pady= 20, padx= 10)
+            Button(self.frame_principal, text= 'Actualizar',  font=fuente, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.actualizar).grid(column= 2, row=1, pady= 5, padx= 50)
         self.frame_usuario.mainloop()
     
     def cargar_datos(self, usuario):

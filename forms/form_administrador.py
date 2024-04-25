@@ -294,8 +294,6 @@ class MasterPanel:
         Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
         Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 0, pady= 5)
         Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
-        #self.busqueda = ttk.Entry(self.frame_usuarios, textvariable=self.dato_paciente, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 0, row= 0, pady= 5)
-        #Button(self.frame_usuarios, text= 'Buscar', bg= '#1F704B', fg= 'black', font= ('Comic Sans MS', 12, 'bold'), command= self.buscar_usuario).grid(column= 0, row= 1)
         #TABLA USUARIO
         self.frame_tabla_usuario = Frame(self.frame_usuarios, bg='gray90')
         self.frame_tabla_usuario.grid(columnspan=4, row=2, sticky='nsew')
@@ -327,7 +325,7 @@ class MasterPanel:
         Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = (fuente, 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 2, row= 0, pady= 5)
         Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= (fuente, 12, 'bold')).grid(column= 2, row= 1)
         self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 10 ,font= (fuente, 14)).grid(column= 0, row= 0, pady= 5)
-        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= (fuente, 12, 'bold'), command= self.buscar_paciente).grid(column= 0, row= 1)
+        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= (fuente, 12, 'bold'), command= self.buscar_paciente).grid(column= 0, row= 1, pady=(0,10))
 
 		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()

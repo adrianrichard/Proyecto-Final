@@ -5,6 +5,8 @@ from tkinter import messagebox, Button, Entry, Label
 from tkinter import  StringVar, Frame
 #from bd.conexion import Conexion
 import sqlite3
+fuente= utl.definir_fuente('Arial', 12)
+ancho=15
 
 class Paciente:
 
@@ -91,32 +93,32 @@ class Paciente:
         self.frame_principal = Frame(self.frame_paciente)
         self.frame_principal.config(bg='gray90')
         self.frame_principal.grid(column= 1, row= 1, sticky= 'nsew')
-        self.titulo = Label(self.frame_top, text= 'Datos del paciente', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row=0, pady= 20, padx= 10)
-        Button(self.frame_principal, text= 'Cerrar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.Salir).grid(column= 2, row=3, pady= 5, padx= 100)
+        self.titulo = Label(self.frame_top, text= 'Datos del paciente', bg= '#1F704B', fg= 'white', font= fuente).grid(column= 0, row=0, pady= 20, padx= 10)
+        Button(self.frame_principal, text= 'Cerrar',  font= fuente, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.Salir).grid(column= 2, row=3, pady= 5, padx= 100)
 
         #Entradas Y ETIQUETAS DATOS DEL PACIENTE
-        Entry(self.frame_principal, textvariable=self.nombre_paciente, font= ('Comic Sans MS', 14)).grid(column=1, row=1, pady=5, padx=10)
-        Entry(self.frame_principal, textvariable=self.apellido_paciente, font= ('Comic Sans MS', 14)).grid(column=1, row=2, pady=5, padx=10)
-        Entry(self.frame_principal, textvariable=self.dni_paciente, font= ('Comic Sans MS', 14)).grid(column=1, row=3, pady=5, padx=10)
-        Entry(self.frame_principal, textvariable=self.domicilio_paciente, font= ('Comic Sans MS', 14)).grid(column=1, row=4, pady=5, padx=10)
-        Entry(self.frame_principal, textvariable=self.telefono_paciente, font= ('Comic Sans MS', 14)).grid(column=1, row=5, pady=5, padx=10)
-        Entry(self.frame_principal, textvariable=self.email_paciente, font= ('Comic Sans MS', 14)).grid(column=1, row=6, pady=5, padx=10)
-        Entry(self.frame_principal, textvariable=self.obrasocial_paciente, font= ('Comic Sans MS', 14)).grid(column=1, row=7, pady=5, padx=10)
-        Entry(self.frame_principal, textvariable=self.nrosocio_paciente, font= ('Comic Sans MS', 14)).grid(column=1, row=8, pady=5, padx=10)
+        Entry(self.frame_principal, textvariable=self.nombre_paciente, width=25, font= fuente).grid(column=1, row=1, pady=5, padx=10)
+        Entry(self.frame_principal, textvariable=self.apellido_paciente, width=25, font= fuente).grid(column=1, row=2, pady=5, padx=10)
+        Entry(self.frame_principal, textvariable=self.dni_paciente, width=25, font= fuente).grid(column=1, row=3, pady=5, padx=10)
+        Entry(self.frame_principal, textvariable=self.domicilio_paciente, width=25, font= fuente).grid(column=1, row=4, pady=5, padx=10)
+        Entry(self.frame_principal, textvariable=self.telefono_paciente, width=25, font= fuente).grid(column=1, row=5, pady=5, padx=10)
+        Entry(self.frame_principal, textvariable=self.email_paciente, width=25, font= fuente).grid(column=1, row=6, pady=5, padx=10)
+        Entry(self.frame_principal, textvariable=self.obrasocial_paciente, width=25, font= fuente).grid(column=1, row=7, pady=5, padx=10)
+        Entry(self.frame_principal, textvariable=self.nrosocio_paciente, width=25, font= fuente).grid(column=1, row=8, pady=5, padx=10)
 
-        Label(self.frame_principal, text= 'Nombre/s', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=1, pady=5, padx=2)
-        Label(self.frame_principal, text= 'Apellido/s', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=2, pady=5, padx=2)
-        Label(self.frame_principal, text= 'D.N.I.', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=3, pady=5, padx=2)
-        Label(self.frame_principal, text= 'Domicilio', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=4, pady=5, padx=2)
-        Label(self.frame_principal, text= 'Telefono', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=5, pady=5, padx=2)
-        Label(self.frame_principal, text= 'Email', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=6, pady=5, padx=2)
-        Label(self.frame_principal, text= 'Obra Social', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=7, pady=5, padx=2)
-        Label(self.frame_principal, text= 'Nro de socio', bg='gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column=0, row=8, pady=5, padx=2)
+        Label(self.frame_principal, text= 'Nombre/s', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuente).grid(column=0, row=1, pady=5, padx=2)
+        Label(self.frame_principal, text= 'Apellido/s', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuente).grid(column=0, row=2, pady=5, padx=2)
+        Label(self.frame_principal, text= 'D.N.I.', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuente).grid(column=0, row=3, pady=5, padx=2)
+        Label(self.frame_principal, text= 'Domicilio', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuente).grid(column=0, row=4, pady=5, padx=2)
+        Label(self.frame_principal, text= 'Telefono', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuente).grid(column=0, row=5, pady=5, padx=2)
+        Label(self.frame_principal, text= 'Email', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuente).grid(column=0, row=6, pady=5, padx=2)
+        Label(self.frame_principal, text= 'Obra Social', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuente).grid(column=0, row=7, pady=5, padx=2)
+        Label(self.frame_principal, text= 'Nro de socio', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuente).grid(column=0, row=8, pady=5, padx=2)
         if(self.dni_paciente.get()==''):
-            Button(self.frame_principal, text= 'Guardar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.guardar).grid(column= 2, row=1, pady= 5, padx= 100)
+            Button(self.frame_principal, text= 'Guardar',  font= fuente, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.guardar).grid(column= 2, row=1, pady= 5, padx= 100)
         else:
-            self.titulo = Label(self.frame_top, text= 'Actualizar paciente', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row=0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Actualizar',  font= ('Comic Sans MS', 12, BOLD), fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.actualizar).grid(column= 2, row=1, pady= 5, padx= 50)
+            self.titulo = Label(self.frame_top, text= 'Actualizar paciente', bg= '#1F704B', fg= 'white', font= fuente).grid(column= 0, row=0, pady= 20, padx= 10)
+            Button(self.frame_principal, text= 'Actualizar',  font= fuente, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.actualizar).grid(column= 2, row=1, pady= 5, padx= 50)
         self.frame_paciente.mainloop()
         
     def __init__(self, *args, **kwargs):
