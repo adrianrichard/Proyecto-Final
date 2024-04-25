@@ -46,10 +46,10 @@ class Usuario:
         self.frame_usuario.focus_set() # Mantiene el foco cuando se abre la ventana.
 
         self.frame_usuario.title('DentalMatic')
-        self.frame_usuario.geometry('800x300')
+        self.frame_usuario.geometry('800x500')
         self.frame_usuario.config(bg='gray90')
         self.frame_usuario.resizable(width= 0, height= 0)
-        utl.centrar_ventana(self.frame_usuario, 600, 450)
+        utl.centrar_ventana(self.frame_usuario, 650, 300)
         self.menu = True
         self.color = True
         self.frame_top = Frame(self.frame_usuario, bg= '#1F704B', height= 50)
@@ -61,7 +61,7 @@ class Usuario:
 
         self.conexionBBDD()
         
-        Button(self.frame_principal, text= 'Cerrar',  font= fuente, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.Salir).grid(column= 2, row=3, pady= 5, padx= 50)
+        Button(self.frame_principal, text= 'Cerrar',  font= fuente, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.Salir).grid(column= 2, row=5, pady= 5, padx= 5)
 
         #Entradas Y ETIQUETAS DATOS DEL USUARIO
         Entry(self.frame_principal, textvariable=self.nombre_usuario, width=25, font= fuente).grid(column=1, row=1, pady=5, padx=10)
@@ -75,10 +75,15 @@ class Usuario:
         Label(self.frame_principal, text= 'Tipo de usuario', anchor="e", width=20, bg='gray90', fg= 'black', font= fuente).grid(column=0, row=3, pady=5, padx=2)
         if(self.nombre_usuario.get()==''):
             self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= fuente).grid(column= 0, row=0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Guardar',  font= fuente, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.guardar).grid(column= 2, row=1, pady= 5, padx= 50)
+            Button(self.frame_principal, text= 'Guardar',  font= fuente, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.guardar).grid(column= 0, row=5, pady= 5, padx= 5)
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar usuario', bg= '#1F704B', fg= 'white', font= fuente).grid(column= 0, row=0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Actualizar',  font=fuente, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, command= self.actualizar).grid(column= 2, row=1, pady= 5, padx= 50)
+            Button(self.frame_principal, text= 'Actualizar',  font=fuente, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.actualizar).grid(column= 0, row=5, pady= 5, padx= 5)
+        Label(self.frame_principal, text= '* Campos obligatorios', anchor="e", width=20, bg='gray90', fg= 'red', font= fuente).grid(column=2, row=4, pady=5, padx=2)
+        Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuente).grid(column=2, row=1, pady=5, padx=2)
+        Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuente).grid(column=2, row=2, pady=5, padx=2)
+        Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuente).grid(column=2, row=3, pady=5, padx=2)
+
         self.frame_usuario.mainloop()
     
     def cargar_datos(self, usuario):
