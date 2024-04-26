@@ -1,12 +1,15 @@
 from tkinter import ttk
 import tkinter as tk
-import re
 
-def testAlphaValue(self, value):
-        if value.isalpha():
-            return True
-        else:
-            return False
+def DNI(text, new_text):
+    if len(new_text) > 8:
+        return False
+    # Luego, si la validación anterior no falló, chequear que el texto solo
+    # contenga números.
+    return text.isdecimal()
+
+def testAlphaValue(value):
+    return value.isalpha()
 
 def validate_entry(text):
     return text.isdecimal()
@@ -30,14 +33,15 @@ def validate_date(new_text):
     return all(checks)
 
 root = tk.Tk()
-root.config(width=300, height=200)
+root.config(width=300, height=300)
 root.title("My App")
 entry1 = ttk.Entry( validate="key", validatecommand=(root.register(validate_entry), "%S"))
 entry2 = ttk.Entry( validate="key", validatecommand=(root.register(validate_date), "%P"))
-
-entry3 = ttk.Entry( validate="key", validatecommand=(root.register(validate_entry), "%S"))
+entry3 = ttk.Entry( validate="key", validatecommand=(root.register(testAlphaValue), "%S"))
+entry4 = ttk.Entry( validate="key", validatecommand=(root.register(DNI), "%S", "%P"))
 entry1.place(x=50, y=50, width=150)
 entry2.place(x=50, y=100, width=150)
 entry3.place(x=50, y=150, width=150)
+entry4.place(x=50, y=200, width=150)
 
 root.mainloop()

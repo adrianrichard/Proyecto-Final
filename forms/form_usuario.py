@@ -7,7 +7,6 @@ from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
 import sqlite3
 fuenteb= utl.definir_fuente('MS Sans Serif', 12, 'BOLD')
 fuenten= utl.definir_fuente('MS Sans Serif', 12, 'normal')
-
 class Usuario:
 
     def conexionBBDD(self):
@@ -28,18 +27,22 @@ class Usuario:
             self.miConexion.close()
 
             messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
-
+    
     def guardar(self):
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
-        datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
-        try:
-            self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
-            self.miConexion.commit()
-            messagebox.showinfo("GUARDAR","Usuario guardado exitosamente")
-            self.frame_usuario.destroy()
-        except:
-            messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
+        if(utl.validar_password(self.clave.get())):
+            datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
+            Label(self.frame_principal, text= 'Contraseña valida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
+            try:
+                self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
+                self.miConexion.commit()
+                messagebox.showinfo("GUARDAR","Usuario guardado exitosamente")
+                self.frame_usuario.destroy()
+            except:
+                messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
+        else:
+            Label(self.frame_principal, text= 'Contraseña invalida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
     
     def ventana(self):
         self.frame_usuario= tk.Toplevel()
@@ -50,7 +53,7 @@ class Usuario:
         self.frame_usuario.geometry('800x500')
         self.frame_usuario.config(bg='gray90')
         self.frame_usuario.resizable(width= 0, height= 0)
-        utl.centrar_ventana(self.frame_usuario, 650, 300)
+        utl.centrar_ventana(self.frame_usuario, 700, 400)
         self.menu = True
         self.color = True
         self.frame_top = Frame(self.frame_usuario, bg= '#1F704B', height= 50)
@@ -62,7 +65,7 @@ class Usuario:
 
         self.conexionBBDD()
         
-        Button(self.frame_principal, text= 'Cerrar',  font= fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.Salir).grid(column= 2, row=5, pady= 5, padx= 5)
+        Button(self.frame_principal, text= 'Cerrar',  font= fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.Salir).grid(column= 2, row=6, pady= 5, padx= 5)
 
         #Entradas Y ETIQUETAS DATOS DEL USUARIO
         Entry(self.frame_principal, textvariable=self.nombre_usuario, width=25, font= fuenten).grid(column=1, row=1, pady=5, padx=10)
@@ -76,14 +79,15 @@ class Usuario:
         Label(self.frame_principal, text= 'Tipo de usuario', anchor="e", width=20, bg='gray90', fg= 'black', font= fuenteb).grid(column=0, row=3, pady=5, padx=2)
         if(self.nombre_usuario.get()==''):
             self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= fuenteb).grid(column= 0, row=0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Guardar',  font= fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.guardar).grid(column= 0, row=5, pady= 5, padx= 5)
+            Button(self.frame_principal, text= 'Guardar',  font= fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.guardar).grid(column= 0, row=6, pady= 5, padx= 5)
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar usuario', bg= '#1F704B', fg= 'white', font= fuenteb).grid(column= 0, row=0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Actualizar',  font=fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.actualizar).grid(column= 0, row=5, pady= 5, padx= 5)
+            Button(self.frame_principal, text= 'Actualizar',  font=fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.actualizar).grid(column= 0, row=6, pady= 5, padx= 5)
         Label(self.frame_principal, text= '* Campos obligatorios', anchor="e", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=4, pady=5, padx=2)
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=1, pady=5, padx=2)
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=3, pady=5, padx=2)
+        Label(self.frame_principal, text= 'Contraseña: debe poseer un mínimo de 8 caracteres\n al menos una minuscula\n al menos una mayuscula\n al menos un digito', width=50, borderwidth=2, relief="solid", bg='gray90', fg= 'black', font= fuenten).grid( column=0, columnspan=3, row=5, pady=5)
 
         self.frame_usuario.mainloop()
     
@@ -103,17 +107,20 @@ class Usuario:
     def actualizar(self):
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
-        user = self.nombre_usuario.get()
-        datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get(), user
+        if(utl.validar_password(self.clave.get())):
+            user = self.nombre_usuario.get()
+            datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get(), user
         #print(datos)
-        try:
-            sql="UPDATE Usuarios SET Nombre_usuario =?, Clave=?, Tipo_usuario=? where Nombre_usuario=?"
-            self.miCursor.execute(sql, datos)
-            self.miConexion.commit()
-            messagebox.showinfo("GUARDAR","Paciente actualizado exitosamente")
-            self.frame_usuario.destroy()
-        except:
-            messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
+            try:
+                sql="UPDATE Usuarios SET Nombre_usuario =?, Clave=?, Tipo_usuario=? where Nombre_usuario=?"
+                self.miCursor.execute(sql, datos)
+                self.miConexion.commit()
+                messagebox.showinfo("GUARDAR","Paciente actualizado exitosamente")
+                self.frame_usuario.destroy()
+            except:
+                messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
+        else:
+            Label(self.frame_principal, text= 'Contraseña invalida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
     
     def eliminar_usuario(self, nombre):
         msg_box = messagebox.askquestion('Eliminar usuario', '¿Desea elminar al usuario?', icon='warning')

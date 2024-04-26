@@ -11,7 +11,7 @@ validaciones = [(largo, "largo menor que ocho"),
                 (letra_may, "no tiene letras mayúsculas")]
 
 tests = [
-    "1",
+    "1$22b2A234",
     "12345678Ab",
     "abcedfgh",
     "ABCDEFGH",

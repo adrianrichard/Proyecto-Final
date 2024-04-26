@@ -1,5 +1,6 @@
 from PIL import ImageTk, Image
 path_relativo=""
+import re
 
 def obtener_path(path):
         path_relativo=path
@@ -24,5 +25,47 @@ def definir_fuente(nombre, size, bold):
         return (nombre, size)
 def definir_color_fondo():
     return '#1F704B'
-print(definir_fuente('Arial',30, 'BOLD'))
+
+def validar_password(password):
+    valido=False
+    minuscula=False
+    mayuscula=False
+    numero=False
+    espacio=True
+    caracter=True
+    if len(password) < 8:
+        valido = False
+        #print("corto", password)
+    else:
+        for i in password:
+            if i.islower():
+                minuscula=True
+            elif i.isdigit():
+                numero=True
+            elif i.isupper():
+                mayuscula=True
+            elif i.count(" ")== 1:
+            #print(i.count(" "))
+                espacio=False
+            else:
+                caracter=False
+    #print(minuscula , mayuscula , numero , espacio, caracter)
+        if minuscula and mayuscula and numero and espacio and caracter:
+            valido = True
+    return valido
+    print(valido)
+
+def show_message(self, error='', color='black'):
+    self.label_error['text'] = error
+    self.email_entry['foreground'] = color
+
+def validar_correo(self, value):
+    pattern = r'\b[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    if re.fullmatch(pattern, value) is None:
+        return False
+    self.show_message()
+    return True
+
+#validar_password("Na2@dA")    
+#print(definir_fuente('Arial',30, 'BOLD'))
 #leer_imagen("add.jpg",(50,50))
