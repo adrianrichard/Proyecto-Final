@@ -23,7 +23,7 @@ class Conexion():
     def cerrar_bd(self):
         self.cur.close()
     
-    def crear_bd_login():
+    def crear_bd_login(self):
         self.miCursor.execute('''
                 CREATE TABLE Usuarios (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,5 +31,5 @@ class Conexion():
                 CLAVE VARCHAR(50) NOT NULL
                 TIPO_USUARIO VARCHAR(50) NOT NULL)
                 ''')
-            self.miConexion.commit()
-            self.miConexion.close()
+        self.miConexion.commit()
+        self.miConexion.close()

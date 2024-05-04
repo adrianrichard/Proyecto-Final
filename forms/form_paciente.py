@@ -91,7 +91,8 @@ class Paciente:
         self.frame_paciente= tk.Toplevel()
         self.frame_paciente.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.frame_paciente.focus_set() # Mantiene el foco cuando se abre la ventana.
-
+        self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
+        self.frame_paciente.iconphoto(False, self.imagen_ventana)  
         self.frame_paciente.title('DentalMatic')
         self.frame_paciente.geometry('800x300')
         self.frame_paciente.config(bg='gray90')
@@ -127,7 +128,7 @@ class Paciente:
         Label(self.frame_principal, text= 'Obra Social', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuenteb).grid(column=0, row=7, pady=5, padx=2)
         Label(self.frame_principal, text= 'Nro de socio', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuenteb).grid(column=0, row=8, pady=5, padx=2)
         if(self.dni_paciente.get()==''):
-            Button(self.frame_principal, text= 'Guardar',  font= fuenten, fg= 'white', bg= '#1F704B', activebackground= 'gray', width=15, bd= 2, command= self.guardar).grid(column= 0, row=10, pady= 5, padx= 20)
+            Button(self.frame_principal, text= 'Guardar',  font= fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', width=15, bd= 2, command= self.guardar).grid(column= 0, row=10, pady= 5, padx= 20)
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar paciente', bg= '#1F704B', fg= 'white', font= fuenteb).grid(column= 0, row=0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Actualizar',  font= fuenteb, fg= 'white', bg= '#1F704B', width=15, activebackground= 'gray', bd= 2, command= self.actualizar).grid(column= 0, row=10, pady= 5, padx= 20)

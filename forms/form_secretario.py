@@ -24,6 +24,8 @@ class SecretarioPanel:
         utl.centrar_ventana(self.ventana, 900, 600)
         self.menu = True
         self.color = True
+        self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
+        self.ventana.iconphoto(False, self.imagen_ventana)         
         self.dni_paciente =  StringVar()
         self.dato_paciente =  StringVar()
 

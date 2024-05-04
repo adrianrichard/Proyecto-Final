@@ -23,7 +23,8 @@ class OdontologoPanel:
         self.ventana.resizable(width= 0, height= 0)
         utl.centrar_ventana(self.ventana, 900, 600)
         self.menu = True
-        
+        self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
+        self.ventana.iconphoto(False, self.imagen_ventana)         
         self.dni_paciente =  StringVar()
         self.dato_paciente =  StringVar()
  

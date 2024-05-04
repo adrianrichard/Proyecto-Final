@@ -27,7 +27,8 @@ class MasterPanel:
         self.ventana.resizable(width= 0, height= 0)
         utl.centrar_ventana(self.ventana, 900, 600)
         self.menu = True
-        
+        self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
+        self.ventana.iconphoto(False, self.imagen_ventana)        
         self.dni_paciente =  StringVar()
         self.dato_paciente =  StringVar()
         self.nombre_usuario =  StringVar()
@@ -139,9 +140,10 @@ class MasterPanel:
                 self.miCursor.execute("DELETE FROM Paciente WHERE dni = ?", (self.dni_paciente,))
                 self.miConexion.commit()
                 messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
+                self.mostrar_pacientes()
         except:
             messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")
-        self.mostrar_pacientes()
+        
             
     def mostrar_pacientes(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -158,14 +160,14 @@ class MasterPanel:
     def mostrar_usuarios(self):
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
-        bd = "SELECT ID, Nombre_usuario, Clave, Tipo_usuario FROM Usuarios"
+        bd = "SELECT Nombre_usuario, Clave, Tipo_usuario FROM Usuarios"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
         self.tabla_usuario.delete(*self.tabla_usuario.get_children())
         i = -1
         for dato in datos:
             i= i+1
-            self.tabla_usuario.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2],datos[i][3]))
+            self.tabla_usuario.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2]))
 
     def buscar_paciente(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -189,18 +191,17 @@ class MasterPanel:
     def seleccionar_usuario(self, event):
         item = self.tabla_usuario.focus()
         self.data = self.tabla_usuario.item(item)        
-        self.nombre_usuario=self.data['values'][0]
+        self.nombre_usuario=self.data['values'][-1]        
 
     def agregar_usuario(self):
         user = Usuario()
         user.conexionBBDD()
         user.ventana()
+        self.tabla_usuario.delete(*self.tabla_usuario.get_children())
     
     def editar_usuario(self, event):
-        item = self.tabla_usuario.focus()
-        self.data = self.tabla_usuario.item(item)
-        self.usuario=self.data['values'][0]
-        #print("you clicked on", self.usuario)
+        (sel,) = self.tabla_usuario.selection()
+        self.usuario=self.tabla_usuario.item(sel, "text")
         user = Usuario()
         user.conexionBBDD()
         user.cargar_datos(self.usuario)
@@ -210,6 +211,7 @@ class MasterPanel:
         user = Usuario()
         user.conexionBBDD()
         user.eliminar_usuario(self.nombre_usuario)
+        self.mostrar_usuarios()
         
     def widgets(self):
         self.imagen_usuario = utl.leer_imagen('dentist-icon2-removebg-preview.png', (38, 38))
@@ -304,14 +306,12 @@ class MasterPanel:
         ladoy = ttk.Scrollbar(self.frame_tabla_usuario, orient ='vertical', command = self.tabla_usuario.yview)
         ladoy.grid(column = 4, row = 2, sticky='ns')
         self.tabla_usuario.configure(yscrollcommand = ladoy.set)
-        self.tabla_usuario['columns'] = ('Nombre_usuario', 'Clave', 'Tipo_usuario')
+        self.tabla_usuario['columns'] = ( 'Clave', 'Tipo_usuario')
         self.tabla_usuario.column('#0', minwidth=100, width=120, anchor='center')
-        self.tabla_usuario.column('Clave', minwidth=100, width=120, anchor='center' )
-        self.tabla_usuario.column('Clave', minwidth=100, width=120, anchor='center' )
+        self.tabla_usuario.column('Clave', minwidth=100, width=120, anchor='center' )        
         self.tabla_usuario.column('Tipo_usuario', minwidth=100, width=120, anchor='center' )
 
-        self.tabla_usuario.heading('#0', text='ID', anchor ='center')
-        self.tabla_usuario.heading('Nombre_usuario', text='Usuario', anchor ='center')
+        self.tabla_usuario.heading('#0', text='Nombre_usuario', anchor ='center')
         self.tabla_usuario.heading('Clave', text='Clave', anchor ='center')
         self.tabla_usuario.heading('Tipo_usuario', text='Tipo de usuario', anchor ='center')
         self.mostrar_usuarios()

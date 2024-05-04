@@ -51,6 +51,9 @@ class Login:
         self.frame_login.title('DENTALMATIC')
         self.frame_login.geometry('500x500')
         self.frame_login.resizable(width = 0, height = 0)
+        self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
+        self.frame_login.iconphoto(False, self.imagen_ventana)
+
         utl.centrar_ventana(self.frame_login, 600, 500)
         fuente2=utl.definir_fuente('Comic Sans MS', 15,'nada')
         fuente='Comic Sans MS'
