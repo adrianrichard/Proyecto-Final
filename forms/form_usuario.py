@@ -7,6 +7,7 @@ from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
 import sqlite3
 fuenteb= utl.definir_fuente('MS Sans Serif', 12, 'BOLD')
 fuenten= utl.definir_fuente('MS Sans Serif', 12, 'normal')
+
 class Usuario:
 
     def conexionBBDD(self):
@@ -32,22 +33,23 @@ class Usuario:
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
         if (self.usuario_existente(self.nombre_usuario.get())):
-            print("existe")
-        if(utl.validar_password(self.clave.get())):
-            datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
-            Label(self.frame_principal, text= 'Contraseña valida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
-            try:
-                self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
-                self.miConexion.commit()
+            #print("existe")
+            if(utl.validar_password(self.clave.get())):
+                datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
+                Label(self.frame_principal, text= 'Contraseña valida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
+                try:
+                    self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
+                    self.miConexion.commit()
                 #messagebox.showinfo("GUARDAR","Usuario guardado exitosamente")
-                self.frame_usuario.destroy()
-            except:
-                messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
-        else:
-            Label(self.frame_principal, text= 'Contraseña invalida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
+                    self.frame_usuario.destroy()
+                except:
+                    messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
+            else:
+                Label(self.frame_principal, text= 'Contraseña invalida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
     
     def cargar_datos(self, usuario):
-        self.nombre_usuario.set(usuario)        
+        self.nombre_usuario.set(usuario)
+        self.nombre_usuario_anterior=usuario
         try:
             self.miCursor.execute("SELECT * FROM Usuarios WHERE Nombre_usuario=?", (usuario,))
             campos=self.miCursor.fetchall()        
@@ -73,10 +75,9 @@ class Usuario:
     def actualizar(self):
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
-        if(utl.validar_password(self.clave.get())):
-            user = self.nombre_usuario.get()
-            datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get(), user
-        #print(datos)
+        if(utl.validar_password(self.clave.get())):            
+            datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get(), self.nombre_usuario_anterior
+            print(datos, self.nombre_usuario_anterior)
             try:
                 sql="UPDATE Usuarios SET Nombre_usuario =?, Clave=?, Tipo_usuario=? where Nombre_usuario=?"
                 self.miCursor.execute(sql, datos)
@@ -84,7 +85,7 @@ class Usuario:
                 messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente")
                 self.frame_usuario.destroy()
             except:
-                messagebox.showinfo("GUARDAR", "No se ha podido guardar el Usuario")
+                messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
         else:
             messagebox.showwarning("CONTRASEÑA", "Contraseña inválida")
     
@@ -103,6 +104,7 @@ class Usuario:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.nombre_usuario = StringVar()
+        self.nombre_usuario_anterior = StringVar()
         self.clave = StringVar()
         self.tipo_usuario =  StringVar()
         self.id_usuario =  StringVar()
@@ -122,7 +124,7 @@ class Usuario:
         self.menu = True
         self.color = True
         self.frame_top = Frame(self.frame_usuario, bg= '#1F704B', height= 50)
-
+        
         self.frame_top.grid(column= 1, row= 0, sticky= 'nsew')
         self.frame_principal = Frame(self.frame_usuario)
         self.frame_principal.config(bg='gray90')

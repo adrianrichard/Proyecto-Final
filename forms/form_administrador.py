@@ -125,12 +125,15 @@ class MasterPanel:
 
     def editar_paciente(self, event):
         paciente=Paciente()
-        item = self.tabla_paciente.focus()
+        item = self.tabla_paciente.focus()        
         self.data = self.tabla_paciente.item(item)
-        self.dni_paciente=self.data['values'][1]        
-        paciente.cargar_datos(self.dni_paciente)
-        paciente.ventana_paciente()        
-
+        try:
+            self.dni_paciente=self.data['values'][1]        
+            paciente.cargar_datos(self.dni_paciente)
+            paciente.ventana_paciente()
+        except:
+            pass
+        
     def eliminar_paciente(self):
         try:
             self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -142,8 +145,7 @@ class MasterPanel:
                 messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
                 self.mostrar_pacientes()
         except:
-            messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")
-        
+            messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")        
             
     def mostrar_pacientes(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -190,6 +192,7 @@ class MasterPanel:
 
     def seleccionar_usuario(self, event):
         item = self.tabla_usuario.focus()
+        print(item)
         self.data = self.tabla_usuario.item(item)        
         self.nombre_usuario=self.data['values'][-1]        
 
@@ -202,9 +205,10 @@ class MasterPanel:
     def editar_usuario(self, event):
         (sel,) = self.tabla_usuario.selection()
         self.usuario=self.tabla_usuario.item(sel, "text")
+        print(self.usuario)
         user = Usuario()
         user.conexionBBDD()
-        user.cargar_datos(self.usuario)
+        user.cargar_datos(self.usuario)        
         user.ventana()
     
     def eliminar_usuario(self):
@@ -212,7 +216,8 @@ class MasterPanel:
         user.conexionBBDD()
         user.eliminar_usuario(self.nombre_usuario)
         self.mostrar_usuarios()
-        
+    def nada(self):
+        pass    
     def widgets(self):
         self.imagen_usuario = utl.leer_imagen('dentist-icon2-removebg-preview.png', (38, 38))
         #tself.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
@@ -298,6 +303,7 @@ class MasterPanel:
         Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 1, row= 1)
         Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 0, pady= 5)
         Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 2, row= 1)
+        
         #TABLA USUARIO
         self.frame_tabla_usuario = Frame(self.frame_usuarios, bg='gray90')
         self.frame_tabla_usuario.grid(columnspan=3, row=2, sticky='nsew')
@@ -320,14 +326,14 @@ class MasterPanel:
         self.tabla_usuario.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
 
 		######################## PACIENTES #################
-        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 3, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Agregar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 3, row= 1)
-        Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 1, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 1, row= 1)
-        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 2, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 2, row= 1)
-        self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 10 ,font= fuenten).grid(column= 0, row= 0, pady= 5)
-        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_paciente).grid(column= 0, row= 1, pady=(0,10))
+        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 1, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Agregar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 1, row= 1)
+        Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 2, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 2, row= 1)
+        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 3, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 3, row= 1)
+        self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 20 ,font= fuenten).grid(column= 4, row= 0, pady= 5)
+        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_paciente).grid(column= 4, row= 1, pady=(0,10))
 
 		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()
@@ -351,8 +357,8 @@ class MasterPanel:
         self.tabla_paciente.column('D.N.I.', minwidth=100, width=120, anchor='center' )
         self.tabla_paciente.column('Teléfono', minwidth=100, width=120 , anchor='center')
         self.tabla_paciente.column('Obra Social', minwidth=100, width=105, anchor='center')
-
-        self.tabla_paciente.heading('#0', text='Apellido', anchor ='center')
+    
+        self.tabla_paciente.heading('#0', text='Apellido', anchor ='center', command=self.nada)
         self.tabla_paciente.heading('Nombre', text='Nombre', anchor ='center')
         self.tabla_paciente.heading('D.N.I.', text='D.N.I.', anchor ='center')
         self.tabla_paciente.heading('Teléfono', text='Teléfono', anchor ='center')

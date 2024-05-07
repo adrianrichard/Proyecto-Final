@@ -29,6 +29,7 @@ class Paciente:
             self.miConexion.close()
 
             messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
+    
     def validar_DNI(self, text, new_text):
         if len(new_text) > 8:
             return False
@@ -41,6 +42,7 @@ class Paciente:
         return text.isdecimal()
     
     def cargar_datos(self, dni):
+        self.dni_paciente_anterior=dni
         try:
             self.miCursor.execute("SELECT * FROM paciente WHERE dni=?", (dni,))
             campos=self.miCursor.fetchall()
@@ -57,10 +59,8 @@ class Paciente:
             messagebox.showinfo("Buscar paciente", "No se ha podido encontrar el paciente")
             self.frame_paciente.destroy()
 
-    def actualizar(self):
-        self.dni_actual=self.dni_paciente.get()
-        datos=self.nombre_paciente.get(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get(), self.dni_actual
-        
+    def actualizar(self):        
+        datos=self.nombre_paciente.get(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get(), self.dni_paciente_anterior
         try:
             sql="UPDATE Paciente SET nombre =?, apellido=?, dni=?, domicilio=?, telefono=?, email=?, obrasocial=?, nrosocio=? where dni=?"
             self.miCursor.execute(sql, datos)
@@ -68,7 +68,7 @@ class Paciente:
             messagebox.showinfo("GUARDAR","Paciente actualizado exitosamente")
             self.frame_paciente.destroy()
         except:
-            messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
+            messagebox.showinfo("GUARDAR", "No se ha podido actualizar el paciente")
             
     def guardar(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -146,6 +146,7 @@ class Paciente:
         
         self.nombre_paciente = StringVar()
         self.apellido_paciente = StringVar()
+        self.dni_paciente_anterior =  StringVar()
         self.dni_paciente =  StringVar()
         self.domicilio_paciente =  StringVar()
         self.telefono_paciente =  StringVar()
