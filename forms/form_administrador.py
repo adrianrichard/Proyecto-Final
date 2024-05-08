@@ -191,8 +191,7 @@ class MasterPanel:
         self.dni_paciente=self.data['values'][1]
 
     def seleccionar_usuario(self, event):
-        item = self.tabla_usuario.focus()
-        print(item)
+        item = self.tabla_usuario.focus()        
         self.data = self.tabla_usuario.item(item)        
         self.nombre_usuario=self.data['values'][-1]        
 
@@ -203,13 +202,15 @@ class MasterPanel:
         self.tabla_usuario.delete(*self.tabla_usuario.get_children())
     
     def editar_usuario(self, event):
-        (sel,) = self.tabla_usuario.selection()
-        self.usuario=self.tabla_usuario.item(sel, "text")
-        print(self.usuario)
-        user = Usuario()
-        user.conexionBBDD()
-        user.cargar_datos(self.usuario)        
-        user.ventana()
+        try:
+            (sel,) = self.tabla_usuario.selection()
+            self.usuario=self.tabla_usuario.item(sel, "text")
+            user = Usuario()
+            user.conexionBBDD()
+            user.cargar_datos(self.usuario)        
+            user.ventana()
+        except:
+            pass        
     
     def eliminar_usuario(self):
         user = Usuario()

@@ -33,7 +33,6 @@ class Usuario:
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
         if (self.usuario_existente(self.nombre_usuario.get())):
-            #print("existe")
             if(utl.validar_password(self.clave.get())):
                 datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
                 Label(self.frame_principal, text= 'Contraseña valida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
@@ -77,7 +76,6 @@ class Usuario:
         self.miCursor=self.miConexion.cursor()
         if(utl.validar_password(self.clave.get())):            
             datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get(), self.nombre_usuario_anterior
-            print(datos, self.nombre_usuario_anterior)
             try:
                 sql="UPDATE Usuarios SET Nombre_usuario =?, Clave=?, Tipo_usuario=? where Nombre_usuario=?"
                 self.miCursor.execute(sql, datos)
