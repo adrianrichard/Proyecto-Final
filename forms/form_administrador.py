@@ -335,7 +335,8 @@ class MasterPanel:
         Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 3, row= 1)
         self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 20 ,font= fuenten).grid(column= 4, row= 0, pady= 5)
         Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_paciente).grid(column= 4, row= 1, pady=(0,10))
-
+        self.frame_botones=Frame(self.frame_pacientes, bg='gray90')
+        Button(self.frame_botones, text= 'Anterior', fg= 'black', font = fuenten, bg= '#1F704B', bd= 2, borderwidth= 2).grid(column= 1, row= 0)
 		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()
         estilo_tabla.configure("Treeview", font= fuenten, foreground='black', rowheight=40)
