@@ -11,12 +11,12 @@ from util.visorimagenes import ImageGalleryApp
 import sqlite3
 fuenteb= utl.definir_fuente('MS Sans Serif', 12, 'BOLD')
 fuenten= utl.definir_fuente('MS Sans Serif', 12, 'normal')
-
+pacientes=[]
 fuente2= 'Comic Sans MS'
 color_fuente = 'black'
 color_fondo1 = utl.definir_color_fondo()
 color_fondo2 = 'gray90'
-
+indice_paciente=0
 class MasterPanel:
 
     def __init__(self):        
@@ -146,7 +146,33 @@ class MasterPanel:
                 self.mostrar_pacientes()
         except:
             messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")        
-            
+    
+    def cargar_tabla_pacientes(self):
+        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+        self.miCursor=self.miConexion.cursor()
+        bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente"
+        self.miCursor.execute(bd)
+        pacientes = self.miCursor.fetchall()
+        return pacientes
+    
+    def cargar_pacientes_previos(self):
+        paciente_lista = self.cargar_tabla_pacientes()
+        self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+        print(indice_paciente,  len(paciente_lista))
+        for i in range(indice_paciente, indice_paciente+3):           
+            self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))
+        if(indice_paciente > 0):
+            indice_paciente=indice_paciente-3
+    def cargar_pacientes_posteriores(self):
+        paciente_lista = self.cargar_tabla_pacientes()
+        self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+        print(indice_paciente, len(paciente_lista))
+        
+        #for i in range(indice_paciente, indice_paciente+5):           
+        #    self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))
+        #if(indice_paciente > 0):
+        #    indice_paciente=indice_paciente-5    
+                    
     def mostrar_pacientes(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
@@ -335,7 +361,7 @@ class MasterPanel:
         Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 2, row= 1)
         self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 20 ,font= fuenten).grid(column= 3, row= 0, pady= 5)
         Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_paciente).grid(column= 3, row= 1, pady=(0,10))
-        Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(column= 0, row= 2, padx= 10, pady=(0,10), sticky="W")
+        Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_previos).grid(column= 0, row= 2, padx= 10, pady=(0,10), sticky="W")
         Button(self.frame_pacientes, text= '>', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(column= 3, row= 2, padx=(0,10), pady=(0,10), sticky="E")        
 		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()
