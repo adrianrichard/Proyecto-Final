@@ -16,7 +16,7 @@ fuente2= 'Comic Sans MS'
 color_fuente = 'black'
 color_fondo1 = utl.definir_color_fondo()
 color_fondo2 = 'gray90'
-indice_paciente=0
+global indice_paciente
 class MasterPanel:
 
     def __init__(self):        
@@ -162,27 +162,42 @@ class MasterPanel:
         #print(indice_paciente,  len(paciente_lista))
         for i in range(indice_paciente, indice_paciente+3):           
             self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))            
-        if indice_paciente > 0:
+        if indice_paciente >= 3:
             indice_paciente = indice_paciente - 3
 
     def cargar_pacientes_posteriores(self):
         global indice_paciente
+        print("indice inicial:",indice_paciente)
         #self.boton_previo["state"]="normal"
-        st=self.boton_previo["state"]
-        print(st)
-        #if ( self.boton_previo['state'] == tk.DISABLED):
+        # st=self.boton_previo["state"]
+        # print(st)
+        #if ( ):
         #self.boton_previo.state(['disabled'])
-        self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+        #self.boton_previo['state'] == tk.NORMAL
+        
         paciente_lista = self.cargar_tabla_pacientes()
-        if(indice_paciente+3 == len(paciente_lista)%3):
-            indice_paciente = indice_paciente + 3
-        else:
-            indice_paciente = indice_paciente + (len(paciente_lista)%3)
-        self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+        #indice_paciente = indice_paciente + 3
+        resto=len(paciente_lista)-(indice_paciente+3)        
+        print("RESTO:",resto)
+        if(resto < 3):
+            #self.boton_pos['state'] = 'disabled'
+            self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+            for i in range(indice_paciente, indice_paciente+resto):           
+                self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))
+        # if(indice_paciente+3 == len(paciente_lista)%3):
+            indice_paciente = indice_paciente + resto
+            print("ultimo")
+        elif resto >= 3:
+            self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+        #     indice_paciente = indice_paciente + (len(paciente_lista)%3)
+        #self.tabla_paciente.delete(*self.tabla_paciente.get_children())
         #print(indice_paciente,  len(paciente_lista))
-        for i in range(indice_paciente, indice_paciente+3):           
-            self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))
-                    
+            print("NOOO")
+            for i in range(indice_paciente, indice_paciente+3):           
+                self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))
+            indice_paciente = indice_paciente + 3
+        print("inidice final:",indice_paciente)
+                
     def mostrar_pacientes(self):
         global indice_paciente
         indice_paciente=0
@@ -374,9 +389,8 @@ class MasterPanel:
         self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 20 ,font= fuenten).grid(column= 3, row= 0, pady= 5)
         Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_paciente).grid(column= 3, row= 1, pady=(0,10))
 
-        self.boton_previo=tk.Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, state = 'disable',command= self.cargar_pacientes_previos).grid(column= 0, row= 2, padx= 10, pady=(0,10), sticky="W")
-        Button(self.frame_pacientes, text= '>', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cambiar).grid(column= 3, row= 2, padx=(0,10), pady=(0,10), sticky="E")        
-
+        self.boton_previo=tk.Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5,command= self.cargar_pacientes_previos).grid(column= 0, row= 2, padx= 10, pady=(0,10), sticky="W")
+        self.boton_pos=tk.Button(self.frame_pacientes, text= '>', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_posteriores).grid(column= 3, row= 2, padx=(0,10), pady=(0,10), sticky="E")        
         
         #ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()
@@ -423,4 +437,11 @@ class MasterPanel:
 
         self.ventana.mainloop()
     def cambiar(self):
-        self.boton_previo['state']='normal'
+        self.boton_previo["state"]="active"
+        #self.boton_previo["state"]="normal"
+        # st=self.boton_previo["state"]
+        # print(st)
+        #if ( ):
+        #self.boton_previo.state(['normal'])
+        #self.boton_previo['state'] = tk.NORMAL
+        #self.boton_previo['state']='normal'
