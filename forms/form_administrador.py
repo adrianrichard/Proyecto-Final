@@ -167,7 +167,12 @@ class MasterPanel:
 
     def cargar_pacientes_posteriores(self):
         global indice_paciente
-               
+        #self.boton_previo["state"]="normal"
+        st=self.boton_previo["state"]
+        print(st)
+        #if ( self.boton_previo['state'] == tk.DISABLED):
+        #self.boton_previo.state(['disabled'])
+        self.tabla_paciente.delete(*self.tabla_paciente.get_children())
         paciente_lista = self.cargar_tabla_pacientes()
         if(indice_paciente+3 == len(paciente_lista)%3):
             indice_paciente = indice_paciente + 3
@@ -193,7 +198,6 @@ class MasterPanel:
             self.tabla_paciente.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2],datos[i][3],datos[i][4]))
 
     def mostrar_usuarios(self):
-        indice_paciente=0
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
         bd = "SELECT Nombre_usuario, Clave, Tipo_usuario FROM Usuarios"
@@ -369,9 +373,12 @@ class MasterPanel:
         Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 2, row= 1)
         self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 20 ,font= fuenten).grid(column= 3, row= 0, pady= 5)
         Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_paciente).grid(column= 3, row= 1, pady=(0,10))
-        Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_previos).grid(column= 0, row= 2, padx= 10, pady=(0,10), sticky="W")
-        Button(self.frame_pacientes, text= '>', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_posteriores).grid(column= 3, row= 2, padx=(0,10), pady=(0,10), sticky="E")        
-		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
+
+        self.boton_previo=tk.Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, state = 'disable',command= self.cargar_pacientes_previos).grid(column= 0, row= 2, padx= 10, pady=(0,10), sticky="W")
+        Button(self.frame_pacientes, text= '>', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cambiar).grid(column= 3, row= 2, padx=(0,10), pady=(0,10), sticky="E")        
+
+        
+        #ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()
         estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 40)
 ##        estilo_tabla.map('Treeview', background=[('selected', color_fondo1)], foreground=[('selected','white')] )
@@ -415,3 +422,5 @@ class MasterPanel:
         self.autor= Label(self.frame_info, text= 'Autor:Rodrigo Adrian Richard\nDesarrollado en Python', fg='black', bg='gray90', font=('Comic Sans MS', 10)).pack(expand= 1)
 
         self.ventana.mainloop()
+    def cambiar(self):
+        self.boton_previo['state']='normal'
