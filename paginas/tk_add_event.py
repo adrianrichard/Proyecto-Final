@@ -87,7 +87,7 @@ class TurnoNuevo:
         }
 
         style = Style()
-        if ev_dict["time_hours"] == "Hora" or ev_dict["title"] == "Paciente":
+        if ev_dict["time_hours"] == "Hora" or ev_dict["title"] == "Paciente" or ev_dict["category"] == "Prestación":
             style.configure("TCombobox", fieldbackground="red", background="white")
             self.nombre_entry.configure(bg="red")
             messagebox.showinfo(message="Completar campos", title="Advertencia")

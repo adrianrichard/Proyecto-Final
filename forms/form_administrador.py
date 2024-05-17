@@ -157,34 +157,33 @@ class MasterPanel:
     
     def cargar_pacientes_previos(self):
         global indice_paciente
+        incremento = 4
         paciente_lista = self.cargar_tabla_pacientes()
-        print(indice_paciente,  len(paciente_lista))
-        if(indice_paciente > 0):
-            self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-            if(indice_paciente == len(paciente_lista)):
-                resto = len(paciente_lista)%3
-                for i in range(indice_paciente-resto, indice_paciente):           
-                    self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))            
-                indice_paciente = indice_paciente - resto
-            elif indice_paciente >=3:
-                for i in range(indice_paciente-3, indice_paciente):           
-                    self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))            
-                indice_paciente = indice_paciente - 3
-            print(indice_paciente)
+        #print(indice_paciente,  len(paciente_lista))
+        offset = len(paciente_lista)%incremento
+        if indice_paciente ==  len(paciente_lista):
+            indice_paciente = indice_paciente - offset
+        indice_paciente = indice_paciente - incremento    
+        if(indice_paciente >= 0):
+            self.tabla_paciente.delete(*self.tabla_paciente.get_children())            
+            for i in range(indice_paciente, indice_paciente+incremento):           
+                self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))            
+        if indice_paciente < 0 :
+            indice_paciente = 0    
+            #print(indice_paciente)
 
     def cargar_pacientes_posteriores(self):
         global indice_paciente
-        incremento = 3
-        paciente_lista = self.cargar_tabla_pacientes()        
+        incremento = 4
+        paciente_lista = self.cargar_tabla_pacientes()
         if indice_paciente < len(paciente_lista):
             indice_paciente = indice_paciente + incremento
-        #print("incrementado", indice_paciente)
-            if indice_paciente+3 < len(paciente_lista):
+            if indice_paciente+incremento <= len(paciente_lista):
                 self.tabla_paciente.delete(*self.tabla_paciente.get_children())
                 for i in range(indice_paciente, indice_paciente+incremento):           
                     self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))
-            elif indice_paciente+3 > len(paciente_lista):
-                offset = len(paciente_lista)%3            
+            elif indice_paciente+incremento > len(paciente_lista):
+                offset = len(paciente_lista)%incremento            
                 self.tabla_paciente.delete(*self.tabla_paciente.get_children())
                 for i in range(indice_paciente, indice_paciente+offset):           
                     self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))        
@@ -193,13 +192,14 @@ class MasterPanel:
     def mostrar_pacientes(self):
         global indice_paciente
         indice_paciente=0
+        incremento = 4
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-        for i in range(0, 3):           
+        for i in range(0, incremento):           
                 self.tabla_paciente.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2],datos[i][3],datos[i][4]))
 
     def mostrar_usuarios(self):
