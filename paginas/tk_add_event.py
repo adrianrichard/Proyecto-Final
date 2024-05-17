@@ -33,7 +33,7 @@ class TurnoNuevo:
         self.main_frame.grid(row=self.grid_row_start, column=0, columnspan=self.column_count, sticky=NSEW, padx=10, pady=10)
 
     def crear_header(self):
-        Label(self.main_frame, text="AGREGAR TURNO", font="MS Sans Serif", bg="#BDC1BE").pack(pady=8)
+        Label(self.main_frame, text="AGREGAR TURNO", font="Arial", bg="#BDC1BE").pack(pady=8)
 
     def crear_nombre_entry(self):
         self.nombre_entry = Entry(self.main_frame, justify=CENTER)

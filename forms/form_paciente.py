@@ -117,7 +117,7 @@ class Paciente:
         Entry(self.frame_principal, textvariable=self.telefono_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_telefono), "%S", "%P")).grid(column=1, row=5, pady=5)
         Entry(self.frame_principal, textvariable=self.email_paciente, width=25, font= fuenten).grid(column=1, row=6, pady=5)
         Entry(self.frame_principal, textvariable=self.obrasocial_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfa), "%S")).grid(column=1, row=7, pady=5)
-        Entry(self.frame_principal, textvariable=self.nrosocio_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfa), "%S")).grid(column=1, row=8, pady=5)
+        Entry(self.frame_principal, textvariable=self.nrosocio_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_telefono), "%S", "%P")).grid(column=1, row=8, pady=5)
 
         Label(self.frame_principal, text= 'Nombre/s', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuenteb).grid(column=0, row=1, pady=5, padx=2)
         Label(self.frame_principal, text= 'Apellido/s', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuenteb).grid(column=0, row=2, pady=5, padx=2)

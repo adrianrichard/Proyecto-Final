@@ -7,7 +7,7 @@ from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
 import sqlite3
 fuenteb= utl.definir_fuente('MS Sans Serif', 12, 'BOLD')
 fuenten= utl.definir_fuente('MS Sans Serif', 12, 'normal')
-
+import re
 class Usuario:
 
     def conexionBBDD(self):
@@ -32,19 +32,20 @@ class Usuario:
     def guardar(self):
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
-        if (self.usuario_existente(self.nombre_usuario.get())):
-            if(utl.validar_password(self.clave.get())):
-                datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
-                Label(self.frame_principal, text= 'Contraseña valida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
-                try:
-                    self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
-                    self.miConexion.commit()
+        #if (self.usuario_existente(self.nombre_usuario.get())):
+        if(utl.validar_password(self.clave.get())):
+            datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
+            Label(self.frame_principal, text= 'Contraseña valida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
+            try:
+                self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
+                self.miConexion.commit()
                 #messagebox.showinfo("GUARDAR","Usuario guardado exitosamente")
-                    self.frame_usuario.destroy()
-                except:
-                    messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
-            else:
-                Label(self.frame_principal, text= 'Contraseña invalida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
+                self.frame_usuario.destroy()
+            except:
+                messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
+        else:
+            #Label(self.frame_principal, text= 'Contraseña invalida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
+            messagebox.showwarning("CONTRASEÑA", "Contraseña inválida")
     
     def cargar_datos(self, usuario):
         self.nombre_usuario.set(usuario)
@@ -98,6 +99,18 @@ class Usuario:
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
         if answer:
             self.frame_usuario.destroy()
+    def validate(self, value):  
+        """ 
+        Validating the email address in the entry field 
+        :param value: 
+        :return: 
+        """  
+        pattern = r'\b[A-Za-z_]\b'
+        if re.fullmatch(pattern, value) is None:  
+            return False  
+  
+        #self.displayMessage()  
+        return True  
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -134,6 +147,7 @@ class Usuario:
 
         #Entradas Y ETIQUETAS DATOS DEL USUARIO
         Entry(self.frame_principal, textvariable=self.nombre_usuario, width=25, font= fuenten).grid(column=1, row=1, pady=5, padx=10)
+        #Entry(self.frame_principal, textvariable=self.nombre_usuario, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validate), "%S")).grid(column=1, row=1, pady=5, padx=10)
         Entry(self.frame_principal, textvariable=self.clave, width=25, font= fuenten).grid(column=1, row=2, pady=5, padx=10)        
         
         Label(self.frame_principal, text= 'Nombre del usuario', anchor="e", width=20, bg='gray90', fg= 'black', font= fuenteb).grid(column=0, row=1, pady=5)

@@ -12,6 +12,7 @@ import sqlite3
 fuenteb= utl.definir_fuente('MS Sans Serif', 12, 'BOLD')
 fuenten= utl.definir_fuente('MS Sans Serif', 12, 'normal')
 pacientes=[]
+incremento = 5
 fuente2= 'Comic Sans MS'
 color_fuente = 'black'
 color_fondo1 = utl.definir_color_fondo()
@@ -157,7 +158,7 @@ class MasterPanel:
     
     def cargar_pacientes_previos(self):
         global indice_paciente
-        incremento = 4
+        #incremento = 4
         paciente_lista = self.cargar_tabla_pacientes()
         #print(indice_paciente,  len(paciente_lista))
         offset = len(paciente_lista)%incremento
@@ -174,7 +175,7 @@ class MasterPanel:
 
     def cargar_pacientes_posteriores(self):
         global indice_paciente
-        incremento = 4
+        #incremento = 4
         paciente_lista = self.cargar_tabla_pacientes()
         if indice_paciente < len(paciente_lista):
             indice_paciente = indice_paciente + incremento
@@ -192,7 +193,7 @@ class MasterPanel:
     def mostrar_pacientes(self):
         global indice_paciente
         indice_paciente=0
-        incremento = 4
+        #incremento = 4
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
