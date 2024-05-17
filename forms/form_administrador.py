@@ -158,7 +158,7 @@ class MasterPanel:
     def cargar_pacientes_previos(self):
         global indice_paciente
         paciente_lista = self.cargar_tabla_pacientes()
-        #print(indice_paciente,  len(paciente_lista))
+        print(indice_paciente,  len(paciente_lista))
         if(indice_paciente > 0):
             self.tabla_paciente.delete(*self.tabla_paciente.get_children())
             if(indice_paciente == len(paciente_lista)):
@@ -174,28 +174,21 @@ class MasterPanel:
 
     def cargar_pacientes_posteriores(self):
         global indice_paciente
-        print("indice recibido:", indice_paciente)
-        #self.boton_previo["state"]="normal"
-        # st=self.boton_previo["state"]
-        # print(st)
-        #if ( ):
-        #self.boton_previo.state(['disabled'])
-        #self.boton_previo['state'] == tk.NORMAL
-        paciente_lista = self.cargar_tabla_pacientes()
-        indice_paciente = indice_paciente + 3
-           
-        if indice_paciente > len(paciente_lista):
-            offset = len(paciente_lista)%3
-            print(offset)
-            self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-            for i in range(indice_paciente, indice_paciente+offset):           
-                self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))
-        else:
-            self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-            for i in range(indice_paciente, indice_paciente+3):           
-                self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))
-            #indice_paciente = indice_paciente + 3
-        print("inidice final:",indice_paciente)
+        incremento = 3
+        paciente_lista = self.cargar_tabla_pacientes()        
+        if indice_paciente < len(paciente_lista):
+            indice_paciente = indice_paciente + incremento
+        #print("incrementado", indice_paciente)
+            if indice_paciente+3 < len(paciente_lista):
+                self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+                for i in range(indice_paciente, indice_paciente+incremento):           
+                    self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))
+            elif indice_paciente+3 > len(paciente_lista):
+                offset = len(paciente_lista)%3            
+                self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+                for i in range(indice_paciente, indice_paciente+offset):           
+                    self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))        
+                indice_paciente = len(paciente_lista)       
                 
     def mostrar_pacientes(self):
         global indice_paciente
