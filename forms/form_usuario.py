@@ -36,6 +36,21 @@ class Usuario:
         #self.usuario_existente(self.nombre_usuario.get())
         if(self.validar_usuario(self.nombre_usuario.get())):
             messagebox.showinfo("Usuario existente", "Ya existe este usuario")
+        else:
+            if(self.validar_contrasenia(self.clave.get())):
+                datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
+            #Label(self.frame_principal, text= 'Contraseña valida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
+                try:
+                    self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
+                    self.miConexion.commit()
+                #messagebox.showinfo("GUARDAR","Usuario guardado exitosamente")
+                    self.frame_usuario.destroy()
+                except:
+                    messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
+            else:
+                #Label(self.frame_principal, text= 'Contraseña invalida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
+                #messagebox.showwarning("CONTRASEÑA", "Contraseña inválida")
+                pass
         
     def cargar_datos(self, usuario):
         self.nombre_usuario.set(usuario)
