@@ -243,7 +243,7 @@ class MasterPanel:
         user = Usuario()
         user.conexionBBDD()
         user.ventana()
-        self.tabla_usuario.delete(*self.tabla_usuario.get_children())
+        #self.tabla_usuario.delete(*self.tabla_usuario.get_children())
     
     def editar_usuario(self, event):
         try:

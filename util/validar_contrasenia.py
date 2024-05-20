@@ -26,4 +26,8 @@ for test in tests:
             valida = False
 
     if valida:
-        print(f"{test} ok")
+        print(f"{test} contraseña válida")
+if(largo.search("nada")):
+    print("valido")
+else:
+    print("corta")        

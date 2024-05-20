@@ -30,23 +30,13 @@ class Usuario:
             messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
     
     def guardar(self):
-        self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
-        self.miCursor=self.miConexion.cursor()
-        #if (self.usuario_existente(self.nombre_usuario.get())):
-        if(utl.validar_password(self.clave.get())):
-            datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
-            Label(self.frame_principal, text= 'Contraseña valida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
-            try:
-                self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
-                self.miConexion.commit()
-                #messagebox.showinfo("GUARDAR","Usuario guardado exitosamente")
-                self.frame_usuario.destroy()
-            except:
-                messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
-        else:
-            #Label(self.frame_principal, text= 'Contraseña invalida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
-            messagebox.showwarning("CONTRASEÑA", "Contraseña inválida")
-    
+        #self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
+        #self.miCursor=self.miConexion.cursor()
+        #print(self.nombre_usuario.get(),"\n")
+        #self.usuario_existente(self.nombre_usuario.get())
+        if(self.validar_usuario(self.nombre_usuario.get())):
+            messagebox.showinfo("Usuario existente", "Ya existe este usuario")
+        
     def cargar_datos(self, usuario):
         self.nombre_usuario.set(usuario)
         self.nombre_usuario_anterior=usuario
@@ -58,24 +48,31 @@ class Usuario:
             self.tipo_usuario.set(campos[0][3])
             #self.id_usuario.set(campos[0][2])
         except:
-            messagebox.showinfo("Buscar usuario", "No se ha podido encontrar el usuario")            
-            self.frame_usuario.destroy()
+            messagebox.showinfo("Buscar usuario", "No se ha podido cargar los usuario")            
+            #self.frame_usuario.destroy()
     
-    def usuario_existente(self, nombre_usuario):
-        usuario_existente = False
+    def validar_usuario(self, nombre_usuario):
         cant = 0
+        print(cant, nombre_usuario)
         try:
-            cant = self.miCursor('SELECT COUNT(Nombre_usuario) FROM Usuarios WHERE Nombre_usuario = ?', (nombre_usuario))
-            if cant == 1:
-                usuario_existente = True
-            return usuario_existente
+            self.miCursor.execute('SELECT COUNT(Nombre_usuario) FROM Usuarios WHERE Nombre_usuario=?', (nombre_usuario,))
+            cant = self.miCursor.fetchone()[0]
+            print(cant)
+            if cant >= 1 :
+                self.usuario_existente = True
+                self.nombre_usuario.set("")
+                self.clave.set("")
+                self.tipo_usuario.set("")                
         except:
-            return usuario_existente
-        
+            messagebox.showinfo("Usuario existente", "No se ha podido encontrar\n la base de datos")
+
+        return self.usuario_existente
+    
     def actualizar(self):
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
-        if(utl.validar_password(self.clave.get())):            
+        
+        if(self.validar_contrasenia(self.clave.get())):
             
             datos=self.nombre_usuario.get(), self.clave.get(), self.nombre_usuario_anterior
             try:
@@ -87,7 +84,7 @@ class Usuario:
             except:
                 messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
         else:
-            messagebox.showwarning("CONTRASEÑA", "Contraseña inválida")
+            pass
     
     def eliminar_usuario(self, nombre):
         msg_box = messagebox.askquestion('Eliminar usuario', '¿Desea elminar al usuario?', icon='warning')
@@ -100,6 +97,7 @@ class Usuario:
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
         if answer:
             self.frame_usuario.destroy()
+    
     def validate(self, value):  
         """ 
         Validating the email address in the entry field 
@@ -112,7 +110,42 @@ class Usuario:
   
         #self.displayMessage()  
         return True  
+    
+    def validar_contrasenia(self, password):
+        largo = re.compile(r'.{8,}')
+        digito = re.compile(r'\d+')
+        letra_may = re.compile(r'[A-Z]+')
+        letra_min = re.compile(r'[a-z]+')
+        self.longitud=False
+        self.numero=False
+        self.mayuscula=False
+        self.minuscula=False
+        self.valido=False
+        a="Debe contener al menos 8 caracteres"
+        if(largo.search(password)):
+            a=""
+            self.longitud=True
+        b="\nAgregar un digito"
+        if(digito.search(password)):
+            b=""
+            self.numero=True
+        c="\nAgregar una mayúscula"
+        if(letra_may.search(password)):
+            c=""
+            self.mayuscula=True
+        d="\nAgregar una minúscula"
+        if(letra_min.search(password)):
+            d=""
+            self.minuscula=True
+        if(self.longitud and self.numero and self.mayuscula and self.minuscula):
+            self.valido = True
 
+        cadena=a+b+c+d
+        if(cadena != ""):
+            messagebox.showwarning("CONTRASEÑA INVÁLIDA", cadena)
+        
+        return self.valido
+            
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.nombre_usuario = StringVar()
@@ -120,7 +153,9 @@ class Usuario:
         self.clave = StringVar()
         self.tipo_usuario =  StringVar()
         self.id_usuario =  StringVar()
-        #self.nombre_usuario.set('')        
+        self.usuario_existente = False
+
+        #self.nombre_usuario.set('')
 
     def ventana(self):
         self.frame_usuario= tk.Toplevel()
@@ -172,7 +207,6 @@ class Usuario:
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=1, pady=5, padx=2)
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
         Label(self.frame_principal, text= 'Contraseña: debe poseer un mínimo de 8 caracteres\n al menos una minuscula\n al menos una mayuscula\n al menos un digito', width=50, borderwidth=2, relief="solid", bg='gray90', fg= 'black', font= fuenten).grid( column=0, columnspan=3, row=5, pady=5)
-
         self.frame_usuario.mainloop()
 
 if __name__ == "__main__":
