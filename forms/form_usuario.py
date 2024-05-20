@@ -76,9 +76,10 @@ class Usuario:
         self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
         self.miCursor=self.miConexion.cursor()
         if(utl.validar_password(self.clave.get())):            
-            datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get(), self.nombre_usuario_anterior
+            
+            datos=self.nombre_usuario.get(), self.clave.get(), self.nombre_usuario_anterior
             try:
-                sql="UPDATE Usuarios SET Nombre_usuario =?, Clave=?, Tipo_usuario=? where Nombre_usuario=?"
+                sql="UPDATE Usuarios SET Nombre_usuario =?, Clave=? where Nombre_usuario=?"
                 self.miCursor.execute(sql, datos)
                 self.miConexion.commit()
                 messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente")
@@ -152,20 +153,24 @@ class Usuario:
         
         Label(self.frame_principal, text= 'Nombre del usuario', anchor="e", width=20, bg='gray90', fg= 'black', font= fuenteb).grid(column=0, row=1, pady=5)
         Label(self.frame_principal, text= 'Clave', anchor="e", width=20, bg='gray90', fg= 'black', font= fuenteb).grid(column=0, row=2, pady=5, padx=2)
-        combo=ttk.Combobox(self.frame_principal, textvariable=self.tipo_usuario, width=23, font= fuenten, state="readonly", values=["administrador", "odontologo", "secretario"])
-        combo.grid(column=1, row=3, pady=5, padx=10)
+
 
         Label(self.frame_principal, text= 'Tipo de usuario', anchor="e", width=20, bg='gray90', fg= 'black', font= fuenteb).grid(column=0, row=3, pady=5, padx=2)
         if(self.nombre_usuario.get()==''):
             self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= fuenteb).grid(column= 0, row=0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Guardar',  font= fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.guardar).grid(column= 0, row=6, pady= 5, padx= 5)
+            combo=ttk.Combobox(self.frame_principal, textvariable=self.tipo_usuario, width=23, font= fuenten, state="readonly", values=["administrador", "odontologo", "secretario"])
+            combo.grid(column=1, row=3, pady=5, padx=10)
+            Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=3, pady=5, padx=2)
+
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar usuario', bg= '#1F704B', fg= 'white', font= fuenteb).grid(column= 0, row=0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Actualizar',  font=fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.actualizar).grid(column= 0, row=6, pady= 5, padx= 5)
+            combo=ttk.Combobox(self.frame_principal, textvariable=self.tipo_usuario, width=23, font= fuenten, state="disabled", values=["administrador", "odontologo", "secretario"])
+            combo.grid(column=1, row=3, pady=5, padx=10)
         Label(self.frame_principal, text= '* Campos obligatorios', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=4, pady=5, padx=2)
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=1, pady=5, padx=2)
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
-        Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=3, pady=5, padx=2)
         Label(self.frame_principal, text= 'Contraseña: debe poseer un mínimo de 8 caracteres\n al menos una minuscula\n al menos una mayuscula\n al menos un digito', width=50, borderwidth=2, relief="solid", bg='gray90', fg= 'black', font= fuenten).grid( column=0, columnspan=3, row=5, pady=5)
 
         self.frame_usuario.mainloop()
