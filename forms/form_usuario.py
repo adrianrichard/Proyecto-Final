@@ -5,8 +5,8 @@ import util.generic as utl
 from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
 #from bd.conexion import Conexion
 import sqlite3
-fuenteb= utl.definir_fuente('MS Sans Serif', 12, 'BOLD')
-fuenten= utl.definir_fuente('MS Sans Serif', 12, 'normal')
+fuenteb= utl.definir_fuente('Arial', 12, 'BOLD')
+fuenten= utl.definir_fuente('Arial', 12, 'normal')
 import re
 class Usuario:
 
@@ -113,18 +113,11 @@ class Usuario:
         if answer:
             self.frame_usuario.destroy()
     
-    def validate(self, value):  
-        """ 
-        Validating the email address in the entry field 
-        :param value: 
-        :return: 
-        """  
+    def validar_nombre(self, value):
         pattern = r'\b[A-Za-z_]\b'
-        if re.fullmatch(pattern, value) is None:  
-            return False  
-  
-        #self.displayMessage()  
-        return True  
+        if re.fullmatch(pattern, value) is None:
+            return False 
+        return True
     
     def validar_contrasenia(self, password):
         largo = re.compile(r'.{8,}')

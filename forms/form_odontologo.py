@@ -5,13 +5,18 @@ import util.generic as utl
 from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Frame
 from forms.form_paciente import Paciente
-from paginas.tkcalendar import TKCalendar
+#from paginas.tkcalendar import TKCalendar
 from util.visorimagenes import ImageGalleryApp
 import sqlite3
-fuente= 'Comic Sans MS'
+fuenteb= utl.definir_fuente('MS Sans Serif', 12, 'BOLD')
+fuenten= utl.definir_fuente('MS Sans Serif', 12, 'normal')
+pacientes=[]
+incremento = 5
+fuente2= 'Comic Sans MS'
 color_fuente = 'black'
 color_fondo1 = utl.definir_color_fondo()
 color_fondo2 = 'gray90'
+global indice_paciente
 
 class OdontologoPanel:
 
@@ -24,9 +29,10 @@ class OdontologoPanel:
         utl.centrar_ventana(self.ventana, 900, 600)
         self.menu = True
         self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
-        self.ventana.iconphoto(False, self.imagen_ventana)         
+        self.ventana.iconphoto(False, self.imagen_ventana)        
         self.dni_paciente =  StringVar()
         self.dato_paciente =  StringVar()
+        self.nombre_usuario =  StringVar()
  
         self.frame_inicio = Frame(self.ventana, bg=color_fondo1, width=50, height=45)
         self.frame_inicio.grid_propagate(0)
@@ -81,14 +87,14 @@ class OdontologoPanel:
         [self.frame_tabla_paciente.columnconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[0])]
         [self.frame_tabla_paciente.rowconfigure(i, weight=1) for i in range(self.frame_pacientes.grid_size()[1])]
 
-    def pantalla_calendario(self):
-        self.paginas.select([self.frame_calendario])
-        Tcal = TKCalendar()
-        Tcal.crear_encabezado(self.frame_calendario)
-        Tcal.crear_botones_fechas(self.frame_calendario)
-        Tcal.actualizar_botones_fechas()
-        Tcal.event_color_buttons()
-        Tcal.configurar_filas_columnas(self.frame_calendario)
+    #def pantalla_calendario(self):
+    #    self.paginas.select([self.frame_calendario])
+    #    Tcal = TKCalendar()
+    #    Tcal.crear_encabezado(self.frame_calendario)
+    #    Tcal.crear_botones_fechas(self.frame_calendario)
+    #    Tcal.actualizar_botones_fechas()
+    #    Tcal.event_color_buttons()
+    #    Tcal.configurar_filas_columnas(self.frame_calendario)
 
     def pantalla_historia(self):
         self.paginas.select([self.historia])
@@ -99,9 +105,6 @@ class OdontologoPanel:
         self.paginas.select([self.frame_galeria])
         Gallery=ImageGalleryApp(self.frame_galeria)
         Gallery.configurar_filas_columnas(self.frame_galeria)
-
-    def pantalla_info(self):
-        self.paginas.select([self.frame_info])
 
     def salir(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir?', icon='warning')
@@ -114,12 +117,14 @@ class OdontologoPanel:
 
     def editar_paciente(self, event):
         paciente=Paciente()
-        item = self.tabla_paciente.focus()
+        item = self.tabla_paciente.focus()        
         self.data = self.tabla_paciente.item(item)
-        self.dni_paciente=self.data['values'][1]
-        print(self.dni_paciente)
-        paciente.cargar_datos(self.dni_paciente)
-        paciente.ventana_paciente()        
+        try:
+            self.dni_paciente=self.data['values'][1]        
+            paciente.cargar_datos(self.dni_paciente)
+            paciente.ventana_paciente()
+        except:
+            pass        
 
     def eliminar_paciente(self):
         try:
@@ -130,21 +135,64 @@ class OdontologoPanel:
                 self.miCursor.execute("DELETE FROM Paciente WHERE dni = ?", (self.dni_paciente,))
                 self.miConexion.commit()
                 messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
+                self.mostrar_pacientes()
         except:
             messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")
-        self.mostrar_pacientes()
             
-    def mostrar_pacientes(self):
+    def cargar_tabla_pacientes(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
-        bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente"
+        bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
+        self.miCursor.execute(bd)
+        pacientes = self.miCursor.fetchall()
+        return pacientes
+    
+    def cargar_pacientes_previos(self):
+        global indice_paciente
+        #incremento = 4
+        paciente_lista = self.cargar_tabla_pacientes()
+        #print(indice_paciente,  len(paciente_lista))
+        offset = len(paciente_lista)%incremento
+        if indice_paciente ==  len(paciente_lista):
+            indice_paciente = indice_paciente - offset
+        indice_paciente = indice_paciente - incremento    
+        if(indice_paciente >= 0):
+            self.tabla_paciente.delete(*self.tabla_paciente.get_children())            
+            for i in range(indice_paciente, indice_paciente+incremento):           
+                self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))            
+        if indice_paciente < 0 :
+            indice_paciente = 0    
+            #print(indice_paciente)
+
+    def cargar_pacientes_posteriores(self):
+        global indice_paciente
+        #incremento = 4
+        paciente_lista = self.cargar_tabla_pacientes()
+        if indice_paciente < len(paciente_lista):
+            indice_paciente = indice_paciente + incremento
+            if indice_paciente+incremento <= len(paciente_lista):
+                self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+                for i in range(indice_paciente, indice_paciente+incremento):           
+                    self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))
+            elif indice_paciente+incremento > len(paciente_lista):
+                offset = len(paciente_lista)%incremento            
+                self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+                for i in range(indice_paciente, indice_paciente+offset):           
+                    self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))        
+                indice_paciente = len(paciente_lista)       
+                
+    def mostrar_pacientes(self):
+        global indice_paciente
+        indice_paciente=0
+        #incremento = 4
+        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+        self.miCursor=self.miConexion.cursor()
+        bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-        i = -1
-        for dato in datos:
-            i= i+1
-            self.tabla_paciente.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2],datos[i][3],datos[i][4]))
+        for i in range(0, incremento):           
+                self.tabla_paciente.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2],datos[i][3],datos[i][4]))
 
     def buscar_paciente(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -164,15 +212,17 @@ class OdontologoPanel:
         item = self.tabla_paciente.focus()
         self.data = self.tabla_paciente.item(item)
         self.dni_paciente=self.data['values'][1]
-
+    
+    def nada(self):
+        pass  
+    
     def widgets(self):
         #self.imagen_usuario = utl.leer_imagen('dentist-icon2-removebg-preview.png', (38, 38))
         #tself.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
         self.imagen_paciente = PhotoImage(file ='./imagenes/agregar3.png')
-        self.imagen_calendario = PhotoImage(file ='./imagenes/calendario-removebg-preview.png')
+        #self.imagen_calendario = PhotoImage(file ='./imagenes/calendario-removebg-preview.png')
         self.imagen_historia_clinica = PhotoImage(file ='./imagenes/historial3.png')
         self.imagen_buscar = PhotoImage(file ='./imagenes/foto-removebg-preview.png')
-        self.imagen_ajustes = PhotoImage(file ='./imagenes/info_icon_white.png')
         self.imagen_agregar_paciente = PhotoImage(file ='./imagenes/agregar_paciente.png')
         self.imagen_editar_paciente = PhotoImage(file ='./imagenes/editar_paciente.png')
         self.imagen_refrescar = PhotoImage(file ='./imagenes/refrescar.png')
@@ -186,26 +236,24 @@ class OdontologoPanel:
             self.bt_inicio = Button(self.frame_inicio, image= self.imagen_inicio, bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
             self.bt_cerrar = Button(self.frame_inicio, image= self.imagen_menu, bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
         except:
-            self.bt_inicio = Button(self.frame_inicio, text= 'INICIO', font= (fuente, 12, 'bold'), bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
-            self.bt_cerrar = Button(self.frame_inicio, text= 'INICIO', font= ('Comic Sans MS', 12, 'bold'), bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
+            self.bt_inicio = Button(self.frame_inicio, text= 'INICIO', font= (fuente2, 12, 'bold'), bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
+            self.bt_cerrar = Button(self.frame_inicio, text= '☰', font= ('Comic Sans MS', 12, 'bold'), bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
 
         self.bt_inicio.grid(column= 0, row= 0, padx= 5, pady= 10)
         self.bt_cerrar.grid(column= 0, row= 0, padx= 5, pady= 10)
 
 		#BOTONES Y ETIQUETAS DEL MENU LATERAL        
         Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_pacientes).grid(column= 0, row= 2, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)
+        #Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 4, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_buscar, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
-        Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_info).grid(column=0, row=6, pady=20,padx=10)
         Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column=0, row=7, pady=20,padx=10)
         
-        Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=2, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=3, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row= 4, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Versión', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=6, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=7, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=2, pady= 20, padx= 2)
+        #Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=3, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row= 4, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=7, pady= 20, padx= 2)
 
 		#############################  CREAR  PAGINAS  ##############################
 ##        estilo_paginas = ttk.Style()
@@ -220,16 +268,14 @@ class OdontologoPanel:
         self.paginas.grid(column= 0, row= 0, sticky='nsew')
         self.frame_principal = Frame(self.paginas, bg='gray90') #color de fondo
         self.frame_pacientes = Frame(self.paginas, bg='gray90') #color de fondo
-        self.frame_calendario = Frame(self.paginas, bg='gray90')
+        #self.frame_calendario = Frame(self.paginas, bg='gray90')
         self.historia = Frame(self.paginas, bg='gray90')
         self.frame_galeria = Frame(self.paginas, bg='gray90')
-        self.frame_info = Frame(self.paginas, bg='gray90')
         self.paginas.add(self.frame_principal)        
         self.paginas.add(self.frame_pacientes)
-        self.paginas.add(self.frame_calendario)
+        #self.paginas.add(self.frame_calendario)
         self.paginas.add(self.historia)
         self.paginas.add(self.frame_galeria)
-        self.paginas.add(self.frame_info)
 
 		##############################         PAGINAS       #############################################
 		######################## FRAME TITULO #################
@@ -239,46 +285,46 @@ class OdontologoPanel:
 		######################## VENTANA PRINCIPAL #################
         Label(self.frame_principal, image= self.logo, bg= 'gray90').pack(expand= 1)
                 
-		######################## PACIENTES #################
-        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 4, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Agregar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 4, row= 1)
-        Button(self.frame_pacientes, image= self.imagen_editar_paciente, text= 'EDITAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.editar_paciente).grid(column= 1, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Editar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 1, row= 1)
-        Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 2, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 2, row= 1)
-        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = ('Arial', 11,'bold'), bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 3, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= ('Comic Sans MS', 12, 'bold')).grid(column= 3, row= 1)
-        self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 10 ,font= ('Comic Sans MS', 14)).grid(column= 0, row= 0, pady= 5)
-        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= ('Comic Sans MS', 12, 'bold'), command= self.buscar_paciente).grid(column= 0, row= 1)
+        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 0, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Agregar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 0, row= 1)
+        Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 1, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 1, row= 1)
+        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 2, row= 0, pady= 5)
+        Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 2, row= 1)
+        self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 20 ,font= fuenten).grid(column= 3, row= 0, pady= 5)
+        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_paciente).grid(column= 3, row= 1, pady=(0,10))
 
-		#ESTILO DE LAS TABLAS DE DATOS TREEVIEW
+        self.boton_previo=tk.Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5,command= self.cargar_pacientes_previos).grid(column= 0, row= 2, padx= 10, pady=(0,10), sticky="W")
+        self.boton_pos=tk.Button(self.frame_pacientes, text= '>', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_posteriores).grid(column= 3, row= 2, padx=(0,10), pady=(0,10), sticky="E")        
+        
+        #ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         estilo_tabla = ttk.Style()
-        estilo_tabla.configure("Treeview", font= (fuente, 10, 'bold'), foreground='black', rowheight=40)
+        estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 40)
 ##        estilo_tabla.map('Treeview', background=[('selected', color_fondo1)], foreground=[('selected','white')] )
-        estilo_tabla.configure('Treeview.Heading', background='black', foreground=color_fondo1, padding= 3, font= (fuente, 10, 'bold'))
+        estilo_tabla.configure('Treeview.Heading', background= 'red', foreground= color_fondo1, padding= 3, font= fuenteb)
 ##        estilo_tabla.configure('Item', foreground = 'red', focuscolor ='green')
 ##        estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
 
 		#TABLA PACIENTE
-        self.frame_tabla_paciente = Frame(self.frame_pacientes, bg='gray90')
-        self.frame_tabla_paciente.grid(columnspan=5, row=2, sticky='nsew')
-        self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente)
-        self.tabla_paciente.grid(column=0, row=2, columnspan=5, sticky='nsew')
-        ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient ='vertical', command = self.tabla_paciente.yview)
-        ladoy.grid(column = 5, row = 2, sticky='ns')
-        self.tabla_paciente.configure(yscrollcommand = ladoy.set)
+        self.frame_tabla_paciente = Frame(self.frame_pacientes, bg= 'gray90')
+        self.frame_tabla_paciente.grid(columnspan= 4, row= 3, sticky= 'nsew')
+        self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, selectmode ='browse')
+        self.tabla_paciente.grid(column= 0, row= 3, columnspan= 4, sticky= 'nsew')
+        #ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient ='vertical', command = self.tabla_paciente.yview)
+        #ladoy.grid(column = 5, row = 3, sticky='ns')
+        #self.tabla_paciente.configure(yscrollcommand = ladoy.set)
         self.tabla_paciente['columns'] = ('Nombre', 'D.N.I.', 'Teléfono', 'Obra Social')
-        self.tabla_paciente.column('#0', minwidth=100, width=120, anchor='center')
-        self.tabla_paciente.column('Nombre', minwidth=100, width=130 , anchor='center')
-        self.tabla_paciente.column('D.N.I.', minwidth=100, width=120, anchor='center' )
-        self.tabla_paciente.column('Teléfono', minwidth=100, width=120 , anchor='center')
-        self.tabla_paciente.column('Obra Social', minwidth=100, width=105, anchor='center')
-
-        self.tabla_paciente.heading('#0', text='Apellido', anchor ='center')
-        self.tabla_paciente.heading('Nombre', text='Nombre', anchor ='center')
-        self.tabla_paciente.heading('D.N.I.', text='D.N.I.', anchor ='center')
-        self.tabla_paciente.heading('Teléfono', text='Teléfono', anchor ='center')
-        self.tabla_paciente.heading('Obra Social', text='Obra Social', anchor ='center')
+        self.tabla_paciente.column('#0', minwidth= 100, width= 120, anchor= 'center')
+        self.tabla_paciente.column('Nombre', minwidth= 100, width= 130 , anchor= 'center')
+        self.tabla_paciente.column('D.N.I.', minwidth= 100, width= 120, anchor= 'center' )
+        self.tabla_paciente.column('Teléfono', minwidth= 100, width= 120 , anchor='center')
+        self.tabla_paciente.column('Obra Social', minwidth= 100, width= 105, anchor='center')
+    
+        self.tabla_paciente.heading('#0', text= 'Apellido', anchor= 'center', command= self.nada)
+        self.tabla_paciente.heading('Nombre', text= 'Nombre', anchor= 'center')
+        self.tabla_paciente.heading('D.N.I.', text= 'D.N.I.', anchor = 'center')
+        self.tabla_paciente.heading('Teléfono', text= 'Teléfono', anchor= 'center')
+        self.tabla_paciente.heading('Obra Social', text= 'Obra Social', anchor='center')
         self.mostrar_pacientes()
         self.tabla_paciente.bind("<<TreeviewSelect>>", self.seleccionar_paciente)
         self.tabla_paciente.bind("<Double-1>", self.editar_paciente)
@@ -288,10 +334,5 @@ class OdontologoPanel:
 
 		######################## GALERIA #################
         Label(self.frame_galeria, text = 'GALERIA', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 24,'bold')).grid(column= 0,  row= 0)
-
-		######################## INFO #################
-        self.name = Label(self.frame_info, text= 'DENTALMATIC', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 30,'bold')).pack(expand= 1)
-        self.version = Label(self.frame_info, text= 'Versión 1.0 - 2024', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 15,'bold')).pack(expand= 1)
-        self.autor= Label(self.frame_info, text= 'Autor:Rodrigo Adrian Richard\nDesarrollado en Python', fg='black', bg='gray90', font=('Comic Sans MS', 10)).pack(expand= 1)
 
         self.ventana.mainloop()

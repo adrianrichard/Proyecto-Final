@@ -65,8 +65,8 @@ class SecretarioPanel:
         Tcal.event_color_buttons()
         Tcal.configurar_filas_columnas(self.frame_calendario)
 
-    def pantalla_info(self):
-        self.paginas.select([self.frame_info])
+    #def pantalla_info(self):
+    #    self.paginas.select([self.frame_info])
 
     def salir(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir?', icon='warning')
@@ -155,7 +155,7 @@ class SecretarioPanel:
         #tself.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
         self.imagen_paciente = PhotoImage(file ='./imagenes/agregar3.png')
         self.imagen_calendario = PhotoImage(file ='./imagenes/calendario-removebg-preview.png')
-        self.imagen_ajustes = PhotoImage(file ='./imagenes/info_icon_white.png')
+        #self.imagen_ajustes = PhotoImage(file ='./imagenes/info_icon_white.png')
         self.imagen_agregar_paciente = PhotoImage(file ='./imagenes/agregar_paciente.png')
         self.imagen_editar_paciente = PhotoImage(file ='./imagenes/editar_paciente.png')
         self.imagen_refrescar = PhotoImage(file ='./imagenes/refrescar.png')
@@ -178,13 +178,13 @@ class SecretarioPanel:
         #BOTONES Y ETIQUETAS DEL MENU LATERAL
         Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_pacientes).grid(column= 0, row= 1, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 2, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_info).grid(column=0, row=5, pady=20,padx=10)
+        #Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_info).grid(column=0, row=5, pady=20,padx=10)
         Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column=0, row=6, pady=20,padx=10)
 
 
         Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=1, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=2, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Versión', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
+        #Label(self.frame_menu, text= 'Versión', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente, 12, 'bold')).grid(column=1, row=6, pady= 20, padx= 2)
 
         #############################  CREAR  PAGINAS  ##############################
@@ -202,11 +202,11 @@ class SecretarioPanel:
         self.frame_principal = Frame(self.paginas, bg='gray90') #color de fondo
         self.frame_pacientes = Frame(self.paginas, bg='gray90') #color de fondo
         self.frame_calendario = Frame(self.paginas, bg='gray90')
-        self.frame_info = Frame(self.paginas, bg='gray90')
+        #self.frame_info = Frame(self.paginas, bg='gray90')
         self.paginas.add(self.frame_principal)
         self.paginas.add(self.frame_pacientes)
         self.paginas.add(self.frame_calendario)
-        self.paginas.add(self.frame_info)
+        #self.paginas.add(self.frame_info)
 
         ##############################         PAGINAS       #############################################
         ######################## FRAME TITULO #################
@@ -261,8 +261,8 @@ class SecretarioPanel:
         self.tabla_paciente.bind("<<TreeviewSelect>>", self.obtener_fila)
 
         ######################## INFO #################
-        self.name = Label(self.frame_info, text= 'DENTALMATIC', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 30,'bold')).pack(expand= 1)
-        self.version = Label(self.frame_info, text= 'Versión 1.0 - 2024', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 15,'bold')).pack(expand= 1)
-        self.autor= Label(self.frame_info, text= 'Autor:Rodrigo Adrian Richard\nDesarrollado en Python', fg='black', bg='gray90', font=('Comic Sans MS', 10)).pack(expand= 1)
+        #self.name = Label(self.frame_info, text= 'DENTALMATIC', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 30,'bold')).pack(expand= 1)
+        #self.version = Label(self.frame_info, text= 'Versión 1.0 - 2024', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 15,'bold')).pack(expand= 1)
+        #self.autor= Label(self.frame_info, text= 'Autor:Rodrigo Adrian Richard\nDesarrollado en Python', fg='black', bg='gray90', font=('Comic Sans MS', 10)).pack(expand= 1)
 
         self.ventana.mainloop()

@@ -9,8 +9,8 @@ from forms.form_usuario import Usuario
 from paginas.tkcalendar import TKCalendar
 from util.visorimagenes import ImageGalleryApp
 import sqlite3
-fuenteb= utl.definir_fuente('MS Sans Serif', 12, 'BOLD')
-fuenten= utl.definir_fuente('MS Sans Serif', 12, 'normal')
+fuenteb= utl.definir_fuente('Arial', 12, 'BOLD')
+fuenten= utl.definir_fuente('Arial', 12, 'normal')
 pacientes=[]
 incremento = 5
 fuente2= 'Comic Sans MS'
@@ -111,9 +111,6 @@ class MasterPanel:
         self.paginas.select([self.frame_galeria])
         Gallery=ImageGalleryApp(self.frame_galeria)
         Gallery.configurar_filas_columnas(self.frame_galeria)
-
-    def pantalla_info(self):
-        self.paginas.select([self.frame_info])
 
     def salir(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir?', icon='warning')
@@ -261,8 +258,10 @@ class MasterPanel:
         user.conexionBBDD()
         user.eliminar_usuario(self.nombre_usuario)
         self.mostrar_usuarios()
+    
     def nada(self):
         pass    
+    
     def widgets(self):
         self.imagen_usuario = utl.leer_imagen('dentist-icon2-removebg-preview.png', (38, 38))
         #tself.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
@@ -270,7 +269,6 @@ class MasterPanel:
         self.imagen_calendario = PhotoImage(file ='./imagenes/calendario-removebg-preview.png')
         self.imagen_historia_clinica = PhotoImage(file ='./imagenes/historial3.png')
         self.imagen_buscar = PhotoImage(file ='./imagenes/foto-removebg-preview.png')
-        self.imagen_ajustes = PhotoImage(file ='./imagenes/info_icon_white.png')
         self.imagen_agregar_paciente = PhotoImage(file ='./imagenes/agregar_paciente.png')
         self.imagen_editar_paciente = PhotoImage(file ='./imagenes/editar_paciente.png')
         self.imagen_refrescar = PhotoImage(file ='./imagenes/refrescar.png')
@@ -285,7 +283,7 @@ class MasterPanel:
             self.bt_cerrar = Button(self.frame_inicio, image= self.imagen_menu, bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
         except:
             self.bt_inicio = Button(self.frame_inicio, text= 'INICIO', font= (fuente2, 12, 'bold'), bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
-            self.bt_cerrar = Button(self.frame_inicio, text= 'INICIO', font= ('Comic Sans MS', 12, 'bold'), bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
+            self.bt_cerrar = Button(self.frame_inicio, text= '☰', font= ('Comic Sans MS', 12, 'bold'), bg= '#1F704B', activebackground='white', bd= 0, command= self.menu_lateral)
 
         self.bt_inicio.grid(column= 0, row= 0, padx= 5, pady= 10)
         self.bt_cerrar.grid(column= 0, row= 0, padx= 5, pady= 10)
@@ -296,7 +294,6 @@ class MasterPanel:
         Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 4, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_buscar, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
-        Button(self.frame_menu, image= self.imagen_ajustes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_info).grid(column=0, row=6, pady=20,padx=10)
         Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column=0, row=7, pady=20,padx=10)
 
         Label(self.frame_menu, text= 'Usuarios', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=1, pady= 20, padx= 2)
@@ -304,7 +301,6 @@ class MasterPanel:
         Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=3, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row= 4, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=5, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Versión', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=6, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=7, pady= 20, padx= 2)
 
 		#############################  CREAR  PAGINAS  ##############################
@@ -324,14 +320,12 @@ class MasterPanel:
         self.frame_calendario = Frame(self.paginas, bg='gray90')
         self.historia = Frame(self.paginas, bg='gray90')
         self.frame_galeria = Frame(self.paginas, bg='gray90')
-        self.frame_info = Frame(self.paginas, bg='gray90')
         self.paginas.add(self.frame_principal)
         self.paginas.add(self.frame_usuarios)
         self.paginas.add(self.frame_pacientes)
         self.paginas.add(self.frame_calendario)
         self.paginas.add(self.historia)
         self.paginas.add(self.frame_galeria)
-        self.paginas.add(self.frame_info)
 
 		##############################         PAGINAS       #############################################
 		######################## FRAME TITULO #################
@@ -420,11 +414,6 @@ class MasterPanel:
 
 		######################## GALERIA #################
         Label(self.frame_galeria, text = 'GALERIA', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 24,'bold')).grid(column= 0,  row= 0)
-
-		######################## INFO #################
-        self.name = Label(self.frame_info, text= 'DENTALMATIC', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 30,'bold')).pack(expand= 1)
-        self.version = Label(self.frame_info, text= 'Versión 1.0 - 2024', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 15,'bold')).pack(expand= 1)
-        self.autor= Label(self.frame_info, text= 'Autor:Rodrigo Adrian Richard\nDesarrollado en Python', fg='black', bg='gray90', font=('Comic Sans MS', 10)).pack(expand= 1)
 
         self.ventana.mainloop()
     def cambiar(self):
