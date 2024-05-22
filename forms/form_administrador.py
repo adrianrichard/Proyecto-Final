@@ -12,7 +12,7 @@ import sqlite3
 fuenteb= utl.definir_fuente_bold()
 fuenten= utl.definir_fuente()
 pacientes=[]
-incremento = 7
+incremento = 6
 fuente2= 'Comic Sans MS'
 color_fuente = 'black'
 color_fondo1 = utl.definir_color_fondo()
@@ -156,37 +156,45 @@ class MasterPanel:
     
     def cargar_pacientes_previos(self):
         global indice_paciente
-        #incremento = 4
         paciente_lista = self.cargar_tabla_pacientes()
-        #print(indice_paciente,  len(paciente_lista))
         offset = len(paciente_lista)%incremento
         if indice_paciente ==  len(paciente_lista):
             indice_paciente = indice_paciente - offset
-        indice_paciente = indice_paciente - incremento    
+            if offset == 0:
+                indice_paciente = indice_paciente - incremento
+        indice_paciente = indice_paciente - incremento
         if(indice_paciente >= 0):
-            self.tabla_paciente.delete(*self.tabla_paciente.get_children())            
-            for i in range(indice_paciente, indice_paciente+incremento):           
+            self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+            for i in range(indice_paciente, indice_paciente+incremento):
                 self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))            
         if indice_paciente < 0 :
-            indice_paciente = 0    
-            #print(indice_paciente)
+            indice_paciente = 0
 
     def cargar_pacientes_posteriores(self):
         global indice_paciente
-        #incremento = 4
         paciente_lista = self.cargar_tabla_pacientes()
-        if indice_paciente < len(paciente_lista):
+        #print("principio",indice_paciente,  len(paciente_lista))
+        if indice_paciente != len(paciente_lista):
+            #print("indice menor")
             indice_paciente = indice_paciente + incremento
+            #print("indice inicial", indice_paciente,  len(paciente_lista))
             if indice_paciente+incremento <= len(paciente_lista):
+                #print("no es final", indice_paciente+incremento)
                 self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-                for i in range(indice_paciente, indice_paciente+incremento):           
+                for i in range(indice_paciente, indice_paciente+incremento):
                     self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))
-            elif indice_paciente+incremento > len(paciente_lista):
-                offset = len(paciente_lista)%incremento            
+                if(indice_paciente+incremento == len(paciente_lista)):
+                    indice_paciente = len(paciente_lista)
+            elif indice_paciente+incremento > len(paciente_lista):                
+                offset = len(paciente_lista)%incremento
+                #print("offset",offset)
+                #print(indice_paciente,  len(paciente_lista))
                 self.tabla_paciente.delete(*self.tabla_paciente.get_children())
                 for i in range(indice_paciente, indice_paciente+offset):           
                     self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))        
-                indice_paciente = len(paciente_lista)       
+            #if(indice_paciente+incremento == len(paciente_lista)):
+                indice_paciente = len(paciente_lista)
+        #print(indice_paciente)
                 
     def mostrar_pacientes(self):
         global indice_paciente
