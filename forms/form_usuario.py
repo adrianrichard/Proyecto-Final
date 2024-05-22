@@ -112,6 +112,8 @@ class Usuario:
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
         if answer:
             self.frame_usuario.destroy()
+    def on_invalid(self):
+        messagebox.showinfo("NOMBRE USUARIO","Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
     
     def validar_nombre(self, value):
         pattern = r'\b[A-Za-z_]\b'
@@ -190,8 +192,8 @@ class Usuario:
         Button(self.frame_principal, text= 'Cerrar',  font= fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.Salir).grid(column= 2, row=6, pady= 5, padx= 5)
 
         #Entradas Y ETIQUETAS DATOS DEL USUARIO
-        Entry(self.frame_principal, textvariable=self.nombre_usuario, width=25, font= fuenten).grid(column=1, row=1, pady=5, padx=10)
-        #Entry(self.frame_principal, textvariable=self.nombre_usuario, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validate), "%S")).grid(column=1, row=1, pady=5, padx=10)
+        #Entry(self.frame_principal, textvariable=self.nombre_usuario, width=25, font= fuenten).grid(column=1, row=1, pady=5, padx=10)
+        Entry(self.frame_principal, textvariable=self.nombre_usuario, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_nombre), "%S"), invalidcommand=(self.frame_principal.register(self.on_invalid), )).grid(column=1, row=1, pady=5, padx=10)
         Entry(self.frame_principal, textvariable=self.clave, width=25, font= fuenten).grid(column=1, row=2, pady=5, padx=10)        
         
         Label(self.frame_principal, text= 'Nombre del usuario', anchor="e", width=20, bg='gray90', fg= 'black', font= fuenteb).grid(column=0, row=1, pady=5)
