@@ -233,9 +233,12 @@ class MasterPanel:
         self.dni_paciente=self.data['values'][1]
 
     def seleccionar_usuario(self, event):
-        item = self.tabla_usuario.focus()        
-        self.data = self.tabla_usuario.item(item)        
-        self.nombre_usuario=self.data['values'][-1]        
+        (sel,) = self.tabla_usuario.selection()
+        self.nombre_usuario=self.tabla_usuario.item(sel, "text")
+        #item = self.tabla_usuario.focus()        
+        #self.data = self.tabla_usuario.item(item)        
+        #self.nombre_usuario=self.data['values'][0]
+        #print(self.nombre_usuario)
 
     def agregar_usuario(self):
         user = Usuario()
@@ -255,6 +258,7 @@ class MasterPanel:
             pass        
     
     def eliminar_usuario(self):
+        #print(self.nombre_usuario)
         user = Usuario()
         user.conexionBBDD()
         user.eliminar_usuario(self.nombre_usuario)
@@ -357,7 +361,7 @@ class MasterPanel:
         self.tabla_usuario.column('Clave', minwidth=100, width=120, anchor='center' )        
         self.tabla_usuario.column('Tipo_usuario', minwidth=100, width=120, anchor='center' )
 
-        self.tabla_usuario.heading('#0', text='Nombre_usuario', anchor ='center')
+        self.tabla_usuario.heading('#0', text='Usuario', anchor ='center')
         self.tabla_usuario.heading('Clave', text='Clave', anchor ='center')
         self.tabla_usuario.heading('Tipo_usuario', text='Tipo de usuario', anchor ='center')
         self.mostrar_usuarios()
@@ -391,9 +395,9 @@ class MasterPanel:
         self.frame_tabla_paciente.grid(columnspan= 4, row= 3, sticky= 'nsew')
         self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, selectmode ='browse')
         self.tabla_paciente.grid(column= 0, row= 3, columnspan= 4, sticky= 'nsew')
-        #ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient ='vertical', command = self.tabla_paciente.yview)
-        #ladoy.grid(column = 5, row = 3, sticky='ns')
-        #self.tabla_paciente.configure(yscrollcommand = ladoy.set)
+        ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient ='vertical', command = self.tabla_paciente.yview)
+        ladoy.grid(column = 5, row = 3, sticky='ns')
+        self.tabla_paciente.configure(yscrollcommand = ladoy.set)
         self.tabla_paciente['columns'] = ('Nombre', 'D.N.I.', 'Teléfono', 'Obra Social')
         self.tabla_paciente.column('#0', minwidth= 100, width= 120, anchor= 'center')
         self.tabla_paciente.column('Nombre', minwidth= 100, width= 130 , anchor= 'center')

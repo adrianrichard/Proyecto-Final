@@ -30,27 +30,19 @@ class Usuario:
             messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
     
     def guardar(self):
-        #self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
-        #self.miCursor=self.miConexion.cursor()
-        #print(self.nombre_usuario.get(),"\n")
-        #self.usuario_existente(self.nombre_usuario.get())
         if(self.validar_usuario(self.nombre_usuario.get())):
             messagebox.showinfo("Usuario existente", "Ya existe este usuario")
         else:
-            if(self.validar_contrasenia(self.clave.get())):
+            if(self.validar_contrasenia(self.clave.get()) and self.nombre_usuario.get()!=''):
                 datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
-            #Label(self.frame_principal, text= 'Contraseña valida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
                 try:
                     self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
                     self.miConexion.commit()
-                #messagebox.showinfo("GUARDAR","Usuario guardado exitosamente")
                     self.frame_usuario.destroy()
                 except:
                     messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
             else:
-                #Label(self.frame_principal, text= 'Contraseña invalida', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5, padx=2)
-                #messagebox.showwarning("CONTRASEÑA", "Contraseña inválida")
-                pass
+                messagebox.showwarning("Nombre usuario", "Completar campos")                
         
     def cargar_datos(self, usuario):
         self.nombre_usuario.set(usuario)
@@ -58,21 +50,17 @@ class Usuario:
         try:
             self.miCursor.execute("SELECT * FROM Usuarios WHERE Nombre_usuario=?", (usuario,))
             campos=self.miCursor.fetchall()        
-            #self.nombre_usuario.set(usuario)
             self.clave.set(campos[0][2])
             self.tipo_usuario.set(campos[0][3])
-            #self.id_usuario.set(campos[0][2])
         except:
             messagebox.showinfo("Buscar usuario", "No se ha podido cargar los usuario")            
             #self.frame_usuario.destroy()
     
     def validar_usuario(self, nombre_usuario):
         cant = 0
-        print(cant, nombre_usuario)
         try:
             self.miCursor.execute('SELECT COUNT(Nombre_usuario) FROM Usuarios WHERE Nombre_usuario=?', (nombre_usuario,))
             cant = self.miCursor.fetchone()[0]
-            print(cant)
             if cant >= 1 :
                 self.usuario_existente = True
                 self.nombre_usuario.set("")
@@ -102,11 +90,17 @@ class Usuario:
             pass
     
     def eliminar_usuario(self, nombre):
+        self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
+        self.miCursor=self.miConexion.cursor()
+        print(nombre)
         msg_box = messagebox.askquestion('Eliminar usuario', '¿Desea elminar al usuario?', icon='warning')
         if msg_box == 'yes':
-            self.miCursor.execute("DELETE FROM Usuarios WHERE Nombre_usuario = ?", (nombre,))
-            self.miConexion.commit()
-            messagebox.showinfo("ELIMINAR","Usuario eliminado exitosamente")
+            try:
+                self.miCursor.execute("DELETE FROM Usuarios WHERE Nombre_usuario = ?", (nombre,))
+                self.miConexion.commit()
+                messagebox.showinfo("ELIMINAR","Usuario eliminado exitosamente")
+            except:
+                messagebox.showinfo("ELIMINAR", "No se ha podido eliminar el usuario")
         
     def Salir(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
@@ -165,8 +159,6 @@ class Usuario:
         self.id_usuario =  StringVar()
         self.usuario_existente = False
 
-        #self.nombre_usuario.set('')
-
     def ventana(self):
         self.frame_usuario= tk.Toplevel()
         self.frame_usuario.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
@@ -199,15 +191,14 @@ class Usuario:
         Label(self.frame_principal, text= 'Nombre del usuario', anchor="e", width=20, bg='gray90', fg= 'black', font= fuenteb).grid(column=0, row=1, pady=5)
         Label(self.frame_principal, text= 'Clave', anchor="e", width=20, bg='gray90', fg= 'black', font= fuenteb).grid(column=0, row=2, pady=5, padx=2)
 
-
         Label(self.frame_principal, text= 'Tipo de usuario', anchor="e", width=20, bg='gray90', fg= 'black', font= fuenteb).grid(column=0, row=3, pady=5, padx=2)
         if(self.nombre_usuario.get()==''):
             self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= fuenteb).grid(column= 0, row=0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Guardar',  font= fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.guardar).grid(column= 0, row=6, pady= 5, padx= 5)
             combo=ttk.Combobox(self.frame_principal, textvariable=self.tipo_usuario, width=23, font= fuenten, state="readonly", values=["administrador", "odontologo", "secretario"])
             combo.grid(column=1, row=3, pady=5, padx=10)
+            combo.current(2)
             Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=3, pady=5, padx=2)
-
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar usuario', bg= '#1F704B', fg= 'white', font= fuenteb).grid(column= 0, row=0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Actualizar',  font=fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.actualizar).grid(column= 0, row=6, pady= 5, padx= 5)
