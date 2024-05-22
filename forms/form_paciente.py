@@ -6,8 +6,8 @@ from tkinter import  StringVar, Frame
 
 #from bd.conexion import Conexion
 import sqlite3
-fuenteb= utl.definir_fuente('Arial', 12, 'BOLD')
-fuenten= utl.definir_fuente('Arial', 12, 'normal')
+fuenteb= utl.definir_fuente_bold()
+fuenten= utl.definir_fuente()
 ancho=15
 
 class Paciente:

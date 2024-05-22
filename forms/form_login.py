@@ -7,6 +7,7 @@ from forms.form_secretario import SecretarioPanel
 from forms.form_odontologo import OdontologoPanel
 from tkinter.messagebox import showinfo, showerror
 from bd.conexion import Conexion
+import re
 
 class Login:
 
@@ -45,7 +46,19 @@ class Login:
 
         else:
             showerror(title = "Advertencia", message = "Error de conexión a base de datos")
-
+    
+    def validar_nombre(self, value):
+        pattern = r'\b[A-Za-z_]\b'
+        if re.fullmatch(pattern, value) is None:
+            return False 
+        return True
+    
+    def validar_pass(self, value):
+        pattern = r'\b[A-Za-z0-9_]\b'
+        if re.fullmatch(pattern, value) is None:
+            return False
+        return True
+    
     def __init__(self):
         self.frame_login = tk.Tk()
         self.frame_login.title('DENTALMATIC')
@@ -55,7 +68,7 @@ class Login:
         self.frame_login.iconphoto(False, self.imagen_ventana)
 
         utl.centrar_ventana(self.frame_login, 600, 500)
-        fuente2=utl.definir_fuente('Comic Sans MS', 15,'nada')
+        fuente2=('Comic Sans MS', 15)
         fuente='Comic Sans MS'
         color_fuente = 'black'
         color_fondo1 = utl.definir_color_fondo()
@@ -87,12 +100,12 @@ class Login:
         frame_form_fill.pack(side="bottom", expand=tk.YES, fill=tk.BOTH)
 
         tk.Label(frame_form_fill, text="Usuario", font=fuente2, fg=color_fuente, bg=color_fondo2, anchor="w").pack(fill=tk.X, padx=20, pady=5)
-        self.usuario = ttk.Entry(frame_form_fill, font=(fuente, 14))
+        self.usuario = ttk.Entry(frame_form_fill, font=(fuente, 14), validate="key", validatecommand=(frame_form_fill.register(self.validar_nombre), "%S"))
         self.usuario.pack(fill=tk.X, padx=20, pady=10)
 
         etiqueta_password = tk.Label(frame_form_fill, text="Contraseña", font=fuente2, fg=color_fuente, bg=color_fondo2, anchor="w")
         etiqueta_password.pack(fill=tk.X, padx=20, pady=5)
-        self.password = ttk.Entry(frame_form_fill, font=(fuente, 14))
+        self.password = ttk.Entry(frame_form_fill, font=(fuente, 14), validate="key", validatecommand=(frame_form_fill.register(self.validar_pass), "%S"))
         self.password.pack(fill=tk.X, padx=20, pady=10)
         self.password.config(show="*")
 

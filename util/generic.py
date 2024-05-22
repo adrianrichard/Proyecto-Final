@@ -18,11 +18,12 @@ def centrar_ventana(ventana,aplicacion_ancho,aplicacion_largo):
     y = int((pantalla_largo/2) - (aplicacion_largo/2))
     return ventana.geometry(f"{aplicacion_ancho}x{aplicacion_largo}+{x}+{y}")
 
-def definir_fuente(nombre, size, bold):
-    if bold=='BOLD':
-        return (nombre, size, 'bold')
-    else:
-        return (nombre, size)
+def definir_fuente():
+    return ('Arial', 12) 
+
+def definir_fuente_bold():
+    return ('Arial', 12, 'bold')    
+
 def definir_color_fondo():
     return '#1F704B'
 
@@ -55,15 +56,10 @@ def validar_password(password):
     return valido
     print(valido)
 
-def show_message(self, error='', color='black'):
-    self.label_error['text'] = error
-    self.email_entry['foreground'] = color
-
 def validar_correo(self, value):
     pattern = r'\b[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
     if re.fullmatch(pattern, value) is None:
-        return False
-    self.show_message()
+        return False    
     return True
 
 #validar_password("Na2@dA")    

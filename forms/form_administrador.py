@@ -9,8 +9,8 @@ from forms.form_usuario import Usuario
 from paginas.tkcalendar import TKCalendar
 from util.visorimagenes import ImageGalleryApp
 import sqlite3
-fuenteb= utl.definir_fuente('Arial', 12, 'BOLD')
-fuenten= utl.definir_fuente('Arial', 12, 'normal')
+fuenteb= utl.definir_fuente_bold()
+fuenten= utl.definir_fuente()
 pacientes=[]
 incremento = 5
 fuente2= 'Comic Sans MS'
@@ -18,6 +18,7 @@ color_fuente = 'black'
 color_fondo1 = utl.definir_color_fondo()
 color_fondo2 = 'gray90'
 global indice_paciente
+
 class MasterPanel:
 
     def __init__(self):        

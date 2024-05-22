@@ -8,8 +8,8 @@ from forms.form_paciente import Paciente
 #from paginas.tkcalendar import TKCalendar
 from util.visorimagenes import ImageGalleryApp
 import sqlite3
-fuenteb= utl.definir_fuente('MS Sans Serif', 12, 'BOLD')
-fuenten= utl.definir_fuente('MS Sans Serif', 12, 'normal')
+fuenteb= utl.definir_fuente_bold()
+fuenten= utl.definir_fuente()
 pacientes=[]
 incremento = 5
 fuente2= 'Comic Sans MS'

@@ -5,8 +5,8 @@ import util.generic as utl
 from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
 #from bd.conexion import Conexion
 import sqlite3
-fuenteb= utl.definir_fuente('Arial', 12, 'BOLD')
-fuenten= utl.definir_fuente('Arial', 12, 'normal')
+fuenteb= utl.definir_fuente_bold()
+fuenten= utl.definir_fuente()
 import re
 class Usuario:
 
