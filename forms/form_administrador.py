@@ -12,7 +12,7 @@ import sqlite3
 fuenteb= utl.definir_fuente_bold()
 fuenten= utl.definir_fuente()
 pacientes=[]
-incremento = 5
+incremento = 7
 fuente2= 'Comic Sans MS'
 color_fuente = 'black'
 color_fondo1 = utl.definir_color_fondo()
@@ -191,7 +191,6 @@ class MasterPanel:
     def mostrar_pacientes(self):
         global indice_paciente
         indice_paciente=0
-        #incremento = 4
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
@@ -234,17 +233,12 @@ class MasterPanel:
 
     def seleccionar_usuario(self, event):
         (sel,) = self.tabla_usuario.selection()
-        self.nombre_usuario=self.tabla_usuario.item(sel, "text")
-        #item = self.tabla_usuario.focus()        
-        #self.data = self.tabla_usuario.item(item)        
-        #self.nombre_usuario=self.data['values'][0]
-        #print(self.nombre_usuario)
+        self.nombre_usuario=self.tabla_usuario.item(sel, "text")     
 
     def agregar_usuario(self):
         user = Usuario()
         user.conexionBBDD()
         user.ventana()
-        #self.tabla_usuario.delete(*self.tabla_usuario.get_children())
     
     def editar_usuario(self, event):
         try:
@@ -273,7 +267,7 @@ class MasterPanel:
         self.imagen_paciente = PhotoImage(file ='./imagenes/agregar3.png')
         self.imagen_calendario = PhotoImage(file ='./imagenes/calendario-removebg-preview.png')
         self.imagen_historia_clinica = PhotoImage(file ='./imagenes/historial3.png')
-        self.imagen_buscar = PhotoImage(file ='./imagenes/foto-removebg-preview.png')
+        self.imagen_galeria = PhotoImage(file ='./imagenes/foto-removebg-preview.png')
         self.imagen_agregar_paciente = PhotoImage(file ='./imagenes/agregar_paciente.png')
         self.imagen_editar_paciente = PhotoImage(file ='./imagenes/editar_paciente.png')
         self.imagen_refrescar = PhotoImage(file ='./imagenes/refrescar.png')
@@ -298,7 +292,7 @@ class MasterPanel:
         Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_pacientes).grid(column= 0, row= 2, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 4, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_buscar, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
+        Button(self.frame_menu, image= self.imagen_galeria, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
         Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column=0, row=7, pady=20,padx=10)
 
         Label(self.frame_menu, text= 'Usuarios', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=1, pady= 20, padx= 2)
@@ -309,7 +303,8 @@ class MasterPanel:
         Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column=1, row=7, pady= 20, padx= 2)
 
 		#############################  CREAR  PAGINAS  ##############################
-##        estilo_paginas = ttk.Style()
+        estilo_paginas = ttk.Style()
+        estilo_paginas.layout('TNotebook.Tab', []) #desactiva las pestañas
 ##        estilo_paginas.configure("TNotebook", background='#1F704B', foreground='#1F704B', padding= 0, borderwidth= 0)
 ##        estilo_paginas.theme_use('default')
 ##        estilo_paginas.configure("TNotebook", background='#1F704B', borderwidth= 0)
@@ -339,6 +334,14 @@ class MasterPanel:
 
 		######################## VENTANA PRINCIPAL #################
         Label(self.frame_principal, image= self.logo, bg= 'gray90').pack(expand= 1)
+
+        #ESTILO DE LAS TABLAS DE DATOS TREEVIEW
+        estilo_tabla = ttk.Style()
+        estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 35)
+##        estilo_tabla.map('Treeview', background=[('selected', color_fondo1)], foreground=[('selected','white')] )
+        estilo_tabla.configure('Treeview.Heading', background= 'red', foreground= color_fondo1, padding= 3, font= fuenteb)
+##        estilo_tabla.configure('Item', foreground = 'red', focuscolor ='green')
+##        estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
         
         ######################## USUARIOS #################
         Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 0, pady= 5)
@@ -349,8 +352,8 @@ class MasterPanel:
         Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 2, row= 1)
         
         #TABLA USUARIO
-        self.frame_tabla_usuario = Frame(self.frame_usuarios, bg='gray90')
-        self.frame_tabla_usuario.grid(columnspan=3, row=2, sticky='nsew')
+        self.frame_tabla_usuario = Frame(self.frame_usuarios, bg= 'gray90')
+        self.frame_tabla_usuario.grid(columnspan= 3, row= 2, sticky= 'nsew')
         self.tabla_usuario = ttk.Treeview(self.frame_tabla_usuario, selectmode ='browse')
         self.tabla_usuario.grid(column=0, row=2, columnspan=3, sticky='nsew')
         ladoy = ttk.Scrollbar(self.frame_tabla_usuario, orient ='vertical', command = self.tabla_usuario.yview)
@@ -382,20 +385,12 @@ class MasterPanel:
         self.boton_previo=tk.Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5,command= self.cargar_pacientes_previos).grid(column= 0, row= 2, padx= 10, pady=(0,10), sticky="W")
         self.boton_pos=tk.Button(self.frame_pacientes, text= '>', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_posteriores).grid(column= 3, row= 2, padx=(0,10), pady=(0,10), sticky="E")        
         
-        #ESTILO DE LAS TABLAS DE DATOS TREEVIEW
-        estilo_tabla = ttk.Style()
-        estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 40)
-##        estilo_tabla.map('Treeview', background=[('selected', color_fondo1)], foreground=[('selected','white')] )
-        estilo_tabla.configure('Treeview.Heading', background= 'red', foreground= color_fondo1, padding= 3, font= fuenteb)
-##        estilo_tabla.configure('Item', foreground = 'red', focuscolor ='green')
-##        estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
-
 		#TABLA PACIENTE
         self.frame_tabla_paciente = Frame(self.frame_pacientes, bg= 'gray90')
         self.frame_tabla_paciente.grid(columnspan= 4, row= 3, sticky= 'nsew')
         self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, selectmode ='browse')
         self.tabla_paciente.grid(column= 0, row= 3, columnspan= 4, sticky= 'nsew')
-        ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient ='vertical', command = self.tabla_paciente.yview)
+        ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient= 'vertical', command= self.tabla_paciente.yview)
         ladoy.grid(column = 5, row = 3, sticky='ns')
         self.tabla_paciente.configure(yscrollcommand = ladoy.set)
         self.tabla_paciente['columns'] = ('Nombre', 'D.N.I.', 'Teléfono', 'Obra Social')
