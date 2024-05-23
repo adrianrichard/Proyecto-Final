@@ -68,7 +68,7 @@ class Paciente:
             messagebox.showinfo("Buscar paciente", "No se ha podido encontrar el paciente")
 
     def actualizar(self):        
-        datos=self.nombre_paciente.get(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get(), self.dni_paciente_anterior
+        datos=self.nombre_paciente.get().upper(), self.apellido_paciente.get().upper(), self.dni_paciente.get(), self.domicilio_paciente.get().upper(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get().upper(),self.nrosocio_paciente.get(), self.dni_paciente_anterior
         try:
             sql="UPDATE Paciente SET nombre =?, apellido=?, dni=?, domicilio=?, telefono=?, email=?, obrasocial=?, nrosocio=? where dni=?"
             self.miCursor.execute(sql, datos)
@@ -95,7 +95,7 @@ class Paciente:
         else:
             guardar=True
         if(guardar):    
-            datos=self.nombre_paciente.get().upper(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get()
+            datos=self.nombre_paciente.get().upper(), self.apellido_paciente.get().upper(), self.dni_paciente.get(), self.domicilio_paciente.get().upper(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get().upper(),self.nrosocio_paciente.get()
             try:
                 self.miCursor.execute("INSERT INTO Paciente VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
                 self.miConexion.commit()
