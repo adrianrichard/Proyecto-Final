@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.font import BOLD
+from tkinter import  StringVar
 import util.generic as utl
 from forms.form_administrador import MasterPanel
 from forms.form_secretario import SecretarioPanel
@@ -12,8 +13,8 @@ import re
 class Login:
 
     def verificar(self, event=None):
-        username = self.usuario.get()
-        password = self.password.get()
+        username = self.nombre_usuario.get()
+        password = self.pass_usuario.get()
         db = Conexion()
 
         if(db.comprobar_bd()):
@@ -25,20 +26,25 @@ class Login:
                 if tipo_user[0][0] == 'administrador':
                     showinfo(title = "Ingreso", message = "Ingreso autorizado")
                     db.cerrar_bd()
+                    self.nombre_usuario.set('')
+                    self.pass_usuario.set('')
                     #self.frame_login.destroy()
-                    MasterPanel()                  
-                    
+                    MasterPanel()                    
 
                 if tipo_user[0][0] == 'odontologo':
                     showinfo(title = "Ingreso", message = "Ingreso autorizado")
                     db.cerrar_bd()
-                    self.frame_login.destroy()
+                    self.nombre_usuario.set('')
+                    self.pass_usuario.set('')
+                    #self.frame_login.destroy()
                     OdontologoPanel()
 
                 if tipo_user[0][0] == 'secretario':
                     showinfo(title = "Ingreso", message = "Ingreso autorizado")
                     db.cerrar_bd()
-                    self.frame_login.destroy()
+                    self.nombre_usuario.set('')
+                    self.pass_usuario.set('')
+                    #self.frame_login.destroy()
                     SecretarioPanel()
 
             else:
@@ -47,7 +53,7 @@ class Login:
 
         else:
             showerror(title = "Advertencia", message = "Error de conexión a base de datos")
-        self.usuario.set(0, 'END')
+        
          
     def validar_nombre(self, value):
         pattern = r'\b[A-Za-z_]\b'
@@ -62,6 +68,7 @@ class Login:
         return True
     
     def __init__(self):
+        
         self.frame_login = tk.Tk()
         self.frame_login.title('DENTALMATIC')
         self.frame_login.geometry('500x500')
@@ -75,6 +82,8 @@ class Login:
         color_fuente = 'black'
         color_fondo1 = utl.definir_color_fondo()
         color_fondo2 = 'gray90'
+        self.nombre_usuario = StringVar()
+        self.pass_usuario = StringVar()
 
         # frame_logo
         try:
@@ -102,13 +111,13 @@ class Login:
         frame_form_fill.pack(side="bottom", expand=tk.YES, fill=tk.BOTH)
 
         tk.Label(frame_form_fill, text="Usuario", font=fuente2, fg=color_fuente, bg=color_fondo2, anchor="w").pack(fill=tk.X, padx=20, pady=5)
-        self.usuario = ttk.Entry(frame_form_fill, font=(fuente, 14), validate="key", validatecommand=(frame_form_fill.register(self.validar_nombre), "%S"))
+        self.usuario = ttk.Entry(frame_form_fill, textvariable=self.nombre_usuario, font=(fuente, 14), validate="key", validatecommand=(frame_form_fill.register(self.validar_nombre), "%S"))
         self.usuario.pack(fill=tk.X, padx=20, pady=10)
         self.usuario.focus()
 
         etiqueta_password = tk.Label(frame_form_fill, text="Contraseña", font=fuente2, fg=color_fuente, bg=color_fondo2, anchor="w")
         etiqueta_password.pack(fill=tk.X, padx=20, pady=5)
-        self.password = ttk.Entry(frame_form_fill, font=(fuente, 14), validate="key", validatecommand=(frame_form_fill.register(self.validar_pass), "%S"))
+        self.password = ttk.Entry(frame_form_fill, textvariable=self.pass_usuario, font=(fuente, 14), validate="key", validatecommand=(frame_form_fill.register(self.validar_pass), "%S"))
         self.password.pack(fill=tk.X, padx=20, pady=10)
         self.password.bind('<Return>', (lambda event: self.verificar()))
 
