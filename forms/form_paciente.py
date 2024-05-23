@@ -1,9 +1,10 @@
+from tkinter import *
 import tkinter as tk
 from tkinter.font import BOLD
 import util.generic as utl
 from tkinter import messagebox, Button, Entry, Label
 from tkinter import  StringVar, Frame
-
+import re
 #from bd.conexion import Conexion
 import sqlite3
 fuenteb= utl.definir_fuente_bold()
@@ -13,11 +14,9 @@ ancho=15
 class Paciente:
 
     def conexionBBDD(self):
-
         try:
             self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
-
         except:
             self.miCursor.execute('''
                 CREATE TABLE Paciente (
@@ -30,12 +29,22 @@ class Paciente:
 
             messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
     
+    def validar_email(self, email):
+    # Regular expression pattern for basic email validation
+        basic_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        if not re.match(basic_pattern, email):
+            return True
+        else:
+            return False
+    
     def validar_DNI(self, text, new_text):
         if len(new_text) > 8:
             return False
         return text.isdecimal()
+    
     def validar_alfa(self, value):
         return value.isalpha()
+    
     def validar_telefono(self, text, new_text):
         if len(new_text) > 11:
             return False
@@ -71,16 +80,30 @@ class Paciente:
             messagebox.showinfo("GUARDAR", "No se ha podido actualizar el paciente")
             
     def guardar(self):
-        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
-        self.miCursor=self.miConexion.cursor()
-        datos=self.nombre_paciente.get(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get()
-        try:
-            self.miCursor.execute("INSERT INTO Paciente VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
-            self.miConexion.commit()
-            messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
-            self.frame_paciente.destroy()
-        except:
-            messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
+        guardar=False
+        if(self.nombre_paciente.get()==''):
+            messagebox.showinfo("GUARDAR", "Complete el campo Nombre")
+        elif(self.apellido_paciente.get()==''):
+            messagebox.showinfo("GUARDAR", "Complete el campo Apellido")
+        elif(self.dni_paciente.get()==''):
+            messagebox.showinfo("GUARDAR", "Complete el campo DNI")
+        elif(self.domicilio_paciente.get()==''):
+            messagebox.showinfo("GUARDAR", "Complete el campo Domicilio")
+        elif(self.telefono_paciente.get()==''):
+            messagebox.showinfo("GUARDAR", "Complete el campo Teléfono")
+        elif(self.validar_email(self.email_paciente.get()) and self.email_paciente.get()==''):
+            messagebox.showinfo("GUARDAR", "Formato de email incorrecto")
+        else:
+            guardar=True
+        if(guardar):    
+            datos=self.nombre_paciente.get(), self.apellido_paciente.get(), self.dni_paciente.get(), self.domicilio_paciente.get(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get(),self.nrosocio_paciente.get()
+            try:
+                self.miCursor.execute("INSERT INTO Paciente VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
+                self.miConexion.commit()
+                messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
+                self.frame_paciente.destroy()
+            except:
+                messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
 
     def Salir(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')

@@ -11,7 +11,7 @@ import re
 
 class Login:
 
-    def verificar(self):
+    def verificar(self, event=None):
         username = self.usuario.get()
         password = self.password.get()
         db = Conexion()
@@ -25,8 +25,9 @@ class Login:
                 if tipo_user[0][0] == 'administrador':
                     showinfo(title = "Ingreso", message = "Ingreso autorizado")
                     db.cerrar_bd()
-                    self.frame_login.destroy()
-                    MasterPanel()
+                    #self.frame_login.destroy()
+                    MasterPanel()                  
+                    
 
                 if tipo_user[0][0] == 'odontologo':
                     showinfo(title = "Ingreso", message = "Ingreso autorizado")
@@ -46,7 +47,8 @@ class Login:
 
         else:
             showerror(title = "Advertencia", message = "Error de conexión a base de datos")
-    
+        self.usuario.set(0, 'END')
+         
     def validar_nombre(self, value):
         pattern = r'\b[A-Za-z_]\b'
         if re.fullmatch(pattern, value) is None:
@@ -102,13 +104,16 @@ class Login:
         tk.Label(frame_form_fill, text="Usuario", font=fuente2, fg=color_fuente, bg=color_fondo2, anchor="w").pack(fill=tk.X, padx=20, pady=5)
         self.usuario = ttk.Entry(frame_form_fill, font=(fuente, 14), validate="key", validatecommand=(frame_form_fill.register(self.validar_nombre), "%S"))
         self.usuario.pack(fill=tk.X, padx=20, pady=10)
+        self.usuario.focus()
 
         etiqueta_password = tk.Label(frame_form_fill, text="Contraseña", font=fuente2, fg=color_fuente, bg=color_fondo2, anchor="w")
         etiqueta_password.pack(fill=tk.X, padx=20, pady=5)
         self.password = ttk.Entry(frame_form_fill, font=(fuente, 14), validate="key", validatecommand=(frame_form_fill.register(self.validar_pass), "%S"))
         self.password.pack(fill=tk.X, padx=20, pady=10)
-        self.password.config(show="*")
+        self.password.bind('<Return>', (lambda event: self.verificar()))
 
+        self.password.config(show="*")
+        
         inicio = tk.Button(frame_form_fill, text="Ingresar", font=fuente2, bg=color_fondo1, bd=0, fg="white", command=self.verificar)
         inicio.pack(fill=tk.X, padx=20, pady=20)
         inicio.bind("<Return>", (lambda event: self.verificar()))

@@ -1,6 +1,9 @@
+from tkinter import *
+
 import tkinter as tk
 from tkinter import ttk
 import re
+from tkinter import messagebox
 
 
 class App(tk.Tk):
@@ -23,7 +26,7 @@ class App(tk.Tk):
         vcmd = (self.register(self.validate), '%P')
         ivcmd = (self.register(self.on_invalid),)
 
-        self.email_entry = ttk.Entry(self, width=50)
+        self.email_entry = Entry(self, width=50)
         self.email_entry.config(validate='focusout', validatecommand=vcmd, invalidcommand=ivcmd)
         self.email_entry.grid(row=0, column=1, columnspan=2, padx=5)
 
@@ -45,8 +48,9 @@ class App(tk.Tk):
         """
         pattern = r'\b[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
         if re.fullmatch(pattern, value) is None:
+            
             return False
-
+        self.email_entry.configure(bg="white")
         self.show_message()
         return True
 
@@ -55,7 +59,10 @@ class App(tk.Tk):
         Show the error message if the data is not valid
         :return:
         """
-        self.show_message('Please enter a valid email', 'red')
+        #self.show_message('Please enter a valid email', 'red')
+        #self.email_entry['background'] = 'red'
+        self.email_entry.focus()
+        #messagebox.showwarning("Invalid", "Invalid email format.")
 
 
 if __name__ == '__main__':

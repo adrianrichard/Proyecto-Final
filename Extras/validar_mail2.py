@@ -1,7 +1,11 @@
 import re
 import tkinter as tk
 from tkinter import messagebox
-
+def valid_email(email):
+    basic_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    if not re.match(basic_pattern, email):
+        messagebox.showwarning("Invalid", "Invalid email format.")
+    
 def is_valid_email(email):
     # Regular expression pattern for basic email validation
     basic_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
@@ -51,12 +55,19 @@ if __name__ == "__main__":
     app.geometry(f"{app.window_width}x{app.window_height}")
 
     label = tk.Label(app, text="Enter email address:")
-    label.pack(pady=10)
+    label.grid(padx=10, pady=10, column=0, row=0)
 
     entry_email = tk.Entry(app, width=30)
-    entry_email.pack(pady=5)
+    entry_email.grid(padx=10,pady=5, column=0, row=1)
 
     validate_button = tk.Button(app, text="Validate Email", command=on_validate_click)
-    validate_button.pack(pady=10)
+    validate_button.grid(pady=10, column=0, row=2)
+    label2 = tk.Label(app, text="Enter email address:")
+    label2.grid(pady=10, column=1, row=0)
 
+    entry_email2 = tk.Entry(app, width=30, validate="key", validatecommand=(app.register(valid_email), "%S"))
+    entry_email2.grid(padx=10,pady=5, column=1, row=1)
+
+    validate_button2 = tk.Button(app, text="Validate Email", command=on_validate_click)
+    validate_button2.grid(pady=10, column=1, row=2)
     app.mainloop()

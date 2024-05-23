@@ -21,8 +21,11 @@ global indice_paciente
 
 class MasterPanel:
 
-    def __init__(self):        
-        self.ventana = tk.Tk()
+    def __init__(self):
+                
+        self.ventana= tk.Toplevel()
+        self.ventana.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+        self.ventana.focus_set() # Mantiene el foco cuando se abre la ventana.
         self.ventana.title('DentalMatic')
         self.ventana.geometry('1000x500+180+80')
         self.ventana.config(bg= '#fcfcfc')
@@ -117,6 +120,7 @@ class MasterPanel:
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir?', icon='warning')
         if answer:
             self.ventana.destroy()
+            
 
     def agregar_paciente(self):
         paciente=Paciente()
