@@ -28,7 +28,7 @@ class Login:
                     db.cerrar_bd()
                     self.nombre_usuario.set('')
                     self.pass_usuario.set('')
-                    #self.frame_login.destroy()
+                    self.frame_login.destroy()
                     MasterPanel()                    
 
                 if tipo_user[0][0] == 'odontologo':
@@ -36,7 +36,7 @@ class Login:
                     db.cerrar_bd()
                     self.nombre_usuario.set('')
                     self.pass_usuario.set('')
-                    #self.frame_login.destroy()
+                    self.frame_login.destroy()
                     OdontologoPanel()
 
                 if tipo_user[0][0] == 'secretario':
@@ -44,7 +44,7 @@ class Login:
                     db.cerrar_bd()
                     self.nombre_usuario.set('')
                     self.pass_usuario.set('')
-                    #self.frame_login.destroy()
+                    self.frame_login.destroy()
                     SecretarioPanel()
 
             else:

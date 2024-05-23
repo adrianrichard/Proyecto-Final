@@ -12,7 +12,7 @@ import sqlite3
 fuenteb= utl.definir_fuente_bold()
 fuenten= utl.definir_fuente()
 pacientes=[]
-incremento = 6
+incremento = 10
 fuente2= 'Comic Sans MS'
 color_fuente = 'black'
 color_fondo1 = utl.definir_color_fondo()
@@ -23,9 +23,10 @@ class MasterPanel:
 
     def __init__(self):
                 
-        self.ventana= tk.Toplevel()
-        self.ventana.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
-        self.ventana.focus_set() # Mantiene el foco cuando se abre la ventana.
+        self.ventana= tk.Tk()
+        #self.ventana= tk.Toplevel()
+        #self.ventana.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+        #self.ventana.focus_set() # Mantiene el foco cuando se abre la ventana.
         self.ventana.title('DentalMatic')
         self.ventana.geometry('1000x500+180+80')
         self.ventana.config(bg= '#fcfcfc')
@@ -121,7 +122,6 @@ class MasterPanel:
         if answer:
             self.ventana.destroy()
             
-
     def agregar_paciente(self):
         paciente=Paciente()
         paciente.ventana_paciente()
@@ -222,7 +222,7 @@ class MasterPanel:
         i = -1
         for dato in datos:
             i= i+1
-            self.tabla_usuario.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2]))
+            self.tabla_usuario.insert('',i, text = datos[i][0], values=("*********",datos[i][2]))
 
     def buscar_paciente(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
