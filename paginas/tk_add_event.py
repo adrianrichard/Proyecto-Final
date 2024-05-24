@@ -28,12 +28,12 @@ class TurnoNuevo:
 
     def crear_main_frame(self):
         self.border_frame = Frame(self.root, bg=self.root["bg"])
-        self.border_frame.grid(row=self.grid_row_start, column=0, columnspan=self.column_count, sticky=NSEW)
+        self.border_frame.grid(row=2, column=6, columnspan=4, sticky=NSEW)
         self.main_frame = Frame(self.root, bg="#BDC1BE")
-        self.main_frame.grid(row=self.grid_row_start, column=0, columnspan=self.column_count, sticky=NSEW, padx=10, pady=10)
+        self.main_frame.grid(row=2, column=6, columnspan=4, sticky=NSEW, padx=10, pady=10)
 
     def crear_header(self):
-        Label(self.main_frame, text="AGREGAR TURNO", font="Arial", bg="#BDC1BE").pack(pady=8)
+        Label(self.main_frame, text="AGREGAR TURNO", font="Arial", bg="#BDC1BE").pack(pady=10)
 
     def crear_nombre_entry(self):
         self.nombre_entry = Entry(self.main_frame, justify=CENTER)
@@ -45,14 +45,14 @@ class TurnoNuevo:
         tiempo_frame = Frame(self.main_frame)
         tiempo_frame.pack(pady=8)
 
-        horas = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+        horas = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
         self.selector_hora = Combobox(tiempo_frame, values=horas, state="readonly", justify=CENTER, background="white")
         self.selector_hora.set("Hora")
         self.selector_hora.grid(row=0, column=0)
 
-        minutos = ["00"]
-        minutos.extend([str(num * 10) for num in range(1, 6)])
-        self.selector_minuto = Combobox(tiempo_frame, state="readonly", values=minutos, justify=CENTER, background="white")
+        minutos = ["00","30"]
+        #minutos.extend([str(num * 10) for num in range(1, 6)])
+        self.selector_minuto = Combobox(tiempo_frame, state="readonly", values=minutos, justify=CENTER, background="white", width=10)
         self.selector_minuto.set("00")
         self.selector_minuto.grid(row=0, column=1, sticky=E)
         self.selector_hora.bind("<<ComboboxSelected>>", lambda e: self.main_frame.focus())
@@ -69,10 +69,10 @@ class TurnoNuevo:
         button_frame = Frame(self.main_frame, bg="#BDC1BE")
         button_frame.pack(pady=10)
 
-        self.confirm_img = utl.leer_imagen("confirm.png", (50,50))
+        self.confirm_img = utl.leer_imagen("confirm.png", (60,50))
         Button(button_frame, image=self.confirm_img, command=self.agregar_turno, relief=FLAT, bg="#BDC1BE").grid(row=0, column=0)
 
-        self.cancelar_img = utl.leer_imagen("deny.png", (50,50))
+        self.cancelar_img = utl.leer_imagen("deny.png", (60,50))
         Button(button_frame, image=self.cancelar_img, command=self.cancelar, relief=FLAT, bg="#BDC1BE").grid(row=0, column=1)
 
     def agregar_turno(self):
@@ -113,23 +113,6 @@ class TurnoNuevo:
         self.root.confirmation.grid(row=self.grid_row_start+1, column=0, columnspan=4, pady=10)
         self.root.extension = None
         self.callback()
-
-    def cargar_turnos(self, frame):    
-        self.frame_tabla_turnos = Frame(frame, bg= 'gray90')
-        self.frame_tabla_turnos.grid(rowspan=10, column=7, row= 1, sticky= 'nsew')
-        self.frame_tabla_turnos = ttk.Treeview(self.frame_tabla_turnos, selectmode ='browse')
-        self.frame_tabla_turnos.grid(column=7, row=1, rowspan=10, sticky='nsew')
-        ladoy = ttk.Scrollbar(self.frame_tabla_turnos, orient ='vertical', command = self.frame_tabla_turnos.yview)
-        ladoy.grid(column = 10, row = 1, sticky='ns')
-        self.frame_tabla_turnos.configure(yscrollcommand = ladoy.set)
-        self.frame_tabla_turnos['columns'] = ( 'Paciente', 'Odontologo')
-        self.frame_tabla_turnos.column('#0', minwidth=100, width=120, anchor='center')
-        self.frame_tabla_turnos.column('Paciente', minwidth=100, width=120, anchor='center' )        
-        self.frame_tabla_turnos.column('Odontologo', minwidth=100, width=120, anchor='center' )
-        self.frame_tabla_turnos.delete(*self.frame_tabla_turnos.get_children())
-        for i in range(0, 10):
-            print(i)
-            self.frame_tabla_turnos.insert('',i, text = "hola", values=(i,i)) 
 
     def cancelar(self):
         self.main_frame.destroy()

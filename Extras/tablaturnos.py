@@ -4,6 +4,8 @@ import tkinter as tk
 from tkinter import ttk
 import re
 from tkinter import messagebox
+import sqlite3
+
 
 class App(tk.Tk):
     def __init__(self):
@@ -11,9 +13,25 @@ class App(tk.Tk):
 
         self.title('Tkinter Validation Demo')
         self.geometry("500x500")
-
+        conn = sqlite3.connect('testDB.db')
+        cur = conn.cursor()
+        cur.execute('''
+            CREATE TABLE turnos(
+                time integer, 
+                name text, 
+                class integer, 
+                division text    
+            )''')
+        print("\nDatabase created successfully!!!")
+        # committing our connection
+        conn.commit() 
+        # close our connection
+        conn.close()
+        
         self.create_widgets()
 
+    
+    
     def create_widgets(self):
 
         Button(self, text="Agregar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10).grid(row=0, column=0, pady=(5,5))
@@ -21,10 +39,9 @@ class App(tk.Tk):
         Button(self, text="Editar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10).grid(row=0, column=2, pady=(5,5))
         Button(self, text="Salir", bg="orange", bd= 2, borderwidth= 2, width=10, command=self.destroy).grid(row=0, column=3, pady=(5,5))
     #def cargar_turnos(self, frame):    
-        self.frame_tabla_turnos = Frame(self, bg= 'gray90')
-        #self.frame_tabla_turnos.grid(column=0, row=1, columnspan=4, sticky='nsew')
-        self.frame_tabla_turnos = ttk.Treeview(self.frame_tabla_turnos, columns=("Horario", "Paciente", "Prestacion", "Odontologo"), show='headings')
-        #self.frame_tabla_turnos.grid(column=0, row=1, columnspan=4, sticky='nsew')
+        
+        self.frame_tabla_turnos = ttk.Treeview(self, columns=("Horario", "Paciente", "Prestacion", "Odontologo"), show='headings')
+        self.frame_tabla_turnos.grid(column=0, row=1, columnspan=4, sticky='nsew')
         
         self.frame_tabla_turnos.heading("Horario", text="Horario")
         self.frame_tabla_turnos.heading("Paciente", text="Paciente")
@@ -48,11 +65,11 @@ class App(tk.Tk):
             current_time = start_time + i * time_interval
             #print(current_time.strftime("%H:%M"))     
             self.frame_tabla_turnos.insert('',i, text = current_time.strftime("%H:%M"), values=(i,i))
-        scrollbar = ttk.Scrollbar(self.frame_tabla_turnos, orient=tk.VERTICAL, command=self.frame_tabla_turnos.yview)
-        self.frame_tabla_turnos.configure(yscroll=scrollbar.set)
+        #scrollbar = ttk.Scrollbar(self.frame_tabla_turnos, orient=tk.VERTICAL, command=self.frame_tabla_turnos.yview)
+        #self.frame_tabla_turnos.configure(yscroll=scrollbar.set)
         # Ubicar el Treeview y la barra de desplazamiento en el Frame
-        self.frame_tabla_turnos.grid(row=1, column=0, sticky='nsew', columnspan=4)
-        scrollbar.grid(row=1, column=5, sticky='ns')
+        
+        #scrollbar.grid(row=1, column=5, sticky='ns')
         # ladoy = ttk.Scrollbar(self.frame_tabla_turnos, orient ='vertical', command = self.frame_tabla_turnos.yview)
         # ladoy.grid(column = 0, row = 1, sticky='ns')
         # #ladoy.pack(side ='right')
