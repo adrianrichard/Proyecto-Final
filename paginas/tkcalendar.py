@@ -76,7 +76,7 @@ class TKCalendar():
                 #print(i)
             else:
                 if i==6 or i==13 or i==20 or i==27 or i==34 or i==41:
-                    self.botones_fecha[i].configure(text="", state=DISABLED, bg="#808080")
+                    self.botones_fecha[i].configure(text=j, state=DISABLED, bg="gray90")
                 else:    
                     self.botones_fecha[i].configure(text=j, command=partial(self.info_dia, j), bg="white", state=NORMAL)
             #Marca la fecha actual
