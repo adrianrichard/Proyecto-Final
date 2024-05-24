@@ -114,6 +114,23 @@ class TurnoNuevo:
         self.root.extension = None
         self.callback()
 
+    def cargar_turnos(self, frame):    
+        self.frame_tabla_turnos = Frame(frame, bg= 'gray90')
+        self.frame_tabla_turnos.grid(rowspan=10, column=7, row= 1, sticky= 'nsew')
+        self.frame_tabla_turnos = ttk.Treeview(self.frame_tabla_turnos, selectmode ='browse')
+        self.frame_tabla_turnos.grid(column=7, row=1, rowspan=10, sticky='nsew')
+        ladoy = ttk.Scrollbar(self.frame_tabla_turnos, orient ='vertical', command = self.frame_tabla_turnos.yview)
+        ladoy.grid(column = 10, row = 1, sticky='ns')
+        self.frame_tabla_turnos.configure(yscrollcommand = ladoy.set)
+        self.frame_tabla_turnos['columns'] = ( 'Paciente', 'Odontologo')
+        self.frame_tabla_turnos.column('#0', minwidth=100, width=120, anchor='center')
+        self.frame_tabla_turnos.column('Paciente', minwidth=100, width=120, anchor='center' )        
+        self.frame_tabla_turnos.column('Odontologo', minwidth=100, width=120, anchor='center' )
+        self.frame_tabla_turnos.delete(*self.frame_tabla_turnos.get_children())
+        for i in range(0, 10):
+            print(i)
+            self.frame_tabla_turnos.insert('',i, text = "hola", values=(i,i)) 
+
     def cancelar(self):
         self.main_frame.destroy()
         self.root.extension = None

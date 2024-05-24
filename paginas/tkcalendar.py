@@ -1,7 +1,7 @@
 from datetime import datetime
 from functools import partial
 from tkinter import *
-
+from tkinter import ttk
 from paginas.events.eventdbcontroller import EventController
 from paginas.datehandler.datehandler import DateHandler as dH
 from paginas.tkconfiguration.eventcolor import EventColor
@@ -39,7 +39,7 @@ class TKCalendar():
         #self.up_chevron = PhotoImage(file_location.open())
         #file_location = script_location / 'chevron_down.png'
         #self.down_chevron = PhotoImage(file_location.open())
-
+    
     def crear_encabezado(self, frame):
         """ Crea el encabezado """
         encabezado_texto = f"{self.dh.month_num_to_string(self.mes)} {self.anio}"
@@ -57,7 +57,7 @@ class TKCalendar():
         """ Crea botones de fechas mes actual """
         coords = [(i, j) for i in range(2, 8) for j in range(0, 7)]
         for coord in coords:
-            btn = Button(frame, font= (fuente, 10), bg="gray", relief=SUNKEN, bd=2, height=4, width=10)
+            btn = Button(frame, font= (fuente, 10), bg="green", relief=SUNKEN, bd=2, height=4, width=10)
             btn.grid(row=coord[0], column=coord[1], sticky=NSEW)
             self.botones_fecha.append(btn)
 
@@ -70,11 +70,15 @@ class TKCalendar():
         self.fechas = self.dh.date_list(self.anio, self.mes)  # Devuelve 35 dias (5 semanas)
         self.fechas.extend([0 for _ in range(42 - len(self.fechas))])  # agrega ceros en las fechas porque son 42 botones de fecha
 
-        for i, j in enumerate(self.fechas):  # Configure el texto del boton para mostrar la fecha
+        for i, j in enumerate(self.fechas):  # Configura el texto del boton para mostrar la fecha
             if j == 0:
-                self.botones_fecha[i].configure(text="", state=DISABLED, bg="#808080")
+                self.botones_fecha[i].configure(text="", state=DISABLED, bg="#808080") #botones sin fecha
+                #print(i)
             else:
-                self.botones_fecha[i].configure(text=j, command=partial(self.info_dia, j), bg="white", state=NORMAL)
+                if i==6 or i==13 or i==20 or i==27 or i==34 or i==41:
+                    self.botones_fecha[i].configure(text="", state=DISABLED, bg="#808080")
+                else:    
+                    self.botones_fecha[i].configure(text=j, command=partial(self.info_dia, j), bg="white", state=NORMAL)
             #Marca la fecha actual
             if j == datetime.today().day \
                     and self.mes == datetime.today().month \

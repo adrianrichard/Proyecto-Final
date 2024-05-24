@@ -34,7 +34,7 @@ class App(tk.Tk):
         self.label_error.grid(row=1, column=1, sticky=tk.W, padx=5)
 
         # button
-        self.send_button = ttk.Button(text='Send').grid(row=0, column=4, padx=5)
+        self.send_button = ttk.Button(text='Send', state="disable").grid(row=0, column=4, padx=5)
 
     def show_message(self, error='', color='black'):
         self.label_error['text'] = error
