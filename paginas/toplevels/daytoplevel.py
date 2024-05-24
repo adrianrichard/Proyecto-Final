@@ -1,5 +1,6 @@
 import util.generic as utl
 from tkinter import *
+from tkinter import ttk
 from paginas.datehandler.datehandler import DateHandler
 from paginas.tk_add_event import TurnoNuevo
 from paginas.tk_remove_event import TurnoEliminar
@@ -28,9 +29,9 @@ class DayTopWindow(Toplevel):
 
         self.crear_encabezado()
         self.crear_botones_cambio_fecha()
-        self.crear_listbox_citas()
         self.crear_event_buttons()
-        self.configurar_event_box()
+        self.crear_listbox_citas()        
+        #self.configurar_event_box()
 
     def crear_encabezado(self):
         """ Crea encabezado """
@@ -43,21 +44,35 @@ class DayTopWindow(Toplevel):
         Button(self, text=">", command=self.avanzar_dia, bg="#BDC1BE", height=1, width=4).grid(row=0, column=3)
         Button(self, text="<", command=self.retroceder_dia, bg="#BDC1BE", height=1, width=4).grid(row=0, column=0)
 
-    def crear_listbox_citas(self):
-        self.turnos_box = Listbox(self, bg="#BDC1BE", height=10, width=50, selectmode=SINGLE, font="Arvo 12", justify=CENTER, activestyle='none')
-        self.turnos_box.grid(row=1, column=0, columnspan=4, padx=10, pady=10, sticky=EW)
-
     def crear_event_buttons(self):
         """ Crea botones de interaccion  """
         self.agregar_img =utl.leer_imagen("add.png", (50, 50))
         self.eliminar_img = utl.leer_imagen('eliminar2.png', (50, 50))
         self.cambiar_img = utl.leer_imagen('next.png', (50, 50))
 
-        Button(self, text="Agregar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.agregar_turno).grid(row=2, column=0)
-        Button(self, text="Eliminar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.eliminar_turno).grid(row=2, column=1)
-        Button(self, text="Editar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.cambiar_turno).grid(row=2, column=2)
-        Button(self, text="Salir", bg="orange", bd= 2, borderwidth= 2, width=10, command=self.destroy).grid(row=2, column=3)
-
+        Button(self, text="Agregar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.agregar_turno).grid(row=1, column=0, pady=(5,5))
+        Button(self, text="Eliminar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.eliminar_turno).grid(row=1, column=1, pady=(5,5))
+        Button(self, text="Editar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.cambiar_turno).grid(row=1, column=2, pady=(5,5))
+        Button(self, text="Salir", bg="orange", bd= 2, borderwidth= 2, width=10, command=self.destroy).grid(row=1, column=3, pady=(5,5))
+        
+    def crear_listbox_citas(self):
+        self.frame_tabla_turnos = Frame(self, bg= 'gray90')
+        self.frame_tabla_turnos.grid(columnspan=4, rowspan=10, column=0, row= 2, sticky= 'nsew')
+        self.frame_tabla_turnos = ttk.Treeview(self.frame_tabla_turnos, selectmode ='browse')
+        self.frame_tabla_turnos.grid(column=0, row=2, rowspan=10, columnspan=4, sticky='nsew')
+        self.frame_tabla_turnos['columns'] = ( 'Paciente', 'Odontologo')
+        self.frame_tabla_turnos.column('#0', minwidth=100, width=120, anchor='center')
+        self.frame_tabla_turnos.column('Paciente', minwidth=100, width=120, anchor='center' )        
+        self.frame_tabla_turnos.column('Odontologo', minwidth=100, width=120, anchor='center' )
+        self.frame_tabla_turnos.delete(*self.frame_tabla_turnos.get_children())
+        self.frame_tabla_turnos.heading('#0', text='Hora', anchor ='center')
+        self.frame_tabla_turnos.heading('Paciente', text='Paciente', anchor ='center')
+        self.frame_tabla_turnos.heading('Odontologo', text='Odontologo', anchor ='center')
+        for i in range(0, 22):
+            #print(i)
+            self.frame_tabla_turnos.insert('',i, text = "hola", values=(i,i))
+        #self.turnos_box = Listbox(self, bg="#BDC1BE", height=10, width=50, selectmode=SINGLE, font="Arvo 12", justify=CENTER, activestyle='none')
+        #self.turnos_box.grid(row=1, column=0, columnspan=4, padx=10, pady=10, sticky=EW)
 
     def configurar_encabezado(self):
         """ Actualiza el header de la fecha """
@@ -89,9 +104,9 @@ class DayTopWindow(Toplevel):
                 self.mes = 1
                 self.anio += 1
         self.configurar_encabezado()
-        self.turnos_box.destroy()
+        #self.turnos_box.destroy()
         self.crear_listbox_citas()
-        self.configurar_event_box()
+        #self.configurar_event_box()
 
         if self.extension:
             self.extension.main_frame.destroy()
@@ -106,9 +121,9 @@ class DayTopWindow(Toplevel):
                 self.anio -= 1
             self.dia = DateHandler().days_in_month(self.mes, self.anio)
         self.configurar_encabezado()
-        self.turnos_box.destroy()
+        #self.turnos_box.destroy()
         self.crear_listbox_citas()
-        self.configurar_event_box()
+        #self.configurar_event_box()
 
         if self.extension:
             self.extension.main_frame.destroy()
@@ -119,7 +134,7 @@ class DayTopWindow(Toplevel):
         if not self.extension:
             self.confirmation.destroy() if self.confirmation else None
             self.extension = True
-            self.extension = TurnoNuevo(self, self.dia, self.mes, self.anio, self.configurar_event_box)
+            #self.extension = TurnoNuevo(self, self.dia, self.mes, self.anio, self.configurar_event_box)
 
     def eliminar_turno(self):
          if not self.extension:
@@ -137,7 +152,7 @@ class DayTopWindow(Toplevel):
                 self.extension = True
                 str_id = selection.split(" ")[-1]
                 int_id = int(str_id[1:-1])
-                self.extension = TurnoEliminar(self, int_id, self.configurar_event_box)
+                #self.extension = TurnoEliminar(self, int_id, self.configurar_event_box)
 
     def cambiar_turno(self):
         if not self.extension:
@@ -155,4 +170,4 @@ class DayTopWindow(Toplevel):
                 self.extension = True
                 str_id = selection.split(" ")[-1]
                 int_id = int(str_id[1:-1])
-                self.extension = TurnoModificar(self, int_id, self.configurar_event_box)
+                #self.extension = TurnoModificar(self, int_id, self.configurar_event_box)

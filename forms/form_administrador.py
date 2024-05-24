@@ -104,6 +104,7 @@ class MasterPanel:
         Tcal.crear_encabezado(self.frame_calendario)
         Tcal.crear_botones_fechas(self.frame_calendario)
         Tcal.actualizar_botones_fechas()
+        #Tcal.cargar_turnos(self.frame_calendario)
         Tcal.event_color_buttons()
         Tcal.configurar_filas_columnas(self.frame_calendario)
 
