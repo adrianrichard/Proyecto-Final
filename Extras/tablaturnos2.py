@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import *
 from datetime import datetime, timedelta
 import sqlite3
+from tkinter import  messagebox, Frame
 
 def crear_BD():
     conn= sqlite3.connect('turnos.db')
@@ -42,6 +43,10 @@ def cargar_turnos():
     # Cerrar la conexión
     conn.close()
 
+def salir(self):
+        answer = messagebox.askokcancel(title='Salir', message='¿Desea salir?', icon='warning')
+        if answer:
+            self.ventana_secundaria.destroy()
 eventos = [
     ('Evento 1', '2024-05-24', '10:00:00', 'Paciente 1', 'Limpieza', 'Dr. A'),
     ('Evento 2', '2024-05-25', '11:00:00', 'Paciente 2', 'Extracción', 'Dr. B'),
@@ -50,12 +55,13 @@ eventos = [
 def abrir_ventana_secundaria(self):
     ventana_secundaria = tk.Toplevel(root)
     ventana_secundaria.title("Ventana Secundaria")
-
+    ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+    ventana_secundaria.focus_set()
     # Crear widgets en la ventana secundaria
-    tk.Label(ventana_secundaria, text="Esta es la ventana secundaria").pack(padx=10, pady=10)
-
+    tk.Label(ventana_secundaria, text="Esta es la ventana secundaria").grid(column=0, row=0, padx=10, pady=10)
+    tk.Button(ventana_secundaria, text="Guardar", command=ventana_secundaria.destroy).grid(column=0, row=1,padx=10, pady=10)
     # Botón para cerrar la ventana secundaria
-    tk.Button(ventana_secundaria, text="Cerrar", command=ventana_secundaria.destroy).pack(padx=10, pady=10)
+    tk.Button(ventana_secundaria, text="Cerrar", command=salir).grid(column=1, row=1, padx=10, pady=10)
 
 # Crear la ventana principal
 root = tk.Tk()
