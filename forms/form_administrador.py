@@ -34,7 +34,7 @@ class MasterPanel:
         utl.centrar_ventana(self.ventana, 900, 600)
         self.menu = True
         self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
-        self.ventana.iconphoto(False, self.imagen_ventana)        
+        self.ventana.iconphoto(False, self.imagen_ventana)
         self.dni_paciente =  StringVar()
         self.dato_paciente =  StringVar()
         self.nombre_usuario =  StringVar()
@@ -129,15 +129,15 @@ class MasterPanel:
 
     def editar_paciente(self, event):
         paciente=Paciente()
-        item = self.tabla_paciente.focus()        
+        item = self.tabla_paciente.focus()
         self.data = self.tabla_paciente.item(item)
         try:
-            self.dni_paciente=self.data['values'][1]        
+            self.dni_paciente=self.data['values'][1]
             paciente.cargar_datos(self.dni_paciente)
             paciente.ventana_paciente()
         except:
             pass
-        
+
     def eliminar_paciente(self):
         try:
             self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -149,7 +149,7 @@ class MasterPanel:
                 messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
                 self.mostrar_pacientes()
         except:
-            messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")        
+            messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")
     
     def cargar_tabla_pacientes(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -161,6 +161,10 @@ class MasterPanel:
     
     def cargar_pacientes_previos(self):
         global indice_paciente
+        self.boton_pos.config(state='normal',bg= '#1F704B')
+        if indice_paciente == 0:
+            self.boton_previo.config(state='disabled',bg= '#1F704B')
+                    
         paciente_lista = self.cargar_tabla_pacientes()
         offset = len(paciente_lista)%incremento
         if indice_paciente ==  len(paciente_lista):
@@ -177,32 +181,29 @@ class MasterPanel:
 
     def cargar_pacientes_posteriores(self):
         global indice_paciente
+        self.boton_previo.config(state='normal',bg= '#1F704B')
         paciente_lista = self.cargar_tabla_pacientes()
-        #print("principio",indice_paciente,  len(paciente_lista))
         if indice_paciente != len(paciente_lista):
-            #print("indice menor")
             indice_paciente = indice_paciente + incremento
-            #print("indice inicial", indice_paciente,  len(paciente_lista))
             if indice_paciente+incremento <= len(paciente_lista):
-                #print("no es final", indice_paciente+incremento)
                 self.tabla_paciente.delete(*self.tabla_paciente.get_children())
                 for i in range(indice_paciente, indice_paciente+incremento):
                     self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))
                 if(indice_paciente+incremento == len(paciente_lista)):
                     indice_paciente = len(paciente_lista)
-            elif indice_paciente+incremento > len(paciente_lista):                
+                    self.boton_pos.config(state='disabled',bg= '#1F704B')
+            elif indice_paciente+incremento > len(paciente_lista):
                 offset = len(paciente_lista)%incremento
-                #print("offset",offset)
-                #print(indice_paciente,  len(paciente_lista))
                 self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-                for i in range(indice_paciente, indice_paciente+offset):           
+                for i in range(indice_paciente, indice_paciente+offset):
                     self.tabla_paciente.insert('',i, text = paciente_lista[i][0], values=(paciente_lista[i][1],paciente_lista[i][2],paciente_lista[i][3],paciente_lista[i][4]))        
-            #if(indice_paciente+incremento == len(paciente_lista)):
                 indice_paciente = len(paciente_lista)
-        #print(indice_paciente)
+                self.boton_pos.config(state='disabled',bg= '#1F704B')
                 
     def mostrar_pacientes(self):
         global indice_paciente
+        self.boton_pos.config(state='normal',bg= '#1F704B')
+        self.boton_previo.config(state='disabled',bg= '#1F704B')
         indice_paciente=0
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
@@ -210,20 +211,8 @@ class MasterPanel:
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-        for i in range(0, incremento):           
+        for i in range(0, incremento):
                 self.tabla_paciente.insert('',i, text = datos[i][0], values=(datos[i][1],datos[i][2],datos[i][3],datos[i][4]))
-
-    def mostrar_usuarios(self):
-        self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
-        self.miCursor=self.miConexion.cursor()
-        bd = "SELECT Nombre_usuario, Clave, Tipo_usuario FROM Usuarios"
-        self.miCursor.execute(bd)
-        datos = self.miCursor.fetchall()
-        self.tabla_usuario.delete(*self.tabla_usuario.get_children())
-        i = -1
-        for dato in datos:
-            i= i+1
-            self.tabla_usuario.insert('',i, text = datos[i][0], values=("*********",datos[i][2]))
 
     def buscar_paciente(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -243,10 +232,22 @@ class MasterPanel:
         item = self.tabla_paciente.focus()
         self.data = self.tabla_paciente.item(item)
         self.dni_paciente=self.data['values'][1]
+        
+    def mostrar_usuarios(self):
+        self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
+        self.miCursor=self.miConexion.cursor()
+        bd = "SELECT Nombre_usuario, Clave, Tipo_usuario FROM Usuarios"
+        self.miCursor.execute(bd)
+        datos = self.miCursor.fetchall()
+        self.tabla_usuario.delete(*self.tabla_usuario.get_children())
+        i = -1
+        for dato in datos:
+            i= i+1
+            self.tabla_usuario.insert('',i, text = datos[i][0], values=("*********",datos[i][2]))
 
     def seleccionar_usuario(self, event):
         (sel,) = self.tabla_usuario.selection()
-        self.nombre_usuario=self.tabla_usuario.item(sel, "text")     
+        self.nombre_usuario=self.tabla_usuario.item(sel, "text")
 
     def agregar_usuario(self):
         user = Usuario()
@@ -259,10 +260,10 @@ class MasterPanel:
             self.usuario=self.tabla_usuario.item(sel, "text")
             user = Usuario()
             user.conexionBBDD()
-            user.cargar_datos(self.usuario)        
+            user.cargar_datos(self.usuario)
             user.ventana()
         except:
-            pass        
+            pass
     
     def eliminar_usuario(self):
         #print(self.nombre_usuario)
@@ -343,7 +344,7 @@ class MasterPanel:
 		##############################         PAGINAS       #############################################
 		######################## FRAME TITULO #################
         self.titulo = Label(self.frame_top, text= 'Consultorio Odontológico MyM', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold'))
-        self.titulo.pack(expand=1)        
+        self.titulo.pack(expand=1)
 
 		######################## VENTANA PRINCIPAL #################
         Label(self.frame_principal, image= self.logo, bg= 'gray90').pack(expand= 1)
@@ -375,8 +376,8 @@ class MasterPanel:
         self.tabla_usuario.configure(yscrollcommand = ladoy.set)
         self.tabla_usuario['columns'] = ( 'Clave', 'Tipo_usuario')
         self.tabla_usuario.column('#0', minwidth=100, width=120, anchor='center')
-        self.tabla_usuario.column('Clave', minwidth=100, width=120, anchor='center' )        
-        self.tabla_usuario.column('Tipo_usuario', minwidth=100, width=120, anchor='center' )
+        self.tabla_usuario.column('Clave', minwidth=100, width=120, anchor='center')
+        self.tabla_usuario.column('Tipo_usuario', minwidth=100, width=120, anchor='center')
 
         self.tabla_usuario.heading('#0', text='Usuario', anchor ='center')
         self.tabla_usuario.heading('Clave', text='Clave', anchor ='center')
@@ -387,25 +388,28 @@ class MasterPanel:
         self.tabla_usuario.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
 
 		######################## PACIENTES #################
-        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 0, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Agregar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 0, row= 1)
-        Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 1, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 1, row= 1)
-        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 2, row= 0, pady= 5)
-        Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 2, row= 1)
-        self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 20 ,font= fuenten).grid(column= 3, row= 0, pady= 5)
-        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_paciente).grid(column= 3, row= 1, pady=(0,10))
+        Label(self.frame_pacientes, text= 'PACIENTES', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 4, padx=5, pady= 5, sticky="W")       
+        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 0, row= 1, pady= 5)
+        Label(self.frame_pacientes, text= 'Agregar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 0, row= 2)
+        Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 1, row= 1, pady= 5)
+        Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 1, row= 2)
+        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 2, row= 1, pady= 5)
+        Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 2, row= 2)
+        self.busqueda = ttk.Entry(self.frame_pacientes, textvariable=self.dato_paciente, width= 20 ,font= fuenten).grid(column= 3, row= 1, pady= 5)
+        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_paciente).grid(column= 3, row= 2, pady=(0,10))
 
-        self.boton_previo=tk.Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5,command= self.cargar_pacientes_previos).grid(column= 0, row= 2, padx= 10, pady=(0,10), sticky="W")
-        self.boton_pos=tk.Button(self.frame_pacientes, text= '>', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_posteriores).grid(column= 3, row= 2, padx=(0,10), pady=(0,10), sticky="E")        
+        self.boton_previo = tk.Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5,command= self.cargar_pacientes_previos)
+        self.boton_previo.grid(column= 0, row= 3, padx= 10, pady=(0,10), sticky= "W")
+        self.boton_pos = tk.Button(self.frame_pacientes, text= '>', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_posteriores)
+        self.boton_pos.grid(column= 3, row= 3, padx=(0,10), pady=(0,10), sticky= "E")
         
 		#TABLA PACIENTE
         self.frame_tabla_paciente = Frame(self.frame_pacientes, bg= 'gray90')
-        self.frame_tabla_paciente.grid(columnspan= 4, row= 3, sticky= 'nsew')
+        self.frame_tabla_paciente.grid(columnspan= 4, row= 4, sticky= 'nsew')
         self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, selectmode ='browse')
-        self.tabla_paciente.grid(column= 0, row= 3, columnspan= 4, sticky= 'nsew')
+        self.tabla_paciente.grid(column= 0, row= 4, columnspan= 4, sticky= 'nsew')
         ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient= 'vertical', command= self.tabla_paciente.yview)
-        ladoy.grid(column = 5, row = 3, sticky='ns')
+        ladoy.grid(column = 5, row = 4, sticky='ns')
         self.tabla_paciente.configure(yscrollcommand = ladoy.set)
         self.tabla_paciente['columns'] = ('Nombre', 'D.N.I.', 'Teléfono', 'Obra Social')
         self.tabla_paciente.column('#0', minwidth= 100, width= 120, anchor= 'center')
@@ -429,13 +433,4 @@ class MasterPanel:
 		######################## GALERIA #################
         Label(self.frame_galeria, text = 'GALERIA', fg='#1F704B', bg='gray90', font=('Comic Sans MS', 24,'bold')).grid(column= 0,  row= 0)
 
-        self.ventana.mainloop()
-    def cambiar(self):
-        self.boton_previo["state"]="active"
-        #self.boton_previo["state"]="normal"
-        # st=self.boton_previo["state"]
-        # print(st)
-        #if ( ):
-        #self.boton_previo.state(['normal'])
-        #self.boton_previo['state'] = tk.NORMAL
-        #self.boton_previo['state']='normal'
+        self.ventana.mainloop()   
