@@ -8,23 +8,32 @@ from editarturno import Editar
 
 class Turno:
     
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.ventana_turno = tk.Tk()
         self.ventana_turno.title("Turnos")
-        self.ventana_turno.geometry('500x500')
+        self.ventana_turno.geometry('450x600')
         
         self.widgets()
     
-    def abrir_ventana_secundaria(self):
+    def abrir_ventana_secundaria(self, event):
+        #print('hola')
+        item = self.tabla_turnos.focus()
+        self.data = self.tabla_turnos.item(item)
+        #print(self.data)
+        valores = self.data['values'] #VALORES DE LA TABLA
+        selected_item = self.tabla_turnos.selection()[0]
+        self.tabla_turnos.item(selected_item, text="blub", values=(valores[0], "Pedro", "Pedro", "Pedro"))
+        #print(valores)
         editar=Editar()
-        editar.prueba()
+        editar.prueba(valores)
         
     def widgets(self):
         self.frame_tabla = ttk.Frame(self.ventana_turno)
         #self.frame_tabla.grid(column=0,row=1)
         self.frame_tabla.grid(columnspan= 4, row= 0, sticky= 'nsew')
         Label(self.frame_tabla, text="PRUEBA").grid(columnspan= 4,column=0, row=0)
-        self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns=("Horario", "Paciente", "Prestacion", "Odontologo"), show='headings', height=20)
+        self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns=("Horario", "Paciente", "Prestacion", "Odontologo"), show='headings', height=25, selectmode ='browse')
         self.tabla_turnos.grid(column=0, row=2, columnspan=4, sticky='nsew')
         # Definir los encabezados de las columnas
         self.tabla_turnos.heading("Horario", text="Horario")
@@ -41,11 +50,11 @@ class Turno:
         start_time = datetime.strptime("08:00", "%H:%M")
         # Intervalo de 30 minutos
         time_interval = timedelta(minutes=30)
-        for i in range(1, 21):
+        for i in range(0, 25):
             current_time = start_time + i * time_interval
-            self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), f"Fila {i} Col2", f"Fila {i} Col3", f"Fila {i} Col4"))
+            self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), '', '', ''))
         self.tabla_turnos.bind("<Double-1>", self.abrir_ventana_secundaria)
-        
+       #self.frame_tabla.grid_columnconfigure(0, weight=1)
         self.ventana_turno.mainloop()
         
     # def crear_BD(self):
