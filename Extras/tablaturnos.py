@@ -6,7 +6,6 @@ import re
 from tkinter import messagebox
 import sqlite3
 
-
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -21,7 +20,8 @@ class App(tk.Tk):
                 name text, 
                 class integer, 
                 division text    
-            )''')
+            )
+            ''')
         print("\nDatabase created successfully!!!")
         # committing our connection
         conn.commit() 
