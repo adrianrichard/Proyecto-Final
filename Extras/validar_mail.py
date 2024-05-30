@@ -12,12 +12,16 @@ class App(tk.Tk):
         self.title('Tkinter Validation Demo')
 
         self.create_widgets()
-
+    
+    def on_validate_input(self,P):
+        # Example validation function
+        return P.isdigit() or P == ""
+    
+    def on_invalid_input(self, msg):
+        # Example function to handle invalid input
+        self.invalid_label.config(text=msg)
+        
     def create_widgets(self):
-        self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=3)
-        self.columnconfigure(2, weight=1)
-
         # label
         ttk.Label(text='Email:').grid(row=0, column=0, padx=5, pady=5)
 
@@ -31,39 +35,16 @@ class App(tk.Tk):
 
         self.label_error = ttk.Label(self, foreground='red')
         self.label_error.grid(row=1, column=1, sticky=tk.W, padx=5)
+        self.validated_entry = self.ValidatedEntry(self, validatecommand=self.n_validate_input, invalidcommand=self.on_invalid_input)
+        self.validated_entry.grid(row=2, column=1, sticky=tk.W, padx=5)
 
+        self.invalid_label = tk.Label(self, fg="red")
+        self.invalid_label.pack()
         # button
-        self.send_button = tk.Button(text='Send', state="disable", disabledforeground="red").grid(row=0, column=4, padx=5)
+        self.send_button = tk.Button(text='Send', state="normal", disabledforeground="red", command=self.show_message).grid(row=0, column=4, padx=5)
     
-    #def cargar_turnos(self, frame):    
-        self.frame_tabla_turnos = Frame(self, bg= 'gray90')
-        self.frame_tabla_turnos.grid(column=0, row=1, columnspan=4, sticky='nsew')
-        self.frame_tabla_turnos = ttk.Treeview(self.frame_tabla_turnos, selectmode ='browse')
-        self.frame_tabla_turnos.grid(column=0, row=1, columnspan=4, sticky='nsew')
-        # ladoy = ttk.Scrollbar(self.frame_tabla_turnos, orient ='vertical', command = self.frame_tabla_turnos.yview)
-        # ladoy.grid(column = 4, row = 1, sticky='ns')
-        # self.frame_tabla_turnos.configure(yscrollcommand = ladoy.set)
-        self.frame_tabla_turnos['columns'] = ( 'Paciente', 'Prestacion','Odontologo')
-        self.frame_tabla_turnos.column('#0', minwidth=100, width=120, anchor='center')
-        self.frame_tabla_turnos.column('Paciente', minwidth=100, width=120, anchor='center' )
-        self.frame_tabla_turnos.column('Prestacion', minwidth=100, width=120, anchor='center' )        
-        self.frame_tabla_turnos.column('Odontologo', minwidth=100, width=120, anchor='center' )
-        self.frame_tabla_turnos.delete(*self.frame_tabla_turnos.get_children())
-        self.frame_tabla_turnos.heading('#0', text='Horario', anchor ='center')
-        self.frame_tabla_turnos.heading('Paciente', text='Paciente', anchor ='center')
-        self.frame_tabla_turnos.heading('Prestacion', text='Prestacion', anchor ='center')
-        self.frame_tabla_turnos.heading('Odontologo', text='Odontologo', anchor ='center')
-        # Hora de inicio
-        start_time = datetime.strptime("08:00", "%H:%M")
-        # Intervalo de 30 minutos
-        time_interval = timedelta(minutes=30)
-        # Generar horarios en un día
-        for i in range(11 * 2):  # 24 horas en un día, cada hora tiene dos intervalos de 30 minutos
-            current_time = start_time + i * time_interval
-            #print(current_time.strftime("%H:%M"))     
-            self.frame_tabla_turnos.insert('',i, text = current_time.strftime("%H:%M"), values=(i,i))     
-
-    def show_message(self, error='', color='black'):
+    
+    def show_message(self, error='Tkinter Validation Demo', color='black'):
         self.label_error['text'] = error
         self.email_entry['foreground'] = color
 
@@ -95,3 +76,44 @@ class App(tk.Tk):
 if __name__ == '__main__':
     app = App()
     app.mainloop()
+
+'''def __init__(self, master=None, **kwargs):
+        self.valid_command = kwargs.pop("validatecommand", None)
+        self.invalid_command = kwargs.pop("invalidcommand", None)
+        super().__init__(master, **kwargs)
+        self.config(validate="key")
+        self.config(validatecommand=(self.register(self.validate_input), '%P'))
+
+    def validate_input(self, new_value):
+        is_valid = self.valid_command(new_value)
+        if is_valid:
+            if self.invalid_command:
+                self.invalid_command("")
+        else:
+            if self.invalid_command:
+                self.invalid_command("Invalid input")
+        return True  # Always return True to allow the validation to continue
+
+def main():
+    def on_validate_input(P):
+        # Example validation function
+        return P.isdigit() or P == ""
+
+    def on_invalid_input(msg):
+        # Example function to handle invalid input
+        invalid_label.config(text=msg)
+
+    root = tk.Tk()
+    root.title("Validated Entry Example")
+
+    validated_entry = ValidatedEntry(root, validatecommand=on_validate_input, invalidcommand=on_invalid_input)
+    validated_entry.pack(padx=10, pady=10)
+
+    invalid_label = tk.Label(root, fg="red")
+    invalid_label.pack()
+
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
+'''

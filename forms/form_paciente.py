@@ -45,6 +45,9 @@ class Paciente:
     def validar_alfa(self, value):
         return value.isalpha()
     
+    def validar_alfanum(sel, value):
+        return value.isalnum() or value.isspace()
+    
     def validar_telefono(self, text, new_text):
         if len(new_text) > 11:
             return False
@@ -135,7 +138,7 @@ class Paciente:
         Entry(self.frame_principal, textvariable=self.nombre_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfa), "%S")).grid(column=1, row=1, pady=5)
         Entry(self.frame_principal, textvariable=self.apellido_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfa), "%S")).grid(column=1, row=2, pady=5)
         Entry(self.frame_principal, textvariable=self.dni_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_DNI), "%S", "%P")).grid(column=1, row=3, pady=5)
-        Entry(self.frame_principal, textvariable=self.domicilio_paciente, width=25, font= fuenten).grid(column=1, row=4, pady=5)
+        Entry(self.frame_principal, textvariable=self.domicilio_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfanum), "%S")).grid(column=1, row=4, pady=5)
         Entry(self.frame_principal, textvariable=self.telefono_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_telefono), "%S", "%P")).grid(column=1, row=5, pady=5)
         Entry(self.frame_principal, textvariable=self.email_paciente, width=25, font= fuenten).grid(column=1, row=6, pady=5)
         Entry(self.frame_principal, textvariable=self.obrasocial_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfa), "%S")).grid(column=1, row=7, pady=5)
