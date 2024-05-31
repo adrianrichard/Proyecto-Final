@@ -1,55 +1,34 @@
 import tkinter as tk
+import re
 
-class ValidatedEntry(tk.Entry):
-    def __init__(self, master=None, **kwargs):
-        self.valid_command = kwargs.pop("validatecommand", None)
-        self.invalid_command = kwargs.pop("invalidcommand", None)
-        super().__init__(master, **kwargs)
-        self.config(validate="key")
-        self.config(validatecommand=(self.register(self.validate_input), '%P'))
+def validar_correo(entry):
+    correo = entry.get()
+    if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', correo):
+        entry_correo.config(text="Correo válido", bg="green")
+    else:
+        entry_correo.config(text="Correo inválido", bg="red")
 
+# Crear la ventana
+ventana = tk.Tk()
+ventana.title("Validar Correo Electrónico")
 
+# Crear la entrada
+entry_correo = tk.Entry(ventana)
+entry_correo.pack(pady=10)
 
-def main():
+# Vincular la función de validación al evento de cambio en la entrada
+validate_email = ventana.register(lambda email: validar_correo(entry_correo))
+entry_correo.config(validate="key", validatecommand=(validate_email, '%P'))
 
-    def __init__( master=None, **kwargs):
-        valid_command = kwargs.pop("validatecommand", None)
-        invalid_command = kwargs.pop("invalidcommand", None)
-        super().__init__(master, **kwargs)
+# Etiqueta para mostrar el resultado
+resultado = tk.Label(ventana, text="", fg="black")
+resultado.pack(pady=5)
 
-    def validate_input(new_value):
-        is_valid = valid_command(new_value)
-        if is_valid:
-            if invalid_command:
-                invalid_command("")
-        else:
-            if invalid_command:
-                invalid_command("Invalid input")
-        return True  # Always return True to allow the validation to continue
+# Función para actualizar el contenido del label mientras se escribe
+def actualizar_label(event):
+    validar_correo(entry_correo)
 
-    def on_validate_input(P):
-        # Example validation function
-        invalid_label.config(text="correcto", fg='blue')
-        return P.isdigit() or P == ""
+# Vincular la función actualizar_label al evento de pulsación de tecla en la entrada
+entry_correo.bind('<Key>', actualizar_label)
 
-
-    def on_invalid_input():
-        # Example function to handle invalid input
-        invalid_label.config(text="Error", fg='red')
-
-    root = tk.Tk()
-    root.title("Validated Entry Example")
-
-    validated_entry = tk.Entry(root)
-    validated_entry.config(validate="key")
-    validated_entry.config(validatecommand=(root.register(on_validate_input), '%P'))
-    validated_entry.config(invalidcommand=(root.register(on_invalid_input), ))
-    validated_entry.pack(padx=10, pady=10)
-
-    invalid_label = tk.Label(root, fg="red")
-    invalid_label.pack()
-
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
+ventana.mainloop()

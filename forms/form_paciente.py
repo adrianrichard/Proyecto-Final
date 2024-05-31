@@ -30,12 +30,15 @@ class Paciente:
             messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
     
     def validar_email(self, email):
-    # Regular expression pattern for basic email validation
-        basic_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-        if not re.match(basic_pattern, email):
-            return True
+        email = self.entry_correo.get()
+        if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            self.entry_correo.config(bg= "pale green")
+            self.email_valido_label.config(text= "Formato válido", fg='green')
+            self.correovalido = True
         else:
-            return False
+            self.entry_correo.config( bg="orange red")
+            self.email_valido_label.config(text= "Formato inválido", fg='red')
+            self.correovalido = False
     
     def validar_DNI(self, text, new_text):
         if len(new_text) > 8:
@@ -93,7 +96,7 @@ class Paciente:
             messagebox.showinfo("GUARDAR", "Complete el campo Domicilio")
         elif(self.telefono_paciente.get()==''):
             messagebox.showinfo("GUARDAR", "Complete el campo Teléfono")
-        elif(self.validar_email(self.email_paciente.get()) and self.email_paciente.get()==''):
+        elif(not self.correovalido):
             messagebox.showinfo("GUARDAR", "Formato de email incorrecto")
         else:
             guardar=True
@@ -140,7 +143,13 @@ class Paciente:
         Entry(self.frame_principal, textvariable=self.dni_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_DNI), "%S", "%P")).grid(column=1, row=3, pady=5)
         Entry(self.frame_principal, textvariable=self.domicilio_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfanum), "%S")).grid(column=1, row=4, pady=5)
         Entry(self.frame_principal, textvariable=self.telefono_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_telefono), "%S", "%P")).grid(column=1, row=5, pady=5)
-        Entry(self.frame_principal, textvariable=self.email_paciente, width=25, font= fuenten).grid(column=1, row=6, pady=5)
+        self.entry_correo =Entry(self.frame_principal, textvariable=self.email_paciente, width=25, font= fuenten)
+        self.entry_correo.grid(column=1, row=6, pady=5)
+        validate_email = self.frame_principal.register(lambda email: self.validar_email(self.entry_correo))
+        self.entry_correo.config(validate="key", validatecommand=(validate_email, '%P'))
+        def actualizar_label(event):
+            self.validar_email(self.entry_correo)
+        self.entry_correo.bind('<Key>', actualizar_label)
         Entry(self.frame_principal, textvariable=self.obrasocial_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfa), "%S")).grid(column=1, row=7, pady=5)
         Entry(self.frame_principal, textvariable=self.nrosocio_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_telefono), "%S", "%P")).grid(column=1, row=8, pady=5)
 
@@ -162,6 +171,8 @@ class Paciente:
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=3, pady=5)
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=4, pady=5)
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=5, pady=5)
+        self.email_valido_label=Label(self.frame_principal, text= '', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten)
+        self.email_valido_label.grid(column=2, row=6, pady=5)
         Label(self.frame_principal, text= '* Campos obligatorios', anchor="e", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=9, pady=5, padx=2)
 
         self.frame_paciente.mainloop()
@@ -178,6 +189,7 @@ class Paciente:
         self.email_paciente =  StringVar()
         self.obrasocial_paciente =  StringVar()
         self.nrosocio_paciente =  StringVar()
+        self.correovalido=False
         self.conexionBBDD()
 
 if __name__ == "__main__":

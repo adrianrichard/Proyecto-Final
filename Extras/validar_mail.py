@@ -35,11 +35,11 @@ class App(tk.Tk):
 
         self.label_error = ttk.Label(self, foreground='red')
         self.label_error.grid(row=1, column=1, sticky=tk.W, padx=5)
-        self.validated_entry = self.ValidatedEntry(self, validatecommand=self.n_validate_input, invalidcommand=self.on_invalid_input)
+        self.validated_entry = Entry(self, validatecommand=self.on_validate_input, invalidcommand=self.on_invalid_input)
         self.validated_entry.grid(row=2, column=1, sticky=tk.W, padx=5)
 
         self.invalid_label = tk.Label(self, fg="red")
-        self.invalid_label.pack()
+        self.invalid_label.grid(row=3, column=1, sticky=tk.W, padx=5)
         # button
         self.send_button = tk.Button(text='Send', state="normal", disabledforeground="red", command=self.show_message).grid(row=0, column=4, padx=5)
     
