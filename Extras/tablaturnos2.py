@@ -19,16 +19,26 @@ class Turno:
     def cargar_turnos(self):
         self.conn= sqlite3.connect('turnos.db')
         self.cur= self.conn.cursor()
-        print('probando')
+        #print('probando')
         # Leer los datos de la tabla
         self.cur.execute('SELECT * FROM turnos ORDER BY hora')
-        turnos = self.cur.fetchall()
+        turnos_dados = self.cur.fetchall()
         # Mostrar los datos
         # for turno in turnos:
         #     print(turno)
         # Cerrar la conexión
         self.conn.close()
-        return turnos
+        start_time = datetime.strptime("08:00", "%H:%M")
+        # Intervalo de 30 minutos
+        time_interval = timedelta(minutes=30)
+        for i in range(0, 25):
+            current_time = start_time + i * time_interval
+            for turno in turnos_dados:
+                if(current_time.strftime("%H:%M") == turno[3]):
+                    self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), turno[4], turno[5], turno[6]))
+            else:
+                self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), '', '', ''))
+        #return turnos
 
     def agregar_turno(self):
         print("guardado")
@@ -94,7 +104,7 @@ class Turno:
         self.frame_tabla = ttk.Frame(self.ventana_turno)
         #self.frame_tabla.grid(column=0,row=1)
         self.frame_tabla.grid(columnspan= 4, row= 0, sticky= 'nsew')
-        Label(self.frame_tabla, text="PRUEBA").grid(columnspan= 4,column=0, row=0)
+        Label(self.frame_tabla, text="TURNOS").grid(columnspan= 4,column=0, row=0)
         self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns=("Horario", "Paciente", "Prestacion", "Odontologo"), show='headings', height=25, selectmode ='browse')
         self.tabla_turnos.grid(column=0, row=2, columnspan=4, sticky='nsew')
         # Definir los encabezados de las columnas
@@ -108,18 +118,9 @@ class Turno:
         self.tabla_turnos.column("Paciente", width=100)
         self.tabla_turnos.column("Prestacion", width=100)
         self.tabla_turnos.column("Odontologo", width=100)
-        turnos_dados=self.cargar_turnos()        
+        self.cargar_turnos()        
         # cargar filas al Treeview
-        start_time = datetime.strptime("08:00", "%H:%M")
-        # Intervalo de 30 minutos
-        time_interval = timedelta(minutes=30)
-        for i in range(0, 25):
-            current_time = start_time + i * time_interval
-            for turno in turnos_dados:
-                if(current_time.strftime("%H:%M") == turno[3]):
-                    self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), turno[4], turno[5], turno[6]))
-            else:
-                self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), '', '', ''))
+        
         self.tabla_turnos.bind("<Double-1>", self.abrir_ventana_secundaria)
        #self.frame_tabla.grid_columnconfigure(0, weight=1)
         
