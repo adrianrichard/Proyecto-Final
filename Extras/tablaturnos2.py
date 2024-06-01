@@ -17,9 +17,12 @@ class Turno:
         self.widgets()
     
     def cargar_turnos(self):
-        self.conn= sqlite3.connect('turnos.db')
-        self.cur= self.conn.cursor()
-        #print('probando')
+        try:
+            self.conn= sqlite3.connect('turnos.db')
+            self.cur= self.conn.cursor()
+            print('probando')
+        except:
+            print('no abre BD')
         # Leer los datos de la tabla
         self.cur.execute('SELECT * FROM turnos ORDER BY hora')
         turnos_dados = self.cur.fetchall()
@@ -28,6 +31,7 @@ class Turno:
         #     print(turno)
         # Cerrar la conexión
         self.conn.close()
+        self.tabla_turnos.delete(*self.tabla_turnos.get_children())
         start_time = datetime.strptime("08:00", "%H:%M")
         # Intervalo de 30 minutos
         time_interval = timedelta(minutes=30)
@@ -35,7 +39,8 @@ class Turno:
             current_time = start_time + i * time_interval
             for turno in turnos_dados:
                 if(current_time.strftime("%H:%M") == turno[3]):
-                    self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), turno[4], turno[5], turno[6]))
+                    self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), turno[4], turno[5], turno[6]), tags='anotado')
+                    self.style.configure('Item', foreground = 'red', focuscolor ='green')
             else:
                 self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), '', '', ''))
         #return turnos
@@ -46,14 +51,16 @@ class Turno:
     def cancelar_turno(self):
         self.ventana_secundaria.destroy()
         
-    def abrir_ventana_secundaria(self, event):
+    def editar_turno(self, event):
         self.ventana_secundaria = tk.Toplevel(self.ventana_turno, background='gray')
         self.ventana_secundaria.title("Ventana Secundaria")
         self.ventana_secundaria.geometry('400x300')
         
         # #print('hola')
         item = self.tabla_turnos.focus()
-        self.data = self.tabla_turnos.item(item)
+        #self.data = self.tabla_turnos.item(item)
+        self.turno_seleccionado = self.tabla_turnos.selection()[0]
+        #print(self.turno_seleccionado)
         #print(self.data)
         Label(self.ventana_secundaria, text="EDITAR TURNO", font=("Arial", 15, 'bold'), bg="gray90", width=60).pack(pady=10)
         self.nombre_entry = Entry(self.ventana_secundaria, justify=CENTER)
@@ -94,7 +101,7 @@ class Turno:
         Button(button_frame, text='cancelar',  command=self.cancelar_turno, bg="#BDC1BE").grid(row=0, column=1, padx = 10)
         
         #valores = self.data['values'] #VALORES DE LA TABLA
-        #selected_item = self.tabla_turnos.selection()[0]
+        #
         #self.tabla_turnos.item(selected_item, text="blub", values=(valores[0], "Pedro", "Pedro", "Pedro"))
         #print(valores)
         #editar=Editar()
@@ -104,24 +111,29 @@ class Turno:
         self.frame_tabla = ttk.Frame(self.ventana_turno)
         #self.frame_tabla.grid(column=0,row=1)
         self.frame_tabla.grid(columnspan= 4, row= 0, sticky= 'nsew')
-        Label(self.frame_tabla, text="TURNOS").grid(columnspan= 4,column=0, row=0)
-        self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns=("Horario", "Paciente", "Prestacion", "Odontologo"), show='headings', height=25, selectmode ='browse')
-        self.tabla_turnos.grid(column=0, row=2, columnspan=4, sticky='nsew')
+        Label(self.frame_tabla, text="TURNOS").grid(columnspan= 4, column= 0, row= 0)
+        self.style = ttk.Style()
+# Configure a new Treeview Heading style
+        self.style.configure("Treeview.Heading", font=('Helvetica', 10, 'bold'), background="#D3D3D3")
+        self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns= ("Horario", "Paciente", "Prestacion", "Odontologo"), show= 'headings', height=25, selectmode ='browse')
+        self.tabla_turnos.grid(column= 0, row= 2, columnspan= 4, sticky= 'nsew')
         # Definir los encabezados de las columnas
-        self.tabla_turnos.heading("Horario", text="Horario")
-        self.tabla_turnos.heading("Paciente", text="Paciente")
-        self.tabla_turnos.heading("Prestacion", text="Prestacion")
-        self.tabla_turnos.heading("Odontologo", text="Odontologo")
+        self.tabla_turnos.heading("Horario", text= "Horario")
+        self.tabla_turnos.heading("Paciente", text= "Paciente")
+        self.tabla_turnos.heading("Prestacion", text= "Prestacion")
+        self.tabla_turnos.heading("Odontologo", text= "Odontologo")
 
         # Ajustar el ancho de las columnas
-        self.tabla_turnos.column("Horario", width=80)
-        self.tabla_turnos.column("Paciente", width=100)
-        self.tabla_turnos.column("Prestacion", width=100)
-        self.tabla_turnos.column("Odontologo", width=100)
+        self.tabla_turnos.column("Horario", width= 80)
+        self.tabla_turnos.column("Paciente", width= 100)
+        self.tabla_turnos.column("Prestacion", width= 100)
+        self.tabla_turnos.column("Odontologo", width= 100)
+        #self.tabla_turnos.tag_configure('anotado', foreground='red')
         self.cargar_turnos()        
         # cargar filas al Treeview
-        
-        self.tabla_turnos.bind("<Double-1>", self.abrir_ventana_secundaria)
+        #self.tabla_turnos.tag_configure('anotado', foreground='red')
+#        self.tabla_turnos.tag_configure('gray',background='gray')
+        self.tabla_turnos.bind("<Double-1>", self.editar_turno)
        #self.frame_tabla.grid_columnconfigure(0, weight=1)
         
         self.ventana_turno.mainloop()
