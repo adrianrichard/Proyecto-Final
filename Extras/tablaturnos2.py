@@ -76,23 +76,21 @@ class Turno:
             self.nombre_entry.delete(0, END)
             self.nombre_entry.insert(0, self.paciente)
         self.nombre_entry.focus_set()
-        prestaciones = ["Consulta", "Extracción", "Tratamiento de conducto", "Reparación", "Limpieza"]
+        prestaciones = ["CONSULTA", "EXTRACCIÓN", "TRATAMIENTO DE CONDUCTO", "LIMPIEZA"]
         self.selector_prestacion = ttk.Combobox(self.ventana_secundaria, state="readonly", values=prestaciones, width=25, justify=CENTER, background="white")
         self.selector_prestacion.pack(pady=8)
         self.selector_prestacion.set("Prestación")
         if (self.prestacion != ''):            
             self.selector_prestacion.set(self.prestacion)
         self.selector_prestacion.bind("<<ComboboxSelected>>", lambda e: self.ventana_secundaria.focus())
-        odontologos = ["Militello", "Macua", "Ramirez"]
+        odontologos = ["MILITELLO", "MACUA", "RAMIREZ"]
         self.selector_odontologo= ttk.Combobox(self.ventana_secundaria, state="readonly", values=odontologos, width=25, justify=CENTER, background="white")
         self.selector_odontologo.pack(pady=8)
         self.selector_odontologo.set("Odontólogo")
         if (self.odontologo != ''):            
             self.selector_odontologo.set(self.odontologo)
         self.selector_odontologo.bind("<<ComboboxSelected>>", lambda e: self.ventana_secundaria.focus())
-      
-             
-        
+              
         self.button_frame = Frame(self.ventana_secundaria, bg="gray")
         self.button_frame.pack(pady=10)
         
@@ -114,8 +112,20 @@ class Turno:
             self.aviso = Label(self.button_frame, text="Complete la información", bg="#BDC1BE", fg="red", font="Helvetica 10")
             self.aviso.grid(pady=10,row=1, column=0, columnspan=2, padx = 10)
         else:
-            print('datos completos')    
-
+            print('datos completos')
+            datos =  self.nombre_entry.get().upper(), self.horario, self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
+            try:
+                self.conn= sqlite3.connect('turnos.db')
+                self.cur= self.conn.cursor()
+            # Leer los datos de la tabla
+                if(self.cur.execute('SELECT * FROM turnos WHERE hora=?', (self.horario,))):
+                    print('sirve')
+                    self.cur.execute("INSERT INTO Paciente VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
+                self.conn.close()
+                print(datos)
+            except:
+                print('no abre BD')
+        
         # """ Reconfigure red zones if triggered """
         # self.nombre_entry.configure(bg="white")
         # style.configure("TCombobox", fieldbackground="white", background="white")    
@@ -156,7 +166,7 @@ class Turno:
         self.style.theme_use('clam')
         
         # Configure a new Treeview Heading style
-        self.style.configure("Treeview.Heading", font=('Helvetica', 10, 'bold'), background="gray")
+        self.style.configure("Treeview.Heading", font=('Helvetica', 10, 'bold'), foreground='white',background="sea green")
         self.style.configure("Treeview",            
             foreground="black",
             rowheight=20
