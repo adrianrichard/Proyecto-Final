@@ -112,15 +112,26 @@ class Turno:
             self.aviso = Label(self.button_frame, text="Complete la información", bg="#BDC1BE", fg="red", font="Helvetica 10")
             self.aviso.grid(pady=10,row=1, column=0, columnspan=2, padx = 10)
         else:
-            print('datos completos')
+            #self.hora_anterior = self.horario
+            print('datos completos', self.horario)
             datos =  self.nombre_entry.get().upper(), self.horario, self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
+            print(datos)
             try:
                 self.conn= sqlite3.connect('turnos.db')
                 self.cur= self.conn.cursor()
             # Leer los datos de la tabla
                 if(self.cur.execute('SELECT * FROM turnos WHERE hora=?', (self.horario,))):
+                    #print('sirve')
+                    sql="UPDATE turnos SET paciente=?, hora=?, prestacion=?, odontologo=? where hora=?"
+                    self.cur.execute(sql, datos)
+                    self.conn.commit()
+                else:
+                    print(datos)
+                    sql="INSERT INTO turnos VALUES(NULL,NULL, ?, ?, ?, ?)"
                     print('sirve')
-                    self.cur.execute("INSERT INTO Paciente VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
+                    self.cur.execute(sql, datos)
+                    self.conn.commit()
+                    print('sirve')
                 self.conn.close()
                 print(datos)
             except:
