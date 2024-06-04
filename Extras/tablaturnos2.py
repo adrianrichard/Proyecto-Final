@@ -127,7 +127,7 @@ class Turno:
                     self.conn.commit()
                 else:
                     print(datos)
-                    sql="INSERT INTO turnos VALUES(NULL,NULL, ?, ?, ?, ?)"
+                    sql="INSERT INTO turnos() VALUES(NULL,NULL, NULL,?, ?, ?, ?)"
                     print('sirve')
                     self.cur.execute(sql, datos)
                     self.conn.commit()
