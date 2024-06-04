@@ -138,7 +138,7 @@ class Turno:
                 else:
                     datos =  self.nombre_entry.get().upper(), self.horario, self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
                     print(datos)
-                    sql="INSERT INTO turnos VALUES(NULL,NULL, NULL,?, ?, ?, ?)"
+                    sql="INSERT INTO turnos(paciente, hora, prestacion, odontologo) VALUES(?, ?, ?, ?)"
                     print('sirve2')
                     self.cur.execute(sql, datos)
                     self.conn.commit()
