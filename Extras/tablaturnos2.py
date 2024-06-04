@@ -12,7 +12,7 @@ class Turno:
         super().__init__(*args, **kwargs)
         self.ventana_turno = tk.Tk()
         self.ventana_turno.title("Turnos")
-        self.ventana_turno.geometry('450x600')
+        self.ventana_turno.geometry('500x600')
         
         self.widgets()
     
@@ -66,7 +66,6 @@ class Turno:
         self.ventana_secundaria.geometry('400x300')
         self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
-        # #print('hola')
         #item = self.tabla_turnos.focus()
         
         self.turno_seleccionado = self.tabla_turnos.selection()[0]
@@ -108,7 +107,6 @@ class Turno:
         Button(self.button_frame, text='cancelar',  command=self.cancelar_turno, bg="#BDC1BE").grid(row=0, column=1, padx = 10)
         
     def guardar_turno(self):
-        #print(self.valores)
         self.valores = {
             "paciente": self.nombre_entry.get(),
             "horario": self.horario,
@@ -122,60 +120,30 @@ class Turno:
             self.aviso = Label(self.button_frame, text="Complete la información", bg="#BDC1BE", fg="red", font="Helvetica 10")
             self.aviso.grid(pady=10,row=1, column=0, columnspan=2, padx = 10)
         else:
-            #self.hora_anterior = self.horario
             print('datos completos', self.horario)
-            #datos =  self.nombre_entry.get().upper(), self.horario, self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
-            #print(datos)
-            try:
-                self.conn= sqlite3.connect('turnos.db')
-                self.cur= self.conn.cursor()
-            # Leer los datos de la tabla
-                if(self.cur.execute('SELECT * FROM turnos WHERE hora=?', (self.horario,))):
-                    datos =  self.nombre_entry.get().upper(), self.horario, self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper(), self.horario
-                    sql="UPDATE turnos SET paciente=?, hora=?, prestacion=?, odontologo=? where hora=?"
-                    self.cur.execute(sql, datos)
-                    self.conn.commit()
-                else:
-                    datos =  self.nombre_entry.get().upper(), self.horario, self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
-                    print(datos)
-                    sql="INSERT INTO turnos(paciente, hora, prestacion, odontologo) VALUES(?, ?, ?, ?)"
-                    print('sirve2')
-                    self.cur.execute(sql, datos)
-                    self.conn.commit()
-                    print('sirve3')
-                self.conn.close()
-                print(datos)
+            self.conn= sqlite3.connect('turnos.db')
+            self.cur= self.conn.cursor()
+            self.cur.execute('SELECT * FROM turnos')
+            cant_turnos=len(self.cur.fetchall())
+            print(cant_turnos)            
+            try:                
+                self.cur.execute('SELECT * FROM turnos WHERE hora=?', (self.horario,))
+                turnos_carga=self.cur.fetchone()
+                print(turnos_carga[3])
+                print('si ya está ocupado')
+                datos =  self.nombre_entry.get().upper(), self.horario, self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper(), self.horario
+                sql="UPDATE turnos SET paciente=?, hora=?, prestacion=?, odontologo=? where hora=?"
+                self.cur.execute(sql, datos)
+                self.conn.commit()
             except:
-                print('no abre BD')
+                datos =  cant_turnos+1, '', '', self.horario, self.nombre_entry.get().upper(),  self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
+                sql="INSERT INTO turnos VALUES(?, ?, ?, ?, ?, ?, ?)"
+                self.cur.execute(sql, datos)
+                self.conn.commit()
+                
+        self.conn.close()
         self.cargar_turnos()
-        self.ventana_secundaria.destroy()
-        # """ Reconfigure red zones if triggered """
-        # self.nombre_entry.configure(bg="white")
-        # style.configure("TCombobox", fieldbackground="white", background="white")    
-        # tiempo_frame = Frame(self.ventana_secundaria)
-        # tiempo_frame.pack(pady=8)
-
-        # horas = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-        # self.selector_hora = ttk.Combobox(tiempo_frame, values=horas, state="readonly", justify=CENTER, background="white", width=10)
-        # self.selector_hora.set("Hora")
-        # self.selector_hora.grid(row=0, column=0)
-
-        # minutos = ["00","30"]
-        # #minutos.extend([str(num * 10) for num in range(1, 6)])
-        # self.selector_minuto = ttk.Combobox(tiempo_frame, state="readonly", values=minutos, justify=CENTER, background="white", width=10)
-        # self.selector_minuto.set("00")
-        # self.selector_minuto.grid(row=0, column=1, sticky=E)
-        # self.selector_hora.bind("<<ComboboxSelected>>", lambda e: self.ventana_secundaria.focus())
-        # self.selector_minuto.bind("<<ComboboxSelected>>", lambda e: self.ventana_secundaria.focus())
-        
-        
-        
-        #valores = self.data['values'] #VALORES DE LA TABLA
-        #
-        #self.tabla_turnos.item(selected_item, text="blub", values=(valores[0], "Pedro", "Pedro", "Pedro"))
-        #print(valores)
-        #editar=Editar()
-        #editar.prueba(valores)
+        self.ventana_secundaria.destroy()        
         
     def widgets(self):
         self.frame_tabla = ttk.Frame(self.ventana_turno)
@@ -205,10 +173,10 @@ class Turno:
         self.tabla_turnos.heading("Odontologo", text= "Odontologo")
 
         # Ajustar el ancho de las columnas
-        self.tabla_turnos.column("Horario", width= 80)
-        self.tabla_turnos.column("Paciente", width= 100)
-        self.tabla_turnos.column("Prestacion", width= 100)
-        self.tabla_turnos.column("Odontologo", width= 100)
+        self.tabla_turnos.column("Horario", width= 70)
+        self.tabla_turnos.column("Paciente", width= 150)
+        self.tabla_turnos.column("Prestacion", width= 150)
+        self.tabla_turnos.column("Odontologo", width= 150)
         
         # cargar filas al Treeview
         self.cargar_turnos()
