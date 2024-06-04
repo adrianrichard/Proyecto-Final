@@ -16,13 +16,20 @@ class Turno:
         
         self.widgets()
     
+    def turnos_otorgados(self, hora):
+        indice = 0
+        for turno in self.turnos_dados:
+            indice+=1
+            if turno[3] == hora:
+                return indice
+            
     def cargar_turnos(self):
         try:
             self.conn= sqlite3.connect('turnos.db')
             self.cur= self.conn.cursor()
             # Leer los datos de la tabla
             self.cur.execute('SELECT * FROM turnos ORDER BY hora')
-            turnos_dados = self.cur.fetchall()
+            self.turnos_dados = self.cur.fetchall()
             self.conn.close()
         except:
             print('no abre BD')
@@ -34,12 +41,15 @@ class Turno:
         start_time = datetime.strptime("08:00", "%H:%M")
         # Intervalo de 30 minutos
         time_interval = timedelta(minutes=30)
+        self.j=0
         for i in range(0, 25):
             current_time = start_time + i * time_interval
-            for turno in turnos_dados:
-                if(current_time.strftime("%H:%M") == turno[3]):
-                    self.tabla_turnos.tag_configure('anotado', font=("Arial", 10, 'bold'), background="sky blue")
-                    self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), turno[4], turno[5], turno[6]), tags=('anotado',))                    
+            #for turno in turnos_dados:
+            if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][3] and self.j < len(self.turnos_dados)):
+                self.tabla_turnos.tag_configure('anotado', font=("Arial", 10, 'bold'), background="sky blue")
+                self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][4], self.turnos_dados[self.j][5], self.turnos_dados[self.j][6]), tags=('anotado',))
+                if(self.j+1 < len(self.turnos_dados)):
+                    self.j=self.j+1
             else:
                 self.tabla_turnos.insert(parent='', index='end', values=(current_time.strftime("%H:%M"), '', '', ''))
         #return turnos
@@ -114,29 +124,31 @@ class Turno:
         else:
             #self.hora_anterior = self.horario
             print('datos completos', self.horario)
-            datos =  self.nombre_entry.get().upper(), self.horario, self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
-            print(datos)
+            #datos =  self.nombre_entry.get().upper(), self.horario, self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
+            #print(datos)
             try:
                 self.conn= sqlite3.connect('turnos.db')
                 self.cur= self.conn.cursor()
             # Leer los datos de la tabla
                 if(self.cur.execute('SELECT * FROM turnos WHERE hora=?', (self.horario,))):
-                    #print('sirve')
+                    datos =  self.nombre_entry.get().upper(), self.horario, self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper(), self.horario
                     sql="UPDATE turnos SET paciente=?, hora=?, prestacion=?, odontologo=? where hora=?"
                     self.cur.execute(sql, datos)
                     self.conn.commit()
                 else:
+                    datos =  self.nombre_entry.get().upper(), self.horario, self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
                     print(datos)
-                    sql="INSERT INTO turnos() VALUES(NULL,NULL, NULL,?, ?, ?, ?)"
-                    print('sirve')
+                    sql="INSERT INTO turnos VALUES(NULL,NULL, NULL,?, ?, ?, ?)"
+                    print('sirve2')
                     self.cur.execute(sql, datos)
                     self.conn.commit()
-                    print('sirve')
+                    print('sirve3')
                 self.conn.close()
                 print(datos)
             except:
                 print('no abre BD')
-        
+        self.cargar_turnos()
+        self.ventana_secundaria.destroy()
         # """ Reconfigure red zones if triggered """
         # self.nombre_entry.configure(bg="white")
         # style.configure("TCombobox", fieldbackground="white", background="white")    
@@ -171,7 +183,7 @@ class Turno:
         self.frame_tabla.grid(columnspan= 4, row= 0, sticky= 'nsew')
         Label(self.frame_tabla, text="TURNOS", font=('Helvetica', 10, 'bold')).grid(columnspan= 4, column= 0, row= 0, pady=5)
         
-        self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns= ("Horario", "Paciente", "Prestacion", "Odontologo"), show= 'headings', height=27, selectmode ='browse')
+        self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns= ("Horario", "Paciente", "Prestacion", "Odontologo"), show= 'headings', height=25, selectmode ='browse')
         self.tabla_turnos.grid(column= 0, row= 2, columnspan= 4, sticky= 'nsew')
         self.style = ttk.Style()
         self.style.theme_use('clam')
@@ -199,7 +211,7 @@ class Turno:
         self.tabla_turnos.column("Odontologo", width= 100)
         
         # cargar filas al Treeview
-        self.cargar_turnos()        
+        self.cargar_turnos()
         self.tabla_turnos.bind("<Double-1>", self.editar_turno)
        #self.frame_tabla.grid_columnconfigure(0, weight=1)
         
