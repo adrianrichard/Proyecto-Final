@@ -12,17 +12,18 @@ class Turno:
         super().__init__(*args, **kwargs)
         self.ventana_turno = tk.Tk()
         self.ventana_turno.title("Turnos")
-        self.ventana_turno.geometry('500x600')
+        self.ventana_turno.geometry('600x600')
         
         self.widgets()
     
-    def turnos_otorgados(self, hora):
-        indice = 0
-        for turno in self.turnos_dados:
-            indice+=1
-            if turno[3] == hora:
-                return indice
-            
+    # def turnos_otorgados(self, hora):
+    #     indice = 0
+    #     for turno in self.turnos_dados:
+    #         indice+=1
+    #         if turno[3] == hora:
+    #             return indice
+    
+                
     def cargar_turnos(self):
         try:
             self.conn= sqlite3.connect('turnos.db')
@@ -103,8 +104,9 @@ class Turno:
         self.button_frame = Frame(self.ventana_secundaria, bg="gray")
         self.button_frame.pack(pady=10)
         
-        Button(self.button_frame, text='confirm', command=self.guardar_turno, bg="#BDC1BE").grid(row=0, column=0, padx=10)
-        Button(self.button_frame, text='cancelar',  command=self.cancelar_turno, bg="#BDC1BE").grid(row=0, column=1, padx = 10)
+        Button(self.button_frame, text= 'Guardar', command= self.guardar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 0, padx= 10)
+        Button(self.button_frame, text= 'Eliminar', command= self.eliminar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 1, padx= 10)
+        Button(self.button_frame, text= 'Salir', command= self.cancelar_turno, bg= "orange red", width= 10).grid(row= 0, column= 2, padx= 10)
         
     def guardar_turno(self):
         self.valores = {
@@ -120,7 +122,7 @@ class Turno:
             self.aviso = Label(self.button_frame, text="Complete la información", bg="#BDC1BE", fg="red", font="Helvetica 10")
             self.aviso.grid(pady=10,row=1, column=0, columnspan=2, padx = 10)
         else:
-            print('datos completos', self.horario)
+            #print('datos completos', self.horario)
             self.conn= sqlite3.connect('turnos.db')
             self.cur= self.conn.cursor()
             self.cur.execute('SELECT * FROM turnos')
@@ -140,10 +142,24 @@ class Turno:
                 sql="INSERT INTO turnos VALUES(?, ?, ?, ?, ?, ?, ?)"
                 self.cur.execute(sql, datos)
                 self.conn.commit()
-                
+        
         self.conn.close()
         self.cargar_turnos()
         self.ventana_secundaria.destroy()        
+    
+    def eliminar_turno(self):
+        print(self.horario)
+        hora=self.horario
+        try:
+            self.conn= sqlite3.connect('turnos.db')
+            self.cur= self.conn.cursor()
+            #sql="DELETE FROM turnos WHERE hora= ?"
+            self.cur.execute("DELETE FROM turnos WHERE hora= ?", (hora,))
+            self.conn.commit()
+            self.conn.close()
+        except:
+            print('El turno no está guardado')
+        self.cargar_turnos()
         
     def widgets(self):
         self.frame_tabla = ttk.Frame(self.ventana_turno)
@@ -152,7 +168,7 @@ class Turno:
         Label(self.frame_tabla, text="TURNOS", font=('Helvetica', 10, 'bold')).grid(columnspan= 4, column= 0, row= 0, pady=5)
         
         self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns= ("Horario", "Paciente", "Prestacion", "Odontologo"), show= 'headings', height=25, selectmode ='browse')
-        self.tabla_turnos.grid(column= 0, row= 2, columnspan= 4, sticky= 'nsew')
+        self.tabla_turnos.grid(column= 0, row= 2, columnspan= 4, sticky= 'nsew', padx=5, pady=5)
         self.style = ttk.Style()
         self.style.theme_use('clam')
         
@@ -175,7 +191,7 @@ class Turno:
         # Ajustar el ancho de las columnas
         self.tabla_turnos.column("Horario", width= 70)
         self.tabla_turnos.column("Paciente", width= 150)
-        self.tabla_turnos.column("Prestacion", width= 150)
+        self.tabla_turnos.column("Prestacion", width= 200)
         self.tabla_turnos.column("Odontologo", width= 150)
         
         # cargar filas al Treeview
