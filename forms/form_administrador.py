@@ -6,7 +6,7 @@ from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Frame
 from forms.form_paciente import Paciente
 from forms.form_usuario import Usuario
-from paginas.tkcalendar import TKCalendar
+from calendario.tkcalendar import TKCalendar
 from util.visorimagenes import ImageGalleryApp
 import sqlite3
 fuenteb= utl.definir_fuente_bold()
@@ -121,6 +121,7 @@ class MasterPanel:
     def salir(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir?', icon='warning')
         if answer:
+            
             self.ventana.destroy()
             
     def agregar_paciente(self):
