@@ -15,11 +15,10 @@ class TurnoNuevo:
         self.dia = dia
         self.mes = mes
         self.anio = anio
-        self.grid_row_start = ventana.grid_size()[1]
-        self.column_count = ventana.grid_size()[0]
+
         self.callback = callback
 
-        self.crear_main_frame()
+        #self.crear_main_frame()
         self.crear_header()
         self.crear_nombre_entry()
         self.crear_tiempo_widgets()
@@ -28,12 +27,12 @@ class TurnoNuevo:
 
     def crear_main_frame(self):
         self.border_frame = Frame(self.root, bg=self.root["bg"])
-        self.border_frame.grid(row=2, column=6, columnspan=4, sticky=NSEW)
+        self.border_frame.grid(row=2, column=6, columnspan= 4, sticky= NSEW)
         self.main_frame = Frame(self.root, bg="#BDC1BE")
-        self.main_frame.grid(row=2, column=6, columnspan=4, sticky=NSEW, padx=10, pady=10)
+        self.main_frame.grid(row=2, column=6, columnspan=4, sticky= NSEW, padx= 10, pady= 10)
 
     def crear_header(self):
-        Label(self.main_frame, text="AGREGAR TURNO", font="Arial", bg="#BDC1BE").pack(pady=10)
+        Label(self.main_frame, text="EDITAR TURNO", font="Arial", bg="#BDC1BE").pack(pady= 10)
 
     def crear_nombre_entry(self):
         self.nombre_entry = Entry(self.main_frame, justify=CENTER)

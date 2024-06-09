@@ -6,16 +6,12 @@ import tkinter as tk
 from paginas.events.eventdbcontroller import EventController
 from paginas.datehandler.datehandler import DateHandler as dH
 from paginas.tkconfiguration.eventcolor import EventColor
-from paginas.toplevels.daytoplevel import DayTopWindow
+from paginas.daytoplevel import DayTopWindow
 
 from pathlib import Path
 
-script_location = Path(__file__).absolute().parent
-#file_location = script_location / 'file.yaml'
-#file = file_location.open()
 fuente= 'Arial'
 color_fuente = 'black'
-#color_fondo1 = utl.definir_color_fondo()
 color_fondo2 = 'gray90'
 
 class TKCalendar():
@@ -52,8 +48,8 @@ class TKCalendar():
         for i, j in enumerate(dias):
             Label(frame, text=dias[i], bd=1, font= (fuente, 12, "bold"), relief=SOLID).grid(row=1, column=i, sticky=NSEW, ipady=10)
 
-        Button(frame, text="<", command=self.mes_anterior, bg="#808080", height=2, width=8).grid(row=0, column=1)
-        Button(frame, text=">", command=self.mes_siguiente, bg="#808080", height=2, width=8).grid(row=0, column=5)
+        Button(frame, text="<", command=self.mes_anterior, bg="#1F704B", height=2, width=8).grid(row=0, column=1)
+        Button(frame, text=">", command=self.mes_siguiente, bg="#1F704B", height=2, width=8).grid(row=0, column=5)
 
     def crear_botones_fechas(self, frame):
         """ Crea botones de fechas mes actual """
@@ -130,23 +126,4 @@ class TKCalendar():
             self.toplevel.destroy()
             self.toplevel = DayTopWindow(dia, self.mes, self.anio)
         except AttributeError:
-            self.toplevel = DayTopWindow(dia, self.mes, self.anio)
-    def cargar_turnos(self, frame):    
-        self.frame_tabla_turnos = Frame(frame, bg= 'gray90')
-        self.frame_tabla_turnos.grid(columnspan=3, rowspan=10, column=7, row= 1, sticky= 'nsew')
-        self.frame_tabla_turnos = ttk.Treeview(self.frame_tabla_turnos, selectmode ='browse')
-        self.frame_tabla_turnos.grid(column=7, row=1, rowspan=10, columnspan=3, sticky='nsew')
-        # ladoy = ttk.Scrollbar(self.frame_tabla_turnos, orient ='vertical', command = self.frame_tabla_turnos.yview)
-        # ladoy.grid(column = 3, row = 1, sticky='ns')
-        # self.frame_tabla_turnos.configure(yscrollcommand = ladoy.set)
-        self.frame_tabla_turnos['columns'] = ( 'Paciente', 'Odontologo')
-        self.frame_tabla_turnos.column('#0', minwidth=100, width=120, anchor='center')
-        self.frame_tabla_turnos.column('Paciente', minwidth=100, width=120, anchor='center' )        
-        self.frame_tabla_turnos.column('Odontologo', minwidth=100, width=120, anchor='center' )
-        self.frame_tabla_turnos.delete(*self.frame_tabla_turnos.get_children())
-        self.frame_tabla_turnos.heading('#0', text='Usuario', anchor ='center')
-        self.frame_tabla_turnos.heading('Paciente', text='Paciente', anchor ='center')
-        self.frame_tabla_turnos.heading('Odontologo', text='Odontologo', anchor ='center')
-        for i in range(0, 10):
-            print(i)
-            self.frame_tabla_turnos.insert('',i, text = "hola", values=(i,i))
+            self.toplevel = DayTopWindow(dia, self.mes, self.anio)    

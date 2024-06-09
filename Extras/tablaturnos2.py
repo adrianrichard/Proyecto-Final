@@ -7,38 +7,31 @@ from tkinter import  messagebox, Frame
 #from editarturno import Editar
 
 class Turno:
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ventana_turno = tk.Tk()
         self.ventana_turno.title("Turnos")
         self.ventana_turno.geometry('600x600')
-        
+        self.sin_turno = True
         self.widgets()
-    
-    # def turnos_otorgados(self, hora):
-    #     indice = 0
-    #     for turno in self.turnos_dados:
-    #         indice+=1
-    #         if turno[3] == hora:
-    #             return indice
-    
-                
+
     def cargar_turnos(self):
         try:
             self.conn= sqlite3.connect('turnos.db')
             self.cur= self.conn.cursor()
             # Leer los datos de la tabla
-            self.cur.execute('SELECT * FROM turnos ORDER BY hora')
+            self.cur.execute('SELECT * FROM turno ORDER BY hora')
             self.turnos_dados = self.cur.fetchall()
-            self.conn.close()
+            #print(self.turnos_dados[0])
+            self.conn.close()            
         except:
-            print('no abre BD')
-                
+            print('no hay turnos')            
+
         # Cerrar la conexión
-        
+
         self.tabla_turnos.delete(*self.tabla_turnos.get_children())
-                
+
         start_time = datetime.strptime("08:00", "%H:%M")
         # Intervalo de 30 minutos
         time_interval = timedelta(minutes=30)
@@ -46,21 +39,20 @@ class Turno:
         for i in range(0, 25):
             current_time = start_time + i * time_interval
             #for turno in turnos_dados:
-            if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][3] and self.j < len(self.turnos_dados)):
-                self.tabla_turnos.tag_configure('anotado', font=("Arial", 10, 'bold'), background="sky blue")
-                self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][4], self.turnos_dados[self.j][5], self.turnos_dados[self.j][6]), tags=('anotado',))
-                if(self.j+1 < len(self.turnos_dados)):
-                    self.j=self.j+1
-            else:
+            if self.turnos_dados:
+                if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][1] and self.j < len(self.turnos_dados)):
+                    self.tabla_turnos.tag_configure('anotado', font=("Arial", 10, 'bold'), background="sky blue")
+                    self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][2], self.turnos_dados[self.j][3], self.turnos_dados[self.j][4]), tags=('anotado',))
+                    if(self.j+1 < len(self.turnos_dados)):
+                        self.j=self.j+1
+                else:                
+                    self.tabla_turnos.insert(parent='', index='end', values=(current_time.strftime("%H:%M"), '', '', ''))
+            else:                
                 self.tabla_turnos.insert(parent='', index='end', values=(current_time.strftime("%H:%M"), '', '', ''))
-        #return turnos
 
-    # def agregar_turno(self):
-    #     print("guardado")
-    
     def cancelar_turno(self):
         self.ventana_secundaria.destroy()
-        
+
     def editar_turno(self, event):
         self.ventana_secundaria = tk.Toplevel(self.ventana_turno, background='gray')
         self.ventana_secundaria.title("Ventana Secundaria")
@@ -68,7 +60,7 @@ class Turno:
         self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
         #item = self.tabla_turnos.focus()
-        
+
         self.turno_seleccionado = self.tabla_turnos.selection()[0]
         #print(self.turno_seleccionado)
         self.data = self.tabla_turnos.item(self.turno_seleccionado)
@@ -80,7 +72,7 @@ class Turno:
         Label(self.ventana_secundaria, text="FECHA: DD/MM/AAAA   -"+"   HORARIO: "+self.horario, font=("Arial", 10, 'bold'), bg="gray90", width=60).pack()
 
         self.nombre_entry = Entry(self.ventana_secundaria, justify=CENTER)
-        self.nombre_entry.pack(pady=(10,10))        
+        self.nombre_entry.pack(pady=(10,10))
         self.nombre_entry.insert(0, "Paciente")
         if (self.paciente != ''):
             self.nombre_entry.delete(0, END)
@@ -90,31 +82,31 @@ class Turno:
         self.selector_prestacion = ttk.Combobox(self.ventana_secundaria, state="readonly", values=prestaciones, width=25, justify=CENTER, background="white")
         self.selector_prestacion.pack(pady=8)
         self.selector_prestacion.set("Prestación")
-        if (self.prestacion != ''):            
+        if (self.prestacion != ''):
             self.selector_prestacion.set(self.prestacion)
         self.selector_prestacion.bind("<<ComboboxSelected>>", lambda e: self.ventana_secundaria.focus())
         odontologos = ["MILITELLO", "MACUA", "RAMIREZ"]
         self.selector_odontologo= ttk.Combobox(self.ventana_secundaria, state="readonly", values=odontologos, width=25, justify=CENTER, background="white")
         self.selector_odontologo.pack(pady=8)
         self.selector_odontologo.set("Odontólogo")
-        if (self.odontologo != ''):            
+        if (self.odontologo != ''):
             self.selector_odontologo.set(self.odontologo)
         self.selector_odontologo.bind("<<ComboboxSelected>>", lambda e: self.ventana_secundaria.focus())
-              
+
         self.button_frame = Frame(self.ventana_secundaria, bg="gray")
         self.button_frame.pack(pady=10)
-        
+
         Button(self.button_frame, text= 'Guardar', command= self.guardar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 0, padx= 10)
         Button(self.button_frame, text= 'Eliminar', command= self.eliminar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 1, padx= 10)
         Button(self.button_frame, text= 'Salir', command= self.cancelar_turno, bg= "orange red", width= 10).grid(row= 0, column= 2, padx= 10)
-        
+
     def guardar_turno(self):
-        self.valores = {
-            "paciente": self.nombre_entry.get(),
+        self.valores = {            
             "horario": self.horario,
+            "paciente": self.nombre_entry.get(),            
             "prestacion": self.selector_prestacion.get(),
             "odontologo": self.selector_odontologo.get()
-        }   
+        }
         style = ttk.Style()
         if self.valores["paciente"] == "Paciente" or self.valores["prestacion"] == "Prestación" or self.valores["odontologo"] == "Odontologo":
             style.configure("TCombobox", fieldbackground="red", background="white")
@@ -125,21 +117,26 @@ class Turno:
             #print('datos completos', self.horario)
             self.conn= sqlite3.connect('turnos.db')
             self.cur= self.conn.cursor()
-            self.cur.execute('SELECT * FROM turnos')
-            cant_turnos=len(self.cur.fetchall())
-            print(cant_turnos)            
-            try:                
-                self.cur.execute('SELECT * FROM turnos WHERE hora=?', (self.horario,))
-                turnos_carga=self.cur.fetchone()
-                print(turnos_carga[3])
-                print('si ya está ocupado')
-                datos =  self.nombre_entry.get().upper(), self.horario, self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper(), self.horario
-                sql="UPDATE turnos SET paciente=?, hora=?, prestacion=?, odontologo=? where hora=?"
-                self.cur.execute(sql, datos)
-                self.conn.commit()
-            except:
-                datos =  cant_turnos+1, '', '', self.horario, self.nombre_entry.get().upper(),  self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
-                sql="INSERT INTO turnos VALUES(?, ?, ?, ?, ?, ?, ?)"
+            # if(self.sin_turno):
+            #     self.cur.execute('SELECT * FROM turno')
+            #     cant_turnos=len(self.cur.fetchall())
+            #     print(cant_turnos)
+            if self.turnos_dados:
+                try:
+                    print('si ya está ocupado')
+                    datos =  self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper(), self.horario
+                    sql="UPDATE turno SET paciente=?, prestacion=?, odontologo=? where hora=?"
+                    self.cur.execute(sql, datos)
+                    self.conn.commit()
+                except:
+                    print('desocupado')
+                    datos = '20/10/2024', self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
+                    sql="INSERT INTO turno VALUES(?, ?, ?, ?, ?)"
+                    self.cur.execute(sql, datos)
+                    self.conn.commit()
+            else: #si no hay ningún turno
+                datos = '20/10/2024', self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
+                sql="INSERT INTO turno VALUES(?, ?, ?, ?, ?)"
                 self.cur.execute(sql, datos)
                 self.conn.commit()
         
@@ -148,13 +145,13 @@ class Turno:
         self.ventana_secundaria.destroy()        
     
     def eliminar_turno(self):
-        print(self.horario)
+        #print(self.horario)
         hora=self.horario
         try:
             self.conn= sqlite3.connect('turnos.db')
             self.cur= self.conn.cursor()
             #sql="DELETE FROM turnos WHERE hora= ?"
-            self.cur.execute("DELETE FROM turnos WHERE hora= ?", (hora,))
+            self.cur.execute("DELETE FROM turno WHERE hora= ?", (hora,))
             self.conn.commit()
             self.conn.close()
         except:
@@ -200,120 +197,6 @@ class Turno:
        #self.frame_tabla.grid_columnconfigure(0, weight=1)
         
         self.ventana_turno.mainloop()
-        
-    # def crear_BD(self):
-    #     self.conn= sqlite3.connect('turnos.db')
-    #     self.cur= self.conn.cursor()
-    #     self.cur.execute('''
-    #         CREATE TABLE IF NOT EXISTS turnos (
-    #             id INTEGER PRIMARY KEY AUTOINCREMENT,
-    #             nombre TEXT NOT NULL,
-    #             fecha DATE NOT NULL,
-    #             hora TIME NOT NULL,
-    #             paciente TEXT NOT NULL,
-    #             prestacion TEXT NOT NULL,
-    #             odontologo TEXT NOT NULL
-    #         )
-    #         ''')
+
 if __name__ == "__main__":
     Turno()       
-#     # Insertar datos en la tabla
-#     def insertar_turno(self):
-#         self.conn= sqlite3.connect('testDB.db')
-#         self.cur= self.conn.cursor()
-#         self.cur.executemany('''
-#             INSERT INTO eventos (nombre, fecha, hora, paciente, prestacion, odontologo)
-#             VALUES (?, ?, ?, ?, ?, ?)
-#             ''', eventos)
-#     # Confirmar los cambios y cerrar la conexión
-#         self.conn.commit()
-#         self.conn.close()
-
-# def cargar_turnos(self):
-#     self.conn= sqlite3.connect('testDB.db')
-#     self.cur= self.conn.cursor()
-#     # Leer los datos de la tabla
-#     self.cur.execute('SELECT * FROM eventos')
-#     eventos = self.cur.fetchall()
-#     # Mostrar los datos
-#     for evento in eventos:
-#         print(evento)
-#     # Cerrar la conexión
-#     self.conn.close()
-
-# def salir(self):
-#     editar = Editar()
-#     editar.prueba()
-#         # answer = messagebox.askokcancel(title='Salir', message='¿Desea salir?', icon='warning')
-#         # if answer:
-#         #     self.ventana_secundaria.destroy()
-# eventos = [
-#     ('Evento 1', '2024-05-24', '10:00:00', 'Paciente 1', 'Limpieza', 'Dr. A'),
-#     ('Evento 2', '2024-05-25', '11:00:00', 'Paciente 2', 'Extracción', 'Dr. B'),
-#     ('Evento 3', '2024-05-26', '12:00:00', 'Paciente 3', 'Ortodoncia', 'Dr. C'),
-# ]
-# def abrir_ventana_secundaria(self):
-#     self.ventana_secundaria = tk.Toplevel(self.root)
-#     self.ventana_secundaria.title("Ventana Secundaria")
-#     self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
-#     self.ventana_secundaria.focus_set()
-#     # Crear widgets en la ventana secundaria
-#     tk.Label(self.ventana_secundaria, text="Esta es la ventana secundaria").grid(column=0, row=0, padx=10, pady=10)
-#     tk.Button(self.ventana_secundaria, text="Guardar", command=self.ventana_secundaria.destroy).grid(column=0, row=1,padx=10, pady=10)
-#     # Botón para cerrar la ventana secundaria
-#     tk.Button(self.ventana_secundaria, text="Cerrar", command=self.salir).grid(column=1, row=1, padx=10, pady=10)
-
-# # Crear la ventana principal
-#     self.root = tk.Tk()
-#     self.root.title("Turnos")
-
-# # Crear un Frame para contener el Treeview y la barra de desplazamiento
-#     self.frame = ttk.Frame(self.root)
-#     self.frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=False)
-#     #crear_BD()
-# # Crear el Treeview
-#     self.tree = ttk.Treeview(self.frame, columns=("Horario", "Paciente", "Prestacion", "Odontologo"), show='headings', height=20)
-
-# # Definir los encabezados de las columnas
-#     self.tree.heading("Horario", text="Horario")
-#     self.tree.heading("Paciente", text="Paciente")
-#     self.tree.heading("Prestacion", text="Prestacion")
-#     self.tree.heading("Odontologo", text="Odontologo")
-
-# # Ajustar el ancho de las columnas
-#     self.tree.column("Horario", width=100)
-#     self.tree.column("Paciente", width=100)
-#     self.tree.column("Prestacion", width=100)
-#     self.tree.column("Odontologo", width=100)
-
-#     def cargar_tabla(self):
-# # cargar filas al Treeview
-#         start_time = datetime.strptime("08:00", "%H:%M")
-#     # Intervalo de 30 minutos
-#         time_interval = timedelta(minutes=30)
-#     #tree.delete(*root.get_children())
-#         for i in range(1, 21):
-#             current_time = start_time + i * time_interval
-#             self.tree.insert("", "end", values=(current_time.strftime("%H:%M"), f"Fila {i} Col2", f"Fila {i} Col3", f"Fila {i} Col4"))
-
-# # Crear la barra de desplazamiento vertical
-#     scrollbar = ttk.Scrollbar(self.frame, orient=tk.VERTICAL, command=self.tree.yview)
-#     self.tree.configure(yscroll=scrollbar.set)
-
-# # Ubicar el Treeview y la barra de desplazamiento en el Frame
-#     self.tree.grid(row=1, column=0, sticky='nsew', columnspan=4)
-#     scrollbar.grid(row=1, column=5, sticky='ns')
-#     cargar_tabla()
-# # Configurar el Frame para expandir el Treeview y la barra de desplazamiento
-#     self.frame.grid_rowconfigure(0, weight=1)
-#     self.frame.grid_columnconfigure(0, weight=1)
-#     #self.tree.bind("<Double-1>", abrir_ventana_secundaria)
-# # Button(frame, text="Agregar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10).grid(row=0, column=0, padx=(10,10), pady=(5,5))
-# # Button(frame, text="Eliminar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10).grid(row=0, column=1, padx=(10,10), pady=(5,5))
-# # Button(frame, text="Editar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10).grid(row=0, column=2, padx=(10,10), pady=(5,5))
-# # Button(frame, text="Salir", bg="orange", bd= 2, borderwidth= 2, width=10).grid(row=0, column=3, padx=(10,10), pady=(5,5))
-
-# # Ejecutar la aplicación
-#     self.root.mainloop()
-# # def crear_BD():
-# #CREAR BASE DE DATOS
