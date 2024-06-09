@@ -24,7 +24,7 @@ class Turno:
             self.cur.execute('SELECT * FROM turno ORDER BY hora')
             self.turnos_dados = self.cur.fetchall()
             #print(self.turnos_dados[0])
-            self.conn.close()            
+            self.conn.close()
         except:
             print('no hay turnos')            
 
@@ -86,7 +86,7 @@ class Turno:
             self.selector_prestacion.set(self.prestacion)
         self.selector_prestacion.bind("<<ComboboxSelected>>", lambda e: self.ventana_secundaria.focus())
         odontologos = ["MILITELLO", "MACUA", "RAMIREZ"]
-        self.selector_odontologo= ttk.Combobox(self.ventana_secundaria, state="readonly", values=odontologos, width=25, justify=CENTER, background="white")
+        self.selector_odontologo= ttk.Combobox(self.ventana_secundaria, state= "readonly", values= odontologos, width= 25, justify= CENTER, background="white")
         self.selector_odontologo.pack(pady=8)
         self.selector_odontologo.set("Odontólogo")
         if (self.odontologo != ''):

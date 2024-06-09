@@ -37,7 +37,7 @@ class TKCalendar():
         #self.up_chevron = PhotoImage(file_location.open())
         #file_location = script_location / 'chevron_down.png'
         #self.down_chevron = PhotoImage(file_location.open())
-    
+
     def crear_encabezado(self, frame):
         """ Crea el encabezado """
         encabezado_texto = f"{self.dh.month_num_to_string(self.mes)} {self.anio}"
@@ -126,4 +126,4 @@ class TKCalendar():
             self.toplevel.destroy()
             self.toplevel = DayTopWindow(dia, self.mes, self.anio)
         except AttributeError:
-            self.toplevel = DayTopWindow(dia, self.mes, self.anio)    
+            self.toplevel = DayTopWindow(dia, self.mes, self.anio)
