@@ -361,7 +361,7 @@ class MasterPanel:
 ##        estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
 
         ######################## USUARIOS #################
-        Label(self.frame_usuarios, text= 'USUARIOS', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 3, padx=5, pady= 5, sticky="W")       
+        Label(self.frame_usuarios, text= 'USUARIOS', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 3, padx=5, sticky="W")       
         Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 1, pady= 5)
         Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 0, row= 2)
         Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 1, pady= 5)
@@ -391,7 +391,7 @@ class MasterPanel:
         self.tabla_usuario.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
 
 		######################## PACIENTES #################
-        Label(self.frame_pacientes, text= 'PACIENTES', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 4, padx=5, pady= 5, sticky="W")       
+        Label(self.frame_pacientes, text= 'PACIENTES', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 4, padx=5, sticky="W")       
         Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 0, row= 1, pady= 5)
         Label(self.frame_pacientes, text= 'Agregar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 0, row= 2)
         Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 1, row= 1, pady= 5)

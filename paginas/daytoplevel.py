@@ -183,9 +183,13 @@ class DayTopWindow(Toplevel):
         print('prueba',self.fecha)
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
-        self.cur.execute('SELECT * FROM turno ORDER BY hora')
-        self.turnos_dados = self.cur.fetchall()
-        print(self.turnos_dados)
+        datos = self.fecha, self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
+        sql="INSERT INTO turno VALUES(?, ?, ?, ?, ?)"
+        self.cur.execute(sql, datos)
+        self.conn.commit()
+        #self.cur.execute('SELECT * FROM turno ORDER BY hora')
+        #self.turnos_dados = self.cur.fetchall()
+        #print(self.turnos_dados)
         self.conn.close()
 
     def configurar_event_box(self):
