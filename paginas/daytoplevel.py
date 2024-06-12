@@ -138,7 +138,7 @@ class DayTopWindow(Toplevel):
         self.paciente = self.data['values'][1]
         self.prestacion = self.data['values'][2]
         self.odontologo = self.data['values'][3]
-        
+
         Label(self.ventana_secundaria, text= "EDITAR TURNO", font= ("Arial", 15, 'bold'), bg= "gray90", width= 60).pack(pady= 10)
         Label(self.ventana_secundaria, text= f"FECHA: {self.dia}/{self.mes}/{self.anio} - HORARIO: "+self.horario, font= ("Arial", 13, 'bold'), bg= "gray90", width= 60).pack()
 
@@ -168,14 +168,28 @@ class DayTopWindow(Toplevel):
         self.button_frame.pack(pady= 10)
 
         Button(self.button_frame, text= 'Guardar', command= self.guardar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 0, padx= 10)
-        #Button(self.button_frame, text= 'Eliminar', command= self.eliminar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 1, padx= 10)
+        Button(self.button_frame, text= 'Eliminar', command= self.eliminar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 1, padx= 10)
         Button(self.button_frame, text= 'Salir', command= self.cancelar_turno, bg= "orange red", width= 10).grid(row= 0, column= 2, padx= 10)
-    
+
     def cancelar_turno(self):
         self.ventana_secundaria.destroy()
-    
+
+    def eliminar_turno(self):
+        dia = str(self.dia)
+        mes = str(self.mes)
+        anio = str(self.anio)
+        self.fecha = dia+"/"+mes+"/"+anio
+        self.conn= sqlite3.connect('turnos.db')
+        self.cur= self.conn.cursor()
+        fecha= self.fecha
+        print(fecha)
+        hora= self.horario
+        self.cur.execute("DELETE FROM turno WHERE fecha= ? AND hora= ?", (fecha, hora,))
+        self.conn.commit()
+        self.conn.close()
+
     def guardar_turno(self):
-        print('guardar')
+        #print('guardar')
         dia = str(self.dia)
         mes = str(self.mes)
         anio = str(self.anio)
@@ -184,7 +198,7 @@ class DayTopWindow(Toplevel):
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
         datos = self.fecha, self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
-        sql="INSERT INTO turno VALUES(?, ?, ?, ?, ?)"
+        sql="REPLACE INTO turno VALUES(?, ?, ?, ?, ?)"
         self.cur.execute(sql, datos)
         self.conn.commit()
         #self.cur.execute('SELECT * FROM turno ORDER BY hora')
