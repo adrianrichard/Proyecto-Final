@@ -103,47 +103,51 @@ class DayTopWindow(Toplevel):
         self.tabla_turnos.bind("<Double-1>", self.editar_turno)
 
     def cargar_turnos(self):
-        self.tabla_turnos.delete(*self.tabla_turnos.get_children())
-        dia = str(self.dia)
-        mes = str(self.mes)
-        anio = str(self.anio)
+        
+        # dia = str(self.dia)
+        # mes = str(self.mes)
+        # anio = str(self.anio)
         start_date = date(self.anio, self.mes, self.dia)
         date_str = start_date.strftime('%d-%m-%Y')
-        print(date_str)
-        self.fecha = dia+"/"+mes+"/"+anio
+        # self.fecha = dia+"-"+mes+"-"+anio
+        # print(start_date, date_str, self.fecha)        
         #self.turnos_dados=[]
         #fecha = datetime.strptime(date_str, '%d/%m/%Y')
-        #print(fecha)
         #hora= self.horario
-        self.conn= sqlite3.connect('turnos.db')
+        self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
-        try:            
-            sql= "SELECT * FROM turno WHERE fecha= ?"
-            self.cur.execute(sql, date_str)
+        try:                    
+            self.cur.execute("SELECT * FROM turno WHERE fecha= ? ORDER BY hora", (date_str,))
             self.turnos_dados = self.cur.fetchall()
-            print(self.turnos_dados)
             self.conn.commit()
+            print(self.turnos_dados)
+            #print(type(self.turnos_dados[0][0]))
         except:
             print("No hay turnos")
-            
+           
         self.conn.close()
+        
         start_time = datetime.strptime("08:00", "%H:%M")
         # Intervalo de 30 minutos
         time_interval = timedelta(minutes= 30)
         self.j = 0
+        self.tabla_turnos.delete(*self.tabla_turnos.get_children())
         for i in range(0, 25):
             current_time = start_time + i * time_interval
-            #for turno in turnos_dados:
-            # if self.turnos_dados:
-            #     if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][1] and self.j < len(self.turnos_dados)):
-            #         self.tabla_turnos.tag_configure('anotado', font=("Arial", 10, 'bold'), background="sky blue")
-            #         self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][2], self.turnos_dados[self.j][3], self.turnos_dados[self.j][4]), tags=('anotado',))
-            #         if(self.j+1 < len(self.turnos_dados)):
-            #             self.j=self.j+1
-            #     else:
-            #         self.tabla_turnos.insert(parent='', index='end', values=(current_time.strftime("%H:%M"), '', '', ''))
-            # else:
-            self.tabla_turnos.insert(parent= '', index= 'end', values=(current_time.strftime("%H:%M"), '', '', ''))
+            if not self.turnos_dados:
+                self.tabla_turnos.insert(parent= '', index= 'end', values=(current_time.strftime("%H:%M"), '', '', ''))
+            else:
+                for turno in self.turnos_dados:
+                    if self.turnos_dados:
+                        if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][1] and self.j < len(self.turnos_dados)):
+                            self.tabla_turnos.tag_configure('anotado', font=("Arial", 10, 'bold'), background="sky blue")
+                            self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][2], self.turnos_dados[self.j][3], self.turnos_dados[self.j][4]), tags=('anotado',))
+                            if(self.j+1 < len(self.turnos_dados)):
+                                self.j=self.j+1
+                        else:
+                            self.tabla_turnos.insert(parent='', index='end', values=(current_time.strftime("%H:%M"), '', '', ''))
+            
+            
 
     def editar_turno(self, event):
         self.ventana_secundaria = tk.Toplevel(self, background= 'gray')
@@ -202,7 +206,7 @@ class DayTopWindow(Toplevel):
         anio = str(self.anio)
         self.fecha = dia+"/"+mes+"/"+anio
         fecha = datetime.strptime(self.fecha, '%d/%m/%Y')
-        self.conn= sqlite3.connect('turnos.db')
+        self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
         #fecha= self.fecha
         print(fecha)
