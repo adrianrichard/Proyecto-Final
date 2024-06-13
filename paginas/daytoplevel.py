@@ -2,7 +2,7 @@ import util.generic as utl
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
-from datetime import datetime, timedelta
+from datetime import *
 import sqlite3
 from tkinter import Button
 from paginas.datehandler.datehandler import DateHandler
@@ -104,7 +104,29 @@ class DayTopWindow(Toplevel):
 
     def cargar_turnos(self):
         self.tabla_turnos.delete(*self.tabla_turnos.get_children())
-
+        dia = str(self.dia)
+        mes = str(self.mes)
+        anio = str(self.anio)
+        start_date = date(self.anio, self.mes, self.dia)
+        date_str = start_date.strftime('%d-%m-%Y')
+        print(date_str)
+        self.fecha = dia+"/"+mes+"/"+anio
+        #self.turnos_dados=[]
+        #fecha = datetime.strptime(date_str, '%d/%m/%Y')
+        #print(fecha)
+        #hora= self.horario
+        self.conn= sqlite3.connect('turnos.db')
+        self.cur= self.conn.cursor()
+        try:            
+            sql= "SELECT * FROM turno WHERE fecha= ?"
+            self.cur.execute(sql, date_str)
+            self.turnos_dados = self.cur.fetchall()
+            print(self.turnos_dados)
+            self.conn.commit()
+        except:
+            print("No hay turnos")
+            
+        self.conn.close()
         start_time = datetime.strptime("08:00", "%H:%M")
         # Intervalo de 30 minutos
         time_interval = timedelta(minutes= 30)
@@ -179,9 +201,10 @@ class DayTopWindow(Toplevel):
         mes = str(self.mes)
         anio = str(self.anio)
         self.fecha = dia+"/"+mes+"/"+anio
+        fecha = datetime.strptime(self.fecha, '%d/%m/%Y')
         self.conn= sqlite3.connect('turnos.db')
         self.cur= self.conn.cursor()
-        fecha= self.fecha
+        #fecha= self.fecha
         print(fecha)
         hora= self.horario
         self.cur.execute("DELETE FROM turno WHERE fecha= ? AND hora= ?", (fecha, hora,))
@@ -194,10 +217,14 @@ class DayTopWindow(Toplevel):
         mes = str(self.mes)
         anio = str(self.anio)
         self.fecha = dia+"/"+mes+"/"+anio
-        print('prueba',self.fecha)
+        start_date = date(self.anio, self.mes, self.dia)
+        date_str = start_date.strftime('%d-%m-%Y')
+        print(date_str)
+        fecha = datetime.strptime(self.fecha, '%d/%m/%Y')
+        print('prueba',self.fecha, fecha)
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
-        datos = self.fecha, self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
+        datos = date_str, self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
         sql="REPLACE INTO turno VALUES(?, ?, ?, ?, ?)"
         self.cur.execute(sql, datos)
         self.conn.commit()
