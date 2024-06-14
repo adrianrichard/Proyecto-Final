@@ -7,7 +7,6 @@ from datetime import *
 import sqlite3
 from tkinter import Button
 from paginas.datehandler.datehandler import DateHandler
-from paginas.events.eventdbcontroller import EventController
 
 fuenteb= utl.definir_fuente_bold()
 fuenten= utl.definir_fuente()

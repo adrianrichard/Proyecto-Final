@@ -3,7 +3,6 @@ from functools import partial
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
-from paginas.events.eventdbcontroller import EventController
 from paginas.datehandler.datehandler import DateHandler as dH
 from paginas.tkconfiguration.eventcolor import EventColor
 from paginas.daytoplevel import DayTopWindow
@@ -89,15 +88,6 @@ class TKCalendar():
                     and self.anio == datetime.today().year:
                 self.botones_fecha[i].configure(bg="orange")
 
-    def event_color_buttons(self):
-        for button in self.botones_fecha:
-            if button["text"] != 0:
-                query = {"year": self.anio, "month": self.mes, "day": button["text"]}
-                date_events = EventController.find_by_elements(query)
-                if date_events:
-                    prestaciones = [event.category for event in date_events]
-                    EventColor().colorize(button, prestaciones)
-
     def configurar_filas_columnas(self, frame):
         """ Configura filas y columnas para expandandirlas al tamaño de la ventana """
         [frame.rowconfigure(i, weight=1) for i in range(frame.grid_size()[1])]
@@ -110,7 +100,6 @@ class TKCalendar():
             self.mes = 1
             self.anio += 1
         self.actualizar_botones_fechas()
-        self.event_color_buttons()
         self.actualizar_encabezado()
 
     def mes_anterior(self):
@@ -120,7 +109,6 @@ class TKCalendar():
             self.mes = 12
             self.anio -= 1
         self.actualizar_botones_fechas()
-        self.event_color_buttons()
         self.actualizar_encabezado()
 
     def info_dia(self, dia):
