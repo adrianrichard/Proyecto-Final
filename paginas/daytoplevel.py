@@ -35,7 +35,7 @@ class DayTopWindow(Toplevel):
         self.crear_encabezado()
         self.crear_botones_cambio_fecha()
         #self.crear_event_buttons()
-        self.crear_listbox_citas()
+        self.crear_lista_turnos()
         self.cargar_turnos()
         #self.configurar_event_box()
 
@@ -68,7 +68,7 @@ class DayTopWindow(Toplevel):
     #     # Button(self, text="Editar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.cambiar_turno).grid(row=1, column=2, pady=(5,5))
     #     # #Button(self, text="SALIR", bg="orange", bd= 2, borderwidth= 2, width=10, command=self.destroy).grid(row=0, column=4, pady=(5,5))
 
-    def crear_listbox_citas(self):
+    def crear_lista_turnos(self):
         self.frame_tabla = ttk.Frame(self)        
         self.frame_tabla.grid(column= 0, columnspan= 4, row= 2, sticky= 'nsew')        
         self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns= ("Horario", "Paciente", "Prestacion", "Odontologo"), show= 'headings', height= 25, selectmode ='browse')
@@ -102,25 +102,17 @@ class DayTopWindow(Toplevel):
 
         self.tabla_turnos.bind("<Double-1>", self.editar_turno)
 
-    def cargar_turnos(self):
-        
-        # dia = str(self.dia)
-        # mes = str(self.mes)
-        # anio = str(self.anio)
+    def cargar_turnos(self):        
         start_date = date(self.anio, self.mes, self.dia)
         date_str = start_date.strftime('%d-%m-%Y')
-        # self.fecha = dia+"-"+mes+"-"+anio
-        # print(start_date, date_str, self.fecha)        
-        #self.turnos_dados=[]
-        #fecha = datetime.strptime(date_str, '%d/%m/%Y')
-        #hora= self.horario
+        
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
         try:                    
             self.cur.execute("SELECT * FROM turno WHERE fecha= ? ORDER BY hora", (date_str,))
             self.turnos_dados = self.cur.fetchall()
             self.conn.commit()
-            print(self.turnos_dados)
+            #print(self.turnos_dados)
             #print(type(self.turnos_dados[0][0]))
         except:
             print("No hay turnos")
@@ -137,17 +129,13 @@ class DayTopWindow(Toplevel):
             if not self.turnos_dados:
                 self.tabla_turnos.insert(parent= '', index= 'end', values=(current_time.strftime("%H:%M"), '', '', ''))
             else:
-                for turno in self.turnos_dados:
-                    if self.turnos_dados:
-                        if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][1] and self.j < len(self.turnos_dados)):
-                            self.tabla_turnos.tag_configure('anotado', font=("Arial", 10, 'bold'), background="sky blue")
-                            self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][2], self.turnos_dados[self.j][3], self.turnos_dados[self.j][4]), tags=('anotado',))
-                            if(self.j+1 < len(self.turnos_dados)):
-                                self.j=self.j+1
-                        else:
-                            self.tabla_turnos.insert(parent='', index='end', values=(current_time.strftime("%H:%M"), '', '', ''))
-            
-            
+                if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][1] and self.j < len(self.turnos_dados)):
+                    self.tabla_turnos.tag_configure('anotado', font=fuenteb, background="blue")
+                    self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][2], self.turnos_dados[self.j][3], self.turnos_dados[self.j][4]), tags=('anotado',))
+                    if(self.j+1 < len(self.turnos_dados)):
+                        self.j=self.j+1
+                else:
+                    self.tabla_turnos.insert(parent='', index='end', values=(current_time.strftime("%H:%M"), '', '', ''))
 
     def editar_turno(self, event):
         self.ventana_secundaria = tk.Toplevel(self, background= 'gray')
@@ -201,31 +189,30 @@ class DayTopWindow(Toplevel):
         self.ventana_secundaria.destroy()
 
     def eliminar_turno(self):
-        dia = str(self.dia)
-        mes = str(self.mes)
-        anio = str(self.anio)
-        self.fecha = dia+"/"+mes+"/"+anio
-        fecha = datetime.strptime(self.fecha, '%d/%m/%Y')
+        start_date = date(self.anio, self.mes, self.dia)
+        date_str = start_date.strftime('%d-%m-%Y')
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
         #fecha= self.fecha
-        print(fecha)
+        #print(fecha)
         hora= self.horario
-        self.cur.execute("DELETE FROM turno WHERE fecha= ? AND hora= ?", (fecha, hora,))
+        self.cur.execute("DELETE FROM turno WHERE fecha= ? AND hora= ?", (date_str, hora,))
         self.conn.commit()
         self.conn.close()
+        self.cargar_turnos()
+        self.ventana_secundaria.destroy()
 
     def guardar_turno(self):
         #print('guardar')
-        dia = str(self.dia)
-        mes = str(self.mes)
-        anio = str(self.anio)
-        self.fecha = dia+"/"+mes+"/"+anio
+        # dia = str(self.dia)
+        # mes = str(self.mes)
+        # anio = str(self.anio)
+        #self.fecha = dia+"/"+mes+"/"+anio
         start_date = date(self.anio, self.mes, self.dia)
         date_str = start_date.strftime('%d-%m-%Y')
-        print(date_str)
-        fecha = datetime.strptime(self.fecha, '%d/%m/%Y')
-        print('prueba',self.fecha, fecha)
+        #print(date_str)
+        #fecha = datetime.strptime(self.fecha, '%d/%m/%Y')
+        #print('prueba',self.fecha, fecha)
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
         datos = date_str, self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
@@ -236,6 +223,9 @@ class DayTopWindow(Toplevel):
         #self.turnos_dados = self.cur.fetchall()
         #print(self.turnos_dados)
         self.conn.close()
+        self.cargar_turnos()
+        self.ventana_secundaria.destroy()
+        
 
     def configurar_event_box(self):
         """ Carga la lista con citas del dia """
