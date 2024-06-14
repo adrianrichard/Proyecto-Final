@@ -16,7 +16,7 @@ class DayTopWindow(Toplevel):
         super().__init__()
 
         self.attributes = ("-topmost", True)
-        utl.centrar_ventana(self, 650, 580)
+        utl.centrar_ventana(self, 700, 580)
         self.title("Agenda de turnos")
         self.resizable(width= True, height= False)
         self.turnos_box = None
@@ -80,9 +80,9 @@ class DayTopWindow(Toplevel):
 
         # Ajustar el ancho de las columnas
         self.tabla_turnos.column("Horario", width= 70, anchor= 'center')
-        self.tabla_turnos.column("Paciente", width= 150)
-        self.tabla_turnos.column("Prestacion", width= 200)
-        self.tabla_turnos.column("Odontologo", width= 150)
+        self.tabla_turnos.column("Paciente", width= 200)
+        self.tabla_turnos.column("Prestacion", width= 250)
+        self.tabla_turnos.column("Odontologo", width= 200)
 
         self.tabla_turnos.bind("<Double-1>", self.editar_turno)
 
@@ -129,7 +129,6 @@ class DayTopWindow(Toplevel):
         #item = self.tabla_turnos.focus()
 
         self.turno_seleccionado = self.tabla_turnos.selection()[0]
-        #print(self.turno_seleccionado)
         self.data = self.tabla_turnos.item(self.turno_seleccionado)
         self.horario = self.data['values'][0]
         self.paciente = self.data['values'][1]
