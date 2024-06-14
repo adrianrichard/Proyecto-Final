@@ -7,12 +7,15 @@ from paginas.events.eventdbcontroller import EventController
 from paginas.datehandler.datehandler import DateHandler as dH
 from paginas.tkconfiguration.eventcolor import EventColor
 from paginas.daytoplevel import DayTopWindow
+import util.generic as utl
 
 from pathlib import Path
 
 fuente= 'Arial'
 color_fuente = 'black'
 color_fondo2 = 'gray90'
+fuenteb= utl.definir_fuente_bold()
+fuenten= utl.definir_fuente()
 
 class TKCalendar():
 
@@ -48,8 +51,8 @@ class TKCalendar():
         for i, j in enumerate(dias):
             Label(frame, text=dias[i], bd=1, font= (fuente, 12, "bold"), relief=SOLID).grid(row=1, column=i, sticky=NSEW, ipady=10)
 
-        Button(frame, text="<", command=self.mes_anterior, bg="#1F704B", height=2, width=8).grid(row=0, column=1)
-        Button(frame, text=">", command=self.mes_siguiente, bg="#1F704B", height=2, width=8).grid(row=0, column=5)
+        Button(frame, text="<", command=self.mes_anterior, fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row=0, column=1)
+        Button(frame, text=">", command=self.mes_siguiente, fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row=0, column=5)
 
     def crear_botones_fechas(self, frame):
         """ Crea botones de fechas mes actual """

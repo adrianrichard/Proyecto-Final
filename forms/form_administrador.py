@@ -386,7 +386,6 @@ class MasterPanel:
         self.tabla_usuario.heading('Clave', text= 'Clave', anchor= 'center')
         self.tabla_usuario.heading('Tipo_usuario', text= 'Tipo de usuario', anchor= 'center')
         self.mostrar_usuarios()
-        #self.tabla_usuario.bind("<<TreeviewSelect>>", self.obtener_fila)
         self.tabla_usuario.bind("<Double-1>", self.editar_usuario)
         self.tabla_usuario.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
 

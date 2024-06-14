@@ -2,13 +2,11 @@ import util.generic as utl
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *
+from tkinter import messagebox
 from datetime import *
 import sqlite3
 from tkinter import Button
 from paginas.datehandler.datehandler import DateHandler
-from paginas.tk_add_event import TurnoNuevo
-from paginas.tk_remove_event import TurnoEliminar
-from paginas.tk_change_event import TurnoModificar
 from paginas.events.eventdbcontroller import EventController
 
 fuenteb= utl.definir_fuente_bold()
@@ -25,6 +23,7 @@ class DayTopWindow(Toplevel):
         self.turnos_box = None
         self.configure(bg= "#D1D6D3")
         self.grab_set_global()
+        self.focus_set()
         self.extension = None
         self.confirmation = None
 
@@ -34,10 +33,8 @@ class DayTopWindow(Toplevel):
 
         self.crear_encabezado()
         self.crear_botones_cambio_fecha()
-        #self.crear_event_buttons()
         self.crear_lista_turnos()
         self.cargar_turnos()
-        #self.configurar_event_box()
 
     def crear_encabezado(self):
         """ Crea encabezado """
@@ -49,24 +46,12 @@ class DayTopWindow(Toplevel):
         """ Actualiza el header de la fecha """
         self.encabezado_texto = f"{self.dia}/{self.mes}/{self.anio}"
         self.encabezado.configure(text= self.encabezado_texto)
-    
+
     def crear_botones_cambio_fecha(self):
         """ Crea botones para cambiar fecha """
-        Button(self, text= ">", command= self.avanzar_dia, bg= "#1F704B", height= 1, width= 4).grid(row= 0, column= 2)
-        Button(self, text= "<", command= self.retroceder_dia, bg= "#1F704B", height= 1, width= 4).grid(row= 0, column= 0)
+        Button(self, text= ">", command= self.avanzar_dia,fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 2)
+        Button(self, text= "<", command= self.retroceder_dia, fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 0)
         Button(self, text= "Salir", bg= "orange", bd= 2, borderwidth= 2, width= 10, command= self.destroy).grid(row= 0, column= 3, pady= (5,5))
-
-    # def crear_event_buttons(self):
-    #     """ Crea botones de interaccion  """
-    #     self.agregar_img = utl.leer_imagen("add.png", (50, 50))
-    #     self.eliminar_img = utl.leer_imagen('eliminar2.png', (50, 50))
-    #     self.cambiar_img = utl.leer_imagen('next.png', (50, 50))
-
-    #     # Button(self, text="Agregar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.agregar_turno).grid(row=1, column=0, pady=(5,5))
-    #     # #Button(self, text="Eliminar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.eliminar_turno).grid(row=1, column=1, pady=(5,5))
-    #     # Button(self, text="Eliminar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10).grid(row=1, column=1, pady=(5,5))
-    #     # Button(self, text="Editar turno", bg="#D1D6D3", bd= 2, borderwidth= 2, width=10, command=self.cambiar_turno).grid(row=1, column=2, pady=(5,5))
-    #     # #Button(self, text="SALIR", bg="orange", bd= 2, borderwidth= 2, width=10, command=self.destroy).grid(row=0, column=4, pady=(5,5))
 
     def crear_lista_turnos(self):
         self.frame_tabla = ttk.Frame(self)        
@@ -112,8 +97,6 @@ class DayTopWindow(Toplevel):
             self.cur.execute("SELECT * FROM turno WHERE fecha= ? ORDER BY hora", (date_str,))
             self.turnos_dados = self.cur.fetchall()
             self.conn.commit()
-            #print(self.turnos_dados)
-            #print(type(self.turnos_dados[0][0]))
         except:
             print("No hay turnos")
            
@@ -141,6 +124,7 @@ class DayTopWindow(Toplevel):
         self.ventana_secundaria = tk.Toplevel(self, background= 'gray')
         self.ventana_secundaria.title("Ventana Secundaria")
         self.ventana_secundaria.geometry('400x300')
+        utl.centrar_ventana(self.ventana_secundaria, 400, 300)
         self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
         #item = self.tabla_turnos.focus()
@@ -186,60 +170,50 @@ class DayTopWindow(Toplevel):
         Button(self.button_frame, text= 'Salir', command= self.cancelar_turno, bg= "orange red", width= 10).grid(row= 0, column= 2, padx= 10)
 
     def cancelar_turno(self):
-        self.ventana_secundaria.destroy()
+        answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
+        if answer:
+            self.grab_set_global()
+            self.focus_set()
+            self.ventana_secundaria.destroy()
 
     def eliminar_turno(self):
         start_date = date(self.anio, self.mes, self.dia)
         date_str = start_date.strftime('%d-%m-%Y')
         self.conn= sqlite3.connect('./bd/turnos.db')
-        self.cur= self.conn.cursor()
-        #fecha= self.fecha
-        #print(fecha)
+        self.cur= self.conn.cursor()        
         hora= self.horario
-        self.cur.execute("DELETE FROM turno WHERE fecha= ? AND hora= ?", (date_str, hora,))
-        self.conn.commit()
-        self.conn.close()
+        answer = messagebox.askokcancel(title='Eliminar', message='¿Desea eliminar el turno?', icon='warning')
+        if answer:
+            try:
+                self.cur.execute("DELETE FROM turno WHERE fecha= ? AND hora= ?", (date_str, hora,))
+                self.conn.commit()
+                self.conn.close()
+                self.grab_set_global()
+                self.focus_set()
+                self.ventana_secundaria.destroy()
+            except:
+                messagebox.showerror("Eliminar", "No se pudo eliminar.")
         self.cargar_turnos()
-        self.ventana_secundaria.destroy()
 
-    def guardar_turno(self):
-        #print('guardar')
-        # dia = str(self.dia)
-        # mes = str(self.mes)
-        # anio = str(self.anio)
-        #self.fecha = dia+"/"+mes+"/"+anio
+    def guardar_turno(self):        
         start_date = date(self.anio, self.mes, self.dia)
         date_str = start_date.strftime('%d-%m-%Y')
-        #print(date_str)
-        #fecha = datetime.strptime(self.fecha, '%d/%m/%Y')
-        #print('prueba',self.fecha, fecha)
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
         datos = date_str, self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
-        sql="REPLACE INTO turno VALUES(?, ?, ?, ?, ?)"
-        self.cur.execute(sql, datos)
-        self.conn.commit()
-        #self.cur.execute('SELECT * FROM turno ORDER BY hora')
-        #self.turnos_dados = self.cur.fetchall()
-        #print(self.turnos_dados)
-        self.conn.close()
+        answer = messagebox.askokcancel(title='Guardar', message='¿Desea guardar el turno?', icon='warning')
+        if answer:
+            try:
+                sql="REPLACE INTO turno VALUES(?, ?, ?, ?, ?)"
+                self.cur.execute(sql, datos)
+                self.conn.commit()
+                self.conn.close()
+                self.grab_set_global()
+                self.focus_set()                
+                self.ventana_secundaria.destroy()
+            except:
+                messagebox.showerror("Guardar", "No se pudo guardar.")
         self.cargar_turnos()
-        self.ventana_secundaria.destroy()
-        
-
-    def configurar_event_box(self):
-        """ Carga la lista con citas del dia """
-        #self.turnos_box.delete(0, END)
-        query = {"year": self.anio, "month": self.mes, "day": self.dia}
-        event_data = EventController.find_by_elements(query)
-        list_data = [
-            f"{ev.time_hours}:{ev.time_minutes} - {ev.title} - {ev.category} [{ev.id}]" for ev in event_data]
-
-        if not list_data:
-            list_data = ["No hay turnos"]
-        else:
-            list_data.insert(0, "Elegir turno")
-        #[self.turnos_box.insert(END, ev_data) for ev_data in list_data]
 
     def avanzar_dia(self):
         """ AVANZAR 1 DIA """
@@ -276,46 +250,3 @@ class DayTopWindow(Toplevel):
         if self.extension:
             self.extension.main_frame.destroy()
             self.extension = None
-
-    def agregar_turno(self):
-        """ AGREGAR TURNO """
-        if not self.extension:
-            self.confirmation.destroy() if self.confirmation else None
-            self.extension = True
-            self.extension = TurnoNuevo(self, self.dia, self.mes, self.anio, self.configurar_event_box)
-
-    # def eliminar_turno(self):
-    #      if not self.extension:
-    #         if not self.turnos_box.curselection():
-    #             if self.confirmation:
-    #                 self.confirmation.destroy()
-    #             self.confirmation = Label(self, text="Elija un turno", font="Courier 15")
-    #             self.confirmation.grid(row=self.grid_size()[1], column=0, columnspan=4, pady=10)
-    #             return
-
-    #         self.confirmation.destroy() if self.confirmation else None
-
-    #         selection = self.turnos_box.get(self.turnos_box.curselection()).strip()
-    #         if selection not in ["No hay turnos", "Elija un turno"]:
-    #             self.extension = True
-    #             str_id = selection.split(" ")[-1]
-    #             int_id = int(str_id[1:-1])
-    #             #self.extension = TurnoEliminar(self, int_id, self.configurar_event_box)
-
-    def cambiar_turno(self):
-        if not self.extension:
-            if not self.turnos_box.curselection():
-                if self.confirmation:
-                    self.confirmation.destroy()
-                self.confirmation = Label(self, text="Elija un turno", font="Courier 15")
-                self.confirmation.grid(row=self.grid_size()[1], column=0, columnspan=4, pady=10)
-                return
-
-            self.confirmation.destroy() if self.confirmation else None
-
-            selection = self.turnos_box.get(self.turnos_box.curselection()).strip()
-            if selection not in ["No hay turnos", "Elija un turno"]:
-                self.extension = True
-                str_id = selection.split(" ")[-1]
-                int_id = int(str_id[1:-1])
-                #self.extension = TurnoModificar(self, int_id, self.configurar_event_box)
