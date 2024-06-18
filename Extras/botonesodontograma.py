@@ -2,27 +2,40 @@ import tkinter as tk
 from tkinter import Frame, Label
 import sqlite3
 from PIL import ImageGrab
+from datetime import datetime
 pacientes=[]
 root = tk.Tk()
 #root.configure(padx = 10, pady = 10)
 buttons = []
+fecha_actual = datetime.now().date()
+fecha_actual = fecha_actual.strftime("%d-%m-%Y")
+#print(fecha_actual)
 try:
     miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
     miCursor=miConexion.cursor()
     sql = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
-    apellido='LOPEZ'
-    miCursor.execute(sql)    
+    miCursor.execute(sql)
     pacientes = miCursor.fetchall()
     miConexion.commit()
     #print(pacientes)
 except:
     print("error")
+print(pacientes[0][2])
+datos= pacientes[0][2], fecha_actual, 'Militello'
+print(datos)
+try:
+    miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
+    miCursor=miConexion.cursor()
+    datos= pacientes[0][2], fecha_actual, 'Militello'
+    sql = "INSERT INTO Odontograma (DNI_paciente, Fecha, Doctor) VALUES ( ?, ?, ?)"
+    miCursor.execute(sql, datos)
+    miConexion.commit()
+    #print(pacientes)
+except:
+    print("error")
+
 colores=["red", "yellow", "blue","white"]
-def capture_screenshot():
-    # Capturar la pantalla y guardarla como una imagen
-    screenshot = ImageGrab.grab()
-    screenshot.save("screenshot.png", "PNG")
-#tk.Button(root,height=6, width=6, justify="left").pack(padx=0, pady=0)
+
 ancho = 850
 Label(root, text='Odontograma', font='Arial 20 bold').grid(column=0, row=0)
 nombre=pacientes[0][1]
@@ -329,13 +342,14 @@ def crear_dientes():
     canvas.tag_bind('D18', '<Enter>', change_cursor_enter)
     canvas.tag_bind('D18', '<Leave>', change_cursor_leave)
     canvas.tag_bind('D18', '<Button-1>', editar_diente)
+    canvas.tag_bind('D18', '<Button-1>', lambda event, numero=18: editar_diente(numero))
     D17=canvas.create_rectangle(x1 + width +padding+ width/3.0, y1 + height/3.0, x1 +padding+ 2*width - width/3.0, y1 + height - height/3.0, fill="green", tags="D17")
-    canvas.tag_bind('D18', '<Enter>', change_cursor_enter)
-    canvas.tag_bind('D18', '<Leave>', change_cursor_leave)
-    canvas.tag_bind('D18', '<Button-1>', editar_diente)
+    canvas.tag_bind('D17', '<Enter>', change_cursor_enter)
+    canvas.tag_bind('D17', '<Leave>', change_cursor_leave)
+    canvas.tag_bind('D17', '<Button-1>', lambda event, numero=17: editar_diente(numero))
 
-def editar_diente(event):
-    print('prueba')
+def editar_diente( numero):
+    print('prueba', numero)
     
 def change_cursor_enter(event):
     # Cambiar el cursor al pasar sobre un cuadrado
@@ -345,5 +359,5 @@ def change_cursor_leave(event):
     # Restaurar el cursor al salir del cuadrado
     canvas.config(cursor="")
 crear_dientes()
-capture_screenshot()
+#capture_screenshot()
 root.mainloop()
