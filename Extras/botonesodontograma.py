@@ -1,9 +1,14 @@
 import tkinter as tk
-from tkinter import Frame, Label
+from tkinter import Frame, Label, Button, Toplevel
 import sqlite3
+from tkinter import *
+
 from PIL import ImageGrab
 from datetime import datetime
+from dienteodontograma import Diente
 pacientes=[]
+color_index = 0
+colores = ['white', 'blue', 'red']
 root = tk.Tk()
 #root.configure(padx = 10, pady = 10)
 buttons = []
@@ -23,16 +28,16 @@ except:
 print(pacientes[0][2])
 datos= pacientes[0][2], fecha_actual, 'Militello'
 print(datos)
-try:
-    miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
-    miCursor=miConexion.cursor()
-    datos= pacientes[0][2], fecha_actual, 'Militello'
-    sql = "INSERT INTO Odontograma (DNI_paciente, Fecha, Doctor) VALUES ( ?, ?, ?)"
-    miCursor.execute(sql, datos)
-    miConexion.commit()
-    #print(pacientes)
-except:
-    print("error")
+# try:
+#     miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
+#     miCursor=miConexion.cursor()
+#     datos= pacientes[0][2], fecha_actual, 'Militello'
+#     sql = "INSERT INTO Odontograma (DNI_paciente, Fecha, Doctor) VALUES ( ?, ?, ?)"
+#     miCursor.execute(sql, datos)
+#     miConexion.commit()
+#     #print(pacientes)
+# except:
+#     print("error")
 
 colores=["red", "yellow", "blue","white"]
 
@@ -54,13 +59,17 @@ canvas.pack()
 
 #def button_click(event, index):
     #canvas.itemconfig(buttons[index], fill="red")
-def on_canvas_click(event):
-    x = event.x
-    y = event.y
-    print(f"Coordenadas de clic - X: {x}, Y: {y}")
-    if y>15 and y<65:
-        if(x>15 and x<65):
-            print('Diente 18')
+def cargar_dientes():
+    try:
+        miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
+        miCursor=miConexion.cursor()
+        sql = "SELECT ID_odontograma from Odontograma ORDER BY ID_odontograma DESC LIMIT 1"
+        miCursor.execute(sql)
+        miConexion.commit()
+        ID_odonto_actual= miCursor.fetchone()
+        print(ID_odonto_actual[0])
+    except:
+        print("error diente")
 
 def crear_dientes():
     width = 30
@@ -348,9 +357,64 @@ def crear_dientes():
     canvas.tag_bind('D17', '<Leave>', change_cursor_leave)
     canvas.tag_bind('D17', '<Button-1>', lambda event, numero=17: editar_diente(numero))
 
+color_index = 0
+colores2 = ['white', 'blue', 'red']
+
 def editar_diente( numero):
     print('prueba', numero)
+    diente= Diente()
     
+
+#     ventana_secundaria = tk.Toplevel(root, background='gray')
+#     ventana_secundaria.title("Editar diente")
+#     ventana_secundaria.geometry('400x300')
+#     ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+#     ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
+    
+#         #item = self.tabla_turnos.focus()
+#         #print(self.turno_seleccionado)
+#         # self.horario = self.data['values'][0]
+#         # self.paciente = self.data['values'][1]
+#         # self.prestacion = self.data['values'][2]
+#         # self.odontologo = self.data['values'][3]
+#     Label(ventana_secundaria, text="EDITAR DIENTE", font=("Arial", 15, 'bold'), bg="gray90", width=60).pack(pady=10)
+#     Label(ventana_secundaria, text="FECHA: DD/MM/AAAA ", font=("Arial", 10, 'bold'), bg="gray90", width=60).pack()
+#     diente_frame = Frame(ventana_secundaria)
+#     diente_frame.pack(pady=(10,10))
+#     c = tk.Canvas(diente_frame, width=400, height=150)
+#     c.pack()
+#     width = 100
+#     height = 100
+#     x1=100
+#     y1=25
+#     x2 = x1 + width
+#     y2 = y1 + height    
+#     # cara_d=c.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
+#     # c.tag_bind(cara_d, '<Button-1>', lambda event: cambiar_color())
+#     # cara_v=c.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
+#     # c.tag_bind(cara_v, '<Button-1>', lambda event: cambiar_color())
+#     # cara_i=c.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+#     # c.tag_bind(cara_i, '<Button-1>', lambda event: cambiar_color())
+#     cara_m=c.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+#     #c.tag_bind(cara_m, '<Button-1>', lambda event: cambiar_color())
+#     c.itemconfig(cara_m, fill='gray')
+#     cara_o=c.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+#     c.tag_bind(cara_o, '<Button-1>', lambda event: cambiar_color(cara_o, c))
+#     button_frame = Frame(ventana_secundaria, bg="gray")
+#     button_frame.pack(pady=10)
+
+#     #Button(button_frame, text= 'Guardar', command= guardar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 0, padx= 10)
+#     #Button(button_frame, text= 'Eliminar', command= self.eliminar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 1, padx= 10)
+#     Button(button_frame, text= 'Salir', command= ventana_secundaria.destroy, bg= "orange red", width= 10).grid(row= 0, column= 2, padx= 10)
+
+# def cambiar_color(cara, c):
+#     global color_index, canvas
+#     color_index = (color_index + 1) % len(colores2)
+#     color_actual = colores2[color_index]
+#     print('hola')
+#     c.canvas.itemconfig(cara, fill="red")
+#     #label_color_actual.config(text=f"Color actual: {color_actual.capitalize()}")
+        
 def change_cursor_enter(event):
     # Cambiar el cursor al pasar sobre un cuadrado
     canvas.config(cursor="hand2")
@@ -359,5 +423,6 @@ def change_cursor_leave(event):
     # Restaurar el cursor al salir del cuadrado
     canvas.config(cursor="")
 crear_dientes()
+cargar_dientes()
 #capture_screenshot()
 root.mainloop()
