@@ -1,0 +1,8 @@
+COMANDOS DE VSC
+
+IDENTAR VARIAS LINEAS
+Si deseas indentar varias líneas a la vez, selecciónalas y presiona Ctrl+¿ para añadir la indentación o Ctrl+'(DONDE ESTA EL ?) para eliminarla.
+
+COMENTAR VARIAS LINEAS
+Para comentar varias líneas en Visual Studio Code, basta con seleccionar las líneas que se desean comentar y presionar las teclas Ctrl + K + C
+Por otro lado, para descomentarlas, se debe presionar Ctrl + K + U.
