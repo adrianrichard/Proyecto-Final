@@ -14,10 +14,11 @@ class Odontograma:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ventana_odontograma = tk.Tk()
+        self.ventana_odontograma.geometry('800x600')
         self.fecha_actual = datetime.now().date()
         self.fecha_actual = self.fecha_actual.strftime("%d-%m-%Y")
         Label(self.ventana_odontograma, text='Odontograma', font='Arial 20 bold').grid(column=0, row=0)
-                
+
         self.cargar_paciente()
         nombre=self.pacientes[0][1]
         apellido=self.pacientes[0][0]
@@ -33,8 +34,12 @@ class Odontograma:
         self.frame_dientes = Frame(self.ventana_odontograma)
         self.frame_dientes.grid(column=0, row=2, pady=(10,10))
         self.cargar_ultimo_odontograma()
-        #self.cargar_dientes()
-        #self.crear
+        self.guardar_dientes()
+        self.cargar_dientes()
+        self.canvas = tk.Canvas(self.frame_dientes, width=700, height=400)
+        self.canvas.pack()
+        self.colores=["red", "yellow", "blue","white"]
+        self.crear_dientes()
         
         self.ventana_odontograma.mainloop()
     
@@ -66,9 +71,318 @@ class Odontograma:
             print("error diente")
         return self.ID_odonto_actual[0]
     
+    def editar_diente(self, numero):
+        print('prueba', numero)
+        #diente= Diente()
+    
+    def guardar_dientes(self):
+        try:
+            self.miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
+            self.miCursor=self.miConexion.cursor()
+            sql = "INSERT INTO Diente VALUES (?,?,?,?,?,?,?,?,?)"
+            datos= 18, 48, 'red', 'white', 'blue', 'red', 'white', 'NO', 'SI'
+            self.miCursor.execute(sql, datos)
+            self.miConexion.commit()
+            #self.ID_odonto_actual= self.miCursor.fetchone()
+            #print(self.ID_odonto_actual[0])
+        except:
+            print("error guardar")
+            
     def cargar_dientes(self):
         print('crear vector con los dientes')
+        try:
+            self.miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
+            self.miCursor=self.miConexion.cursor()
+            sql = "SELECT * from Diente ORDER BY ID_odontograma"
+            self.miCursor.execute(sql)
+            self.miConexion.commit()
+            self.dientes= self.miCursor.fetchall()
+            print(self.dientes)
+        except:
+            print("error diente")
+            
+    def crear_dientes(self):
+        width = 30
+        height = 30
+        padding = 10
+        num_buttons = 8
+        x1=0
+        extraido=False
+        corona=False
+        #canvas.create_text(30, 15, text=18, fill="black", font=('Helvetica 10 bold'))
+
+        #primera hilera de dientes
+        hilera1=18
+        for i in range(num_buttons):
+            x1 = x1 + padding
+            y1 = 30
+            x2 = x1 + width
+            y2 = y1 + height
+
+            self.texto1=self.canvas.create_text(x1+ width/2, 15, text=hilera1, fill="black", font=('Helvetica 10 bold'))
+            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+            hilera1-=1
+            if corona:
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_oval(x1+5,y1+5,x2-5,y2-5, width=5, outline="blue")
+            if extraido:
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
+                self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
+
+            x1=x2
+        #linea horizontal
+        self.canvas.create_line(0, y2+padding, self.ancho, y2+padding, width=3)
+        x1=x1+10
+        #linea vertical
+        self.canvas.create_line(x1, 5, x1, 320, width=3)
         
+        #2da hilera
+        hilera2=21
+        for i in range(num_buttons):
+            x1 = x1 + padding
+            y1 = 30
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto2=self.canvas.create_text(x1+ width/2, 15, text=hilera2, fill="black", font=('Helvetica 10 bold'))
+            hilera2+=1
+            #corona=True
+            if corona:
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width=5, outline="blue")
+            if extraido:
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_line(x1+5, y1+5, x2-5, y2-5, fill="red", width=5)
+                self.canvas.create_line(x1+5, y2-5, x2-5, y1+5, fill="red", width=5)
+            # else:
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill=colores[i%3], outline = "black")
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill=colores[i%2], outline = "black")
+            #     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill=colores[2], outline = "black")
+            #     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill=colores[i%1], outline = "black")
+            #     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+            x1=x2
+        y1=y2+20
+        x1=0
+        #4ta hilera
+        hilera4=48
+        for i in range(num_buttons):
+            x1 = x1 + padding       
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto4=self.canvas.create_text(x1+ width/2, y2+15, text=hilera4, fill="black", font=('Helvetica 10 bold'))
+            hilera4-=1                
+            if corona:
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width=5, outline="blue")
+
+            elif extraido:                    
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
+                self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
+            # else:
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[0], outline = "black")
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
+            #     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
+            #     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[0], outline = "black")
+            #     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+            x1=x2
+        x1=x1+10
+        #3ra hilera
+        hilera3=31
+        for i in range(num_buttons):
+            x1 = x1 + padding
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto3=self.canvas.create_text(x1+ width/2, y2+15, text=hilera3, fill="black", font=('Helvetica 10 bold'))
+            hilera3+=1
+            if corona:            
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_oval(x1+5,y1+5,x2-5,y2-5, width=5, outline="blue")
+            elif extraido:                    
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
+                self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
+            # else:
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[0], outline = "black")
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
+            #     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
+            #     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
+            #     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+            x1=x2
+        x1=138
+        y1=y2 + 60
+        hilera5=55
+        for i in range(num_buttons-3):
+            x1 = x1 + padding
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto5=self.canvas.create_text(x1+ width/2, y1-15, text=hilera5, fill="black", font=('Helvetica 10 bold'))
+            hilera5-=1
+            if corona:
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width=5, outline="blue")
+            elif extraido:                    
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
+                self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
+            # else:
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[0], outline = "black")
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
+            #     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
+            #     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
+            #     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+            x1=x2
+        x1=x2+11
+        #y1= 195
+        hilera6=61
+        for i in range(num_buttons-3):
+            x1 = x1 + padding
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto6=self.canvas.create_text(x1+ width/2, y1-15, text=hilera6, fill="black", font=('Helvetica 10 bold'))
+            hilera6+=1
+            if corona:
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width=5, outline="blue")
+            elif extraido:                    
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
+                self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
+            # else:
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[0], outline = "black")
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
+            #     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
+            #     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
+            #     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+            x1=x2
+        x1=138
+        y1=y2 + 10
+        hilera8=85
+        for i in range(num_buttons-3):
+            x1 = x1 + padding
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto8=self.canvas.create_text(x1+ width/2, y2+15, text=hilera8, fill="black", font=('Helvetica 10 bold'))
+            hilera8-=1
+            if corona:            
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width=5, outline="blue")
+            elif extraido:                    
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
+                self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
+            # else:
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[3], outline = "black")
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
+            #     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
+            #     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
+            #     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+            x1=x2
+        x1=x2+11
+        y1= y2-height
+        hilera7=71
+        for i in range(num_buttons-3):
+            x1 = x1 + padding
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto7=self.canvas.create_text(x1+ width/2, y2+15, text=hilera7, fill="black", font=('Helvetica 10 bold'))
+            
+            if corona:
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width=5, outline="blue")
+            elif extraido:
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
+                self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
+            # else:
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[0], outline = "black")
+            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
+            #     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
+            #     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
+            #     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                
+            hilera7+=1
+            x1=x2
+        x1=padding
+        y1=30
+    
+    # D18=self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x1 + width - width/3.0, y1 + height - height/3.0, fill="green", tags="D18")
+    # self.canvas.tag_bind('D18', '<Enter>', change_cursor_enter)
+    # self.canvas.tag_bind('D18', '<Leave>', change_cursor_leave)
+    # self.canvas.tag_bind('D18', '<Button-1>', editar_diente)
+    # self.canvas.tag_bind('D18', '<Button-1>', lambda event, numero=18: editar_diente(numero))
+    # D17=self.canvas.create_rectangle(x1 + width +padding+ width/3.0, y1 + height/3.0, x1 +padding+ 2*width - width/3.0, y1 + height - height/3.0, fill="green", tags="D17")
+    # self.canvas.tag_bind('D17', '<Enter>', change_cursor_enter)
+    # self.canvas.tag_bind('D17', '<Leave>', change_cursor_leave)
+    # self.canvas.tag_bind('D17', '<Button-1>', lambda event, numero=17: editar_diente(numero))
 '''        
 
 # try:
@@ -82,7 +396,7 @@ class Odontograma:
 # except:
 #     print("error")
 
-self.colores=["red", "yellow", "blue","white"]
+
 
 
 
@@ -93,291 +407,9 @@ self.canvas.pack()
 #def button_click(event, index):
     #canvas.itemconfig(buttons[index], fill="red")
 #def cargar_dientes():
-    
+'''    
 
-def crear_dientes(self):
-    width = 30
-    height = 30
-    padding = 10
-    num_buttons = 8
-    x1=0
-    extraido=False
-    corona=False
-    #canvas.create_text(30, 15, text=18, fill="black", font=('Helvetica 10 bold'))
-
-    #primera hilera de dientes
-    hilera1=18
-    for i in range(num_buttons):
-        x1 = x1 + padding
-        y1 = 30
-        x2 = x1 + width
-        y2 = y1 + height
-
-        self.texto1=self.canvas.create_text(x1+ width/2, 15, text=hilera1, fill="black", font=('Helvetica 10 bold'))
-        self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
-        self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
-        self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-        self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-        self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-        hilera1-=1
-        if corona:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_oval(x1+5,y1+5,x2-5,y2-5, width=5, outline="blue")
-        if extraido:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
-            self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
-
-        x1=x2
-    #linea horizontal
-    self.canvas.create_line(0, y2+padding, self.ancho, y2+padding, width=3)
-    x1=x1+10
-    #linea vertical
-    self.canvas.create_line(x1, 5, x1, 320, width=3)
-    
-    #2da hilera
-    hilera2=21
-    for i in range(num_buttons):
-        x1 = x1 + padding
-        y1 = 30
-        x2 = x1 + width
-        y2 = y1 + height
-        self.texto2=self.canvas.create_text(x1+ width/2, 15, text=hilera2, fill="black", font=('Helvetica 10 bold'))
-        hilera2+=1
-        #corona=True
-        if corona:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width=5, outline="blue")
-        if extraido:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_line(x1+5, y1+5, x2-5, y2-5, fill="red", width=5)
-            self.canvas.create_line(x1+5, y2-5, x2-5, y1+5, fill="red", width=5)
-        else:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill=colores[i%3], outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill=colores[i%2], outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill=colores[2], outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill=colores[i%1], outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-        x1=x2
-    y1=y2+20
-    x1=0
-    #4ta hilera
-    hilera4=48
-    for i in range(num_buttons):
-        x1 = x1 + padding       
-        x2 = x1 + width
-        y2 = y1 + height
-        self.texto4=self.canvas.create_text(x1+ width/2, y2+15, text=hilera4, fill="black", font=('Helvetica 10 bold'))
-        hilera4-=1                
-        if corona:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width=5, outline="blue")
-
-        elif extraido:                    
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
-            self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
-        else:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[0], outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-        x1=x2
-    x1=x1+10
-    #3ra hilera
-    hilera3=31
-    for i in range(num_buttons):
-        x1 = x1 + padding
-        x2 = x1 + width
-        y2 = y1 + height
-        self.texto3=self.canvas.create_text(x1+ width/2, y2+15, text=hilera3, fill="black", font=('Helvetica 10 bold'))
-        hilera3+=1
-        if corona:            
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_oval(x1+5,y1+5,x2-5,y2-5, width=5, outline="blue")
-        elif extraido:                    
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
-            self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
-        else:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[0], outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-        x1=x2
-    x1=138
-    y1=y2 + 60
-    hilera5=55
-    for i in range(num_buttons-3):
-        x1 = x1 + padding
-        x2 = x1 + width
-        y2 = y1 + height
-        self.texto5=self.canvas.create_text(x1+ width/2, y1-15, text=hilera5, fill="black", font=('Helvetica 10 bold'))
-        hilera5-=1
-        if corona:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width=5, outline="blue")
-        elif extraido:                    
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
-            self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
-        else:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[0], outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-        x1=x2
-    x1=x2+11
-    #y1= 195
-    hilera6=61
-    for i in range(num_buttons-3):
-        x1 = x1 + padding
-        x2 = x1 + width
-        y2 = y1 + height
-        self.texto6=self.canvas.create_text(x1+ width/2, y1-15, text=hilera6, fill="black", font=('Helvetica 10 bold'))
-        hilera6+=1
-        if corona:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width=5, outline="blue")
-        elif extraido:                    
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
-            self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
-        else:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[0], outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-        x1=x2
-    x1=138
-    y1=y2 + 10
-    hilera8=85
-    for i in range(num_buttons-3):
-        x1 = x1 + padding
-        x2 = x1 + width
-        y2 = y1 + height
-        self.texto8=self.canvas.create_text(x1+ width/2, y2+15, text=hilera8, fill="black", font=('Helvetica 10 bold'))
-        hilera8-=1
-        if corona:            
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width=5, outline="blue")
-        elif extraido:                    
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
-            self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
-        else:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[3], outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-        x1=x2
-    x1=x2+11
-    y1= y2-height
-    hilera7=71
-    for i in range(num_buttons-3):
-        x1 = x1 + padding
-        x2 = x1 + width
-        y2 = y1 + height
-        self.texto7=self.canvas.create_text(x1+ width/2, y2+15, text=hilera7, fill="black", font=('Helvetica 10 bold'))
-        
-        if corona:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width=5, outline="blue")
-        elif extraido:
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
-            self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
-        else:            
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[0], outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            
-        hilera7+=1
-        x1=x2
-    x1=padding
-    y1=30
-    
-    D18=self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x1 + width - width/3.0, y1 + height - height/3.0, fill="green", tags="D18")
-    self.canvas.tag_bind('D18', '<Enter>', change_cursor_enter)
-    self.canvas.tag_bind('D18', '<Leave>', change_cursor_leave)
-    self.canvas.tag_bind('D18', '<Button-1>', editar_diente)
-    self.canvas.tag_bind('D18', '<Button-1>', lambda event, numero=18: editar_diente(numero))
-    D17=self.canvas.create_rectangle(x1 + width +padding+ width/3.0, y1 + height/3.0, x1 +padding+ 2*width - width/3.0, y1 + height - height/3.0, fill="green", tags="D17")
-    self.canvas.tag_bind('D17', '<Enter>', change_cursor_enter)
-    self.canvas.tag_bind('D17', '<Leave>', change_cursor_leave)
-    self.canvas.tag_bind('D17', '<Button-1>', lambda event, numero=17: editar_diente(numero))
-
+'''
 color_index = 0
 colores2 = ['white', 'blue', 'red']
 
