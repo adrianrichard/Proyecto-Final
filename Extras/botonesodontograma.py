@@ -80,7 +80,7 @@ class Odontograma:
             self.miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
             sql = "INSERT INTO Diente VALUES (?,?,?,?,?,?,?,?,?)"
-            datos= 18, 48, 'red', 'white', 'blue', 'red', 'white', 'NO', 'SI'
+            datos= 18, self.ID_odonto_actual[0], 'red', 'white', 'blue', 'red', 'white', 'NO', 'SI'
             self.miCursor.execute(sql, datos)
             self.miConexion.commit()
             #self.ID_odonto_actual= self.miCursor.fetchone()
@@ -126,14 +126,14 @@ class Odontograma:
             self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
             self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
             hilera1-=1
-            if corona:
+            if self.dientes[0][7] == 'SI':
                 self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
                 self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
                 self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
                 self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
                 self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
                 self.canvas.create_oval(x1+5,y1+5,x2-5,y2-5, width=5, outline="blue")
-            if extraido:
+            elif self.dientes[0][7] == 'SI':
                 self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
                 self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
                 self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
