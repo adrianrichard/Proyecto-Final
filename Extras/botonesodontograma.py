@@ -100,7 +100,14 @@ class Odontograma:
             print(self.dientes)
         except:
             print("error diente")
-            
+    
+    def buscar_valor(self, valor):
+        try:
+            indice = self.dientes[0].index(valor)
+            return indice
+        except ValueError:
+            return None
+        
     def crear_dientes(self):
         width = 30
         height = 30
@@ -111,6 +118,8 @@ class Odontograma:
         corona=False
         #canvas.create_text(30, 15, text=18, fill="black", font=('Helvetica 10 bold'))
 
+
+        
         #primera hilera de dientes
         hilera1=18
         for i in range(num_buttons):
@@ -118,31 +127,42 @@ class Odontograma:
             y1 = 30
             x2 = x1 + width
             y2 = y1 + height
-
-            self.texto1=self.canvas.create_text(x1+ width/2, 15, text=hilera1, fill="black", font=('Helvetica 10 bold'))
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
-            self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-            self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-            hilera1-=1
-            if self.dientes[0][7] == 'SI':
+            indice = self.buscar_valor(hilera1)
+            #print("INDICE",indice)
+            if(indice is not None):
+                print(indice)
+                if self.dientes[0][7] == 'red' or self.dientes[0][7] == 'blue':
+                    self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                    self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                    self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                    self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                    self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                    self.canvas.create_oval(x1+5,y1+5,x2-5,y2-5, width=5, outline=self.dientes[0][7])
+                elif self.dientes[0][8] == 'red' or self.dientes[0][8] == 'blue':
+                    self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                    self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                    self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                    self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                    self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                    self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill=self.dientes[0][8], width=5)
+                    self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill=self.dientes[0][8], width=5)
+                else:
+                    self.texto1=self.canvas.create_text(x1+ width/2, 15, text=hilera1, fill="black", font=('Helvetica 10 bold'))
+                    self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill=self.dientes[indice][2], outline = "black")#DISTAL
+                    self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")#VESTIBULAR
+                    self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill=self.dientes[indice][5], outline = "black")#MEDIAL
+                    self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="green", outline = "black")#INTERIOR
+                    self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill=self.dientes[indice][6])#OCLUSAL
+            else:
+                self.texto1=self.canvas.create_text(x1+ width/2, 15, text=hilera1, fill="black", font=('Helvetica 10 bold'))
                 self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
                 self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
                 self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
                 self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
                 self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-                self.canvas.create_oval(x1+5,y1+5,x2-5,y2-5, width=5, outline="blue")
-            elif self.dientes[0][7] == 'SI':
-                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
-                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
-                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
-                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-                self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
-                self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
-
             x1=x2
+            hilera1-=1
+        
         #linea horizontal
         self.canvas.create_line(0, y2+padding, self.ancho, y2+padding, width=3)
         x1=x1+10
