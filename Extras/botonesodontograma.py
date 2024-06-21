@@ -80,7 +80,7 @@ class Odontograma:
             self.miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
             sql = "INSERT INTO Diente VALUES (?,?,?,?,?,?,?,?,?)"
-            datos= 18, self.ID_odonto_actual[0], 'red', 'white', 'blue', 'red', 'white', 'NO', 'SI'
+            datos= 25, self.ID_odonto_actual[0], 'red', 'white', 'blue', 'red', 'white', 'NO', 'SI'
             self.miCursor.execute(sql, datos)
             self.miConexion.commit()
             #self.ID_odonto_actual= self.miCursor.fetchone()
