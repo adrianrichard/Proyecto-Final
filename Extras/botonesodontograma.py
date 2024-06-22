@@ -267,31 +267,41 @@ class Odontograma:
             x1 = x1 + padding
             x2 = x1 + width
             y2 = y1 + height
+            indice = self.buscar_valor(hilera3)
             self.texto3=self.canvas.create_text(x1+ width/2, y2+15, text=hilera3, fill="black", font=('Helvetica 10 bold'))
             hilera3+=1
-            if corona:            
-                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
-                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
-                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
+            if(indice is not None):
+                #print(indice)
+                if self.dientes[indice][7] == 'red' or self.dientes[indice][7] == 'blue':
+                    self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                    self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                    self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                    self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                    self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                    self.canvas.create_oval(x1+5,y1+5,x2-5,y2-5, width=5, outline=self.dientes[indice][7])
+                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue':
+                    self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                    self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                    self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                    self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                    self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
+                    self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill=self.dientes[indice][8], width=5)
+                    self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill=self.dientes[indice][8], width=5)
+                else:
+                    self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill=self.dientes[indice][2], outline = "black")#DISTAL
+                    self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill=self.dientes[indice][2], outline = "black")#VESTIBULAR
+                    self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill=self.dientes[indice][5], outline = "black")#MEDIAL
+                    self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill=self.dientes[indice][2], outline = "black")#INTERIOR
+                    self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill=self.dientes[indice][6])#OCLUSAL
+            else:
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill="white", outline = "black")
+                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
+                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
                 self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-                self.canvas.create_oval(x1+5,y1+5,x2-5,y2-5, width=5, outline="blue")
-            elif extraido:                    
-                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
-                self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
-                self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-                self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-                self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-                self.canvas.create_line(x1+5,y1+5,x2-5,y2-5, fill="red", width=5)
-                self.canvas.create_line(x1+5,y2-5,x2-5,y1+5, fill="red", width=5)
-            # else:
-            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=colores[0], outline = "black")
-            #     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=colores[1], outline = "black")
-            #     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=colores[2], outline = "black")
-            #     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
-            #     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
             x1=x2
-        x1=138
+            hilera3-=1
+        x1=120
         y1=y2 + 60
         hilera5=55
         for i in range(num_buttons-3):
@@ -353,7 +363,7 @@ class Odontograma:
             #     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=colores[3], outline = "black")
             #     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
             x1=x2
-        x1=125
+        x1=120
         y1=y2 + 10
         hilera8=85
         for i in range(num_buttons-3):
