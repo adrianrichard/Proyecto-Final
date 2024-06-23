@@ -34,18 +34,18 @@ class Diente:
         x1=100
         y1=25
         x2 = x1 + width
-        y2 = y1 + height    
+        y2 = y1 + height
         cara_d=self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
-        self.canvas.tag_bind(cara_d, '<Button-1>', lambda event: self.cambiar_color(cara_d))
+        #self.canvas.tag_bind(cara_d, '<Button-1>', lambda event: self.cambiar_color(cara_d))
     # cara_v=c.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill="white", outline = "black")
     # c.tag_bind(cara_v, '<Button-1>', lambda event: cambiar_color())
     # cara_i=c.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
     # c.tag_bind(cara_i, '<Button-1>', lambda event: cambiar_color())
         cara_m=self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill="white", outline = "black")
-        self.canvas.tag_bind(cara_m, '<Button-1>', lambda event: self.cambiar_color(cara_m))
+        #self.canvas.tag_bind(cara_m, '<Button-1>', lambda event: self.cambiar_color(cara_m))
         #self.canvas.itemconfig(cara_m, fill='gray')
         cara_o=self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
-        self.canvas.tag_bind(cara_o, '<Button-1>', lambda event: self.cambiar_color(cara_o))
+        #self.canvas.tag_bind(cara_o, '<Button-1>', lambda event: self.cambiar_color(cara_o))
         button_frame = Frame(ventana_secundaria, bg="gray")
         button_frame.pack(pady=10)
 
@@ -70,12 +70,12 @@ class Diente:
 
         ventana_secundaria.mainloop()
 
-    def cambiar_color(self, cara):
-        global color_index
-        color_index = (color_index + 1) % len(colores2)
-        color_actual = colores2[color_index]
-        #print('hola')
-        self.canvas.itemconfig(cara, fill=color_actual)
+    # def cambiar_color(self, cara):
+    #     global color_index
+    #     color_index = (color_index + 1) % len(colores2)
+    #     color_actual = colores2[color_index]
+    #     #print('hola')
+    #     self.canvas.itemconfig(cara, fill=color_actual)
     #label_color_actual.config(text=f"Color actual: {color_actual.capitalize()}")
         
 # def change_cursor_enter(event):
@@ -88,4 +88,4 @@ class Diente:
 # crear_dientes()
 #capture_screenshot()
 if __name__ == "__main__":
-    Diente()    
+    Diente()
