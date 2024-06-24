@@ -1,11 +1,12 @@
-import tkinter as tk
-from tkinter import Frame, Label, Button, Toplevel
+
+#from tkinter import Frame, Label, Button, Toplevel
 import sqlite3
 from tkinter import *
-
+import tkinter as tk
 from PIL import ImageGrab
 from datetime import datetime
 from dienteodontograma import Diente
+from gui_app import App
 pacientes=[]
 color_index = 0
 colores = ['white', 'blue', 'red']
@@ -73,7 +74,26 @@ class Odontograma:
     
     def editar_diente(self, numero):
         print('prueba', numero)
-        #diente= Diente()
+        self.ventana_secundaria = tk.Tk()
+        self.ventana_secundaria.title("Editar diente")
+        self.ventana_secundaria.geometry('400x300')
+        Label(self.ventana_secundaria, text="EDITAR DIENTE", font=("Arial", 15, 'bold'), bg="gray90", width=60).pack(pady=10)
+        Label(self.ventana_secundaria, text="FECHA: DD/MM/AAAA ", font=("Arial", 10, 'bold'), bg="gray90", width=60).pack()
+        diente_frame = Frame(self.ventana_secundaria)
+        diente_frame.pack(pady=(10,10))
+        self.canvas2 = tk.Canvas(diente_frame, width=400, height=150)
+        self.canvas2.pack()
+        width = 100
+        height = 100
+        x1=100
+        y1=25
+        x2 = x1 + width
+        y2 = y1 + height
+        cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
+        # diente=Diente()
+        # diente.crear_ventana()
+        #self.ventana_odontograma.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+        #self.ventana_odontograma.focus_set()
     
     def guardar_dientes(self):
         try:
@@ -119,11 +139,6 @@ class Odontograma:
         # Restaurar el cursor al salir del cuadrado
         self.canvas.config(cursor="")
 
-    def editar_diente(self, numero):
-        print('prueba', numero)
-        #Diente()
-        #del diente
-
     def crear_dientes(self):
         width = 30
         height = 30
@@ -143,7 +158,7 @@ class Odontograma:
             y2 = y1 + height
             
             tag_diente='D'+str(hilera1)
-            print(tag_diente)
+            #print(tag_diente)
             
             # D18=self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x1 + width - width/3.0, y1 + height - height/3.0, fill="green", tags="D18")
             # self.canvas.tag_bind('D18', '<Enter>', change_cursor_enter)

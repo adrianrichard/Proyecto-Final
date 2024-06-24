@@ -1,31 +1,35 @@
 import tkinter as tk
 from tkinter import Frame, Label, Button, Toplevel
-import sqlite3
+#import sqlite3
 from tkinter import *
 
-from PIL import ImageGrab
-from datetime import datetime
-color_index = 0
-colores2 = ['white', 'blue', 'red']
+# from PIL import ImageGrab
+# from datetime import datetime
+# color_index = 0
+# colores2 = ['white', 'blue', 'red']
 
 class Diente:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        ventana_secundaria = tk.Tk()
-        ventana_secundaria.title("Editar diente")
-        ventana_secundaria.geometry('400x300')
-        ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
-        ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
-        ventana_secundaria.config(bg= 'gray')
+        
+        
+    def crear_ventana(self):    
+        self.ventana_secundaria = tk.Toplevel()
+        self.ventana_secundaria.title("Editar diente")
+        self.ventana_secundaria.geometry('400x300')
+        #self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+        #self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
+        self.ventana_secundaria.config(bg= 'gray')
         #item = self.tabla_turnos.focus()
         #print(self.turno_seleccionado)
         # self.horario = self.data['values'][0]
         # self.paciente = self.data['values'][1]
         # self.prestacion = self.data['values'][2]
         # self.odontologo = self.data['values'][3]
-        Label(ventana_secundaria, text="EDITAR DIENTE", font=("Arial", 15, 'bold'), bg="gray90", width=60).pack(pady=10)
-        Label(ventana_secundaria, text="FECHA: DD/MM/AAAA ", font=("Arial", 10, 'bold'), bg="gray90", width=60).pack()
-        diente_frame = Frame(ventana_secundaria)
+        
+        Label(self.ventana_secundaria, text="EDITAR DIENTE", font=("Arial", 15, 'bold'), bg="gray90", width=60).pack(pady=10)
+        Label(self.ventana_secundaria, text="FECHA: DD/MM/AAAA ", font=("Arial", 10, 'bold'), bg="gray90", width=60).pack()
+        diente_frame = Frame(self.ventana_secundaria)
         diente_frame.pack(pady=(10,10))
         self.canvas = tk.Canvas(diente_frame, width=400, height=150)
         self.canvas.pack()
@@ -46,12 +50,18 @@ class Diente:
         #self.canvas.itemconfig(cara_m, fill='gray')
         cara_o=self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white")
         #self.canvas.tag_bind(cara_o, '<Button-1>', lambda event: self.cambiar_color(cara_o))
-        button_frame = Frame(ventana_secundaria, bg="gray")
+        button_frame = Frame(self.ventana_secundaria, bg="gray")
         button_frame.pack(pady=10)
 
     #Button(button_frame, text= 'Guardar', command= guardar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 0, padx= 10)
     #Button(button_frame, text= 'Eliminar', command= self.eliminar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 1, padx= 10)
-        Button(button_frame, text= 'Salir', command= ventana_secundaria.destroy, bg= "orange red", width= 10).grid(row= 0, column= 2, padx= 10)
+        Button(button_frame, text= 'Salir', command= self.cerrar, bg= "orange red", width= 10).grid(row= 0, column= 2, padx= 10)
+        self.ventana_secundaria.mainloop()
+    
+    def cerrar(self):
+        self.canvas.destroy()
+
+        self.ventana_secundaria.destroy()
 # try:
 #     miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
 #     miCursor=miConexion.cursor()
@@ -68,7 +78,7 @@ class Diente:
 # def editar_diente( numero):
 #     print('prueba', numero)
 
-        ventana_secundaria.mainloop()
+        
 
     # def cambiar_color(self, cara):
     #     global color_index
@@ -87,5 +97,5 @@ class Diente:
 #     canvas.config(cursor="")
 # crear_dientes()
 #capture_screenshot()
-if __name__ == "__main__":
-    Diente()
+# if __name__ == "__main__":
+#     Diente()
