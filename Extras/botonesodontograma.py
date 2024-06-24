@@ -78,8 +78,8 @@ class Odontograma:
         self.ventana_secundaria = tk.Tk()
         self.ventana_secundaria.title("Editar diente")
         self.ventana_secundaria.geometry('400x300')
-        Label(self.ventana_secundaria, text="EDITAR DIENTE", font=("Arial", 15, 'bold'), bg="gray90", width=60).pack(pady=10)
-        Label(self.ventana_secundaria, text="DIENTE "+str(numero), font=("Arial", 10, 'bold'), bg="gray90", width=60).pack()
+        Label(self.ventana_secundaria, text="EDITAR DIENTE", font=("Arial", 15, 'bold'), fg='white',bg="gray", width=60).pack(pady=10)
+        Label(self.ventana_secundaria, text="DIENTE "+str(numero), font=("Arial", 12, 'bold'),fg='white',bg="gray", width=60).pack()
         diente_frame = Frame(self.ventana_secundaria)
         diente_frame.pack(pady=(10,10))
         
@@ -91,6 +91,26 @@ class Odontograma:
         y1=25
         x2 = x1 + width
         y2 = y1 + height
+        #LETRAS
+        if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
+            or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55:
+            self.canvas2.create_text(x1+ width/2, 15, text='V', fill="black", font=('Helvetica 10 bold'))
+            self.canvas2.create_text(x1-10, 25+ width/2, text='D', fill="black", font=('Helvetica 10 bold'))
+            self.canvas2.create_text(x1+ width/2, 35+ height, text='P', fill="black", font=('Helvetica 10 bold'))
+            self.canvas2.create_text(x1+ width+10, 25+ width/2, text='M', fill="black", font=('Helvetica 10 bold'))
+        if numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
+            or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55:
+            self.canvas2.create_text(x1+ width/2, 15, text='V', fill="black", font=('Helvetica 10 bold'))
+            self.canvas2.create_text(x1-10, 25+ width/2, text='M', fill="black", font=('Helvetica 10 bold'))
+            self.canvas2.create_text(x1+ width/2, 35+ height, text='P', fill="black", font=('Helvetica 10 bold'))
+            self.canvas2.create_text(x1+ width+10, 25+ width/2, text='D', fill="black", font=('Helvetica 10 bold'))
+        if numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
+            or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65:
+            self.canvas2.create_text(x1+ width/2, 15, text='V', fill="black", font=('Helvetica 10 bold'))
+            self.canvas2.create_text(x1-10, 25+ width/2, text='M', fill="black", font=('Helvetica 10 bold'))
+            self.canvas2.create_text(x1+ width/2, 35+ height, text='P', fill="black", font=('Helvetica 10 bold'))
+            self.canvas2.create_text(x1+ width+10, 25+ width/2, text='D', fill="black", font=('Helvetica 10 bold'))
+                
         for diente in self.dientes:
             if diente[0] == numero:
                 if diente[7] == 'red' or diente[7] == 'blue':
