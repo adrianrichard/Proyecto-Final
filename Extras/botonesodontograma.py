@@ -78,9 +78,10 @@ class Odontograma:
         self.ventana_secundaria.title("Editar diente")
         self.ventana_secundaria.geometry('400x300')
         Label(self.ventana_secundaria, text="EDITAR DIENTE", font=("Arial", 15, 'bold'), bg="gray90", width=60).pack(pady=10)
-        Label(self.ventana_secundaria, text="FECHA: DD/MM/AAAA ", font=("Arial", 10, 'bold'), bg="gray90", width=60).pack()
+        Label(self.ventana_secundaria, text="DIENTE "+str(numero), font=("Arial", 10, 'bold'), bg="gray90", width=60).pack()
         diente_frame = Frame(self.ventana_secundaria)
         diente_frame.pack(pady=(10,10))
+        
         self.canvas2 = tk.Canvas(diente_frame, width=400, height=150)
         self.canvas2.pack()
         width = 100
@@ -89,7 +90,36 @@ class Odontograma:
         y1=25
         x2 = x1 + width
         y2 = y1 + height
-        cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill="white", outline = "black")
+        for diente in self.dientes:
+            if diente[0] == numero:
+                if diente[7] == 'red' or diente[7] == 'blue':
+                    cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill='white', outline = "black")
+                    cara_v=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill='white', outline = "black")
+                    cara_i=self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill='white', outline = "black")
+                    cara_m=self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill='white', outline = "black")
+                    cara_o=self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill='white')
+                    self.canvas2.create_oval(x1+5,y1+5,x2-5,y2-5, width=5, outline=diente[7])
+                elif diente[8] == 'red' or diente[8] == 'blue':
+                    cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill='white', outline = "black")
+                    cara_v=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill='white', outline = "black")
+                    cara_i=self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill='white', outline = "black")
+                    cara_m=self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill='white', outline = "black")
+                    cara_o=self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill='white')
+                    self.canvas2.create_line(x1+5,y1+5,x2-5,y2-5, fill=diente[8], width=5)
+                    self.canvas2.create_line(x1+5,y2-5,x2-5,y1+5, fill=diente[8], width=5)
+                else:
+                    cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill=diente[2], outline = "black")
+                    cara_v=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill=diente[3], outline = "black")
+                    cara_i=self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill=diente[4], outline = "black")
+                    cara_m=self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill=diente[5], outline = "black")
+                    cara_o=self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill=diente[6])
+                break
+            else:
+                cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2,fill='white', outline = "black")
+                cara_v=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1,fill='white', outline = "black")
+                cara_i=self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2,fill='white', outline = "black")
+                cara_m=self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2,fill='white', outline = "black")
+                cara_o=self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill='white')
         # diente=Diente()
         # diente.crear_ventana()
         #self.ventana_odontograma.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
@@ -100,7 +130,7 @@ class Odontograma:
             self.miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
             sql = "INSERT INTO Diente VALUES (?,?,?,?,?,?,?,?,?)"
-            datos= 32, self.ID_odonto_actual[0], 'blue', 'red', 'yellow', 'green', 'gray', 'white', 'white'
+            datos= 17, self.ID_odonto_actual[0], 'blue', 'white', 'white', 'white', 'white', 'red', 'white'
             self.miCursor.execute(sql, datos)
             self.miConexion.commit()
             #self.ID_odonto_actual= self.miCursor.fetchone()
@@ -174,7 +204,7 @@ class Odontograma:
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
                     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill="white", outline = "black")
                     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill="white", tags=tag_diente)
-                    self.canvas.create_oval(x1+5,y1+5,x2-5,y2-5, width=5, outline=self.dientes[0][7])
+                    self.canvas.create_oval(x1+5,y1+5,x2-5,y2-5, width=5, outline=self.dientes[indice][7])
                     # self.canvas.tag_bind(tag_diente, '<Enter>', self.change_cursor_enter)
                     # self.canvas.tag_bind(tag_diente, '<Leave>', self.change_cursor_leave)
                 elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue':
