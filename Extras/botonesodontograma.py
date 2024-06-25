@@ -82,7 +82,9 @@ class Odontograma:
         Label(self.ventana_secundaria, text= "DIENTE "+str(numero), font= ("Arial", 12, 'bold'), fg= 'white', bg= "gray", width= 60).pack()
         diente_frame = Frame(self.ventana_secundaria)
         diente_frame.pack(pady= (10, 10))
-        
+        botones_frame = Frame(self.ventana_secundaria)
+        botones_frame.pack(pady= (10, 10))
+        Button(botones_frame, text= 'Mostrar Estado', command= self.mostrar_estado, bg= "orange red", width= 10).grid(row= 0, column= 2, padx= 10)
         self.canvas2 = tk.Canvas(diente_frame, width= 400, height= 150)
         self.canvas2.pack()
         width = 100
@@ -120,45 +122,44 @@ class Odontograma:
         for diente in self.dientes:
             if diente[0] == numero:
                 if diente[7] == 'red' or diente[7] == 'blue':
-                    cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black")
-                    cara_v=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black")
-                    cara_i=self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black")
-                    cara_m=self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black")
-                    cara_o=self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white')
+                    self.cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                    self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+                    self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+                    self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+                    self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                     self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= diente[7])
                 elif diente[8] == 'red' or diente[8] == 'blue':
-                    cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black")
-                    cara_v=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black")
-                    cara_i=self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black")
-                    cara_m=self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black")
-                    cara_o=self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white')
+                    self.cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                    self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+                    self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+                    self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+                    self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                     self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= diente[8], width= 5)
                     self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= diente[8], width= 5)
                 else:
-                    cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= diente[2], outline = "black")
-                    cara_v=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= diente[3], outline = "black")
-                    cara_i=self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= diente[4], outline = "black")
-                    cara_m=self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= diente[5], outline = "black")
-                    cara_o=self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= diente[6])
-                self.canvas2.tag_bind(cara_d, '<Button-1>', self.cambiar_color)
-                self.canvas2.tag_bind(cara_v, '<Button-1>', self.cambiar_color)
-                self.canvas2.tag_bind(cara_i, '<Button-1>', self.cambiar_color)
-                self.canvas2.tag_bind(cara_m, '<Button-1>', self.cambiar_color)
-                self.canvas2.tag_bind(cara_o, '<Button-1>', self.cambiar_color)
+                    self.cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= diente[2], outline = "black", tags= 'C1')
+                    self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= diente[3], outline = "black", tags= 'C2')
+                    self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= diente[4], outline = "black", tags= 'C3')
+                    self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= diente[5], outline = "black", tags= 'C4')
+                    self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= diente[6], tags= 'CO')
+                self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C1'))
+                self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C2'))
+                self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C3'))
+                self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C4'))
+                self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
                 break
             else:
-                cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black")
-                cara_v=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black")
-                cara_i=self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black")
-                cara_m=self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black")
-                cara_o=self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white')
+                self.cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+                self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+                self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+                self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
     
-            self.canvas2.tag_bind(cara_d, '<Button-1>', self.cambiar_color)
-            self.canvas2.tag_bind(cara_v, '<Button-1>', self.cambiar_color)
-            self.canvas2.tag_bind(cara_i, '<Button-1>', self.cambiar_color)
-            self.canvas2.tag_bind(cara_m, '<Button-1>', self.cambiar_color)
-            self.canvas2.tag_bind(cara_o, '<Button-1>', self.cambiar_color)
-    
+            self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C1'))
+            self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C2'))
+            self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C3'))
+            self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C4'))
+            self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
     
     def guardar_dientes(self):
         try:
@@ -584,7 +585,7 @@ class Odontograma:
         x1 = padding
         y1 = 30
 
-    def cambiar_color(self, event):
+    def cambiar_color(self, event, numero, tag):
         item = self.canvas2.find_closest(event.x, event.y)
         current_color = self.canvas2.itemcget(item, "fill")
 
@@ -597,6 +598,11 @@ class Odontograma:
             self.canvas2.itemconfig(item, fill="green")
         elif current_color == "green":
             self.canvas2.itemconfig(item, fill="white")
+        print (numero, tag, self.canvas2.itemcget(item, "fill"))        
+    
+    def mostrar_estado(self):
+        print('prueba')
+        #self.cara_d.canvasitemcget
 '''        
 #def button_click(event, index):
     #canvas.itemconfig(buttons[index], fill="red")

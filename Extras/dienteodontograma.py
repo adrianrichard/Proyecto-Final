@@ -12,7 +12,6 @@ class Diente:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
-        
     def crear_ventana(self):    
         self.ventana_secundaria = tk.Toplevel()
         self.ventana_secundaria.title("Editar diente")
