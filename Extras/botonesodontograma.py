@@ -87,6 +87,7 @@ class Odontograma:
         Button(botones_frame, text= 'Mostrar Estado', command= self.mostrar_estado, bg= "orange red", width= 10).grid(row= 0, column= 2, padx= 10)
         self.canvas2 = tk.Canvas(diente_frame, width= 400, height= 150)
         self.canvas2.pack()
+        self.diente=[numero, '','','','','','','']
         width = 100
         height = 100
         x1 = 100
@@ -160,7 +161,7 @@ class Odontograma:
             self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C3'))
             self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C4'))
             self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
-    
+
     def guardar_dientes(self):
         try:
             self.miConexion = sqlite3.connect("../bd/DBpaciente.sqlite3")
@@ -173,7 +174,7 @@ class Odontograma:
             #print(self.ID_odonto_actual[0])
         except:
             print("error guardar")
-            
+
     def cargar_dientes(self):
         print('crear vector con los dientes')
         try:
@@ -186,7 +187,7 @@ class Odontograma:
             print(self.dientes)
         except:
             print("error diente")
-    
+
     def buscar_valor(self, valor):
         indice = 0
         try:
@@ -211,7 +212,7 @@ class Odontograma:
         padding = 10
         num_buttons = 8
         x1 = 0
-                
+
         #primera hilera de dientes
         hilera1 = 18
         for i in range(num_buttons):
@@ -219,7 +220,7 @@ class Odontograma:
             y1 = 30
             x2 = x1 + width
             y2 = y1 + height
-            
+
             tag_diente = 'D' + str(hilera1)
 
             indice = self.buscar_valor(hilera1)
@@ -588,7 +589,7 @@ class Odontograma:
     def cambiar_color(self, event, numero, tag):
         item = self.canvas2.find_closest(event.x, event.y)
         current_color = self.canvas2.itemcget(item, "fill")
-
+        i=0
     # Cambiar el color del cuadrado según su estado actual
         if current_color == "white":
             self.canvas2.itemconfig(item, fill="red")
@@ -598,7 +599,24 @@ class Odontograma:
             self.canvas2.itemconfig(item, fill="green")
         elif current_color == "green":
             self.canvas2.itemconfig(item, fill="white")
-        print (numero, tag, self.canvas2.itemcget(item, "fill"))        
+        color_actual=self.canvas2.itemcget(item, "fill")
+        if tag =='C1':
+            i=1
+            self.diente[1]=color_actual
+        if tag =='C2':
+            i=2
+            self.diente[2]=color_actual
+        if tag =='C3':
+            i=3
+            self.diente[3]=color_actual
+        if tag =='C4':
+            i=4
+            self.diente[4]=color_actual
+        if tag =='CO':
+            i=5
+            self.diente[5]=color_actual
+                       
+        print (numero, tag, self.diente[i])
     
     def mostrar_estado(self):
         print('prueba')
