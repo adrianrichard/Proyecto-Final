@@ -7,6 +7,8 @@ from PIL import ImageGrab
 from datetime import datetime
 from dienteodontograma import Diente
 from gui_app import App
+from functools import partial
+
 pacientes=[]
 color_index = 0
 colores = ['white', 'blue', 'red', 'green']
@@ -40,7 +42,7 @@ class Odontograma:
         self.cargar_dientes()
         self.canvas = tk.Canvas(self.frame_dientes, width= 700, height= 400)
         self.canvas.pack()
-        self.colores=["red", "yellow", "blue", "white"]
+        self.colores=["red", "green", "blue", "white"]
         self.crear_dientes()
         
         self.ventana_odontograma.mainloop()
@@ -77,14 +79,20 @@ class Odontograma:
         print('prueba', numero)
         self.ventana_secundaria = tk.Tk()
         self.ventana_secundaria.title("Editar diente")
-        self.ventana_secundaria.geometry('300x300')
+        self.ventana_secundaria.geometry('300x350')
         Label(self.ventana_secundaria, text= "EDITAR DIENTE", font= ("Arial", 15, 'bold'), fg= 'white', bg= "gray", width= 60).pack(pady= 10)
         Label(self.ventana_secundaria, text= "DIENTE "+str(numero), font= ("Arial", 12, 'bold'), fg= 'white', bg= "gray", width= 60).pack()
         diente_frame = Frame(self.ventana_secundaria)
         diente_frame.pack(pady= (10, 10))
         botones_frame = Frame(self.ventana_secundaria)
         botones_frame.pack(pady= (10, 10))
-        Button(botones_frame, text= 'Mostrar Estado', command= self.mostrar_estado, bg= "orange red", width= 10).grid(row= 0, column= 2, padx= 10)
+        Button(botones_frame, text= 'X Roja', command= partial(self.extraccion, numero,'red'), bg= "red", width= 5).grid(row= 0, column= 0, padx= 10)
+        Button(botones_frame, text= 'X Azul', command= partial(self.extraccion, numero, 'blue'), bg= "blue", width= 5).grid(row= 0, column= 1, padx= 10)
+        Button(botones_frame, text= 'O Roja', command= partial(self.corona, numero,'red'), bg= "red", width= 5).grid(row= 0, column= 2, padx= 10)
+        Button(botones_frame, text= 'O Azul', command= partial(self.corona, numero, 'blue'), bg= "blue", width= 5).grid(row= 0, column= 3, padx= 10)
+        Button(botones_frame, text= 'SALIR', command= self.mostrar_estado, width= 7).grid(row= 1, column= 2, padx= 10, pady=(10, 0))
+        Button(botones_frame, text= 'GUARDAR', command= self.mostrar_estado, width= 7).grid(row= 1, column= 1, padx= 10, pady=(10, 0))
+
         self.canvas2 = tk.Canvas(diente_frame, width= 400, height= 150)
         self.canvas2.pack()
         self.diente=[numero, '','','','','','','']
@@ -123,14 +131,14 @@ class Odontograma:
         for diente in self.dientes:
             if diente[0] == numero:
                 if diente[7] == 'red' or diente[7] == 'blue':
-                    self.cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                    self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
                     self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
                     self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
                     self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
                     self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                     self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= diente[7])
                 elif diente[8] == 'red' or diente[8] == 'blue':
-                    self.cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                    self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
                     self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
                     self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
                     self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
@@ -138,7 +146,7 @@ class Odontograma:
                     self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= diente[8], width= 5)
                     self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= diente[8], width= 5)
                 else:
-                    self.cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= diente[2], outline = "black", tags= 'C1')
+                    self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= diente[2], outline = "black", tags= 'C1')
                     self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= diente[3], outline = "black", tags= 'C2')
                     self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= diente[4], outline = "black", tags= 'C3')
                     self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= diente[5], outline = "black", tags= 'C4')
@@ -150,7 +158,7 @@ class Odontograma:
                 self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
                 break
             else:
-                self.cara_d=self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
                 self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
                 self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
@@ -162,6 +170,39 @@ class Odontograma:
             self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C4'))
             self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
 
+    def corona(self, numero, color):
+        print(color)
+        width = 100
+        height = 100
+        x1 = 100
+        y1 = 25
+        x2 = x1 + width
+        y2 = y1 + height
+        self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+        self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+        self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+        self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+        self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
+        self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= color)
+        self.diente=[numero, 'white', 'white', 'white', 'white', 'white', 'white', color]
+    
+    def extraccion(self, numero, color):
+        print(color)
+        width = 100
+        height = 100
+        x1 = 100
+        y1 = 25
+        x2 = x1 + width
+        y2 = y1 + height
+        self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+        self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+        self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+        self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+        self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
+        self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= color, width= 5)
+        self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= color, width= 5)
+        self.diente=[numero, 'white', 'white', 'white', 'white', 'white', color, 'white']
+    
     def guardar_dientes(self):
         try:
             self.miConexion = sqlite3.connect("../bd/DBpaciente.sqlite3")
