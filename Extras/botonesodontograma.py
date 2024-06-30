@@ -38,7 +38,7 @@ class Odontograma:
         self.frame_dientes = Frame(self.ventana_odontograma)
         self.frame_dientes.grid(column= 0, row= 2, pady= (10,10))
         self.cargar_ultimo_odontograma()
-        self.guardar_dientes()
+        #self.guardar_diente()
         self.cargar_dientes()
         self.canvas = tk.Canvas(self.frame_dientes, width= 700, height= 400)
         self.canvas.pack()
@@ -90,12 +90,12 @@ class Odontograma:
         Button(botones_frame, text= 'X Azul', command= partial(self.extraccion, numero, 'blue'), bg= "blue", width= 5).grid(row= 0, column= 1, padx= 10)
         Button(botones_frame, text= 'O Roja', command= partial(self.corona, numero,'red'), bg= "red", width= 5).grid(row= 0, column= 2, padx= 10)
         Button(botones_frame, text= 'O Azul', command= partial(self.corona, numero, 'blue'), bg= "blue", width= 5).grid(row= 0, column= 3, padx= 10)
-        Button(botones_frame, text= 'SALIR', command= self.mostrar_estado, width= 7).grid(row= 1, column= 2, padx= 10, pady=(10, 0))
-        Button(botones_frame, text= 'GUARDAR', command= self.mostrar_estado, width= 7).grid(row= 1, column= 1, padx= 10, pady=(10, 0))
+        Button(botones_frame, text= 'CANCELAR', command= self.cancelar, width= 7).grid(row= 1, column= 2, padx= 10, pady=(10, 0))
+        Button(botones_frame, text= 'GUARDAR', command= self.guardar_diente, width= 7).grid(row= 1, column= 1, padx= 10, pady=(10, 0))
 
         self.canvas2 = tk.Canvas(diente_frame, width= 400, height= 150)
         self.canvas2.pack()
-        self.diente=[numero, '','','','','','','']
+        self.diente=[numero, 'white','white','white','white','white','white','white']
         width = 100
         height = 100
         x1 = 100
@@ -171,7 +171,7 @@ class Odontograma:
             self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
 
     def corona(self, numero, color):
-        print(color)
+        #print(color)
         width = 100
         height = 100
         x1 = 100
@@ -184,10 +184,10 @@ class Odontograma:
         self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
         self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
         self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= color)
-        self.diente=[numero, 'white', 'white', 'white', 'white', 'white', 'white', color]
+        self.diente_modificado=[numero, 'white', 'white', 'white', 'white', 'white', 'white', color]
     
     def extraccion(self, numero, color):
-        print(color)
+        #print(color)
         width = 100
         height = 100
         x1 = 100
@@ -201,20 +201,26 @@ class Odontograma:
         self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
         self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= color, width= 5)
         self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= color, width= 5)
-        self.diente=[numero, 'white', 'white', 'white', 'white', 'white', color, 'white']
+        self.diente_modificado=[numero, 'white', 'white', 'white', 'white', 'white', color, 'white']
     
-    def guardar_dientes(self):
+    def cancelar(self):
+        self.ventana_secundaria.destroy()
+        self.crear_dientes()
+        
+    def guardar_diente(self):
         try:
             self.miConexion = sqlite3.connect("../bd/DBpaciente.sqlite3")
             self.miCursor = self.miConexion.cursor()
             sql = "INSERT INTO Diente VALUES (?,?,?,?,?,?,?,?,?)"
-            datos= 17, self.ID_odonto_actual[0], 'blue', 'white', 'white', 'white', 'white', 'red', 'white'
+            datos= self.diente[0], self.ID_odonto_actual[0], self.diente[1], self.diente[2], self.diente[3], self.diente[4], self.diente[5], self.diente[6], self.diente[7]
             self.miCursor.execute(sql, datos)
             self.miConexion.commit()
             #self.ID_odonto_actual= self.miCursor.fetchone()
             #print(self.ID_odonto_actual[0])
         except:
             print("error guardar")
+        self.cargar_dientes()
+        self.crear_dientes()
 
     def cargar_dientes(self):
         print('crear vector con los dientes')
@@ -225,7 +231,7 @@ class Odontograma:
             self.miCursor.execute(sql)
             self.miConexion.commit()
             self.dientes= self.miCursor.fetchall()
-            print(self.dientes)
+            #print(self.dientes)
         except:
             print("error diente")
 
@@ -246,6 +252,42 @@ class Odontograma:
     def change_cursor_leave(self, event):
         # Restaurar el cursor al salir del cuadrado
         self.canvas.config(cursor= "")
+
+    def cambiar_color(self, event, numero, tag):
+        item = self.canvas2.find_closest(event.x, event.y)
+        current_color = self.canvas2.itemcget(item, "fill")
+        i=0
+    # Cambiar el color del cuadrado según su estado actual
+        if current_color == "white":
+            self.canvas2.itemconfig(item, fill="red")
+        elif current_color == "red":
+            self.canvas2.itemconfig(item, fill="blue")
+        elif current_color == "blue":
+            self.canvas2.itemconfig(item, fill="green")
+        elif current_color == "green":
+            self.canvas2.itemconfig(item, fill="white")
+        color_actual=self.canvas2.itemcget(item, "fill")
+        if tag =='C1':
+            i=1
+            self.diente[1]=color_actual
+        if tag =='C2':
+            i=2
+            self.diente[2]=color_actual
+        if tag =='C3':
+            i=3
+            self.diente[3]=color_actual
+        if tag =='C4':
+            i=4
+            self.diente[4]=color_actual
+        if tag =='CO':
+            i=5
+            self.diente[5]=color_actual
+                       
+        #print (numero, tag, self.diente[i])
+    
+    # def guardar_diente(self):
+    #     print('prueba')
+    #     #self.cara_d.canvasitemcget
 
     def crear_dientes(self):
         width = 30
@@ -627,41 +669,6 @@ class Odontograma:
         x1 = padding
         y1 = 30
 
-    def cambiar_color(self, event, numero, tag):
-        item = self.canvas2.find_closest(event.x, event.y)
-        current_color = self.canvas2.itemcget(item, "fill")
-        i=0
-    # Cambiar el color del cuadrado según su estado actual
-        if current_color == "white":
-            self.canvas2.itemconfig(item, fill="red")
-        elif current_color == "red":
-            self.canvas2.itemconfig(item, fill="blue")
-        elif current_color == "blue":
-            self.canvas2.itemconfig(item, fill="green")
-        elif current_color == "green":
-            self.canvas2.itemconfig(item, fill="white")
-        color_actual=self.canvas2.itemcget(item, "fill")
-        if tag =='C1':
-            i=1
-            self.diente[1]=color_actual
-        if tag =='C2':
-            i=2
-            self.diente[2]=color_actual
-        if tag =='C3':
-            i=3
-            self.diente[3]=color_actual
-        if tag =='C4':
-            i=4
-            self.diente[4]=color_actual
-        if tag =='CO':
-            i=5
-            self.diente[5]=color_actual
-                       
-        print (numero, tag, self.diente[i])
-    
-    def mostrar_estado(self):
-        print('prueba')
-        #self.cara_d.canvasitemcget
 '''        
 #def button_click(event, index):
     #canvas.itemconfig(buttons[index], fill="red")
@@ -670,11 +677,6 @@ class Odontograma:
 def editar_diente( numero):
     print('prueba', numero)
     diente= Diente()
-    
-
-
-
-
 '''
 if __name__ == "__main__":
     Odontograma()    
