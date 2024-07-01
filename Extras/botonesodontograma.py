@@ -41,7 +41,7 @@ class Odontograma:
         self.cargar_dientes()
         self.canvas = tk.Canvas(self.frame_dientes, width= 700, height= 400)
         self.canvas.pack()
-        self.crear_numeros()
+        #self.crear_numeros()
         self.colores=["red", "green", "blue", "white"]
         self.crear_dientes()
         
@@ -95,7 +95,14 @@ class Odontograma:
 
         self.canvas2 = tk.Canvas(diente_frame, width= 400, height= 150)
         self.canvas2.pack()
-        self.diente=[numero, 'white','white','white','white','white','white','white']
+        for diente in self.dientes:
+            if diente[0] == numero:
+                print("numero", diente)
+                self.diente_actual=list(diente)
+                break
+            else:
+                self.diente_actual=[numero, self.ID_odonto_actual, 'white','white','white','white','white','white','white']
+        print("diente cargado", self.diente_actual)
         width = 100
         height = 100
         x1 = 100
@@ -109,67 +116,167 @@ class Odontograma:
             self.canvas2.create_text(x1-10, 25+ width/2, text= 'D', fill= "black", font= ('Helvetica 10 bold'))
             self.canvas2.create_text(x1+ width/2, 35+ height, text= 'P', fill= "black", font= ('Helvetica 10 bold'))
             self.canvas2.create_text(x1+ width+10, 25+ width/2, text= 'M', fill= "black", font= ('Helvetica 10 bold'))
-        if numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
-            or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65:
-            self.canvas2.create_text(x1+ width/2, 15, text= 'V', fill= "black", font= ('Helvetica 10 bold'))
-            self.canvas2.create_text(x1-10, 25+ width/2, text= 'M', fill= "black", font= ('Helvetica 10 bold'))
-            self.canvas2.create_text(x1+ width/2, 35+ height, text= 'P', fill= "black", font= ('Helvetica 10 bold'))
-            self.canvas2.create_text(x1+ width+10, 25+ width/2, text= 'D', fill= "black", font= ('Helvetica 10 bold'))
-        if numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
-            or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
-            self.canvas2.create_text(x1+ width/2, 15, text= 'L', fill= "black", font= ('Helvetica 10 bold'))
-            self.canvas2.create_text(x1-10, 25+ width/2, text= 'M', fill= "black", font= ('Helvetica 10 bold'))
-            self.canvas2.create_text(x1+ width/2, 35+ height, text= 'V', fill= "black", font= ('Helvetica 10 bold'))
-            self.canvas2.create_text(x1+ width+10, 25+ width/2, text= 'D', fill= "black", font= ('Helvetica 10 bold'))
-        if numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
-            or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85:
-            self.canvas2.create_text(x1+ width/2, 15, text= 'L', fill= "black", font= ('Helvetica 10 bold'))
-            self.canvas2.create_text(x1-10, 25+ width/2, text= 'D', fill= "black", font= ('Helvetica 10 bold'))
-            self.canvas2.create_text(x1+ width/2, 35+ height, text= 'V', fill= "black", font= ('Helvetica 10 bold'))
-            self.canvas2.create_text(x1+ width+10, 25+ width/2, text= 'M', fill= "black", font= ('Helvetica 10 bold'))
-                
-        for diente in self.dientes:
-            if diente[0] == numero:
-                if diente[7] == 'red' or diente[7] == 'blue':
-                    self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
-                    self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
-                    self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
-                    self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
-                    self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
-                    self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= diente[7])
-                    self.diente[6]=diente[7]
-                elif diente[8] == 'red' or diente[8] == 'blue':
-                    self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
-                    self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
-                    self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
-                    self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
-                    self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
-                    self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= diente[8], width= 5)
-                    self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= diente[8], width= 5)
-                    self.diente[7]=diente[8]
-                else:
-                    self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= diente[2], outline = "black", tags= 'C1')
-                    self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= diente[3], outline = "black", tags= 'C2')
-                    self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= diente[4], outline = "black", tags= 'C3')
-                    self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= diente[5], outline = "black", tags= 'C4')
-                    self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= diente[6], tags= 'CO')
-                    self.diente[1]=diente[2]
-                    self.diente[2]=diente[3]
-                    self.diente[3]=diente[4]
-                    self.diente[4]=diente[5]
-                    self.diente[5]=diente[6]
-                self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C1'))
-                self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C2'))
-                self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C3'))
-                self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C4'))
-                self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
-                break
-            else:
+            if self.diente_actual[8] == 'red' or self.diente_actual[8] == 'blue':
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
                 self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
                 self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
+                self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= self.diente_actual[8])
+                #self.diente[6]=diente[7]
+            elif self.diente_actual[7] == 'red' or self.diente_actual[7] == 'blue':
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+                self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+                self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+                self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
+                self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.diente_actual[7], width= 5)
+                self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.diente_actual[7], width= 5)
+                #self.diente[7]=diente[8]
+            else:
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.diente_actual[2], outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.diente_actual[3], outline = "black", tags= 'C2')
+                self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= self.diente_actual[4], outline = "black", tags= 'C3')
+                self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= self.diente_actual[5], outline = "black", tags= 'C4')
+                self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= self.diente_actual[6], tags= 'CO')
+                # self.diente[1]=diente[2]
+                # self.diente[2]=diente[3]
+                # self.diente[3]=diente[4]
+                # self.diente[4]=diente[5]
+                # self.diente[5]=diente[6]
+            self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C1'))
+            self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C2'))
+            self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C3'))
+            self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C4'))
+            self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
+            #break
+        elif numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
+            or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65:
+            self.canvas2.create_text(x1+ width/2, 15, text= 'V', fill= "black", font= ('Helvetica 10 bold'))
+            self.canvas2.create_text(x1-10, 25+ width/2, text= 'M', fill= "black", font= ('Helvetica 10 bold'))
+            self.canvas2.create_text(x1+ width/2, 35+ height, text= 'P', fill= "black", font= ('Helvetica 10 bold'))
+            self.canvas2.create_text(x1+ width+10, 25+ width/2, text= 'D', fill= "black", font= ('Helvetica 10 bold'))
+            if self.diente_actual[7] == 'red' or self.diente_actual[7] == 'blue':
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+                self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+                self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+                self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
+                self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= self.diente_actual[7])
+                #self.diente[6]=diente[7]
+            elif self.diente_actual[8] == 'red' or self.diente_actual[8] == 'blue':
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+                self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+                self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+                self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
+                self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.diente_actual[8], width= 5)
+                self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.diente_actual[8], width= 5)
+                #self.diente[7]=diente[8]
+            else:
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.diente_actual[2], outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.diente_actual[3], outline = "black", tags= 'C2')
+                self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= self.diente_actual[4], outline = "black", tags= 'C3')
+                self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= self.diente_actual[5], outline = "black", tags= 'C4')
+                self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= self.diente_actual[6], tags= 'CO')
+                # self.diente[1]=diente[2]
+                # self.diente[2]=diente[3]
+                # self.diente[3]=diente[4]
+                # self.diente[4]=diente[5]
+                # self.diente[5]=diente[6]
+            self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C1'))
+            self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C2'))
+            self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C3'))
+            self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C4'))
+            self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
+            #break
+        elif numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
+            or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
+            self.canvas2.create_text(x1+ width/2, 15, text= 'L', fill= "black", font= ('Helvetica 10 bold'))
+            self.canvas2.create_text(x1-10, 25+ width/2, text= 'M', fill= "black", font= ('Helvetica 10 bold'))
+            self.canvas2.create_text(x1+ width/2, 35+ height, text= 'V', fill= "black", font= ('Helvetica 10 bold'))
+            self.canvas2.create_text(x1+ width+10, 25+ width/2, text= 'D', fill= "black", font= ('Helvetica 10 bold'))
+            if self.diente_actual[7] == 'red' or self.diente_actual[7] == 'blue':
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+                self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+                self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+                self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
+                self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= self.diente_actual[7])
+                #self.diente[6]=diente[7]
+            elif diente[8] == 'red' or diente[8] == 'blue':
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+                self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+                self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+                self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
+                self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.diente_actual[8], width= 5)
+                self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.diente_actual[8], width= 5)
+                #self.diente[7]=diente[8]
+            else:
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.diente_actual[2], outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.diente_actual[3], outline = "black", tags= 'C2')
+                self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= self.diente_actual[4], outline = "black", tags= 'C3')
+                self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= self.diente_actual[5], outline = "black", tags= 'C4')
+                self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= self.diente_actual[6], tags= 'CO')
+                # self.diente[1]=diente[2]
+                # self.diente[2]=diente[3]
+                # self.diente[3]=diente[4]
+                # self.diente[4]=diente[5]
+                # self.diente[5]=diente[6]
+            self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C1'))
+            self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C2'))
+            self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C3'))
+            self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C4'))
+            self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
+            #break
+        elif numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
+            or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85:
+            self.canvas2.create_text(x1+ width/2, 15, text= 'L', fill= "black", font= ('Helvetica 10 bold'))
+            self.canvas2.create_text(x1-10, 25+ width/2, text= 'D', fill= "black", font= ('Helvetica 10 bold'))
+            self.canvas2.create_text(x1+ width/2, 35+ height, text= 'V', fill= "black", font= ('Helvetica 10 bold'))
+            self.canvas2.create_text(x1+ width+10, 25+ width/2, text= 'M', fill= "black", font= ('Helvetica 10 bold'))
+            if self.diente_actual[7] == 'red' or self.diente_actual[7] == 'blue':
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+                self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+                self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+                self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
+                self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= self.diente_actual[7])
+                #self.diente[6]=diente[7]
+            elif self.diente_actual[8] == 'red' or self.diente_actual[8] == 'blue':
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+                self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+                self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+                self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
+                self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.diente_actual[8], width= 5)
+                self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.diente_actual[8], width= 5)
+                #self.diente[7]=diente[8]
+            else:
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.diente_actual[2], outline = "black", tags= 'C1')
+                self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.diente_actual[3], outline = "black", tags= 'C2')
+                self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= self.diente_actual[4], outline = "black", tags= 'C3')
+                self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= self.diente_actual[5], outline = "black", tags= 'C4')
+                self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= self.diente_actual[6], tags= 'CO')
+                # self.diente[1]=diente[2]
+                # self.diente[2]=diente[3]
+                # self.diente[3]=diente[4]
+                # self.diente[4]=diente[5]
+                # self.diente[5]=diente[6]
+            self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C1'))
+            self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C2'))
+            self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C3'))
+            self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C4'))
+            self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
+            #break    
+        
+        else:
+            self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
+            self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
+            self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C3')
+            self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
+            self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
     
             self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C1'))
             self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C2'))
@@ -191,7 +298,7 @@ class Odontograma:
         self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
         self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
         self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= color)
-        self.diente=[numero, 'white', 'white', 'white', 'white', 'white', 'white', color]
+        self.diente_actual=[numero, 'white', 'white', 'white', 'white', 'white', 'white', color]
     
     def extraccion(self, numero, color):
         #print(color)
@@ -208,10 +315,11 @@ class Odontograma:
         self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
         self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= color, width= 5)
         self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= color, width= 5)
-        self.diente=[numero, 'white', 'white', 'white', 'white', 'white', color, 'white']
+        self.diente_actual=[numero, 'white', 'white', 'white', 'white', 'white', color, 'white']
     
     def cancelar(self):
         self.ventana_secundaria.destroy()
+        self.canvas.delete("all")
         self.crear_dientes()
         
     def guardar_diente(self):
@@ -220,7 +328,7 @@ class Odontograma:
             self.miCursor = self.miConexion.cursor()
             #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
             sql = "INSERT OR REPLACE INTO Diente VALUES (?,?,?,?,?,?,?,?,?)"
-            datos= self.diente[0], self.ID_odonto_actual[0], self.diente[1], self.diente[2], self.diente[3], self.diente[4], self.diente[5], self.diente[6], self.diente[7]
+            datos= self.diente_actual[0], self.ID_odonto_actual[0], self.diente_actual[2], self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8]
             self.miCursor.execute(sql, datos)
             self.miConexion.commit()
             #self.ID_odonto_actual= self.miCursor.fetchone()
@@ -228,6 +336,7 @@ class Odontograma:
         except:
             print("error guardar")
         self.cargar_dientes()
+        self.canvas.delete("all")
         self.crear_dientes()
 
     def cargar_dientes(self):
@@ -280,49 +389,49 @@ class Odontograma:
                 or numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
                 or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
                 or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85:
-                self.diente[1]=color_actual
+                self.diente_actual[2]=color_actual
             elif numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
                 or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
                 or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65 \
                 or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
-                self.diente[3]=color_actual    
+                self.diente_actual[4]=color_actual    
         if tag =='C2':
             #i=2
             if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
                 or numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
                 or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
                 or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65:
-                self.diente[2]=color_actual
+                self.diente_actual[3]=color_actual
             elif numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
                 or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
                 or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85 \
                 or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
-                self.diente[4]=color_actual    
+                self.diente_actual[5]=color_actual    
         if tag =='C3':
             if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
                 or numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
                 or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
                 or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85:
-                self.diente[3]=color_actual
+                self.diente_actual[4]=color_actual
             elif numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
                 or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
                 or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65 \
                 or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
-                self.diente[1]=color_actual    
+                self.diente_actual[2]=color_actual    
         if tag =='C4':
             #i=4
             if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
                 or numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
                 or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
                 or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65:
-                self.diente[4]=color_actual
+                self.diente_actual[5]=color_actual
             elif numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
                 or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
                 or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85 \
                 or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
-                self.diente[2]=color_actual 
+                self.diente_actual[3]=color_actual 
         if tag =='CO':
-            self.diente[5]=color_actual
+            self.diente_actual[6]=color_actual
         #print (numero, tag, self.diente[i])
     
     # def guardar_diente(self):
@@ -450,7 +559,7 @@ class Odontograma:
             tag_diente = 'D' + str(hilera1)
 
             indice = self.buscar_valor(hilera1)
-            #self.texto1 = self.canvas.create_text(x1+ width/2, 15, text= hilera1, fill= "black", font= ('Helvetica 10 bold'))
+            self.texto1 = self.canvas.create_text(x1+ width/2, 15, text= hilera1, fill= "black", font= ('Helvetica 10 bold'))
             if(indice is not None):
                 #print(indice)
                 if self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue':
@@ -487,10 +596,10 @@ class Odontograma:
             hilera1-=1
         
         #linea horizontal
-        #self.canvas.create_line(0, y2+padding, self.ancho-40, y2+padding, width= 2)
+        self.canvas.create_line(0, y2+padding, self.ancho-40, y2+padding, width= 2)
         x1 = x1+10
         #linea vertical
-        #self.canvas.create_line(x1, 0, x1, 270, width= 2)
+        self.canvas.create_line(x1, 0, x1, 270, width= 2)
         
         #2da hilera
         hilera2 = 21
@@ -501,7 +610,7 @@ class Odontograma:
             y2 = y1 + height
             indice = self.buscar_valor(hilera2)
             #print('hilera2',indice)
-            #self.texto2= self.canvas.create_text(x1+ width/2, 15, text= hilera2, fill= "black", font= ('Helvetica 10 bold'))            
+            self.texto2= self.canvas.create_text(x1+ width/2, 15, text= hilera2, fill= "black", font= ('Helvetica 10 bold'))            
             tag_diente = 'D' + str(hilera2)
             if(indice is not None):
                 #print(indice)
@@ -548,7 +657,7 @@ class Odontograma:
             y2 = y1 + height
             indice = self.buscar_valor(hilera4)
             #print('hilera2',indice)
-            #self.texto4 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera4, fill= "black", font=('Helvetica 10 bold'))
+            self.texto4 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera4, fill= "black", font=('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera4)
             if(indice is not None):
                 #print(indice)
@@ -592,7 +701,7 @@ class Odontograma:
             x2 = x1 + width
             y2 = y1 + height
             indice = self.buscar_valor(hilera3)
-            #self.texto3 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera3, fill= "black", font= ('Helvetica 10 bold'))
+            self.texto3 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera3, fill= "black", font= ('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera3)
             if(indice is not None):
                 #print(indice)
@@ -636,7 +745,7 @@ class Odontograma:
             x2 = x1 + width
             y2 = y1 + height
             indice = self.buscar_valor(hilera5)
-            #self.texto5 = self.canvas.create_text(x1+ width/2, y1-15, text= hilera5, fill= "black", font= ('Helvetica 10 bold'))
+            self.texto5 = self.canvas.create_text(x1+ width/2, y1-15, text= hilera5, fill= "black", font= ('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera5)
             if(indice is not None):
                 #print(indice)
@@ -681,7 +790,7 @@ class Odontograma:
             x2 = x1 + width
             y2 = y1 + height
             indice = self.buscar_valor(hilera6)
-            #self.texto6 = self.canvas.create_text(x1+ width/2, y1-15, text= hilera6, fill= "black", font= ('Helvetica 10 bold'))
+            self.texto6 = self.canvas.create_text(x1+ width/2, y1-15, text= hilera6, fill= "black", font= ('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera6)
             if(indice is not None):
                 #print(indice)
@@ -719,8 +828,8 @@ class Odontograma:
             hilera6+=1
         x1 = 120
         y1 = y2 + 10
-        #self.canvas.create_text(50, y2, text= 'DERECHA', fill= "black", font= ('Helvetica 10 bold'))
-        #self.canvas.create_text(x2+75, y2, text= 'IZQUIERDA', fill= "black", font= ('Helvetica 10 bold'))
+        self.canvas.create_text(50, y2, text= 'DERECHA', fill= "black", font= ('Helvetica 10 bold'))
+        self.canvas.create_text(x2+75, y2, text= 'IZQUIERDA', fill= "black", font= ('Helvetica 10 bold'))
 
         hilera8 = 85
         for i in range(num_buttons-3):
@@ -729,7 +838,7 @@ class Odontograma:
             y2 = y1 + height
             indice = self.buscar_valor(hilera8)
             tag_diente = 'D' + str(hilera8)
-            #self.texto8 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera8, fill= "black", font= ('Helvetica 10 bold'))
+            self.texto8 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera8, fill= "black", font= ('Helvetica 10 bold'))
                 
             if(indice is not None):
                 #print(indice)
@@ -773,7 +882,7 @@ class Odontograma:
             x2 = x1 + width
             y2 = y1 + height
             indice = self.buscar_valor(hilera7)
-            #self.texto3 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera7, fill= "black", font= ('Helvetica 10 bold'))
+            self.texto3 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera7, fill= "black", font= ('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera7)
             if(indice is not None):
                 #print(indice)
