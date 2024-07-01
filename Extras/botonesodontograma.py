@@ -38,10 +38,10 @@ class Odontograma:
         self.frame_dientes = Frame(self.ventana_odontograma)
         self.frame_dientes.grid(column= 0, row= 2, pady= (10,10))
         self.cargar_ultimo_odontograma()
-        #self.guardar_diente()
         self.cargar_dientes()
         self.canvas = tk.Canvas(self.frame_dientes, width= 700, height= 400)
         self.canvas.pack()
+        self.crear_numeros()
         self.colores=["red", "green", "blue", "white"]
         self.crear_dientes()
         
@@ -137,6 +137,7 @@ class Odontograma:
                     self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
                     self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                     self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= diente[7])
+                    self.diente[6]=diente[7]
                 elif diente[8] == 'red' or diente[8] == 'blue':
                     self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
                     self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
@@ -145,12 +146,18 @@ class Odontograma:
                     self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                     self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= diente[8], width= 5)
                     self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= diente[8], width= 5)
+                    self.diente[7]=diente[8]
                 else:
                     self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= diente[2], outline = "black", tags= 'C1')
                     self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= diente[3], outline = "black", tags= 'C2')
                     self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= diente[4], outline = "black", tags= 'C3')
                     self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= diente[5], outline = "black", tags= 'C4')
                     self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= diente[6], tags= 'CO')
+                    self.diente[1]=diente[2]
+                    self.diente[2]=diente[3]
+                    self.diente[3]=diente[4]
+                    self.diente[4]=diente[5]
+                    self.diente[5]=diente[6]
                 self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C1'))
                 self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C2'))
                 self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C3'))
@@ -257,7 +264,7 @@ class Odontograma:
     def cambiar_color(self, event, numero, tag):
         item = self.canvas2.find_closest(event.x, event.y)
         current_color = self.canvas2.itemcget(item, "fill")
-        i=0
+        #i=0
     # Cambiar el color del cuadrado según su estado actual
         if current_color == "white":
             self.canvas2.itemconfig(item, fill="red")
@@ -270,32 +277,161 @@ class Odontograma:
         color_actual=self.canvas2.itemcget(item, "fill")
         if tag =='C1':
             if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
-                or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55:
+                or numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
+                or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
+                or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85:
                 self.diente[1]=color_actual
+            elif numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
+                or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
+                or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65 \
+                or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
+                self.diente[3]=color_actual    
         if tag =='C2':
-            i=2
-            self.diente[2]=color_actual
+            #i=2
+            if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
+                or numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
+                or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
+                or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65:
+                self.diente[2]=color_actual
+            elif numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
+                or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
+                or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85 \
+                or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
+                self.diente[4]=color_actual    
         if tag =='C3':
-            i=3
-            self.diente[3]=color_actual
+            if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
+                or numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
+                or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
+                or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85:
+                self.diente[3]=color_actual
+            elif numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
+                or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
+                or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65 \
+                or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
+                self.diente[1]=color_actual    
         if tag =='C4':
-            i=4
-            self.diente[4]=color_actual
+            #i=4
+            if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
+                or numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
+                or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
+                or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65:
+                self.diente[4]=color_actual
+            elif numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
+                or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
+                or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85 \
+                or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
+                self.diente[2]=color_actual 
         if tag =='CO':
-            i=5
             self.diente[5]=color_actual
-        if numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
-            or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65:
-        if numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
-            or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
-        if numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
-            or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85:
         #print (numero, tag, self.diente[i])
     
     # def guardar_diente(self):
     #     print('prueba')
     #     #self.cara_d.canvasitemcget
 
+    def crear_numeros(self):
+        width = 30
+        height = 30
+        padding = 10
+        num_buttons = 8
+        x1 = 0
+        y1 = 30
+        #primera hilera de dientes
+        hilera1 = 18
+        for i in range(num_buttons):
+            x1 = x1 + padding
+            x2 = x1 + width
+            y2 = y1 + height
+
+            self.texto1 = self.canvas.create_text(x1+ width/2, 15, text= hilera1, fill= "black", font= ('Helvetica 10 bold'))
+            x1 = x2
+            hilera1-=1
+        
+        #linea horizontal
+        self.canvas.create_line(0, y2+padding, self.ancho-40, y2+padding, width= 2)
+        x1 = x1+10
+        #linea vertical
+        self.canvas.create_line(x1, 0, x1, 270, width= 2)
+        
+        #2da hilera
+        hilera2 = 21
+        for i in range(num_buttons):
+            x1 = x1 + padding
+            y1 = 30
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto2= self.canvas.create_text(x1+ width/2, 15, text= hilera2, fill= "black", font= ('Helvetica 10 bold'))            
+            x1 = x2
+            hilera2+=1
+        y1 = y2+20
+        x1 = 0
+
+        #4ta hilera
+        hilera4 = 48
+        for i in range(num_buttons):
+            x1 = x1 + padding
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto4 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera4, fill= "black", font=('Helvetica 10 bold'))
+            x1 = x2
+            hilera4-=1
+        x1 = x1+10
+        #3ra hilera
+        hilera3 = 31
+        for i in range(num_buttons):
+            x1 = x1 + padding
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto3 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera3, fill= "black", font= ('Helvetica 10 bold'))
+            x1 = x2
+            hilera3+=1
+        x1 = 120
+        y1 = y2 + 60
+        hilera5 = 55
+        for i in range(num_buttons-3):
+            x1 = x1 + padding
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto5 = self.canvas.create_text(x1+ width/2, y1-15, text= hilera5, fill= "black", font= ('Helvetica 10 bold'))
+            x1 = x2
+            hilera5-=1
+
+        x1 = x2+11
+        #y1= 195
+        hilera6 = 61
+        for i in range(num_buttons-3):
+            x1 = x1 + padding
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto6 = self.canvas.create_text(x1+ width/2, y1-15, text= hilera6, fill= "black", font= ('Helvetica 10 bold'))
+            x1 = x2
+            hilera6+=1
+        x1 = 120
+        y1 = y2 + 10
+        self.canvas.create_text(50, y2, text= 'DERECHA', fill= "black", font= ('Helvetica 10 bold'))
+        self.canvas.create_text(x2+75, y2, text= 'IZQUIERDA', fill= "black", font= ('Helvetica 10 bold'))
+
+        hilera8 = 85
+        for i in range(num_buttons-3):
+            x1 = x1 + padding
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto8 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera8, fill= "black", font= ('Helvetica 10 bold'))
+            x1 = x2
+            hilera8-=1
+        x1 = x2+11
+        y1 = y2-height
+        hilera7 = 71
+        for i in range(num_buttons-3):
+            x1 = x1 + padding
+            x2 = x1 + width
+            y2 = y1 + height
+            self.texto3 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera7, fill= "black", font= ('Helvetica 10 bold'))
+            x1 = x2
+            hilera7+=1
+        x1 = padding
+        y1 = 30
+    
     def crear_dientes(self):
         width = 30
         height = 30
@@ -314,7 +450,7 @@ class Odontograma:
             tag_diente = 'D' + str(hilera1)
 
             indice = self.buscar_valor(hilera1)
-            self.texto1 = self.canvas.create_text(x1+ width/2, 15, text= hilera1, fill= "black", font= ('Helvetica 10 bold'))
+            #self.texto1 = self.canvas.create_text(x1+ width/2, 15, text= hilera1, fill= "black", font= ('Helvetica 10 bold'))
             if(indice is not None):
                 #print(indice)
                 if self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue':
@@ -351,10 +487,10 @@ class Odontograma:
             hilera1-=1
         
         #linea horizontal
-        self.canvas.create_line(0, y2+padding, self.ancho-40, y2+padding, width= 2)
+        #self.canvas.create_line(0, y2+padding, self.ancho-40, y2+padding, width= 2)
         x1 = x1+10
         #linea vertical
-        self.canvas.create_line(x1, 0, x1, 270, width= 2)
+        #self.canvas.create_line(x1, 0, x1, 270, width= 2)
         
         #2da hilera
         hilera2 = 21
@@ -365,7 +501,7 @@ class Odontograma:
             y2 = y1 + height
             indice = self.buscar_valor(hilera2)
             #print('hilera2',indice)
-            self.texto2= self.canvas.create_text(x1+ width/2, 15, text= hilera2, fill= "black", font= ('Helvetica 10 bold'))            
+            #self.texto2= self.canvas.create_text(x1+ width/2, 15, text= hilera2, fill= "black", font= ('Helvetica 10 bold'))            
             tag_diente = 'D' + str(hilera2)
             if(indice is not None):
                 #print(indice)
@@ -412,7 +548,7 @@ class Odontograma:
             y2 = y1 + height
             indice = self.buscar_valor(hilera4)
             #print('hilera2',indice)
-            self.texto4 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera4, fill= "black", font=('Helvetica 10 bold'))
+            #self.texto4 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera4, fill= "black", font=('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera4)
             if(indice is not None):
                 #print(indice)
@@ -456,7 +592,7 @@ class Odontograma:
             x2 = x1 + width
             y2 = y1 + height
             indice = self.buscar_valor(hilera3)
-            self.texto3 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera3, fill= "black", font= ('Helvetica 10 bold'))
+            #self.texto3 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera3, fill= "black", font= ('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera3)
             if(indice is not None):
                 #print(indice)
@@ -500,7 +636,7 @@ class Odontograma:
             x2 = x1 + width
             y2 = y1 + height
             indice = self.buscar_valor(hilera5)
-            self.texto5 = self.canvas.create_text(x1+ width/2, y1-15, text= hilera5, fill= "black", font= ('Helvetica 10 bold'))
+            #self.texto5 = self.canvas.create_text(x1+ width/2, y1-15, text= hilera5, fill= "black", font= ('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera5)
             if(indice is not None):
                 #print(indice)
@@ -545,7 +681,7 @@ class Odontograma:
             x2 = x1 + width
             y2 = y1 + height
             indice = self.buscar_valor(hilera6)
-            self.texto6 = self.canvas.create_text(x1+ width/2, y1-15, text= hilera6, fill= "black", font= ('Helvetica 10 bold'))
+            #self.texto6 = self.canvas.create_text(x1+ width/2, y1-15, text= hilera6, fill= "black", font= ('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera6)
             if(indice is not None):
                 #print(indice)
@@ -583,8 +719,8 @@ class Odontograma:
             hilera6+=1
         x1 = 120
         y1 = y2 + 10
-        self.canvas.create_text(50, y2, text= 'DERECHA', fill= "black", font= ('Helvetica 10 bold'))
-        self.canvas.create_text(x2+75, y2, text= 'IZQUIERDA', fill= "black", font= ('Helvetica 10 bold'))
+        #self.canvas.create_text(50, y2, text= 'DERECHA', fill= "black", font= ('Helvetica 10 bold'))
+        #self.canvas.create_text(x2+75, y2, text= 'IZQUIERDA', fill= "black", font= ('Helvetica 10 bold'))
 
         hilera8 = 85
         for i in range(num_buttons-3):
@@ -593,7 +729,7 @@ class Odontograma:
             y2 = y1 + height
             indice = self.buscar_valor(hilera8)
             tag_diente = 'D' + str(hilera8)
-            self.texto8 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera8, fill= "black", font= ('Helvetica 10 bold'))
+            #self.texto8 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera8, fill= "black", font= ('Helvetica 10 bold'))
                 
             if(indice is not None):
                 #print(indice)
@@ -637,7 +773,7 @@ class Odontograma:
             x2 = x1 + width
             y2 = y1 + height
             indice = self.buscar_valor(hilera7)
-            self.texto3 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera7, fill= "black", font= ('Helvetica 10 bold'))
+            #self.texto3 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera7, fill= "black", font= ('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera7)
             if(indice is not None):
                 #print(indice)
