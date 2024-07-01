@@ -30,16 +30,19 @@ class Odontograma:
         dni=self.pacientes[0][2]
         self.frame_datos_paciente=Frame(self.ventana_odontograma, border= 1, borderwidth= 2, bg= "gray90")
         self.frame_datos_paciente.grid(column= 0, row= 1, sticky= "nsew")
-        Label(self.frame_datos_paciente, text= 'Nombre Completo: '+apellido+', '+nombre, font= 'Arial 12', bg= "gray90").grid(column= 0, row= 0, sticky= 'e', padx= (10, 15))
-        Label(self.frame_datos_paciente, text= 'Obra Social: '+obra_social,  font= 'Arial 12', bg= "gray90").grid(column= 1, row= 0, sticky= 'e', padx= (5,15))
-        Label(self.frame_datos_paciente, text= 'D.N.I.: '+str(dni),  font= 'Arial 12', bg= "gray90").grid(column= 2, row= 0, sticky= 'e', padx= (5,15))
+        Label(self.frame_datos_paciente, text= 'Nombre Completo:', font= ('Arial', 12, "bold"), bg= "gray90").grid(column= 0, row= 0, sticky= 'e', padx= (5,0))
+        Label(self.frame_datos_paciente, text= apellido+', '+nombre, font= 'Arial 12', bg= "gray90").grid(column= 1, row= 0, sticky= 'e', padx= (0, 15))
+        Label(self.frame_datos_paciente, text= 'D.N.I.:', font= ('Arial', 12, "bold"), bg= "gray90").grid(column= 2, row= 0, sticky= 'e', padx= (5,0))
+        Label(self.frame_datos_paciente, text= dni, font= 'Arial 12', bg= "gray90").grid(column= 3, row= 0, sticky= 'e', padx= (0, 15))
+        Label(self.frame_datos_paciente, text= 'Obra Social: '+obra_social,  font= 'Arial 12', bg= "gray90").grid(column=4, row= 0, sticky= 'e', padx= (5,15))
+        #Label(self.frame_datos_paciente, text= 'D.N.I.: '+str(dni),  font= 'Arial 12', bg= "gray90").grid(column= 3, row= 0, sticky= 'e', padx= (5,15))
         self.ancho = 700
                 
         self.frame_dientes = Frame(self.ventana_odontograma)
         self.frame_dientes.grid(column= 0, row= 2, pady= (10,10))
         self.cargar_ultimo_odontograma()
         self.cargar_dientes()
-        self.canvas = tk.Canvas(self.frame_dientes, width= 700, height= 400)
+        self.canvas = tk.Canvas(self.frame_dientes, width= self.ancho-20, height= 300, bg='gray')
         self.canvas.pack()
         #self.crear_numeros()
         self.colores=["red", "green", "blue", "white"]
