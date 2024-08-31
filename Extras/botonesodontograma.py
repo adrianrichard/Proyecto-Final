@@ -61,8 +61,8 @@ class Odontograma:
         self.tabla_prestaciones.heading("Odontologo", text= "Odontologo")
 
         # Ajustar el ancho de las columnas
-        self.tabla_prestaciones.column("Fecha", width= 70, anchor= 'center')
-        self.tabla_prestaciones.column("Código", width= 200)
+        self.tabla_prestaciones.column("Fecha", width= 80, anchor= 'center')
+        self.tabla_prestaciones.column("Código", width= 80)
         self.tabla_prestaciones.column("Prestacion", width= 250)
         self.tabla_prestaciones.column("Odontologo", width= 200)
         self.ventana_odontograma.mainloop()
