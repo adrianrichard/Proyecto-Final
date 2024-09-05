@@ -112,7 +112,7 @@ class DayTopWindow(Toplevel):
                 self.tabla_turnos.insert(parent= '', index= 'end', values=(current_time.strftime("%H:%M"), '', '', ''))
             else:
                 if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][1] and self.j < len(self.turnos_dados)):
-                    self.tabla_turnos.tag_configure('anotado', font=fuenteb, background="blue")
+                    self.tabla_turnos.tag_configure('anotado', font=fuenteb, background="lightgreen")
                     self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][2], self.turnos_dados[self.j][3], self.turnos_dados[self.j][4]), tags=('anotado',))
                     if(self.j+1 < len(self.turnos_dados)):
                         self.j=self.j+1

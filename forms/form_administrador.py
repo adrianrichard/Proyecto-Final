@@ -114,6 +114,8 @@ class MasterPanel:
         self.paginas.select([self.historia])
         self.historia.columnconfigure(0, weight= 1)
         self.historia.columnconfigure(1, weight= 1)
+        self.estilo_tabla.configure('Treeview.Heading', background= 'green', fg= 'black', padding= 3, font= fuenteb)        
+        self.estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 35)
 
     def pantalla_galeria(self):
         self.paginas.select([self.frame_galeria])
@@ -229,6 +231,19 @@ class MasterPanel:
         for dato in datos:
             i= i+1
             self.tabla_paciente.insert('', i, text = datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
+    def buscar_historia(self):
+        self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+        self.miCursor = self.miConexion.cursor()
+        self.buscar = self.dato_paciente.get()
+
+        bd = f"SELECT Apellido, Nombre, DNI, ObraSocial FROM Paciente WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' ORDER BY Apellido DESC"
+        self.miCursor.execute(bd)
+        datos = self.miCursor.fetchall()
+        self.tabla_historia.delete(*self.tabla_historia.get_children())
+        i = -1
+        for dato in datos:
+            i= i+1
+            self.tabla_historia.insert('', i, text = datos[i][0], values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3]))
 
     def seleccionar_paciente(self, event):
         item = self.tabla_paciente.focus()
@@ -431,6 +446,28 @@ class MasterPanel:
 
 		######################## HISTORIA CLINICA #################
         Label(self.historia, text= 'HISTORIA CLINICA', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
+        self.busqueda = ttk.Entry(self.historia, textvariable= self.dato_paciente, width= 20 ,font= fuenten).grid(column= 1, row= 1, pady= 5, sticky="W")
+        Button(self.historia, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_historia).grid(column= 0, row= 1, padx=(10,5))
+        
+        self.frame_tabla_historia= Frame(self.historia, bg= 'gray90')
+        self.frame_tabla_historia.grid(columnspan= 4, row= 4, sticky= 'nsew')
+        self.tabla_historia = ttk.Treeview(self.historia, columns= ("Apellido", "Nombre", "D.N.I.", "Obra social"), show= 'headings', height= 25, selectmode ='browse')
+        self.tabla_historia.grid(column= 0, row= 4, columnspan= 4, sticky= 'nsew')
+        ladoy = ttk.Scrollbar(self.frame_tabla_historia, orient= 'vertical', command= self.tabla_historia.yview)
+        ladoy.grid(column = 5, row = 4, sticky= 'ns')
+        self.tabla_historia.configure(yscrollcommand = ladoy.set)
+        self.tabla_historia.heading("Apellido", text= "Apellido")
+        self.tabla_historia.heading("Nombre", text= "Nombre")
+        self.tabla_historia.heading("D.N.I.", text= "D.N.I.")
+        self.tabla_historia.heading("Obra social", text= "Obra social")
+
+        # # Ajustar el ancho de las columnas
+        # self.tabla_historia.column("Apellido", width= 70, anchor= 'center')
+        # self.tabla_historia.column("Nombre", width= 200)
+        # self.tabla_historia.column("D.N.I.", width= 250)
+        # self.tabla_historia.column("Obra social", width= 200)
+        
+        #self.tabla_historia.bind("<Double-1>", self.editar_turno)
 
 		######################## GALERIA #################
         Label(self.frame_galeria, text= 'GALERIA', fg= '#1F704B', bg= 'gray90', font=('Comic Sans MS', 24,'bold')).grid(column= 0,  row= 0)
