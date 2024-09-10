@@ -7,6 +7,7 @@ from tkinter import  StringVar, Frame
 from forms.form_paciente import Paciente
 from forms.form_usuario import Usuario
 from paginas.tkcalendar import TKCalendar
+from paginas.odontograma import Odontograma
 from util.visorimagenes import ImageGalleryApp
 import sqlite3
 fuenteb = utl.definir_fuente_bold()
@@ -37,6 +38,7 @@ class MasterPanel:
         self.ventana.iconphoto(False, self.imagen_ventana)
         self.dni_paciente =  StringVar()
         self.dato_paciente =  StringVar()
+        self.dato_paciente2 =  StringVar()
         self.nombre_usuario =  StringVar()
 
         self.frame_inicio = Frame(self.ventana, bg= color_fondo1, width= 50, height= 45)
@@ -141,7 +143,17 @@ class MasterPanel:
             paciente.ventana_paciente()
         except:
             pass
-
+    def abrir_odontograma(self, event):
+        odonto= Odontograma()
+        item = self.tabla_historia.focus()
+        self.data = self.tabla_historia.item(item)
+        try:
+            self.dni_paciente = self.data['values'][1]
+            odonto.cargar_datos(self.dni_paciente)
+            odonto.ventana_paciente()
+        except:
+            pass
+        
     def eliminar_paciente(self):
         try:
             self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -231,19 +243,24 @@ class MasterPanel:
         for dato in datos:
             i= i+1
             self.tabla_paciente.insert('', i, text = datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
+    
     def buscar_historia(self):
         self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor = self.miConexion.cursor()
-        self.buscar = self.dato_paciente.get()
-
-        bd = f"SELECT Apellido, Nombre, DNI, ObraSocial FROM Paciente WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' ORDER BY Apellido DESC"
-        self.miCursor.execute(bd)
-        datos = self.miCursor.fetchall()
-        self.tabla_historia.delete(*self.tabla_historia.get_children())
-        i = -1
-        for dato in datos:
-            i= i+1
-            self.tabla_historia.insert('', i, text = datos[i][0], values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3]))
+        self.buscar = self.dato_paciente2.get()
+        try:
+            bd = f"SELECT Apellido, Nombre, DNI, ObraSocial FROM Paciente WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' OR DNI LIKE '{self.buscar}%' ORDER BY Apellido DESC"
+            self.miCursor.execute(bd)
+            datos = self.miCursor.fetchall()
+            self.tabla_historia.delete(*self.tabla_historia.get_children())
+            i = -1
+            if datos == []:
+                messagebox.showinfo("BUSCAR", "No hay resultados")
+            for dato in datos:
+                i= i+1
+                self.tabla_historia.insert('', i, text = datos[i][0], values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3]))
+        except:
+            messagebox.showinfo("ERROR", "Error en base de datos")
 
     def seleccionar_paciente(self, event):
         item = self.tabla_paciente.focus()
@@ -446,8 +463,8 @@ class MasterPanel:
 
 		######################## HISTORIA CLINICA #################
         Label(self.historia, text= 'HISTORIA CLINICA', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
-        self.busqueda = ttk.Entry(self.historia, textvariable= self.dato_paciente, width= 20 ,font= fuenten).grid(column= 1, row= 1, pady= 5, sticky="W")
-        Button(self.historia, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_historia).grid(column= 0, row= 1, padx=(10,5))
+        self.busqueda2 = ttk.Entry(self.historia, textvariable= self.dato_paciente2, width= 20 ,font= fuenten).grid(column= 1, row= 1, pady= 5, sticky="W")
+        Button(self.historia, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_historia).grid(column= 0, row= 1, padx=(10,5), pady= 5)
         
         self.frame_tabla_historia= Frame(self.historia, bg= 'gray90')
         self.frame_tabla_historia.grid(columnspan= 4, row= 4, sticky= 'nsew')
