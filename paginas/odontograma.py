@@ -44,14 +44,15 @@ class Odontograma:
         #Label(self.frame_datos_paciente, text= 'D.N.I.: '+str(dni),  font= 'Arial 12', bg= "gray90").grid(column= 3, row= 0, sticky= 'e', padx= (5,15))
         self.ancho = 700
 
-        # self.frame_dientes = Frame(self.ventana_odontograma)
-        # self.frame_dientes.grid(column= 0, row= 2, pady= (10,10))
+        self.frame_dientes = Frame(self.ventana_odontograma)
+        self.frame_dientes.grid(column= 0, row= 2, pady= (10,10))
         # #self.cargar_ultimo_odontograma()
-        # #self.cargar_dientes()
-        # self.canvas = tk.Canvas(self.frame_dientes, width= self.ancho-20, height= 300)
-        # self.canvas.pack()
-        # self.colores=["red", "green", "blue", "white"]
-        # self.crear_dientes()
+        
+        self.cargar_dientes()
+        self.canvas = tk.Canvas(self.frame_dientes, width= self.ancho-20, height= 300)
+        self.canvas.pack()
+        self.colores=["red", "green", "blue", "white"]
+        self.crear_dientes()
         # self.frame_tabla = Frame(self.ventana_odontograma)
         # self.frame_tabla.grid(column= 0, row= 3, pady= (10,10))
         # self.tabla_prestaciones = ttk.Treeview(self.frame_tabla, columns= ("Fecha",  "Prestacion", "Código","Odontologo"), show= 'headings', height= 25, selectmode ='browse')
@@ -92,13 +93,13 @@ class Odontograma:
 
     def cargar_ultimo_odontograma(self):
         try:
-            self.miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
+            self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
             sql = "SELECT ID_odontograma from Odontograma ORDER BY ID_odontograma DESC LIMIT 1"
             self.miCursor.execute(sql)
             self.miConexion.commit()
             self.ID_odonto_actual= self.miCursor.fetchone()
-            #print(self.ID_odonto_actual[0])
+            print(self.ID_odonto_actual[0])
         except:
             print("error diente")
         return self.ID_odonto_actual[0]
