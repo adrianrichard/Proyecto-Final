@@ -143,14 +143,15 @@ class MasterPanel:
             paciente.ventana_paciente()
         except:
             pass
-    def abrir_odontograma(self, event):
+    
+    def editar_odontograma(self, event):
         odonto= Odontograma()
         item = self.tabla_historia.focus()
         self.data = self.tabla_historia.item(item)
         try:
-            self.dni_paciente = self.data['values'][1]
-            odonto.cargar_datos(self.dni_paciente)
-            odonto.ventana_paciente()
+            self.dni_paciente = self.data['values'][2]
+            odonto.cargar_paciente(self.dni_paciente)
+            odonto.ventana_odonto()
         except:
             pass
         
@@ -430,7 +431,7 @@ class MasterPanel:
         Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 2, row= 1, pady= 5)
         Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 2, row= 2)
         self.busqueda = ttk.Entry(self.frame_pacientes, textvariable= self.dato_paciente, width= 20 ,font= fuenten).grid(column= 3, row= 1, pady= 5)
-        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_paciente).grid(column= 3, row= 2, pady=(0,5))
+        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'white', font= fuenteb, command= self.buscar_paciente).grid(column= 3, row= 2, pady=(0,5))
 
         self.boton_previo = tk.Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_previos)
         self.boton_previo.grid(column= 0, row= 3, padx= 10, pady=(0,5), sticky= "W")
@@ -464,7 +465,7 @@ class MasterPanel:
 		######################## HISTORIA CLINICA #################
         Label(self.historia, text= 'HISTORIA CLINICA', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
         self.busqueda2 = ttk.Entry(self.historia, textvariable= self.dato_paciente2, width= 20 ,font= fuenten).grid(column= 1, row= 1, pady= 5, sticky="W")
-        Button(self.historia, text= 'Buscar', bg= '#1F704B', fg= 'black', font= fuenteb, command= self.buscar_historia).grid(column= 0, row= 1, padx=(10,5), pady= 5)
+        Button(self.historia, text= 'Buscar', bg= '#1F704B', fg= 'white', font= fuenteb, command= self.buscar_historia).grid(column= 0, row= 1, padx=(10,5), pady= 5)
         
         self.frame_tabla_historia= Frame(self.historia, bg= 'gray90')
         self.frame_tabla_historia.grid(columnspan= 4, row= 4, sticky= 'nsew')
@@ -484,7 +485,7 @@ class MasterPanel:
         # self.tabla_historia.column("D.N.I.", width= 250)
         # self.tabla_historia.column("Obra social", width= 200)
         
-        #self.tabla_historia.bind("<Double-1>", self.editar_turno)
+        self.tabla_historia.bind("<Double-1>", self.editar_odontograma)
 
 		######################## GALERIA #################
         Label(self.frame_galeria, text= 'GALERIA', fg= '#1F704B', bg= 'gray90', font=('Comic Sans MS', 24,'bold')).grid(column= 0,  row= 0)

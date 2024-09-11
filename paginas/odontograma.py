@@ -13,6 +13,11 @@ buttons = []
 class Odontograma:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
+    def ventana_odonto(self):
+        #self.ventana_odontograma= tk.Toplevel()
+        #self.ventana_odontograma.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+        #self.ventana_odontograma.focus_set() # Mantiene el foco cuando se abre la ventana.
         self.ventana_odontograma = tk.Tk()
         self.ventana_odontograma.geometry('750x650')
         self.ventana_odontograma.grid_columnconfigure(0, weight= 1)
@@ -21,65 +26,68 @@ class Odontograma:
         self.fecha_actual = self.fecha_actual.strftime("%d-%m-%Y")
         Label(self.ventana_odontograma, text= 'Odontograma', font= 'Arial 20 bold', bg="gray", fg='white').grid(column= 0, row= 0)
 
-        self.cargar_paciente()
-        nombre=self.pacientes[0][1]
-        apellido=self.pacientes[0][0]
-        obra_social=self.pacientes[0][4]
-        dni=self.pacientes[0][2]
+        #self.cargar_paciente()
+        apellido=self.paciente[0]
+        nombre=self.paciente[1]
+        dni=self.paciente[2]
+        obra_social=self.paciente[3]
+        #print(nombre, apellido, obra_social,dni)
         self.frame_datos_paciente=Frame(self.ventana_odontograma, border= 1, borderwidth= 2, bg= "gray90")
         self.frame_datos_paciente.grid(column= 0, row= 1, sticky= "nsew")
         Label(self.frame_datos_paciente, text= 'Nombre Completo:', font= ('Arial', 12, "bold"), bg= "gray90").grid(column= 0, row= 0, sticky= 'e', padx= (5,0))
         Label(self.frame_datos_paciente, text= apellido+', '+nombre, font= 'Arial 12', bg= "gray90").grid(column= 1, row= 0, sticky= 'e', padx= (0, 15))
         Label(self.frame_datos_paciente, text= 'D.N.I.:', font= ('Arial', 12, "bold"), bg= "gray90").grid(column= 2, row= 0, sticky= 'e', padx= (5,0))
         Label(self.frame_datos_paciente, text= dni, font= 'Arial 12', bg= "gray90").grid(column= 3, row= 0, sticky= 'e', padx= (0, 15))
-        Label(self.frame_datos_paciente, text= 'Obra Social: '+obra_social,  font= 'Arial 12', bg= "gray90").grid(column=4, row= 0, sticky= 'e', padx= (5,15))
+        Label(self.frame_datos_paciente, text= 'Obra Social: ',  font= 'Arial 12 bold', bg= "gray90").grid(column=4, row= 0, sticky= 'e', padx= (5,0))
+        Label(self.frame_datos_paciente, text= obra_social, font= 'Arial 12', bg= "gray90").grid(column= 5, row= 0, sticky= 'e')
+        
         #Label(self.frame_datos_paciente, text= 'D.N.I.: '+str(dni),  font= 'Arial 12', bg= "gray90").grid(column= 3, row= 0, sticky= 'e', padx= (5,15))
         self.ancho = 700
 
-        self.frame_dientes = Frame(self.ventana_odontograma)
-        self.frame_dientes.grid(column= 0, row= 2, pady= (10,10))
-        self.cargar_ultimo_odontograma()
-        self.cargar_dientes()
-        self.canvas = tk.Canvas(self.frame_dientes, width= self.ancho-20, height= 300)
-        self.canvas.pack()
-        self.colores=["red", "green", "blue", "white"]
-        self.crear_dientes()
-        self.frame_tabla = Frame(self.ventana_odontograma)
-        self.frame_tabla.grid(column= 0, row= 3, pady= (10,10))
-        self.tabla_prestaciones = ttk.Treeview(self.frame_tabla, columns= ("Fecha",  "Prestacion", "Código","Odontologo"), show= 'headings', height= 25, selectmode ='browse')
-        self.tabla_prestaciones.grid(column= 0, row= 1, columnspan= 4, sticky= 'nsew', padx= 5, pady= 5)
-        ladoy = ttk.Scrollbar(self.frame_tabla, orient ='vertical', command = self.tabla_prestaciones.yview)
-        ladoy.grid(column = 5, row = 3, sticky='ns')
-        self.tabla_prestaciones.configure(yscrollcommand = ladoy.set)
-        estilo_tabla = ttk.Style()
-        #estilo_tabla.theme_use('classic')
-        estilo_tabla.configure("Treeview", font= ('Arial', 10, "bold"), foreground= 'black', rowheight= 10)
-        estilo_tabla.configure('Treeview.Heading', background= 'green', foreground= 'black', padding= 3, font= ('Arial', 12, "bold"))
-        self.tabla_prestaciones.heading("Fecha", text= "Fecha")
-        self.tabla_prestaciones.heading("Código", text= "Código")
-        self.tabla_prestaciones.heading("Prestacion", text= "Prestacion")
-        self.tabla_prestaciones.heading("Odontologo", text= "Odontologo")
+        # self.frame_dientes = Frame(self.ventana_odontograma)
+        # self.frame_dientes.grid(column= 0, row= 2, pady= (10,10))
+        # #self.cargar_ultimo_odontograma()
+        # #self.cargar_dientes()
+        # self.canvas = tk.Canvas(self.frame_dientes, width= self.ancho-20, height= 300)
+        # self.canvas.pack()
+        # self.colores=["red", "green", "blue", "white"]
+        # self.crear_dientes()
+        # self.frame_tabla = Frame(self.ventana_odontograma)
+        # self.frame_tabla.grid(column= 0, row= 3, pady= (10,10))
+        # self.tabla_prestaciones = ttk.Treeview(self.frame_tabla, columns= ("Fecha",  "Prestacion", "Código","Odontologo"), show= 'headings', height= 25, selectmode ='browse')
+        # self.tabla_prestaciones.grid(column= 0, row= 1, columnspan= 4, sticky= 'nsew', padx= 5, pady= 5)
+        # ladoy = ttk.Scrollbar(self.frame_tabla, orient ='vertical', command = self.tabla_prestaciones.yview)
+        # ladoy.grid(column = 5, row = 3, sticky='ns')
+        # self.tabla_prestaciones.configure(yscrollcommand = ladoy.set)
+        # estilo_tabla = ttk.Style()
+        # #estilo_tabla.theme_use('classic')
+        # estilo_tabla.configure("Treeview", font= ('Arial', 10, "bold"), foreground= 'black', rowheight= 10)
+        # estilo_tabla.configure('Treeview.Heading', background= 'green', foreground= 'black', padding= 3, font= ('Arial', 12, "bold"))
+        # self.tabla_prestaciones.heading("Fecha", text= "Fecha")
+        # self.tabla_prestaciones.heading("Código", text= "Código")
+        # self.tabla_prestaciones.heading("Prestacion", text= "Prestacion")
+        # self.tabla_prestaciones.heading("Odontologo", text= "Odontologo")
 
-        # Ajustar el ancho de las columnas
-        self.tabla_prestaciones.column("Fecha", width= 80, anchor= 'center')
-        self.tabla_prestaciones.column("Código", width= 80)
-        self.tabla_prestaciones.column("Prestacion", width= 250)
-        self.tabla_prestaciones.column("Odontologo", width= 200)
+        # # Ajustar el ancho de las columnas
+        # self.tabla_prestaciones.column("Fecha", width= 80, anchor= 'center')
+        # self.tabla_prestaciones.column("Código", width= 80)
+        # self.tabla_prestaciones.column("Prestacion", width= 250)
+        # self.tabla_prestaciones.column("Odontologo", width= 200)
         self.ventana_odontograma.mainloop()
 
-    def cargar_paciente(self):
+    def cargar_paciente(self, dni):
+        print(dni)
         try:
-            self.miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
+            self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
-            sql = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
-            self.miCursor.execute(sql)
-            self.pacientes = self.miCursor.fetchall()
+            self.miCursor.execute("SELECT apellido, nombre, dni, obrasocial FROM paciente WHERE dni=?", (dni,))
+            self.paciente = self.miCursor.fetchone()
             self.miConexion.commit()
-            #print(pacientes)
+            print(self.paciente)
         except:
             print("error")
         #print(self.pacientes[0][2])
-        datos= self.pacientes[0][2], self.fecha_actual, 'Militello'
+        #datos= self.pacientes[0][2], self.fecha_actual, 'Militello'
         #print(datos)
 
     def cargar_ultimo_odontograma(self):
