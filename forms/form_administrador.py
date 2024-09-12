@@ -36,10 +36,10 @@ class MasterPanel:
         self.menu = True
         self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
         self.ventana.iconphoto(False, self.imagen_ventana)
-        self.dni_paciente =  StringVar()
-        self.dato_paciente =  StringVar()
-        self.dato_paciente2 =  StringVar()
-        self.nombre_usuario =  StringVar()
+        self.dni_paciente = StringVar()
+        self.dato_paciente = StringVar()
+        self.dato_paciente2 = StringVar()
+        self.nombre_usuario = StringVar()
 
         self.frame_inicio = Frame(self.ventana, bg= color_fondo1, width= 50, height= 45)
         self.frame_inicio.grid_propagate(0)
@@ -283,7 +283,7 @@ class MasterPanel:
         item = self.tabla_historia.focus()
         self.data = self.tabla_historia.item(item)
         self.dni_paciente = self.data['values'][1]
-        print(self.data)
+        #print(self.data)
         
     def mostrar_usuarios(self):
         self.miConexion = sqlite3.connect("./bd/consultorio.sqlite3")
