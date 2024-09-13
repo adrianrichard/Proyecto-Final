@@ -144,16 +144,16 @@ class MasterPanel:
         except:
             pass
         
-    def editar_nuevo_odontograma(self):
-        odonto= Odontograma()
-        item = self.tabla_historia.focus()
-        self.data = self.tabla_historia.item(item)
-        try:
-            self.dni_paciente = self.data['values'][2]
-            odonto.cargar_paciente(self.dni_paciente)
-            odonto.ventana_odonto()
-        except:
-            pass
+    # def editar_nuevo_odontograma(self):
+    #     odonto= Odontograma()
+    #     item = self.tabla_historia.focus()
+    #     self.data = self.tabla_historia.item(item)
+    #     try:
+    #         self.dni_paciente = self.data['values'][2]
+    #         odonto.cargar_paciente(self.dni_paciente)
+    #         odonto.ventana_odonto()
+    #     except:
+    #         pass
             
     def editar_odontograma(self, event):
         odonto= Odontograma()
@@ -481,10 +481,11 @@ class MasterPanel:
 
 		######################## HISTORIA CLINICA #################
         Label(self.historia, text= 'HISTORIA CLINICA', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
-        Button(self.historia, text= 'Nuevo odontograma', bg= '#1F704B', fg= 'white', font= fuenteb, command= self.editar_nuevo_odontograma).grid(column= 0, row= 1, padx=(10,5), pady= 5)
+        #Button(self.historia, text= 'Nuevo odontograma', bg= '#1F704B', fg= 'white', font= fuenteb, command= self.editar_nuevo_odontograma).grid(column= 0, row= 1, padx=(10,5), pady= 5)
         self.busqueda2 = ttk.Entry(self.historia, textvariable= self.dato_paciente2, width= 20, font= fuenten)
-        self.busqueda2.grid(column= 1, row= 1, pady= 5, sticky="W")
-        Button(self.historia, text= 'Buscar', bg= '#1F704B', fg= 'white', font= fuenteb, command= self.buscar_historia).grid(column= 2, row= 1, padx=(10,5), pady= 5)
+        self.busqueda2.grid(column= 1, row= 1, pady= 5, sticky="e")
+        self.busqueda3 = Button(self.historia, text= 'Buscar', bg= '#1F704B', fg= 'white', font= fuenteb, command= self.buscar_historia)
+        self.busqueda3.grid(column= 2, row= 1, padx=(10,5), pady= 5)
         
         self.frame_tabla_historia= Frame(self.historia, bg= 'gray90')
         self.frame_tabla_historia.grid(columnspan= 4, row= 4, sticky= 'nsew')

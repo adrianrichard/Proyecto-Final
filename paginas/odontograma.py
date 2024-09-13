@@ -5,11 +5,14 @@ from tkinter import ttk, messagebox
 from datetime import datetime
 from paginas.dienteodontograma import Diente
 from functools import partial
+import util.generic as utl
+
 
 pacientes=[]
 color_index = 0
 #colores = ['white', 'blue', 'red', 'green']
 buttons = []
+
 class Odontograma:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -54,7 +57,7 @@ class Odontograma:
         self.crear_dientes()
         self.frame_tabla = Frame(self.ventana_odontograma)
         self.frame_tabla.grid(column= 0, row= 3, pady= (10,10))
-        self.tabla_prestaciones = ttk.Treeview(self.frame_tabla, columns= ("Fecha",  "Prestacion", "Código","Odontologo"), show= 'headings', height= 5, selectmode ='browse')
+        self.tabla_prestaciones = ttk.Treeview(self.frame_tabla, columns= ("Fecha",  "Prestacion", "Código","Odontologo"), show= 'headings', height= 8, selectmode ='browse')
         self.tabla_prestaciones.grid(column= 0, row= 1, columnspan= 4, sticky= 'nsew', padx= 5, pady= 5)
         ladoy = ttk.Scrollbar(self.frame_tabla, orient ='vertical', command = self.tabla_prestaciones.yview)
         ladoy.grid(column = 5, row = 1, sticky='ns')
@@ -73,6 +76,14 @@ class Odontograma:
         self.tabla_prestaciones.column("Código", width= 80)
         self.tabla_prestaciones.column("Prestacion", width= 250)
         self.tabla_prestaciones.column("Odontologo", width= 200)
+        
+        self.frame_botones = Frame(self.ventana_odontograma)
+        self.frame_botones.grid(column= 0, row= 4, pady= (10,0))
+        self.boton_guardar_odonto=Button(self.frame_botones, text= 'Guardar', command= self.guardar_odontograma, bg= "white", width= 8)
+        self.boton_guardar_odonto.grid(row= 0, column= 0, padx= 10)
+        self.boton_guardar_odonto=Button(self.frame_botones, text= 'Salir', command= self.ventana_odontograma.destroy, bg= utl.definir_color_fondo(), width= 8)
+        self.boton_guardar_odonto.grid(row= 0, column= 1, padx= 10)
+        
         self.ventana_odontograma.mainloop()
 
     def cargar_paciente(self, dni):
@@ -93,24 +104,42 @@ class Odontograma:
     def cargar_ultimo_odontograma(self):
         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
+        print(self.dni_paciente)
         try:            
-            self.miCursor.execute("SELECT ID_odontograma from Odontograma WHERE dni = ? ORDER BY ID_odontograma DESC LIMIT 1", (self.dni_paciente,))
+            self.miCursor.execute("SELECT ID_odontograma from Odontograma WHERE DNI_paciente = ? ORDER BY ID_odontograma DESC LIMIT 1", (self.dni_paciente,))
             self.miConexion.commit()
             self.ID_odonto_actual= self.miCursor.fetchone()
-            print(self.ID_odonto_actual[0])
+            self.ID_odonto = self.ID_odonto_actual[0]
         except:
             messagebox.showinfo("Odontograma", "Cargar odontograma")
-            print("ID odonto1")
+            #print("ID odonto1")
             self.miCursor.execute("SELECT ID_odontograma from Odontograma ORDER BY ID_odontograma DESC LIMIT 1")
             self.miConexion.commit()
-            print("ID odonto2")
+            #print("ID odonto2")
             self.ID_odonto_actual= self.miCursor.fetchone()
-            print(self.ID_odonto_actual)
+            #print(self.ID_odonto_actual)
             self.ID_odonto = self.ID_odonto_actual[0] + 1
-            print(self.ID_odonto)
+            #print(self.ID_odonto)
 
     def guardar_odontograma(self):
-        print("guardar odontograma")
+        #print("guardar odontograma")
+        f = datetime.today()
+        fecha = f.strftime("%d")+"-"+f.strftime("%m")+"-"+f.strftime("%Y")
+        print(fecha)
+        datos= self.dni_paciente,fecha,"Militello"
+        print(datos)
+        try:
+            self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+            self.miCursor = self.miConexion.cursor()
+            #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
+            sql = "INSERT INTO Odontograma VALUES (NULL,?,?,?)"
+            
+            self.miCursor.execute(sql, datos)
+            self.miConexion.commit()
+            #self.ID_odonto_actual= self.miCursor.fetchone()
+            #print(self.ID_odonto_actual[0])
+        except:
+            print("error guardar odontograma")
 
     def editar_diente(self, numero):
         #print('prueba', numero)
@@ -371,34 +400,39 @@ class Odontograma:
         self.crear_dientes()
 
     def guardar_diente(self):
+        print(self.ID_odonto, type(self.ID_odonto))
+        #print(self.diente_actual)
+        print(self.diente_actual)
+        
         try:
-            self.miConexion = sqlite3.connect("../bd/DBpaciente.sqlite3")
+            self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor = self.miConexion.cursor()
             #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
-            sql = "INSERT OR REPLACE INTO Diente VALUES (?,?,?,?,?,?,?,?,?)"
-            datos= self.diente_actual[0], self.ID_odonto, self.diente_actual[2], self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8]
+            sql = "INSERT INTO Diente VALUES (?,?,?,?,?,?,?,?,?)"
+            datos= self.diente_actual[0], self.ID_odonto+1, self.diente_actual[2], self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8]
             self.miCursor.execute(sql, datos)
             self.miConexion.commit()
             #self.ID_odonto_actual= self.miCursor.fetchone()
             #print(self.ID_odonto_actual[0])
         except:
-            print("error guardar")
+            print("error guardar diente")
         self.cargar_dientes()
         self.canvas.delete("all")
         self.crear_dientes()
 
     def cargar_dientes(self):
         #print('crear vector con los dientes')
+        print(self.ID_odonto)
         try:
-            self.miConexion = sqlite3.connect("../bd/DBpaciente.sqlite3")
+            self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor = self.miConexion.cursor()
-            sql = "SELECT * from Diente ORDER BY ID_odontograma"
-            self.miCursor.execute(sql)
+            #sql = "SELECT * from Diente WHERE ID_odontograma = ? ORDER BY ID_odontograma"
+            self.miCursor.execute("SELECT * from Diente WHERE ID_odontograma = ?", (self.ID_odonto,))
             self.miConexion.commit()
             self.dientes= self.miCursor.fetchall()
             #print(self.dientes)
         except:
-            #print("error diente")
+            print("error diente")
             self.dientes=[]
 
     def buscar_valor(self, valor):
