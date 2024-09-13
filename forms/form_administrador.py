@@ -126,7 +126,7 @@ class MasterPanel:
 
     def salir(self):
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea salir?', icon= 'warning')
-        if answer:            
+        if answer:
             self.ventana.destroy()
 
     def agregar_paciente(self):
@@ -143,17 +143,6 @@ class MasterPanel:
             paciente.ventana_paciente()
         except:
             pass
-        
-    # def editar_nuevo_odontograma(self):
-    #     odonto= Odontograma()
-    #     item = self.tabla_historia.focus()
-    #     self.data = self.tabla_historia.item(item)
-    #     try:
-    #         self.dni_paciente = self.data['values'][2]
-    #         odonto.cargar_paciente(self.dni_paciente)
-    #         odonto.ventana_odonto()
-    #     except:
-    #         pass
             
     def editar_odontograma(self, event):
         odonto= Odontograma()
@@ -247,7 +236,7 @@ class MasterPanel:
         self.miCursor = self.miConexion.cursor()
         self.buscar = self.dato_paciente.get()
 
-        bd = f"SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' ORDER BY Nombre DESC"
+        bd = f"SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' ORDER BY Apellido ASC"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
@@ -261,7 +250,7 @@ class MasterPanel:
         self.miCursor = self.miConexion.cursor()
         self.buscar = self.dato_paciente2.get()
         try:
-            bd = f"SELECT Apellido, Nombre, DNI, ObraSocial FROM Paciente WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' OR DNI LIKE '{self.buscar}%' ORDER BY Apellido DESC"
+            bd = f"SELECT Apellido, Nombre, DNI, ObraSocial FROM Paciente WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' OR DNI LIKE '{self.buscar}%' ORDER BY Apellido ASC"
             self.miCursor.execute(bd)
             datos = self.miCursor.fetchall()
             self.tabla_historia.delete(*self.tabla_historia.get_children())
@@ -280,9 +269,12 @@ class MasterPanel:
         self.dni_paciente = self.data['values'][1]
         
     def seleccionar_paciente2(self, event):
+        # try:
         item = self.tabla_historia.focus()
-        self.data = self.tabla_historia.item(item)
-        self.dni_paciente = self.data['values'][1]
+        self.data2 = self.tabla_historia.item(item)
+        self.dni_paciente = self.data2['values'][1]
+        # except:
+        #     messagebox.showinfo("Buscar", "Lista vacia")
         #print(self.data)
         
     def mostrar_usuarios(self):
