@@ -93,7 +93,7 @@ class DayTopWindow(Toplevel):
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
         try:                    
-            self.cur.execute("SELECT * FROM turno WHERE fecha= ? ORDER BY hora", (date_str,))
+            self.cur.execute("SELECT * FROM turno WHERE fecha= ? ORDER BY hora", (start_date,))
             self.turnos_dados = self.cur.fetchall()
             self.conn.commit()
         except:
@@ -195,10 +195,10 @@ class DayTopWindow(Toplevel):
 
     def guardar_turno(self):        
         start_date = date(self.anio, self.mes, self.dia)
-        date_str = start_date.strftime('%d-%m-%Y')
+        #date_str = start_date.strftime('%d-%m-%Y')
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
-        datos = date_str, self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
+        datos = start_date, self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
         answer = messagebox.askokcancel(title='Guardar', message='¿Desea guardar el turno?', icon='warning')
         if answer:
             try:

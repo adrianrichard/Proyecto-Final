@@ -28,21 +28,25 @@ class TKCalendar():
         self.anio = datetime.now().year  # Devuelve entero de 4-digit (anio)
         self.mes = datetime.now().month  # Devuelve entero(mes)
         self.fechas = []
+        self.marcar_dia_turno()
 
         """ Clases soporte """
         self.dh = dH()
     
     def marcar_dia_turno(self):
         print("probando")
-        start_date = date(self.anio, self.mes, self.dia)
-        date_str = start_date.strftime('%d-%m-%Y')
+        mes_turno =  datetime.today().month
+        #date_str = start_date.strftime('%d-%m-%Y')
+        print(mes_turno)
         
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
         try:                    
-            self.cur.execute("SELECT * FROM turno WHERE fecha= ? ORDER BY hora", (date_str,))
+            self.query = f"SELECT strftime('%d', fecha) FROM turno WHERE strftime('%m', fecha)= ?"
+            self.cur.execute(self.query, (mes_turno,))
             self.turnos_dados = self.cur.fetchall()
             self.conn.commit()
+            print(self.turnos_dados)
         except:
             print("No hay turnos")
         
