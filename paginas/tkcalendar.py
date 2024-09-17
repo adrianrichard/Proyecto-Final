@@ -1,10 +1,10 @@
-from datetime import datetime
+from datetime import *
 from functools import partial
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
+import sqlite3
 from paginas.datehandler.datehandler import DateHandler as dH
-from paginas.tkconfiguration.eventcolor import EventColor
 from paginas.daytoplevel import DayTopWindow
 import util.generic as utl
 
@@ -31,15 +31,21 @@ class TKCalendar():
 
         """ Clases soporte """
         self.dh = dH()
+    
+    def marcar_dia_turno(self):
+        print("probando")
+        start_date = date(self.anio, self.mes, self.dia)
+        date_str = start_date.strftime('%d-%m-%Y')
         
-
-        #self.up_chevron_path=script_location / 'chevron_up.png'
-        #file_location = script_location / 'chevron_up.png'
-        #file = file_location.open()
-        #self.up_chevron = PhotoImage(file_location.open())
-        #file_location = script_location / 'chevron_down.png'
-        #self.down_chevron = PhotoImage(file_location.open())
-
+        self.conn= sqlite3.connect('./bd/turnos.db')
+        self.cur= self.conn.cursor()
+        try:                    
+            self.cur.execute("SELECT * FROM turno WHERE fecha= ? ORDER BY hora", (date_str,))
+            self.turnos_dados = self.cur.fetchall()
+            self.conn.commit()
+        except:
+            print("No hay turnos")
+        
     def crear_encabezado(self, frame):
         """ Crea el encabezado """
         encabezado_texto = f"{self.dh.month_num_to_string(self.mes)} {self.anio}"
@@ -76,11 +82,11 @@ class TKCalendar():
                 #print(i)
             else:
                 if i==6 or i==13 or i==20 or i==27 or i==34:
-                    self.botones_fecha[i].configure(text=j, state=DISABLED, bg="gray90")
+                    self.botones_fecha[i].configure(text=j, state=DISABLED, bg="gray90") #DIA DOMINGO
                 else:    
                     self.botones_fecha[i].configure(text=j, command=partial(self.info_dia, j), bg="white", state=NORMAL)
             if i==40:
-                self.botones_fecha[i].configure(text="TURNOS\nASIGNADOS", state=DISABLED, bg="sky blue", disabledforeground="black")#Marca la fecha actual
+                self.botones_fecha[i].configure(text="TURNOS\nASIGNADOS", state=DISABLED, bg="sky blue", disabledforeground="black")#Marca si hay turnos
             if i==41:
                 self.botones_fecha[i].configure(text="DÍA ACTUAL", state=DISABLED, bg="orange", disabledforeground="black")#Marca la fecha actual
             if j == datetime.today().day \
