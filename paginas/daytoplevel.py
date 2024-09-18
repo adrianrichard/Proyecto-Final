@@ -57,20 +57,9 @@ class DayTopWindow(Toplevel):
         self.frame_tabla.grid(column= 0, columnspan= 4, row= 2, sticky= 'nsew')        
         self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns= ("Horario", "Paciente", "Prestacion", "Odontologo"), show= 'headings', height= 25, selectmode ='browse')
         self.tabla_turnos.grid(column= 0, row= 2, columnspan= 4, sticky= 'nsew', padx= 5, pady= 5)
-        estilo_tabla = ttk.Style()
-        #estilo_tabla.theme_use('classic')
+        estilo_tabla = ttk.Style(self)
         estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 20)
-        #estilo_tabla.map('Treeview.Heading', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
         estilo_tabla.configure('Treeview.Heading', background= '#1F704B', foreground= 'black', padding= 3, font= fuenteb)
-        # self.style = ttk.Style()
-        # self.style.theme_use('default')
-
-        # # Configure a new Treeview Heading style
-        # self.style.configure("Treeview.Heading", font=('Arial', 10, 'bold'), foreground='white',background="sea green")
-        # self.style.configure("Treeview", foreground="black", rowheight= 20)
-
-        # # Change selected color
-        # self.style.map('Treeview', background=[('selected', 'green')])
 
         # Definir los encabezados de las columnas
         self.tabla_turnos.heading("Horario", text= "Horario")
@@ -86,9 +75,8 @@ class DayTopWindow(Toplevel):
 
         self.tabla_turnos.bind("<Double-1>", self.editar_turno)
 
-    def cargar_turnos(self):        
+    def cargar_turnos(self):
         start_date = date(self.anio, self.mes, self.dia)
-        #date_str = start_date.strftime('%d-%m-%Y')
         
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
@@ -97,7 +85,7 @@ class DayTopWindow(Toplevel):
             self.turnos_dados = self.cur.fetchall()
             self.conn.commit()
         except:
-            print("No hay turnos")
+            messagebox.showerror("Turnos", "No hay turnos")
            
         self.conn.close()
         
@@ -126,7 +114,6 @@ class DayTopWindow(Toplevel):
         utl.centrar_ventana(self.ventana_secundaria, 400, 300)
         self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
-        #item = self.tabla_turnos.focus()
 
         self.turno_seleccionado = self.tabla_turnos.selection()[0]
         self.data = self.tabla_turnos.item(self.turno_seleccionado)
@@ -176,14 +163,13 @@ class DayTopWindow(Toplevel):
 
     def eliminar_turno(self):
         start_date = date(self.anio, self.mes, self.dia)
-        date_str = start_date.strftime('%d-%m-%Y')
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()        
         hora= self.horario
         answer = messagebox.askokcancel(title='Eliminar', message='¿Desea eliminar el turno?', icon='warning')
         if answer:
             try:
-                self.cur.execute("DELETE FROM turno WHERE fecha= ? AND hora= ?", (date_str, hora,))
+                self.cur.execute("DELETE FROM turno WHERE fecha= ? AND hora= ?", (start_date, hora,))
                 self.conn.commit()
                 self.conn.close()
                 self.grab_set_global()
@@ -195,7 +181,6 @@ class DayTopWindow(Toplevel):
 
     def guardar_turno(self):        
         start_date = date(self.anio, self.mes, self.dia)
-        #date_str = start_date.strftime('%d-%m-%Y')
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
         datos = start_date, self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
@@ -225,8 +210,6 @@ class DayTopWindow(Toplevel):
                 self.anio += 1
         self.configurar_encabezado()
         self.cargar_turnos()
-        #self.crear_listbox_citas()
-        #self.configurar_event_box()
 
         if self.extension:
             self.extension.main_frame.destroy()
@@ -242,8 +225,6 @@ class DayTopWindow(Toplevel):
             self.dia = DateHandler().days_in_month(self.mes, self.anio)
         self.configurar_encabezado()
         self.cargar_turnos()
-        #self.crear_listbox_citas()
-        #self.configurar_event_box()
 
         if self.extension:
             self.extension.main_frame.destroy()

@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter import ttk
 import tkinter as tk
 import sqlite3
+from tkinter import  messagebox
 from paginas.datehandler.datehandler import DateHandler as dH
 from paginas.daytoplevel import DayTopWindow
 import util.generic as utl
@@ -33,10 +34,11 @@ class TKCalendar():
 
         """ Clases soporte """
         self.dh = dH()
-    
+
     def marcar_dia_turno(self):
         #print("probando")
-        mes_turno =  self.mes
+        mes_turno = self.mes
+        anio_turno= str(self.anio)
         #date_str = start_date.strftime('%d-%m-%Y')
         #print(mes_turno)
         if mes_turno < 10:
@@ -44,19 +46,16 @@ class TKCalendar():
         self.dias_turno=[]
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
+        #print(mes_turno, type(mes_turno),anio_turno, type(anio_turno))
         try:                    
-            self.query = f"SELECT strftime('%d', fecha) FROM turno WHERE strftime('%m', fecha)= ?"
-            self.cur.execute(self.query, (mes_turno,))
-            self.turnos_dados = self.cur.fetchall()
+            self.query = f"SELECT strftime('%d', fecha) FROM turno WHERE strftime('%Y', fecha)=? AND strftime('%m', fecha)= ?"
+            self.cur.execute(self.query, (anio_turno, mes_turno, ))
+            self.dias_turno  = [fila[0] for fila in self.cur.fetchall()]
             self.conn.commit()
-            #print(self.turnos_dados)
-            for fila in self.turnos_dados:
-                self.dias_turno.append(fila[0])
             #print(self.dias_turno)
-            # for fila in self.dias_turno:
-            #     print(fila)
+            
         except:
-            print("No hay turnos")
+            messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
         
     def crear_encabezado(self, frame):
         """ Crea el encabezado """
