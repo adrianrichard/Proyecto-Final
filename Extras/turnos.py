@@ -17,3 +17,6 @@ try:
 except:
     print("No hay turnos")
 print(turnos_dados[1][0])
+resultados_list = [list(fila) for fila in turnos_dados]
+for fila in turnos_dados:
+    print(fila[0])

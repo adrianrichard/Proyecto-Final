@@ -106,7 +106,9 @@ class MasterPanel:
         self.paginas.select([self.frame_calendario])
         Tcal = TKCalendar()
         Tcal.crear_encabezado(self.frame_calendario)
+        
         Tcal.crear_botones_fechas(self.frame_calendario)
+        Tcal.marcar_dia_turno()
         Tcal.actualizar_botones_fechas()
         #Tcal.cargar_turnos(self.frame_calendario)
         #Tcal.event_color_buttons()

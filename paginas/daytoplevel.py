@@ -88,7 +88,7 @@ class DayTopWindow(Toplevel):
 
     def cargar_turnos(self):        
         start_date = date(self.anio, self.mes, self.dia)
-        date_str = start_date.strftime('%d-%m-%Y')
+        #date_str = start_date.strftime('%d-%m-%Y')
         
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()

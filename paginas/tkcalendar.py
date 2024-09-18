@@ -22,6 +22,7 @@ class TKCalendar():
         super().__init__()
 
         self.botones_fecha = []
+        self.dias_turno = []
         self.toplevel = None
         self.encabezado = None
 
@@ -34,11 +35,13 @@ class TKCalendar():
         self.dh = dH()
     
     def marcar_dia_turno(self):
-        print("probando")
-        mes_turno =  datetime.today().month
+        #print("probando")
+        mes_turno =  self.mes
         #date_str = start_date.strftime('%d-%m-%Y')
-        print(mes_turno)
-        
+        #print(mes_turno)
+        if mes_turno < 10:
+            mes_turno= "0"+str(mes_turno)
+        self.dias_turno=[]
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
         try:                    
@@ -46,7 +49,12 @@ class TKCalendar():
             self.cur.execute(self.query, (mes_turno,))
             self.turnos_dados = self.cur.fetchall()
             self.conn.commit()
-            print(self.turnos_dados)
+            #print(self.turnos_dados)
+            for fila in self.turnos_dados:
+                self.dias_turno.append(fila[0])
+            #print(self.dias_turno)
+            # for fila in self.dias_turno:
+            #     print(fila)
         except:
             print("No hay turnos")
         
@@ -76,6 +84,7 @@ class TKCalendar():
         self.encabezado.configure(text=f"{self.dh.month_num_to_string(self.mes)} {self.anio}")
 
     def actualizar_botones_fechas(self):
+        
         """ Set button text to date numbers """
         self.fechas = self.dh.date_list(self.anio, self.mes)  # Devuelve 35 dias (5 semanas)
         self.fechas.extend([0 for _ in range(42 - len(self.fechas))])  # agrega ceros en las fechas porque son 42 botones de fecha
@@ -89,6 +98,11 @@ class TKCalendar():
                     self.botones_fecha[i].configure(text=j, state=DISABLED, bg="gray90") #DIA DOMINGO
                 else:    
                     self.botones_fecha[i].configure(text=j, command=partial(self.info_dia, j), bg="white", state=NORMAL)
+                    for dia in self.dias_turno:
+                        #print(type(dia), type(j))
+                        if j == int(dia) :
+                            #print(j, dia, i)
+                            self.botones_fecha[i].configure(bg="sky blue")
             if i==40:
                 self.botones_fecha[i].configure(text="TURNOS\nASIGNADOS", state=DISABLED, bg="sky blue", disabledforeground="black")#Marca si hay turnos
             if i==41:
@@ -97,6 +111,7 @@ class TKCalendar():
                     and self.mes == datetime.today().month \
                     and self.anio == datetime.today().year:
                 self.botones_fecha[i].configure(bg="orange")
+            
 
     def configurar_filas_columnas(self, frame):
         """ Configura filas y columnas para expandandirlas al tamaño de la ventana """
@@ -109,6 +124,7 @@ class TKCalendar():
         if self.mes == 13:
             self.mes = 1
             self.anio += 1
+        self.marcar_dia_turno()
         self.actualizar_botones_fechas()
         self.actualizar_encabezado()
 
@@ -118,6 +134,7 @@ class TKCalendar():
         if self.mes == 0:
             self.mes = 12
             self.anio -= 1
+        self.marcar_dia_turno()
         self.actualizar_botones_fechas()
         self.actualizar_encabezado()
 
@@ -125,6 +142,6 @@ class TKCalendar():
         """ Abre una ventana para guardar la cita """
         try:
             self.toplevel.destroy()
-            self.toplevel = DayTopWindow(dia, self.mes, self.anio)
+            self.toplevel = DayTopWindow(dia, self.mes, self.anio)            
         except AttributeError:
             self.toplevel = DayTopWindow(dia, self.mes, self.anio)
