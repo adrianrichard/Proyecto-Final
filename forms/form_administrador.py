@@ -24,10 +24,7 @@ class MasterPanel:
 
     def __init__(self):
 
-        self.ventana= tk.Tk()
-        #self.ventana= tk.Toplevel()
-        #self.ventana.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
-        #self.ventana.focus_set() # Mantiene el foco cuando se abre la ventana.
+        self.ventana= tk.Tk()        
         self.ventana.title('DentalMatic')
         self.ventana.geometry('1000x500+180+80')
         self.ventana.config(bg= '#fcfcfc')
@@ -105,13 +102,10 @@ class MasterPanel:
     def pantalla_calendario(self):
         self.paginas.select([self.frame_calendario])
         Tcal = TKCalendar()
-        Tcal.crear_encabezado(self.frame_calendario)
-        
+        Tcal.crear_encabezado(self.frame_calendario)        
         Tcal.crear_botones_fechas(self.frame_calendario)
         Tcal.marcar_dia_turno()
         Tcal.actualizar_botones_fechas()
-        #Tcal.cargar_turnos(self.frame_calendario)
-        #Tcal.event_color_buttons()
         Tcal.configurar_filas_columnas(self.frame_calendario)
 
     def pantalla_historia(self):
@@ -145,7 +139,7 @@ class MasterPanel:
             paciente.ventana_paciente()
         except:
             pass
-            
+
     def editar_odontograma(self, event):
         odonto= Odontograma()
         item = self.tabla_historia.focus()
@@ -156,7 +150,7 @@ class MasterPanel:
             odonto.ventana_odonto()
         except:
             pass
-        
+
     def eliminar_paciente(self):
         try:
             self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -246,7 +240,7 @@ class MasterPanel:
         for dato in datos:
             i= i+1
             self.tabla_paciente.insert('', i, text = datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
-    
+
     def buscar_historia(self):
         self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor = self.miConexion.cursor()
@@ -269,18 +263,14 @@ class MasterPanel:
         item = self.tabla_paciente.focus()
         self.data = self.tabla_paciente.item(item)
         self.dni_paciente = self.data['values'][1]
-        
+
     def seleccionar_paciente2(self, event):
-        # try:
         item = self.tabla_historia.focus()
         self.data2 = self.tabla_historia.item(item)
         self.dni_paciente = self.data2['values'][1]
-        # except:
-        #     messagebox.showinfo("Buscar", "Lista vacia")
-        #print(self.data)
-        
+
     def mostrar_usuarios(self):
-        self.miConexion = sqlite3.connect("./bd/consultorio.sqlite3")
+        self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor = self.miConexion.cursor()
         bd = "SELECT Nombre_usuario, Clave, Tipo_usuario FROM Usuarios"
         self.miCursor.execute(bd)
@@ -319,7 +309,7 @@ class MasterPanel:
         self.mostrar_usuarios()
 
     def nada(self):
-        pass    
+        pass
 
     def widgets(self):
         self.imagen_usuario = utl.leer_imagen('dentist-icon2-removebg-preview.png', (38, 38))
@@ -347,7 +337,7 @@ class MasterPanel:
         self.bt_inicio.grid(column= 0, row= 0, padx= 5, pady= 10)
         self.bt_cerrar.grid(column= 0, row= 0, padx= 5, pady= 10)
 
-		#BOTONES Y ETIQUETAS DEL MENU LATERAL
+        #BOTONES Y ETIQUETAS DEL MENU LATERAL
         Button(self.frame_menu, image= self.imagen_usuario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_usuarios).grid(column= 0, row= 1, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_pacientes).grid(column= 0, row= 2, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)

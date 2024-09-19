@@ -13,7 +13,7 @@ class Usuario:
     def conexionBBDD(self):
 
         try:
-            self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
+            self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
 
         except:
@@ -72,7 +72,7 @@ class Usuario:
         return self.usuario_existente
     
     def actualizar(self):
-        self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
+        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
         
         if(self.validar_contrasenia(self.clave.get())):
@@ -90,9 +90,9 @@ class Usuario:
             pass
     
     def eliminar_usuario(self, nombre):
-        self.miConexion=sqlite3.connect("./bd/consultorio.sqlite3")
+        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
-        print(nombre)
+        #print(nombre)
         msg_box = messagebox.askquestion('Eliminar usuario', '¿Desea elminar al usuario?', icon='warning')
         if msg_box == 'yes':
             try:

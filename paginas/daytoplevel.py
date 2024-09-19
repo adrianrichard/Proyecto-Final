@@ -53,8 +53,8 @@ class DayTopWindow(Toplevel):
         Button(self, text= "Salir", bg= "orange", bd= 2, borderwidth= 2, width= 10, command= self.destroy).grid(row= 0, column= 3, pady= (5,5))
 
     def crear_lista_turnos(self):
-        self.frame_tabla = ttk.Frame(self)        
-        self.frame_tabla.grid(column= 0, columnspan= 4, row= 2, sticky= 'nsew')        
+        self.frame_tabla = ttk.Frame(self)
+        self.frame_tabla.grid(column= 0, columnspan= 4, row= 2, sticky= 'nsew')
         self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns= ("Horario", "Paciente", "Prestacion", "Odontologo"), show= 'headings', height= 25, selectmode ='browse')
         self.tabla_turnos.grid(column= 0, row= 2, columnspan= 4, sticky= 'nsew', padx= 5, pady= 5)
         estilo_tabla = ttk.Style(self)
@@ -77,7 +77,7 @@ class DayTopWindow(Toplevel):
 
     def cargar_turnos(self):
         start_date = date(self.anio, self.mes, self.dia)
-        
+
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
         try:                    
@@ -85,10 +85,10 @@ class DayTopWindow(Toplevel):
             self.turnos_dados = self.cur.fetchall()
             self.conn.commit()
         except:
-            messagebox.showerror("Turnos", "No hay turnos")
-           
+            messagebox.showinfo("Turnos", "No hay turnos")
+
         self.conn.close()
-        
+
         start_time = datetime.strptime("08:00", "%H:%M")
         # Intervalo de 30 minutos
         time_interval = timedelta(minutes= 30)
@@ -179,24 +179,34 @@ class DayTopWindow(Toplevel):
                 messagebox.showerror("Eliminar", "No se pudo eliminar.")
         self.cargar_turnos()
 
-    def guardar_turno(self):        
+    def guardar_turno(self):
+        """El día se carga en formato YYYY/MM/DD para luego poder usar los métodos de SQLite"""
         start_date = date(self.anio, self.mes, self.dia)
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
         datos = start_date, self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
-        answer = messagebox.askokcancel(title='Guardar', message='¿Desea guardar el turno?', icon='warning')
-        if answer:
-            try:
-                sql="REPLACE INTO turno VALUES(?, ?, ?, ?, ?)"
-                self.cur.execute(sql, datos)
-                self.conn.commit()
-                self.conn.close()
-                self.grab_set_global()
-                self.focus_set()                
-                self.ventana_secundaria.destroy()
-            except:
-                messagebox.showerror("Guardar", "No se pudo guardar.")
-        self.cargar_turnos()
+        if self.nombre_entry.get().upper() != "PACIENTE" and self.selector_prestacion.get().upper() != "PRESTACIÓN" and self.selector_odontologo.get().upper() != "ODONTÓLOGO":
+            answer = messagebox.askokcancel(title='Guardar', message='¿Desea guardar el turno?', icon='warning')
+            if answer:
+                try:
+                    sql="REPLACE INTO turno VALUES(?, ?, ?, ?, ?)"
+                    self.cur.execute(sql, datos)
+                    self.conn.commit()
+                    self.conn.close()
+                    self.grab_set_global()
+                    self.focus_set()                
+                    self.ventana_secundaria.destroy()
+                    self.cargar_turnos()
+                except:                    
+                    messagebox.showerror("Guardar", "No se pudo guardar.")                            
+        else: 
+            """"Si no se coloca el nombre del paciente o se elije prestación u odontólogo"""
+            if self.nombre_entry.get().upper() == "PACIENTE":
+                messagebox.showerror("Paciente", "Ingrese nombre paciente")
+            elif self.selector_prestacion.get().upper() == "PRESTACIÓN":
+                messagebox.showerror("Prestación", "Elija la prestación")
+            elif self.selector_odontologo.get().upper() == "ODONTÓLOGO":
+                messagebox.showerror("Odontólogo", "Elija odontólogo")
 
     def avanzar_dia(self):
         """ AVANZAR 1 DIA """

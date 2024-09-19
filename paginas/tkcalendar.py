@@ -36,17 +36,19 @@ class TKCalendar():
         self.dh = dH()
 
     def marcar_dia_turno(self):
-        #print("probando")
-        mes_turno = self.mes
+        """Carga el mes y lo transforma a string"""
+        mes_turno = str(self.mes)
+        """si el mes es menor a 10, le agrega el 0 (cero)"""
+        if self.mes < 10:
+            mes_turno= "0"+mes_turno
+        """Carga el año y lo transforma a string"""
         anio_turno= str(self.anio)
         #date_str = start_date.strftime('%d-%m-%Y')
         #print(mes_turno)
-        if mes_turno < 10:
-            mes_turno= "0"+str(mes_turno)
+        
         self.dias_turno=[]
         self.conn= sqlite3.connect('./bd/turnos.db')
         self.cur= self.conn.cursor()
-        #print(mes_turno, type(mes_turno),anio_turno, type(anio_turno))
         try:                    
             self.query = f"SELECT strftime('%d', fecha) FROM turno WHERE strftime('%Y', fecha)=? AND strftime('%m', fecha)= ?"
             self.cur.execute(self.query, (anio_turno, mes_turno, ))
@@ -55,7 +57,7 @@ class TKCalendar():
             #print(self.dias_turno)
             
         except:
-            messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
+            messagebox.showinfo("Turnos","Error al cargar turnos")
         
     def crear_encabezado(self, frame):
         """ Crea el encabezado """
@@ -141,6 +143,10 @@ class TKCalendar():
         """ Abre una ventana para guardar la cita """
         try:
             self.toplevel.destroy()
-            self.toplevel = DayTopWindow(dia, self.mes, self.anio)            
+            self.toplevel = DayTopWindow(dia, self.mes, self.anio)
+            self.marcar_dia_turno()
+            self.actualizar_botones_fechas()
         except AttributeError:
             self.toplevel = DayTopWindow(dia, self.mes, self.anio)
+            self.marcar_dia_turno()
+            self.actualizar_botones_fechas()
