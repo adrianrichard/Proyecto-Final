@@ -305,7 +305,7 @@ class MasterPanel:
 
     def agregar_usuario(self):
         user = Usuario()
-        user.conexionBBDD()
+        #user.conexionBBDD()
         user.ventana()
         #self.mostrar_usuarios()
 
@@ -314,7 +314,7 @@ class MasterPanel:
             (sel,) = self.tabla_usuario.selection()
             self.usuario = self.tabla_usuario.item(sel, "text")
             user = Usuario()
-            user.conexionBBDD()
+            #user.conexionBBDD()
             user.cargar_datos(self.usuario)
             user.ventana()
             
@@ -325,7 +325,7 @@ class MasterPanel:
     def eliminar_usuario(self):
         #print(self.nombre_usuario)
         user = Usuario()
-        user.conexionBBDD()
+        #user.conexionBBDD()
         user.eliminar_usuario(self.nombre_usuario)
         #self.mostrar_usuarios()
 
