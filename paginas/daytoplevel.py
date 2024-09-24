@@ -7,6 +7,8 @@ from datetime import *
 import sqlite3
 from tkinter import Button
 from paginas.datehandler.datehandler import DateHandler
+from bd.conexion import Conexion
+
 
 fuenteb= utl.definir_fuente_bold()
 fuenten= utl.definir_fuente()
@@ -25,6 +27,7 @@ class DayTopWindow(Toplevel):
         self.focus_set()
         self.extension = None
         self.confirmation = None
+        self.db = Conexion()
 
         self.dia = dia
         self.mes = mes
@@ -78,7 +81,7 @@ class DayTopWindow(Toplevel):
     def cargar_turnos(self):
         start_date = date(self.anio, self.mes, self.dia)
 
-        self.conn= sqlite3.connect('./bd/turnos.db')
+        self.conn= self.db.conectar()
         self.cur= self.conn.cursor()
         try:                    
             self.cur.execute("SELECT * FROM turno WHERE fecha= ? ORDER BY hora", (start_date,))
@@ -163,7 +166,7 @@ class DayTopWindow(Toplevel):
 
     def eliminar_turno(self):
         start_date = date(self.anio, self.mes, self.dia)
-        self.conn= sqlite3.connect('./bd/turnos.db')
+        self.conn=  self.db.conectar()
         self.cur= self.conn.cursor()        
         hora= self.horario
         answer = messagebox.askokcancel(title='Eliminar', message='¿Desea eliminar el turno?', icon='warning')
@@ -182,7 +185,7 @@ class DayTopWindow(Toplevel):
     def guardar_turno(self):
         """El día se carga en formato YYYY/MM/DD para luego poder usar los métodos de SQLite"""
         start_date = date(self.anio, self.mes, self.dia)
-        self.conn= sqlite3.connect('./bd/turnos.db')
+        self.conn=  self.db.conectar()
         self.cur= self.conn.cursor()
         datos = start_date, self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
         if self.nombre_entry.get().upper() != "PACIENTE" and self.selector_prestacion.get().upper() != "PRESTACIÓN" and self.selector_odontologo.get().upper() != "ODONTÓLOGO":

@@ -8,6 +8,7 @@ from tkinter import  messagebox
 from paginas.datehandler.datehandler import DateHandler as dH
 from paginas.daytoplevel import DayTopWindow
 import util.generic as utl
+from bd.conexion import Conexion
 
 from pathlib import Path
 
@@ -26,6 +27,7 @@ class TKCalendar():
         self.dias_turno = []
         self.toplevel = None
         self.encabezado = None
+        self.db = Conexion()
 
         self.anio = datetime.now().year  # Devuelve entero de 4-digit (anio)
         self.mes = datetime.now().month  # Devuelve entero(mes)
@@ -46,9 +48,9 @@ class TKCalendar():
         #date_str = start_date.strftime('%d-%m-%Y')
         #print(mes_turno)
         
-        self.dias_turno=[]
-        self.conn= sqlite3.connect('./bd/turnos.db')
-        self.cur= self.conn.cursor()
+        self.dias_turno = []
+        self.conn = self.db.conectar()
+        self.cur = self.conn.cursor()
         try:                    
             self.query = f"SELECT strftime('%d', fecha) FROM turno WHERE strftime('%Y', fecha)=? AND strftime('%m', fecha)= ?"
             self.cur.execute(self.query, (anio_turno, mes_turno, ))

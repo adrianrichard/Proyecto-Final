@@ -271,7 +271,8 @@ class MasterPanel:
         try:
             self.dni_paciente = self.data['values'][1]
         except:
-            messagebox.showinfo("Continuar", "Continuar")
+            pass
+            #messagebox.showinfo("Continuar", "Continuar")
 
     def seleccionar_paciente2(self, event):
         item = self.tabla_historia.focus()
@@ -279,10 +280,11 @@ class MasterPanel:
         try:
             self.dni_paciente = self.data2['values'][1]
         except:
-            messagebox.showinfo("Continuar", "Continuar")
+            pass
+            #messagebox.showinfo("Continuar", "Continuar")
 
     def mostrar_usuarios(self):
-        self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+        self.miConexion = self.db.conectar()
         self.miCursor = self.miConexion.cursor()
         bd = "SELECT Nombre_usuario, Clave, Tipo_usuario FROM Usuarios"
         self.miCursor.execute(bd)
@@ -292,15 +294,20 @@ class MasterPanel:
         for dato in datos:
             i= i+1
             self.tabla_usuario.insert('', i, text = datos[i][0], values=("*********", datos[i][2]))
+        self.miCursor.close()
 
     def seleccionar_usuario(self, event):
         (sel,) = self.tabla_usuario.selection()
-        self.nombre_usuario = self.tabla_usuario.item(sel, "text")
+        try:
+            self.nombre_usuario = self.tabla_usuario.item(sel, "text")
+        except:
+            pass
 
     def agregar_usuario(self):
         user = Usuario()
         user.conexionBBDD()
         user.ventana()
+        #self.mostrar_usuarios()
 
     def editar_usuario(self, event):
         try:
@@ -310,15 +317,17 @@ class MasterPanel:
             user.conexionBBDD()
             user.cargar_datos(self.usuario)
             user.ventana()
+            
         except:
             pass
+        #self.mostrar_usuarios()
 
     def eliminar_usuario(self):
         #print(self.nombre_usuario)
         user = Usuario()
         user.conexionBBDD()
         user.eliminar_usuario(self.nombre_usuario)
-        self.mostrar_usuarios()
+        #self.mostrar_usuarios()
 
     def nada(self):
         pass
