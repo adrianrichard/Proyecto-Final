@@ -21,6 +21,7 @@ class Login:
         if(db.comprobar_bd()):
             """Conectar BD y crear cursor"""
             db.conectar()
+            db.obtener_cursor()
             """Busca el usuario y contraseña"""
             if db.buscar_usuario(username, password):
                 """Determina que tipo de usuario ingreso"""
@@ -58,14 +59,13 @@ class Login:
         else:
             messagebox.showerror(title = "Advertencia", message = "Error de conexión a base de datos")
 
-        """Evita que se ingresen caracteres especiales
-        """
+    """Sólo acepta Letras"""
     def validar_nombre(self, value):
         pattern = r'\b[A-Za-z_]\b'
         if re.fullmatch(pattern, value) is None:
             return False 
         return True
-    """Evita que se ingresen caracteres especiales"""
+    """Sólo acepta alfanuméricos"""
     def validar_pass(self, value):
         pattern = r'\b[A-Za-z0-9_]\b'
         if re.fullmatch(pattern, value) is None:
@@ -101,33 +101,33 @@ class Login:
             frame_logo.pack(side="left", expand=tk.YES, fill= tk.BOTH)
             tk.Label(frame_logo, text="DENTALMATIC", font=(fuente, 25), fg="white", bg=color_fondo1, anchor="w").place(x=0, y=0, relwidth=1, relheight=1)
 
-        #frame_
-        frame_form = tk.Frame(self.frame_login, bd=0, relief=tk.SOLID, bg=color_fondo2)
-        frame_form.pack(side="right", expand=tk.YES, fill=tk.BOTH)
+        #frame_ingreso
+        frame_ingreso = tk.Frame(self.frame_login, bd=0, relief=tk.SOLID, bg=color_fondo2)
+        frame_ingreso.pack(side="right", expand=tk.YES, fill=tk.BOTH)
 
         #frame_form_top
-        frame_form_top = tk.Frame(frame_form, height=50, bd=0, relief=tk.SOLID, bg=color_fondo2)
+        frame_form_top = tk.Frame(frame_ingreso, height=50, bd=0, relief=tk.SOLID, bg=color_fondo2)
         frame_form_top.pack(side="top", fill=tk.X)
         tk.Label(frame_form_top, text="Inicio de sesión", font=(fuente, 20), fg=color_fuente, bg=color_fondo2, pady=50).pack(expand=tk.YES, fill=tk.BOTH)
         #end frame_form_top
 
-        #frame_form_fill
-        frame_form_fill = tk.Frame(frame_form, height=50,  bd=0, relief=tk.SOLID, bg=color_fondo2)
-        frame_form_fill.pack(side="bottom", expand=tk.YES, fill=tk.BOTH)
+        #frame_form_completar
+        frame_form_completar = tk.Frame(frame_ingreso, height=50,  bd=0, relief=tk.SOLID, bg=color_fondo2)
+        frame_form_completar.pack(side="bottom", expand=tk.YES, fill=tk.BOTH)
 
-        tk.Label(frame_form_fill, text="Usuario", font=fuente2, fg=color_fuente, bg=color_fondo2, anchor="w").pack(fill=tk.X, padx=20, pady=5)
-        self.usuario = ttk.Entry(frame_form_fill, textvariable=self.nombre_usuario, font=(fuente, 14), validate="key", validatecommand=(frame_form_fill.register(self.validar_nombre), "%S"))
+        tk.Label(frame_form_completar, text="Usuario", font=fuente2, fg=color_fuente, bg=color_fondo2, anchor="w").pack(fill=tk.X, padx=20, pady=5)
+        self.usuario = ttk.Entry(frame_form_completar, textvariable=self.nombre_usuario, font=(fuente, 14), validate="key", validatecommand=(frame_form_completar.register(self.validar_nombre), "%S"))
         self.usuario.pack(fill=tk.X, padx=20, pady=10)
         self.usuario.focus() #para que se ubique en este Entry
 
-        etiqueta_password = tk.Label(frame_form_fill, text="Contraseña", font=fuente2, fg=color_fuente, bg=color_fondo2, anchor="w")
+        etiqueta_password = tk.Label(frame_form_completar, text="Contraseña", font=fuente2, fg=color_fuente, bg=color_fondo2, anchor="w")
         etiqueta_password.pack(fill=tk.X, padx=20, pady=5)
-        self.password = ttk.Entry(frame_form_fill, textvariable=self.pass_usuario, font=(fuente, 14), validate="key", validatecommand=(frame_form_fill.register(self.validar_pass), "%S"))
+        self.password = ttk.Entry(frame_form_completar, textvariable=self.pass_usuario, font=(fuente, 14), validate="key", validatecommand=(frame_form_completar.register(self.validar_pass), "%S"))
         self.password.pack(fill=tk.X, padx=20, pady=10)
         self.password.bind('<Return>', (lambda event: self.verificar()))#es para apretar Intro y se ejecute, una opción a el botón
         self.password.config(show="*")
 
-        inicio = tk.Button(frame_form_fill, text="Ingresar", font=fuente2, bg=color_fondo1, bd=0, fg="white", command=self.verificar)
+        inicio = tk.Button(frame_form_completar, text="Ingresar", font=fuente2, bg=color_fondo1, bd=0, fg="white", command=self.verificar)
         inicio.pack(fill=tk.X, padx=20, pady=20)
         inicio.bind("<Return>", (lambda event: self.verificar()))
 

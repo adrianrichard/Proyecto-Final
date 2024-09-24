@@ -10,6 +10,8 @@ from paginas.tkcalendar import TKCalendar
 from paginas.odontograma import Odontograma
 from util.visorimagenes import ImageGalleryApp
 import sqlite3
+from bd.conexion import Conexion
+
 fuenteb = utl.definir_fuente_bold()
 fuenten = utl.definir_fuente()
 pacientes = []
@@ -33,6 +35,9 @@ class MasterPanel:
         self.menu = True
         self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
         self.ventana.iconphoto(False, self.imagen_ventana)
+        
+        self.db = Conexion()
+        
         self.dni_paciente = StringVar()
         self.dato_paciente = StringVar()
         self.dato_paciente2 = StringVar()
@@ -153,19 +158,20 @@ class MasterPanel:
 
     def eliminar_paciente(self):
         try:
-            self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+            self.miConexion = self.db.conectar()
             self.miCursor = self.miConexion.cursor()
             msg_box = messagebox.askquestion('Eliminar paciente', '¿Desea elminar al paciente?', icon='warning')
             if msg_box == 'yes':
                 self.miCursor.execute("DELETE FROM Paciente WHERE dni = ?", (self.dni_paciente,))
                 self.miConexion.commit()
                 messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
+                self.dni_paciente=[]
                 self.mostrar_pacientes()
         except:
             messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")
 
     def cargar_tabla_pacientes(self):
-        self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+        self.miConexion = self.db.conectar()
         self.miCursor = self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
         self.miCursor.execute(bd)
@@ -262,12 +268,18 @@ class MasterPanel:
     def seleccionar_paciente(self, event):
         item = self.tabla_paciente.focus()
         self.data = self.tabla_paciente.item(item)
-        self.dni_paciente = self.data['values'][1]
+        try:
+            self.dni_paciente = self.data['values'][1]
+        except:
+            messagebox.showinfo("Continuar", "Continuar")
 
     def seleccionar_paciente2(self, event):
         item = self.tabla_historia.focus()
         self.data2 = self.tabla_historia.item(item)
-        self.dni_paciente = self.data2['values'][1]
+        try:
+            self.dni_paciente = self.data2['values'][1]
+        except:
+            messagebox.showinfo("Continuar", "Continuar")
 
     def mostrar_usuarios(self):
         self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
@@ -353,7 +365,7 @@ class MasterPanel:
         Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
 
 		#############################  CREAR  PAGINAS  ##############################
-        estilo_paginas = ttk.Style()
+        estilo_paginas = ttk.Style(self.frame_raiz)
         estilo_paginas.layout('TNotebook.Tab', []) #desactiva las pestañas
 ##        estilo_paginas.configure("TNotebook", background='#1F704B', foreground='#1F704B', padding= 0, borderwidth= 0)
 ##        estilo_paginas.theme_use('default')

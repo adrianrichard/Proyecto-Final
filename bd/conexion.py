@@ -8,7 +8,11 @@ class Conexion():
 
     def conectar(self):
         self.db = sqlite3.connect('./bd/DBpaciente.sqlite3')
+        return self.db
+    
+    def obtener_cursor(self):
         self.cur = self.db.cursor()
+        return self.db.cursor()
 
     def buscar_usuario(self, username, password):
         self.cur.execute('SELECT Nombre_usuario, Clave FROM Usuarios WHERE Nombre_usuario = ? AND Clave = ?', (username, password))
