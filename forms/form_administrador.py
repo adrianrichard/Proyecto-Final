@@ -37,6 +37,7 @@ class MasterPanel:
         self.ventana.iconphoto(False, self.imagen_ventana)
         
         self.db = Conexion()
+        self.miConexion = self.db.conectar()
         
         self.dni_paciente = StringVar()
         self.dato_paciente = StringVar()
@@ -158,7 +159,7 @@ class MasterPanel:
 
     def eliminar_paciente(self):
         try:
-            self.miConexion = self.db.conectar()
+            #self.miConexion = self.db.conectar()
             self.miCursor = self.miConexion.cursor()
             msg_box = messagebox.askquestion('Eliminar paciente', '¿Desea elminar al paciente?', icon='warning')
             if msg_box == 'yes':
@@ -171,7 +172,7 @@ class MasterPanel:
             messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")
 
     def cargar_tabla_pacientes(self):
-        self.miConexion = self.db.conectar()
+        #self.miConexion = self.db.conectar()
         self.miCursor = self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
         self.miCursor.execute(bd)
@@ -224,7 +225,7 @@ class MasterPanel:
         self.boton_pos.config(state= 'normal', bg= '#1F704B')
         self.boton_previo.config(state= 'disabled', bg= '#1F704B')
         indice_paciente= 0
-        self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+        #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor = self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
         self.miCursor.execute(bd)
@@ -233,8 +234,8 @@ class MasterPanel:
         for i in range(0, incremento):
                 self.tabla_paciente.insert('', i, text= datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
 
-    def buscar_paciente(self):
-        self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+    def buscar_paciente(self, event=None):
+        #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor = self.miConexion.cursor()
         self.buscar = self.dato_paciente.get()
 
@@ -247,8 +248,8 @@ class MasterPanel:
             i= i+1
             self.tabla_paciente.insert('', i, text = datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
 
-    def buscar_historia(self):
-        self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+    def buscar_historia(self, event=None):
+        #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor = self.miConexion.cursor()
         self.buscar = self.dato_paciente2.get()
         try:
@@ -284,8 +285,9 @@ class MasterPanel:
             #messagebox.showinfo("Continuar", "Continuar")
 
     def mostrar_usuarios(self):
-        self.miConexion = self.db.conectar()
+        #self.miConexion = self.db.conectar()
         self.miCursor = self.miConexion.cursor()
+        
         bd = "SELECT Nombre_usuario, Clave, Tipo_usuario FROM Usuarios"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
@@ -305,7 +307,6 @@ class MasterPanel:
 
     def agregar_usuario(self):
         user = Usuario()
-        #user.conexionBBDD()
         user.ventana()
         #self.mostrar_usuarios()
 
@@ -314,7 +315,6 @@ class MasterPanel:
             (sel,) = self.tabla_usuario.selection()
             self.usuario = self.tabla_usuario.item(sel, "text")
             user = Usuario()
-            #user.conexionBBDD()
             user.cargar_datos(self.usuario)
             user.ventana()
             
@@ -323,11 +323,12 @@ class MasterPanel:
         #self.mostrar_usuarios()
 
     def eliminar_usuario(self):
-        #print(self.nombre_usuario)
-        user = Usuario()
-        #user.conexionBBDD()
-        user.eliminar_usuario(self.nombre_usuario)
-        #self.mostrar_usuarios()
+        try:
+            user = Usuario()
+            user.eliminar_usuario(self.nombre_usuario)
+        except:
+            pass
+        self.mostrar_usuarios()
 
     def nada(self):
         pass
@@ -407,7 +408,7 @@ class MasterPanel:
         Label(self.frame_principal, image= self.logo, bg= 'gray90').pack(expand= 1)
 
         #ESTILO DE LAS TABLAS DE DATOS TREEVIEW
-        self.estilo_tabla = ttk.Style()
+        self.estilo_tabla = ttk.Style(self.frame_usuarios)
         #estilo_tabla.theme_use('classic')
         self.estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 30)
         #estilo_tabla.map('Treeview.Heading', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
@@ -452,8 +453,10 @@ class MasterPanel:
         Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 1, row= 2)
         Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 2, row= 1, pady= 5)
         Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= fuenteb).grid(column= 2, row= 2)
-        self.busqueda = ttk.Entry(self.frame_pacientes, textvariable= self.dato_paciente, width= 20 ,font= fuenten).grid(column= 3, row= 1, pady= 5)
+        self.busqueda = ttk.Entry(self.frame_pacientes, textvariable= self.dato_paciente, width= 20 ,font= fuenten)
+        self.busqueda.grid(column= 3, row= 1, pady= 5)
         Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'white', font= fuenteb, command= self.buscar_paciente).grid(column= 3, row= 2, pady=(0,5))
+        self.busqueda.bind('<Return>', (lambda event: self.buscar_paciente()))#es para apretar Intro y se ejecute, una opción a el botón
 
         self.boton_previo = tk.Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_previos)
         self.boton_previo.grid(column= 0, row= 3, padx= 10, pady=(0,5), sticky= "W")
@@ -491,6 +494,7 @@ class MasterPanel:
         self.busqueda2.grid(column= 1, row= 1, pady= 5, sticky="e")
         self.busqueda3 = Button(self.historia, text= 'Buscar', bg= '#1F704B', fg= 'white', font= fuenteb, command= self.buscar_historia)
         self.busqueda3.grid(column= 2, row= 1, padx=(10,5), pady= 5)
+        self.busqueda2.bind('<Return>', (lambda event: self.buscar_historia()))#es para apretar Intro y se ejecute, una opción a el botón
         
         self.frame_tabla_historia= Frame(self.historia, bg= 'gray90')
         self.frame_tabla_historia.grid(columnspan= 4, row= 4, sticky= 'nsew')
