@@ -5,8 +5,7 @@ from tkinter import ttk, messagebox
 from datetime import datetime
 from paginas.dienteodontograma import Diente
 from functools import partial
-import util.generic as utl
-
+import util.config as utl
 
 pacientes=[]
 color_index = 0
@@ -18,12 +17,12 @@ class Odontograma:
         super().__init__(*args, **kwargs)
         self.dni_paciente = StringVar()
         self.ID_odonto = StringVar()
-        
+
     def ventana_odonto(self):
-        #self.ventana_odontograma= tk.Toplevel()
-        #self.ventana_odontograma.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
-        #self.ventana_odontograma.focus_set() # Mantiene el foco cuando se abre la ventana.
-        self.ventana_odontograma = tk.Tk()
+        self.ventana_odontograma= tk.Toplevel()
+        self.ventana_odontograma.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+        self.ventana_odontograma.focus_set() # Mantiene el foco cuando se abre la ventana.
+        #self.ventana_odontograma = tk.Tk()
         self.ventana_odontograma.geometry('750x600')
         self.ventana_odontograma.grid_columnconfigure(0, weight= 1)
         self.ventana_odontograma.configure(bg="gray")
@@ -65,10 +64,11 @@ class Odontograma:
         ladoy = ttk.Scrollbar(self.frame_tabla, orient ='vertical', command = self.tabla_prestaciones.yview)
         ladoy.grid(column = 5, row = 1, sticky='ns')
         self.tabla_prestaciones.configure(yscrollcommand = ladoy.set)
-        estilo_tabla2 = ttk.Style(self.ventana_odontograma)
+        self.estilo_tabla2 = ttk.Style(self.ventana_odontograma)
         #estilo_tabla.theme_use('classic')
-        estilo_tabla2.configure("Treeview", font= ('Arial', 10, "bold"), foreground= 'black', rowheight= 10)
-        estilo_tabla2.configure('Treeview.Heading', background= 'green', foreground= 'black', padding= 3, font= ('Arial', 12, "bold"))
+        self.estilo_tabla2.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 30)
+        #estilo_tabla.map('Treeview.Heading', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
+        self.estilo_tabla2.configure('Treeview.Heading', background= 'green', fg= 'black', padding= 3, font= fuenteb)
         self.tabla_prestaciones.heading("Fecha", text= "Fecha")
         self.tabla_prestaciones.heading("Código", text= "Código")
         self.tabla_prestaciones.heading("Prestacion", text= "Prestacion")
@@ -132,7 +132,7 @@ class Odontograma:
     def guardar_odontograma(self):
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea guardar?', icon= 'warning')
         if answer:
-            
+
         #print("guardar odontograma")
             f = datetime.today()
             fecha = f.strftime("%d")+"-"+f.strftime("%m")+"-"+f.strftime("%Y")
@@ -144,7 +144,7 @@ class Odontograma:
                 self.miCursor = self.miConexion.cursor()
                 #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
                 sql = "INSERT INTO Odontograma VALUES (NULL,?,?,?)"
-                
+
                 self.miCursor.execute(sql, datos)
                 self.miConexion.commit()
                 #self.ID_odonto_actual= self.miCursor.fetchone()
@@ -185,7 +185,7 @@ class Odontograma:
                 break
             else:
                 self.diente_actual=[numero, self.ID_odonto, 'white','white','white','white','white','white','white']
-        
+
         #print("diente cargado", self.diente_actual)
         width = 100
         height = 100
@@ -342,7 +342,7 @@ class Odontograma:
 
     def corona(self, numero):
         #print(color)
-        
+
         if self.diente_actual[8] == "red":
             self.diente_actual[8] = "white"
             self.boton_corona.config(bg='blue')
@@ -355,7 +355,7 @@ class Odontograma:
         else:
             self.diente_actual[8] = "red"
             self.boton_corona.config(bg='white')
-        
+
         width = 100
         height = 100
         x1 = 100
@@ -373,7 +373,7 @@ class Odontograma:
             if i != 8:
                 self.diente_actual[i] = 'white'    
             #self.diente_actual=[numero, 'white', 'white', 'white', 'white', 'white', 'white', self.diente_actual[8]]
-    
+
     def extraccion(self, numero):
         if self.diente_actual[7] == "red":
             self.diente_actual[7] = "white"
@@ -922,4 +922,4 @@ class Odontograma:
         self.canvas.create_text(600, y2+50, text= 'Realizadas', fill= "black", font= ('Helvetica 10 bold'))
 
 if __name__ == "__main__":
-    Odontograma()    
+    Odontograma()

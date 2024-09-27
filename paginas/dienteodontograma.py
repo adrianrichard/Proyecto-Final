@@ -16,8 +16,8 @@ class Diente:
         self.ventana_secundaria = tk.Toplevel()
         self.ventana_secundaria.title("Editar diente")
         self.ventana_secundaria.geometry('400x300')
-        #self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
-        #self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
+        self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+        self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
         self.ventana_secundaria.config(bg= 'gray')
         #item = self.tabla_turnos.focus()
         #print(self.turno_seleccionado)

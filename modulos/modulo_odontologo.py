@@ -1,13 +1,17 @@
 import tkinter as tk
 from tkinter.font import BOLD
 from tkinter import ttk
-import util.generic as utl
+import util.config as utl
 from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Frame
-from forms.form_paciente import Paciente
-#from paginas.tkcalendar import TKCalendar
+from modulos.modulo_paciente import Paciente
+from modulos.modulo_usuario import Usuario
+from paginas.tkcalendar import TKCalendar
+from paginas.odontograma import Odontograma
 from util.visorimagenes import ImageGalleryApp
 import sqlite3
+from bd.conexion import Conexion
+
 fuenteb= utl.definir_fuente_bold()
 fuenten= utl.definir_fuente()
 pacientes=[]

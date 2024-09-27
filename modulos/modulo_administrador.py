@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter.font import BOLD
 from tkinter import ttk
-import util.generic as utl
+import util.config as utl
 from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Frame
-from forms.form_paciente import Paciente
-from forms.form_usuario import Usuario
+from modulos.modulo_paciente import Paciente
+from modulos.modulo_usuario import Usuario
 from paginas.tkcalendar import TKCalendar
 from paginas.odontograma import Odontograma
 from util.visorimagenes import ImageGalleryApp

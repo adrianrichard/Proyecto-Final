@@ -1,10 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import  *
-import util.generic as utl
-from forms.form_administrador import MasterPanel
-from forms.form_secretario import SecretarioPanel
-from forms.form_odontologo import OdontologoPanel
+import util.config as utl
+from modulos.modulo_administrador import MasterPanel
+from modulos.modulo_secretario import SecretarioPanel
+from modulos.modulo_odontologo import OdontologoPanel
 from tkinter  import messagebox
 from bd.conexion import Conexion
 import re

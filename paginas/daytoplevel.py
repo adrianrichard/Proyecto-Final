@@ -1,4 +1,4 @@
-import util.generic as utl
+import util.config as utl
 import tkinter as tk
 from tkinter import ttk
 from tkinter import *

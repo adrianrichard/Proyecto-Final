@@ -7,7 +7,7 @@ import sqlite3
 from tkinter import  messagebox
 from paginas.datehandler.datehandler import DateHandler as dH
 from paginas.daytoplevel import DayTopWindow
-import util.generic as utl
+import util.config as utl
 from bd.conexion import Conexion
 
 from pathlib import Path

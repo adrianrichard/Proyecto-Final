@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.font import BOLD
-import util.generic as utl
+import util.config as utl
 from bd.conexion import Conexion
 
 from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
