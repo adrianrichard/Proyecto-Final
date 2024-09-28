@@ -3,13 +3,12 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
-from paginas.dienteodontograma import Diente
+#from paginas.dienteodontograma import Diente
 from functools import partial
 import util.config as utl
+from bd.conexion import Conexion
 
 pacientes=[]
-color_index = 0
-#colores = ['white', 'blue', 'red', 'green']
 buttons = []
 
 class Odontograma:
@@ -17,6 +16,10 @@ class Odontograma:
         super().__init__(*args, **kwargs)
         self.dni_paciente = StringVar()
         self.ID_odonto = StringVar()
+        self.fuenten= utl.definir_fuente()
+        self.fuenteb= utl.definir_fuente_bold()
+        self.db = Conexion()
+        self.miConexion = self.db.conectar()
 
     def ventana_odonto(self):
         self.ventana_odontograma= tk.Toplevel()
@@ -26,7 +29,7 @@ class Odontograma:
         self.ventana_odontograma.geometry('750x600')
         self.ventana_odontograma.grid_columnconfigure(0, weight= 1)
         self.ventana_odontograma.configure(bg="gray")
-        utl.centrar_ventana(self.ventana_odontograma, 750, 580)
+        utl.centrar_ventana(self.ventana_odontograma, 900, 700)
         self.fecha_actual = datetime.now().date()
         self.fecha_actual = self.fecha_actual.strftime("%d-%m-%Y")
         Label(self.ventana_odontograma, text= 'Odontograma', font= 'Arial 20 bold', bg="gray", fg='white').grid(column= 0, row= 0)
@@ -38,12 +41,12 @@ class Odontograma:
         #print(nombre, apellido, obra_social,dni)
         self.frame_datos_paciente=Frame(self.ventana_odontograma, border= 1, borderwidth= 2, bg= "gray90")
         self.frame_datos_paciente.grid(column= 0, row= 1, sticky= "nsew")
-        Label(self.frame_datos_paciente, text= 'Nombre Completo:', font= ('Arial', 12, "bold"), bg= "gray90").grid(column= 0, row= 0, sticky= 'e', padx= (5,0))
-        Label(self.frame_datos_paciente, text= apellido+', '+nombre, font= 'Arial 12', bg= "gray90").grid(column= 1, row= 0, sticky= 'e', padx= (0, 15))
-        Label(self.frame_datos_paciente, text= 'D.N.I.:', font= ('Arial', 12, "bold"), bg= "gray90").grid(column= 2, row= 0, sticky= 'e', padx= (5,0))
-        Label(self.frame_datos_paciente, text= dni, font= 'Arial 12', bg= "gray90").grid(column= 3, row= 0, sticky= 'e', padx= (0, 15))
-        Label(self.frame_datos_paciente, text= 'Obra Social: ',  font= 'Arial 12 bold', bg= "gray90").grid(column=4, row= 0, sticky= 'e', padx= (5,0))
-        Label(self.frame_datos_paciente, text= obra_social, font= 'Arial 12', bg= "gray90").grid(column= 5, row= 0, sticky= 'e')
+        Label(self.frame_datos_paciente, text= 'Nombre Completo:', font= self.fuenteb, bg= "gray90").grid(column= 0, row= 0, sticky= 'e', padx= (5,0))
+        Label(self.frame_datos_paciente, text= apellido+', '+nombre, font= self.fuenten, bg= "gray90").grid(column= 1, row= 0, sticky= 'e', padx= (0, 15))
+        Label(self.frame_datos_paciente, text= 'D.N.I.:', font= self.fuenteb, bg= "gray90").grid(column= 2, row= 0, sticky= 'e', padx= (5,0))
+        Label(self.frame_datos_paciente, text= dni, font= self.fuenten, bg= "gray90").grid(column= 3, row= 0, sticky= 'e', padx= (0, 15))
+        Label(self.frame_datos_paciente, text= 'Obra Social: ',  font= self.fuenteb, bg= "gray90").grid(column=4, row= 0, sticky= 'e', padx= (5,0))
+        Label(self.frame_datos_paciente, text= obra_social, font= self.fuenten, bg= "gray90").grid(column= 5, row= 0, sticky= 'e')
         self.ancho = 700
         # self.dientes = []
         # self.crear_dientes()
@@ -59,16 +62,17 @@ class Odontograma:
         self.crear_dientes()
         self.frame_tabla = Frame(self.ventana_odontograma)
         self.frame_tabla.grid(column= 0, row= 3, pady= (10,10))
-        self.tabla_prestaciones = ttk.Treeview(self.frame_tabla, columns= ("Fecha",  "Prestacion", "Código","Odontologo"), show= 'headings', height= 8, selectmode ='browse')
+        self.estilo_tabla2 = ttk.Style(self.ventana_odontograma)
+        #estilo_tabla.theme_use('classic')
+        self.estilo_tabla2.configure("Treeview", font= self.fuenten, foreground= 'black', rowheight= 20)
+        #estilo_tabla.map('Treeview.Heading', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
+        self.estilo_tabla2.configure('Treeview.Heading', background= 'green', fg= 'black', padding= 3, font= self.fuenteb)
+        self.tabla_prestaciones = ttk.Treeview(self.frame_tabla, columns= ("Fecha",  "Prestacion", "Código", "Odontologo"), show= 'headings', height= 8, selectmode= 'browse')
         self.tabla_prestaciones.grid(column= 0, row= 1, columnspan= 4, sticky= 'nsew', padx= 5, pady= 5)
         ladoy = ttk.Scrollbar(self.frame_tabla, orient ='vertical', command = self.tabla_prestaciones.yview)
         ladoy.grid(column = 5, row = 1, sticky='ns')
         self.tabla_prestaciones.configure(yscrollcommand = ladoy.set)
-        self.estilo_tabla2 = ttk.Style(self.ventana_odontograma)
-        #estilo_tabla.theme_use('classic')
-        self.estilo_tabla2.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 30)
-        #estilo_tabla.map('Treeview.Heading', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
-        self.estilo_tabla2.configure('Treeview.Heading', background= 'green', fg= 'black', padding= 3, font= fuenteb)
+       
         self.tabla_prestaciones.heading("Fecha", text= "Fecha")
         self.tabla_prestaciones.heading("Código", text= "Código")
         self.tabla_prestaciones.heading("Prestacion", text= "Prestacion")
@@ -84,7 +88,7 @@ class Odontograma:
         self.frame_botones.grid(column= 0, row= 4, pady= (10,0))
         self.boton_guardar_odonto=Button(self.frame_botones, text= 'Guardar', command= self.guardar_odontograma, bg= "white", width= 8)
         self.boton_guardar_odonto.grid(row= 0, column= 0, padx= 10)
-        self.boton_guardar_odonto=Button(self.frame_botones, text= 'Salir', command= self.salir, bg= utl.definir_color_fondo(), width= 8)
+        self.boton_guardar_odonto=Button(self.frame_botones, text= 'Salir', command= self.salir, bg= "orange", width= 8)
         self.boton_guardar_odonto.grid(row= 0, column= 1, padx= 10)
         
         self.ventana_odontograma.mainloop()
@@ -97,7 +101,7 @@ class Odontograma:
     def cargar_paciente(self, dni):
         self.dni_paciente = dni
         try:
-            self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+            #self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
             self.miCursor.execute("SELECT apellido, nombre, dni, obrasocial FROM paciente WHERE dni=?", (dni,))
             self.paciente = self.miCursor.fetchone()
@@ -110,7 +114,7 @@ class Odontograma:
         #print(datos)
 
     def cargar_ultimo_odontograma(self):
-        self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+        #self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
         #print(self.dni_paciente)
         try:            
@@ -135,12 +139,12 @@ class Odontograma:
 
         #print("guardar odontograma")
             f = datetime.today()
-            fecha = f.strftime("%d")+"-"+f.strftime("%m")+"-"+f.strftime("%Y")
+            fecha = f.strftime("%Y")+"-"+f.strftime("%m")+"-"+f.strftime("%d")
             #print(fecha)
             datos= self.dni_paciente,fecha,"Militello"
             #print(datos)
             try:
-                self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+                #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
                 self.miCursor = self.miConexion.cursor()
                 #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
                 sql = "INSERT INTO Odontograma VALUES (NULL,?,?,?)"
@@ -156,9 +160,12 @@ class Odontograma:
 
     def editar_diente(self, numero):
         #print('prueba', numero)
-        self.ventana_secundaria = tk.Tk()
+        self.ventana_secundaria = tk.Toplevel()
         self.ventana_secundaria.title("Editar diente")
         self.ventana_secundaria.geometry('300x350')
+        utl.centrar_ventana(self.ventana_secundaria, 300, 350)
+        self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+        self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
         Label(self.ventana_secundaria, text= "EDITAR DIENTE", font= ("Arial", 15, 'bold'), fg= 'white', bg= "gray", width= 60).pack(pady= 10)
         Label(self.ventana_secundaria, text= "DIENTE "+str(numero), font= ("Arial", 12, 'bold'), fg= 'white', bg= "gray", width= 60).pack()
         diente_frame = Frame(self.ventana_secundaria)
@@ -410,6 +417,8 @@ class Odontograma:
     def cancelar(self):
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea salir sin guardar?', icon= 'warning')
         if answer:
+            self.ventana_odontograma.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+            self.ventana_odontograma.focus_set() # Mantiene el foco cuando se abre la ventana.
             self.ventana_secundaria.destroy()
             self.canvas.delete("all")
             self.crear_dientes()
@@ -421,7 +430,7 @@ class Odontograma:
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea guardar?', icon= 'warning')
         if answer:
             try:
-                self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+                #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
                 self.miCursor = self.miConexion.cursor()
                 #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
                 sql = "INSERT INTO Diente VALUES (?,?,?,?,?,?,?,?,?,?)"
@@ -431,6 +440,8 @@ class Odontograma:
                 #self.ID_odonto_actual= self.miCursor.fetchone()
                 #print(self.ID_odonto_actual[0])
                 messagebox.showinfo("GUARDAR","Diente guardado exitosamente")
+                self.ventana_odontograma.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+                self.ventana_odontograma.focus_set() # Mantiene el foco cuando se abre la ventana.
                 self.ventana_secundaria.destroy()
             except:
                 messagebox.showinfo("Diente", "No se pudieron guardar los cambios")
@@ -443,7 +454,7 @@ class Odontograma:
         #print('crear vector con los dientes')
         #print(self.ID_odonto)
         try:
-            self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+            #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor = self.miConexion.cursor()
             #sql = "SELECT * from Diente WHERE ID_odontograma = ? ORDER BY ID_odontograma"
             self.miCursor.execute("SELECT * from Diente WHERE DNI_paciente = ?", (self.dni_paciente,))
