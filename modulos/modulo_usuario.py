@@ -95,7 +95,7 @@ class Usuario:
         self.nombre_usuario.set(usuario)
         self.nombre_usuario_anterior=usuario
         try:
-            self.miCursor.execute("SELECT * FROM Usuarios WHERE Nombre_usuario=?", (usuario,))
+            self.miCursor.execute("SELECT * FROM usuarios WHERE nombre_usuario=?", (usuario,))
             campos=self.miCursor.fetchall()        
             self.clave.set(campos[0][2])
             self.tipo_usuario.set(campos[0][3])
@@ -105,7 +105,7 @@ class Usuario:
     def validar_usuario(self, nombre_usuario):
        
         try:
-            self.miCursor.execute('SELECT COUNT(Nombre_usuario) FROM Usuarios WHERE Nombre_usuario=?', (nombre_usuario,))
+            self.miCursor.execute('SELECT COUNT(nombre_usuario) FROM usuarios WHERE nombre_usuario=?', (nombre_usuario,))
             existe = self.miCursor.fetchone()[0]
             self.usuario_existente = bool(existe)
             
@@ -123,7 +123,7 @@ class Usuario:
                 pass
             else:                
                 try:
-                    sql="UPDATE Usuarios SET Nombre_usuario =?, Clave=? where Nombre_usuario=?"
+                    sql="UPDATE usuarios SET nombre_usuario =?, pass_usuario=? where nombre_usuario=?"
                     self.miCursor.execute(sql, datos)
                     self.miConexion.commit()
                     messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente")
@@ -136,9 +136,9 @@ class Usuario:
     def eliminar_usuario(self, nombre):
 
         msg_box = messagebox.askquestion('Eliminar usuario', '¿Desea elminar al usuario?', icon='warning')
-        if msg_box == 'yes':
+        if msg_box == 'yes'and nombre != 'admin':
             try:
-                self.miCursor.execute("DELETE FROM Usuarios WHERE Nombre_usuario = ?", (nombre,))
+                self.miCursor.execute("DELETE FROM usuarios WHERE nombre_usuario = ?", (nombre,))
                 self.miConexion.commit()
                 messagebox.showinfo("ELIMINAR","Usuario eliminado exitosamente")
             except:

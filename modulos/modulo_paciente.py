@@ -5,6 +5,7 @@ import util.config as utl
 from tkinter import messagebox, Button, Entry, Label
 from tkinter import  StringVar, Frame
 import re
+from bd.conexion import Conexion
 #from bd.conexion import Conexion
 import sqlite3
 fuenteb= utl.definir_fuente_bold()
@@ -13,21 +14,21 @@ ancho=15
 
 class Paciente:
 
-    def conexionBBDD(self):
-        try:
-            self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
-            self.miCursor=self.miConexion.cursor()
-        except:
-            self.miCursor.execute('''
-                CREATE TABLE Paciente (
-                ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                NOMBRE VARCHAR(50) NOT NULL,
-                APELLIDO VARCHAR(50) NOT NULL)
-                ''')
-            self.miConexion.commit()
-            self.miConexion.close()
+    # def conexionBBDD(self):
+    #     try:
+    #         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
+    #         self.miCursor=self.miConexion.cursor()
+    #     except:
+    #         self.miCursor.execute('''
+    #             CREATE TABLE Paciente (
+    #             ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    #             NOMBRE VARCHAR(50) NOT NULL,
+    #             APELLIDO VARCHAR(50) NOT NULL)
+    #             ''')
+    #         self.miConexion.commit()
+    #         self.miConexion.close()
 
-            messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
+    #         messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
     
     def validar_email(self, email):
         email = self.entry_correo.get()
@@ -59,24 +60,24 @@ class Paciente:
     def cargar_datos(self, dni):
         self.dni_paciente_anterior=dni
         try:
-            self.miCursor.execute("SELECT * FROM paciente WHERE dni=?", (dni,))
+            self.miCursor.execute("SELECT * FROM Pacientes WHERE ID=?", (dni,))
             campos=self.miCursor.fetchall()
-        
+            
             self.nombre_paciente.set(campos[0][1])
             self.apellido_paciente.set(campos[0][2])
             self.dni_paciente.set(dni)
-            self.domicilio_paciente.set(campos[0][4])
-            self.telefono_paciente.set(campos[0][5])
-            self.email_paciente.set(campos[0][6])
-            self.obrasocial_paciente.set(campos[0][7])
-            self.nrosocio_paciente.set(campos[0][8])
+            self.domicilio_paciente.set(campos[0][3])
+            self.telefono_paciente.set(campos[0][4])
+            self.email_paciente.set(campos[0][5])
+            self.obrasocial_paciente.set(campos[0][6])
+            self.nrosocio_paciente.set(campos[0][7])
         except:
             messagebox.showinfo("Buscar paciente", "No se ha podido encontrar el paciente")
 
     def actualizar(self):        
         datos=self.nombre_paciente.get().upper(), self.apellido_paciente.get().upper(), self.dni_paciente.get(), self.domicilio_paciente.get().upper(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get().upper(),self.nrosocio_paciente.get(), self.dni_paciente_anterior
         try:
-            sql="UPDATE Paciente SET nombre =?, apellido=?, dni=?, domicilio=?, telefono=?, email=?, obrasocial=?, nrosocio=? where dni=?"
+            sql="UPDATE Pacientes SET nombre =?, apellido=?, ID=?, domicilio=?, telefono=?, email=?, obrasocial=?, nrosocio=? where ID=?"
             self.miCursor.execute(sql, datos)
             self.miConexion.commit()
             messagebox.showinfo("GUARDAR","Paciente actualizado exitosamente")
@@ -103,7 +104,7 @@ class Paciente:
         if(guardar):    
             datos=self.nombre_paciente.get().upper(), self.apellido_paciente.get().upper(), self.dni_paciente.get(), self.domicilio_paciente.get().upper(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get().upper(),self.nrosocio_paciente.get()
             try:
-                self.miCursor.execute("INSERT INTO Paciente VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
+                self.miCursor.execute("INSERT INTO Pacientes VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
                 self.miConexion.commit()
                 messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
                 self.frame_paciente.destroy()
@@ -190,7 +191,10 @@ class Paciente:
         self.obrasocial_paciente =  StringVar()
         self.nrosocio_paciente =  StringVar()
         self.correovalido=False
-        self.conexionBBDD()
+        self.db = Conexion()
+        self.miConexion=self.db.conectar()
+        self.miCursor=self.miConexion.cursor()
+        #self.conexionBBDD()
 
 if __name__ == "__main__":
     Paciente()

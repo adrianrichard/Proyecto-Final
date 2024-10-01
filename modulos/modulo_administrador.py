@@ -163,7 +163,7 @@ class MasterPanel:
             self.miCursor = self.miConexion.cursor()
             msg_box = messagebox.askquestion('Eliminar paciente', '¿Desea elminar al paciente?', icon='warning')
             if msg_box == 'yes':
-                self.miCursor.execute("DELETE FROM Paciente WHERE dni = ?", (self.dni_paciente,))
+                self.miCursor.execute("DELETE FROM Pacientes WHERE ID = ?", (self.dni_paciente,))
                 self.miConexion.commit()
                 messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
                 self.dni_paciente=[]
@@ -174,7 +174,7 @@ class MasterPanel:
     def cargar_tabla_pacientes(self):
         #self.miConexion = self.db.conectar()
         self.miCursor = self.miConexion.cursor()
-        bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
+        bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido"
         self.miCursor.execute(bd)
         pacientes = self.miCursor.fetchall()
         return pacientes
@@ -200,7 +200,7 @@ class MasterPanel:
             indice_paciente = 0
 
     def cargar_pacientes_posteriores(self):
-        global indice_paciente
+        global indice_paciente        
         self.boton_previo.config(state= 'normal', bg= '#1F704B')
         paciente_lista = self.cargar_tabla_pacientes()
         if indice_paciente != len(paciente_lista):
@@ -225,21 +225,30 @@ class MasterPanel:
         self.boton_pos.config(state= 'normal', bg= '#1F704B')
         self.boton_previo.config(state= 'disabled', bg= '#1F704B')
         indice_paciente= 0
+        
         #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor = self.miConexion.cursor()
-        bd = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
+        bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
+        #print(len(datos))
+        #if  len(datos)<incremento:
+            
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-        for i in range(0, incremento):
-                self.tabla_paciente.insert('', i, text= datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
-
+        if (len(datos)>incremento):
+            for i in range(0, incremento):
+                    self.tabla_paciente.insert('', i, text= datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
+        else:
+            self.boton_pos.config(state= 'disabled', bg= '#1F704B')
+            for i in range(0, len(datos)):
+                    self.tabla_paciente.insert('', i, text= datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
+    
     def buscar_paciente(self, event=None):
         #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor = self.miConexion.cursor()
         self.buscar = self.dato_paciente.get()
 
-        bd = f"SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' ORDER BY Apellido ASC"
+        bd = f"SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' ORDER BY Apellido ASC"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
@@ -253,7 +262,7 @@ class MasterPanel:
         self.miCursor = self.miConexion.cursor()
         self.buscar = self.dato_paciente2.get()
         try:
-            bd = f"SELECT Apellido, Nombre, DNI, ObraSocial FROM Paciente WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' OR DNI LIKE '{self.buscar}%' ORDER BY Apellido ASC"
+            bd = f"SELECT Apellido, Nombre, ID, ObraSocial FROM Pacientes WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' OR ID LIKE '{self.buscar}%' ORDER BY Apellido ASC"
             self.miCursor.execute(bd)
             datos = self.miCursor.fetchall()
             self.tabla_historia.delete(*self.tabla_historia.get_children())
@@ -288,7 +297,7 @@ class MasterPanel:
         #self.miConexion = self.db.conectar()
         self.miCursor = self.miConexion.cursor()
         
-        bd = "SELECT Nombre_usuario, Clave, Tipo_usuario FROM Usuarios"
+        bd = "SELECT nombre_usuario, pass_usuario, tipo_usuario FROM usuarios"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
         self.tabla_usuario.delete(*self.tabla_usuario.get_children())
@@ -507,12 +516,7 @@ class MasterPanel:
         self.tabla_historia.heading("Nombre", text= "Nombre")
         self.tabla_historia.heading("D.N.I.", text= "D.N.I.")
         self.tabla_historia.heading("Obra social", text= "Obra social")
-
         # # Ajustar el ancho de las columnas
-        # self.tabla_historia.column("Apellido", width= 70, anchor= 'center')
-        # self.tabla_historia.column("Nombre", width= 200)
-        # self.tabla_historia.column("D.N.I.", width= 250)
-        # self.tabla_historia.column("Obra social", width= 200)
         self.tabla_historia.bind("<<TreeviewSelect>>", self.seleccionar_paciente2)
         self.tabla_historia.bind("<Double-1>", self.editar_odontograma)
 
