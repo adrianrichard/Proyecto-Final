@@ -52,7 +52,7 @@ class TKCalendar():
         self.conn = self.db.conectar()
         self.cur = self.conn.cursor()
         try:                    
-            self.query = f"SELECT strftime('%d', fecha) FROM turno WHERE strftime('%Y', fecha)=? AND strftime('%m', fecha)= ?"
+            self.query = f"SELECT strftime('%d', fecha) FROM turnos WHERE strftime('%Y', fecha)=? AND strftime('%m', fecha)= ?"
             self.cur.execute(self.query, (anio_turno, mes_turno, ))
             self.dias_turno  = [fila[0] for fila in self.cur.fetchall()]
             self.conn.commit()

@@ -226,7 +226,6 @@ class MasterPanel:
         self.boton_previo.config(state= 'disabled', bg= '#1F704B')
         indice_paciente= 0
         
-        #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor = self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido"
         self.miCursor.execute(bd)
@@ -244,7 +243,6 @@ class MasterPanel:
                     self.tabla_paciente.insert('', i, text= datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
     
     def buscar_paciente(self, event=None):
-        #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor = self.miConexion.cursor()
         self.buscar = self.dato_paciente.get()
 
@@ -253,12 +251,11 @@ class MasterPanel:
         datos = self.miCursor.fetchall()
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
         i = -1
-        for dato in datos:
+        for _ in datos:
             i= i+1
             self.tabla_paciente.insert('', i, text = datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
 
     def buscar_historia(self, event=None):
-        #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor = self.miConexion.cursor()
         self.buscar = self.dato_paciente2.get()
         try:
@@ -294,7 +291,6 @@ class MasterPanel:
             #messagebox.showinfo("Continuar", "Continuar")
 
     def mostrar_usuarios(self):
-        #self.miConexion = self.db.conectar()
         self.miCursor = self.miConexion.cursor()
         
         bd = "SELECT nombre_usuario, pass_usuario, tipo_usuario FROM usuarios"

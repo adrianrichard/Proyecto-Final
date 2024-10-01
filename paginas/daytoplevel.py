@@ -28,6 +28,7 @@ class DayTopWindow(Toplevel):
         self.extension = None
         self.confirmation = None
         self.db = Conexion()
+        self.conn= self.db.conectar()
 
         self.dia = dia
         self.mes = mes
@@ -35,6 +36,7 @@ class DayTopWindow(Toplevel):
 
         self.crear_encabezado()
         self.crear_botones_cambio_fecha()
+        self.cargar_odontologos()
         self.crear_lista_turnos()
         self.cargar_turnos()
 
@@ -79,18 +81,16 @@ class DayTopWindow(Toplevel):
         self.tabla_turnos.bind("<Double-1>", self.editar_turno)
 
     def cargar_turnos(self):
-        start_date = date(self.anio, self.mes, self.dia)
-
-        self.conn= self.db.conectar()
+        start_date = date(self.anio, self.mes, self.dia)        
         self.cur= self.conn.cursor()
         try:                    
-            self.cur.execute("SELECT * FROM turno WHERE fecha= ? ORDER BY hora", (start_date,))
+            self.cur.execute("SELECT * FROM turnos WHERE fecha= ? ORDER BY hora", (start_date,))
             self.turnos_dados = self.cur.fetchall()
             self.conn.commit()
         except:
             messagebox.showinfo("Turnos", "No hay turnos")
 
-        self.conn.close()
+        #self.conn.close()
 
         start_time = datetime.strptime("08:00", "%H:%M")
         # Intervalo de 30 minutos
@@ -142,8 +142,8 @@ class DayTopWindow(Toplevel):
         if (self.prestacion != ''):
             self.selector_prestacion.set(self.prestacion)
         self.selector_prestacion.bind("<<ComboboxSelected>>", lambda e: self.ventana_secundaria.focus())
-        odontologos = ["MILITELLO", "MACUA", "RAMIREZ"]
-        self.selector_odontologo= ttk.Combobox(self.ventana_secundaria, state= "readonly", values= odontologos, width= 25, justify= CENTER, background= "white")
+        #odontologos = ["MILITELLO", "MACUA", "RAMIREZ"]
+        self.selector_odontologo= ttk.Combobox(self.ventana_secundaria, state= "readonly", values= self.odontologos, width= 25, justify= CENTER, background= "white")
         self.selector_odontologo.pack(pady= 8)
         self.selector_odontologo.set("Odontólogo")
         if (self.odontologo != ''):
@@ -166,15 +166,15 @@ class DayTopWindow(Toplevel):
 
     def eliminar_turno(self):
         start_date = date(self.anio, self.mes, self.dia)
-        self.conn=  self.db.conectar()
+        #self.conn=  self.db.conectar()
         self.cur= self.conn.cursor()        
         hora= self.horario
         answer = messagebox.askokcancel(title='Eliminar', message='¿Desea eliminar el turno?', icon='warning')
         if answer:
             try:
-                self.cur.execute("DELETE FROM turno WHERE fecha= ? AND hora= ?", (start_date, hora,))
+                self.cur.execute("DELETE FROM turnos WHERE fecha= ? AND hora= ?", (start_date, hora,))
                 self.conn.commit()
-                self.conn.close()
+                #self.conn.close()
                 self.grab_set_global()
                 self.focus_set()
                 self.ventana_secundaria.destroy()
@@ -192,10 +192,10 @@ class DayTopWindow(Toplevel):
             answer = messagebox.askokcancel(title='Guardar', message='¿Desea guardar el turno?', icon='warning')
             if answer:
                 try:
-                    sql="REPLACE INTO turno VALUES(?, ?, ?, ?, ?)"
+                    sql="REPLACE INTO turnos VALUES(?, ?, ?, ?, ?)"
                     self.cur.execute(sql, datos)
                     self.conn.commit()
-                    self.conn.close()
+                    #self.conn.close()
                     self.grab_set_global()
                     self.focus_set()                
                     self.ventana_secundaria.destroy()
@@ -210,7 +210,19 @@ class DayTopWindow(Toplevel):
                 messagebox.showerror("Prestación", "Elija la prestación")
             elif self.selector_odontologo.get().upper() == "ODONTÓLOGO":
                 messagebox.showerror("Odontólogo", "Elija odontólogo")
-
+    
+    def cargar_odontologos(self):
+        self.cur= self.conn.cursor()
+        self.lista_odontologos = []
+        self.odontologos = []
+        try:                    
+            self.cur.execute("SELECT Apellido_odontologo FROM odontologos")
+            self.lista_odontologos = self.cur.fetchall()
+            self.odontologos = [odontologo[0] for odontologo in self.lista_odontologos]
+            #print(apellidos)
+            self.conn.commit()
+        except:
+            messagebox.showinfo("Turnos", "No hay turnos")
     def avanzar_dia(self):
         """ AVANZAR 1 DIA """
         cant_dias = DateHandler().days_in_month(self.mes, self.anio)
