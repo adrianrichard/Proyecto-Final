@@ -13,23 +13,7 @@ fuenten= utl.definir_fuente()
 ancho=15
 
 class Paciente:
-
-    # def conexionBBDD(self):
-    #     try:
-    #         self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
-    #         self.miCursor=self.miConexion.cursor()
-    #     except:
-    #         self.miCursor.execute('''
-    #             CREATE TABLE Paciente (
-    #             ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    #             NOMBRE VARCHAR(50) NOT NULL,
-    #             APELLIDO VARCHAR(50) NOT NULL)
-    #             ''')
-    #         self.miConexion.commit()
-    #         self.miConexion.close()
-
-    #         messagebox.showinfo("CONEXION","Base de Datos Creada exitosamente")
-    
+   
     def validar_email(self, email):
         email = self.entry_correo.get()
         if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
@@ -40,7 +24,7 @@ class Paciente:
             self.entry_correo.config( bg="orange red")
             self.email_valido_label.config(text= "Formato inválido", fg='red')
             self.correovalido = False
-    
+
     def validar_DNI(self, text, new_text):
         if len(new_text) > 8:
             return False
@@ -57,6 +41,12 @@ class Paciente:
             return False
         return text.isdecimal()
     
+    def validar_numero(self, event):
+        texto = self.entry_nombre.get()
+        if not re.match(r'^[a-zA-Z]$', texto):  # Si es un número
+            messagebox.showerror("Error", "Solo se permiten letras.")
+            self.entry_nombre.delete(len(texto) - 1)
+        
     def cargar_datos(self, dni):
         self.dni_paciente_anterior=dni
         try:
@@ -139,7 +129,9 @@ class Paciente:
         Button(self.frame_principal, text= 'Cerrar',  font= fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', width=15, bd= 2, command= self.Salir).grid(column= 2, row=10, pady= 5)
 
         #Entradas Y ETIQUETAS DATOS DEL PACIENTE
-        Entry(self.frame_principal, textvariable=self.nombre_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfa), "%S")).grid(column=1, row=1, pady=5)
+        self.entry_nombre = Entry(self.frame_principal, textvariable=self.nombre_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_numero), "%S"))
+        self.entry_nombre.grid(column=1, row=1, pady=5)
+        self.entry_nombre.bind("<KeyRelease>", self.validar_numero)
         Entry(self.frame_principal, textvariable=self.apellido_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfa), "%S")).grid(column=1, row=2, pady=5)
         Entry(self.frame_principal, textvariable=self.dni_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_DNI), "%S", "%P")).grid(column=1, row=3, pady=5)
         Entry(self.frame_principal, textvariable=self.domicilio_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfanum), "%S")).grid(column=1, row=4, pady=5)
