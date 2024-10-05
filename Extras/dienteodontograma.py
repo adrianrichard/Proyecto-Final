@@ -16,8 +16,8 @@ class Diente:
         self.ventana_secundaria = tk.Toplevel()
         self.ventana_secundaria.title("Editar diente")
         self.ventana_secundaria.geometry('400x300')
-        #self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
-        #self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
+        self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
+        self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
         self.ventana_secundaria.config(bg= 'gray')
         #item = self.tabla_turnos.focus()
         #print(self.turno_seleccionado)
@@ -61,40 +61,3 @@ class Diente:
         self.canvas.destroy()
 
         self.ventana_secundaria.destroy()
-# try:
-#     miConexion=sqlite3.connect("../bd/DBpaciente.sqlite3")
-#     miCursor=miConexion.cursor()
-#     sql = "SELECT Apellido, Nombre, DNI, Telefono, ObraSocial FROM Paciente ORDER BY Apellido"
-#     miCursor.execute(sql)
-#     pacientes = miCursor.fetchall()
-#     miConexion.commit()
-#     #print(pacientes)
-# except:
-#     print("error")
-
-
-
-# def editar_diente( numero):
-#     print('prueba', numero)
-
-        
-
-    # def cambiar_color(self, cara):
-    #     global color_index
-    #     color_index = (color_index + 1) % len(colores2)
-    #     color_actual = colores2[color_index]
-    #     #print('hola')
-    #     self.canvas.itemconfig(cara, fill=color_actual)
-    #label_color_actual.config(text=f"Color actual: {color_actual.capitalize()}")
-        
-# def change_cursor_enter(event):
-#     # Cambiar el cursor al pasar sobre un cuadrado
-#     canvas.config(cursor="hand2")
-    
-# def change_cursor_leave(event):
-#     # Restaurar el cursor al salir del cuadrado
-#     canvas.config(cursor="")
-# crear_dientes()
-#capture_screenshot()
-# if __name__ == "__main__":
-#     Diente()

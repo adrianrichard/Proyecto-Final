@@ -30,8 +30,8 @@ class Paciente:
             return False
         return text.isdecimal()
     
-    def validar_alfa(self, value):
-        return value.isalpha()
+    # def validar_alfa(self, value):
+    #     return value.isalpha()
     
     def validar_alfanum(sel, value):
         return value.isalnum() or value.isspace()
@@ -41,11 +41,15 @@ class Paciente:
             return False
         return text.isdecimal()
     
-    def validar_numero(self, event):
-        texto = self.entry_nombre.get()
-        if not re.match(r'^[a-zA-Z]$', texto):  # Si es un número
-            messagebox.showerror("Error", "Solo se permiten letras.")
-            self.entry_nombre.delete(len(texto) - 1)
+    def validar_alfa(self, texto):
+        #nombre = self.entry_nombre.get()
+        if  texto.isalpha():  # Si es un número
+            return True
+            #messagebox.showerror("Error", "Solo se permiten letras.")
+            #self.entry_nombre.delete(len(nombre) - 1)
+        else:
+            return False
+            #self.entry_nombre.config( bg="orange red")
         
     def cargar_datos(self, dni):
         self.dni_paciente_anterior=dni
@@ -90,16 +94,24 @@ class Paciente:
         elif(not self.correovalido):
             messagebox.showinfo("GUARDAR", "Formato de email incorrecto")
         else:
-            guardar=True
-        if(guardar):    
-            datos=self.nombre_paciente.get().upper(), self.apellido_paciente.get().upper(), self.dni_paciente.get(), self.domicilio_paciente.get().upper(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get().upper(),self.nrosocio_paciente.get()
-            try:
-                self.miCursor.execute("INSERT INTO Pacientes VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
-                self.miConexion.commit()
-                messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
-                self.frame_paciente.destroy()
-            except:
-                messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
+            print(self.nombre_paciente.get())
+            if not self.validar_alfa(self.nombre_paciente.get()):
+                self.nombre_valido.config(text= "* Sólo letras", fg='red')
+                guardar= False
+            else:
+                self.entry_nombre.config(bg= "pale green")
+                self.nombre_valido.config(text= "*", fg='red')
+                #print("nombre valido")
+                guardar=True
+        # if(guardar):    
+        #     datos=self.nombre_paciente.get().upper(), self.apellido_paciente.get().upper(), self.dni_paciente.get(), self.domicilio_paciente.get().upper(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get().upper(),self.nrosocio_paciente.get()
+        #     try:
+        #         self.miCursor.execute("INSERT INTO Pacientes VALUES(NULL,?,?,?,?,?,?,?,?)", (datos))
+        #         self.miConexion.commit()
+        #         messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
+        #         self.frame_paciente.destroy()
+        #     except:
+        #         messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
 
     def Salir(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
@@ -129,9 +141,8 @@ class Paciente:
         Button(self.frame_principal, text= 'Cerrar',  font= fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', width=15, bd= 2, command= self.Salir).grid(column= 2, row=10, pady= 5)
 
         #Entradas Y ETIQUETAS DATOS DEL PACIENTE
-        self.entry_nombre = Entry(self.frame_principal, textvariable=self.nombre_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_numero), "%S"))
-        self.entry_nombre.grid(column=1, row=1, pady=5)
-        self.entry_nombre.bind("<KeyRelease>", self.validar_numero)
+        self.entry_nombre = Entry(self.frame_principal, textvariable=self.nombre_paciente, width=25, font= fuenten)
+        self.entry_nombre.grid(column=1, row=1, pady=5)        
         Entry(self.frame_principal, textvariable=self.apellido_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfa), "%S")).grid(column=1, row=2, pady=5)
         Entry(self.frame_principal, textvariable=self.dni_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_DNI), "%S", "%P")).grid(column=1, row=3, pady=5)
         Entry(self.frame_principal, textvariable=self.domicilio_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfanum), "%S")).grid(column=1, row=4, pady=5)
@@ -159,7 +170,8 @@ class Paciente:
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar paciente', bg= '#1F704B', fg= 'white', font= fuenteb).grid(column= 0, row=0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Actualizar',  font= fuenteb, fg= 'white', bg= '#1F704B', width=15, activebackground= 'gray', bd= 2, command= self.actualizar).grid(column= 0, row=10, pady= 5, padx= 20)
-        Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=1, pady=5)
+        self.nombre_valido = Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten)
+        self.nombre_valido.grid(column=2, row=1, pady=5)
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5)
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=3, pady=5)
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=4, pady=5)
@@ -186,7 +198,6 @@ class Paciente:
         self.db = Conexion()
         self.miConexion=self.db.conectar()
         self.miCursor=self.miConexion.cursor()
-        #self.conexionBBDD()
 
 if __name__ == "__main__":
     Paciente()
