@@ -25,10 +25,10 @@ class Paciente:
             self.email_valido_label.config(text= "Formato inválido", fg='red')
             self.correovalido = False
 
-    def validar_DNI(self, text, new_text):
-        if len(new_text) > 8:
+    def validar_dni(self, dni):
+        if len(dni) > 8:
             return False
-        return text.isdecimal()
+        return dni.isdecimal()
     
     # def validar_alfa(self, value):
     #     return value.isalpha()
@@ -36,20 +36,17 @@ class Paciente:
     def validar_alfanum(sel, value):
         return value.isalnum() or value.isspace()
     
-    def validar_telefono(self, text, new_text):
-        if len(new_text) > 11:
+    def validar_telefono(self, dni):
+        if len(dni) > 11:
             return False
-        return text.isdecimal()
+        return dni.isdecimal()
     
     def validar_alfa(self, texto):
         #nombre = self.entry_nombre.get()
-        if  texto.isalpha():  # Si es un número
-            return True
-            #messagebox.showerror("Error", "Solo se permiten letras.")
-            #self.entry_nombre.delete(len(nombre) - 1)
-        else:
-            return False
-            #self.entry_nombre.config( bg="orange red")
+        for char in texto:
+            if not (char.isalpha() or char.isspace()):
+                return False
+        return True
         
     def cargar_datos(self, dni):
         self.dni_paciente_anterior=dni
@@ -82,11 +79,11 @@ class Paciente:
     def guardar(self):
         guardar=False
         if(self.nombre_paciente.get()==''):
-            messagebox.showinfo("GUARDAR", "Complete el campo Nombre")
+            self.nombre_valido.config(text= "* Complete este campo", fg='red')
         elif(self.apellido_paciente.get()==''):
-            messagebox.showinfo("GUARDAR", "Complete el campo Apellido")
+            self.apellido_valido.config(text= "* Complete este campo", fg='red')
         elif(self.dni_paciente.get()==''):
-            messagebox.showinfo("GUARDAR", "Complete el campo DNI")
+            self.dni_valido.config(text= "* Complete este campo", fg='red')
         elif(self.domicilio_paciente.get()==''):
             messagebox.showinfo("GUARDAR", "Complete el campo Domicilio")
         elif(self.telefono_paciente.get()==''):
@@ -96,11 +93,31 @@ class Paciente:
         else:
             print(self.nombre_paciente.get())
             if not self.validar_alfa(self.nombre_paciente.get()):
-                self.nombre_valido.config(text= "* Sólo letras", fg='red')
+                self.nombre_valido.config(text= "* Sólo números, hasta 8 dígitos", fg='red')
+                self.entry_nombre.config(bg="orange red")
                 guardar= False
             else:
                 self.entry_nombre.config(bg= "pale green")
                 self.nombre_valido.config(text= "*", fg='red')
+                #print("nombre valido")
+                guardar=True
+            print(self.apellido_paciente.get())
+            if not self.validar_alfa(self.apellido_paciente.get()):
+                self.apellido_valido.config(text= "* Sólo letras", fg='red')
+                self.entry_apellido.config(bg= "orange red")
+                guardar= False
+            else:
+                self.entry_apellido.config(bg= "pale green")
+                self.apellido_valido.config(text= "*", fg='red')
+                #print("nombre valido")
+                guardar=True
+            if not self.validar_dni(self.dni_paciente.get()):
+                self.dni_valido.config(text= "* Sólo letras", fg='red')
+                self.entry_dni.config(bg= "orange red")
+                guardar= False
+            else:
+                self.entry_dni.config(bg= "pale green")
+                self.dni_valido.config(text= "*", fg='red')
                 #print("nombre valido")
                 guardar=True
         # if(guardar):    
@@ -141,12 +158,34 @@ class Paciente:
         Button(self.frame_principal, text= 'Cerrar',  font= fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', width=15, bd= 2, command= self.Salir).grid(column= 2, row=10, pady= 5)
 
         #Entradas Y ETIQUETAS DATOS DEL PACIENTE
-        self.entry_nombre = Entry(self.frame_principal, textvariable=self.nombre_paciente, width=25, font= fuenten)
-        self.entry_nombre.grid(column=1, row=1, pady=5)        
-        Entry(self.frame_principal, textvariable=self.apellido_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfa), "%S")).grid(column=1, row=2, pady=5)
-        Entry(self.frame_principal, textvariable=self.dni_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_DNI), "%S", "%P")).grid(column=1, row=3, pady=5)
+        #NOMBRE
+        Label(self.frame_principal, text= 'Nombre/s', bg= 'gray90', fg= 'black', anchor= "e", width= ancho, font= fuenteb).grid(column= 0, row= 1, pady= 5, padx= 2)
+        self.entry_nombre = Entry(self.frame_principal, textvariable= self.nombre_paciente, width= 25, font= fuenten)
+        self.entry_nombre.grid(column= 1, row= 1, pady= 5)
+        self.nombre_valido = Label(self.frame_principal, text= '*', anchor= "w", width= 20, bg= 'gray90', fg= 'red', font= fuenten)
+        self.nombre_valido.grid(column= 2, row= 1, pady= 5)
+        
+        #APELLIDO
+        Label(self.frame_principal, text= 'Apellido/s', bg= 'gray90', fg= 'black', anchor= "e", width= ancho, font= fuenteb).grid(column= 0, row= 2, pady= 5, padx= 2)
+        self.entry_apellido = Entry(self.frame_principal, textvariable= self.apellido_paciente, width= 25, font= fuenten)
+        self.entry_apellido.grid(column= 1, row= 2, pady= 5)
+        self.apellido_valido = Label(self.frame_principal, text= '*', anchor= "w", width= 20, bg= 'gray90', fg= 'red', font= fuenten)
+        self.apellido_valido.grid(column= 2, row= 2, pady= 5)
+
+        #DNI
+        Label(self.frame_principal, text= 'D.N.I.', bg= 'gray90', fg= 'black', anchor= "e", width= ancho, font= fuenteb).grid(column= 0, row= 3, pady= 5, padx= 2)
+        self.entry_dni = Entry(self.frame_principal, textvariable= self.dni_paciente, width= 25, font= fuenten)
+        self.entry_dni.grid(column= 1, row= 3, pady= 5)
+        self.dni_valido = Label(self.frame_principal, text= '*', anchor= "w", width= 20, bg= 'gray90', fg= 'red', font= fuenten)
+        self.dni_valido.grid(column= 2, row= 3, pady= 5)
+        
+        #Fecha de nacimiento
+        Label(self.frame_principal, text= 'Fecha de nacimiento', bg= 'gray90', fg= 'black', anchor= "e", width= ancho, font= fuenteb).grid(column= 0, row= 4, pady= 5, padx= 2)
+        self.entry_fecha = Entry(self.frame_principal, textvariable= self.nacimiento_paciente, width= 25, font= fuenten)
+        self.entry_fecha.grid(column= 1, row= 4, pady= 5)
+        
         Entry(self.frame_principal, textvariable=self.domicilio_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfanum), "%S")).grid(column=1, row=4, pady=5)
-        Entry(self.frame_principal, textvariable=self.telefono_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_telefono), "%S", "%P")).grid(column=1, row=5, pady=5)
+        Entry(self.frame_principal, textvariable=self.telefono_paciente, width=25, font= fuenten).grid(column=1, row=5, pady=5)
         self.entry_correo =Entry(self.frame_principal, textvariable=self.email_paciente, width=25, font= fuenten)
         self.entry_correo.grid(column=1, row=6, pady=5)
         validate_email = self.frame_principal.register(lambda email: self.validar_email(self.entry_correo))
@@ -156,10 +195,7 @@ class Paciente:
         self.entry_correo.bind('<Key>', actualizar_label)
         Entry(self.frame_principal, textvariable=self.obrasocial_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_alfa), "%S")).grid(column=1, row=7, pady=5)
         Entry(self.frame_principal, textvariable=self.nrosocio_paciente, width=25, font= fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_telefono), "%S", "%P")).grid(column=1, row=8, pady=5)
-
-        Label(self.frame_principal, text= 'Nombre/s', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuenteb).grid(column=0, row=1, pady=5, padx=2)
-        Label(self.frame_principal, text= 'Apellido/s', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuenteb).grid(column=0, row=2, pady=5, padx=2)
-        Label(self.frame_principal, text= 'D.N.I.', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuenteb).grid(column=0, row=3, pady=5, padx=2)
+        
         Label(self.frame_principal, text= 'Domicilio', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuenteb).grid(column=0, row=4, pady=5, padx=2)
         Label(self.frame_principal, text= 'Telefono', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuenteb).grid(column=0, row=5, pady=5, padx=2)
         Label(self.frame_principal, text= 'Email', bg='gray90', fg= 'black', anchor="e", width=ancho, font= fuenteb).grid(column=0, row=6, pady=5, padx=2)
@@ -170,10 +206,9 @@ class Paciente:
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar paciente', bg= '#1F704B', fg= 'white', font= fuenteb).grid(column= 0, row=0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Actualizar',  font= fuenteb, fg= 'white', bg= '#1F704B', width=15, activebackground= 'gray', bd= 2, command= self.actualizar).grid(column= 0, row=10, pady= 5, padx= 20)
-        self.nombre_valido = Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten)
-        self.nombre_valido.grid(column=2, row=1, pady=5)
-        Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=2, pady=5)
-        Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=3, pady=5)
+        
+        
+        
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=4, pady=5)
         Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten).grid(column=2, row=5, pady=5)
         self.email_valido_label=Label(self.frame_principal, text= '', anchor="w", width=20, bg='gray90', fg= 'red', font= fuenten)
@@ -189,6 +224,7 @@ class Paciente:
         self.apellido_paciente = StringVar()
         self.dni_paciente_anterior =  StringVar()
         self.dni_paciente =  StringVar()
+        self.nacimiento_paciente =  StringVar()
         self.domicilio_paciente =  StringVar()
         self.telefono_paciente =  StringVar()
         self.email_paciente =  StringVar()
