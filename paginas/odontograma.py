@@ -72,27 +72,27 @@ class Odontograma:
         ladoy = ttk.Scrollbar(self.frame_tabla, orient ='vertical', command = self.tabla_prestaciones.yview)
         ladoy.grid(column = 5, row = 1, sticky='ns')
         self.tabla_prestaciones.configure(yscrollcommand = ladoy.set)
-       
+
         self.tabla_prestaciones.heading("Fecha", text= "Fecha")
         self.tabla_prestaciones.heading("Código", text= "Código")
         self.tabla_prestaciones.heading("Prestacion", text= "Prestacion")
         self.tabla_prestaciones.heading("Odontologo", text= "Odontologo")
 
-        # # Ajustar el ancho de las columnas
+        # Ajustar el ancho de las columnas
         self.tabla_prestaciones.column("Fecha", width= 80, anchor= 'center')
         self.tabla_prestaciones.column("Código", width= 80)
         self.tabla_prestaciones.column("Prestacion", width= 250)
         self.tabla_prestaciones.column("Odontologo", width= 200)
-        
+
         self.frame_botones = Frame(self.ventana_odontograma, bg= "gray")
         self.frame_botones.grid(column= 0, row= 4, pady= (10,0))
         self.boton_guardar_odonto=Button(self.frame_botones, text= 'Guardar', command= self.guardar_odontograma, bg= "white", width= 8)
         self.boton_guardar_odonto.grid(row= 0, column= 0, padx= 10)
         self.boton_guardar_odonto=Button(self.frame_botones, text= 'Salir', command= self.salir, bg= "orange", width= 8)
         self.boton_guardar_odonto.grid(row= 0, column= 1, padx= 10)
-        
+
         self.ventana_odontograma.mainloop()
-        
+
     def salir(self):
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea salir sin guardar?', icon= 'warning')
         if answer:
@@ -103,7 +103,7 @@ class Odontograma:
         try:
             #self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
-            self.miCursor.execute("SELECT apellido, nombre, dni, obrasocial FROM paciente WHERE dni=?", (dni,))
+            self.miCursor.execute("SELECT apellido, nombre, ID, obrasocial FROM Pacientes WHERE ID=?", (dni,))
             self.paciente = self.miCursor.fetchone()
             self.miConexion.commit()
             #print(self.paciente)
@@ -114,18 +114,17 @@ class Odontograma:
         #print(datos)
 
     def cargar_ultimo_odontograma(self):
-        #self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
         self.miCursor=self.miConexion.cursor()
         #print(self.dni_paciente)
         try:            
-            self.miCursor.execute("SELECT ID_odontograma from Odontograma WHERE DNI_paciente = ? ORDER BY ID_odontograma DESC", (self.dni_paciente,))
+            self.miCursor.execute("SELECT id_odontograma from Odontogramas WHERE dni_paciente = ? ORDER BY id_odontograma DESC", (self.dni_paciente,))
             self.miConexion.commit()
             self.ID_odonto_actual= self.miCursor.fetchone()
             self.ID_odonto = self.ID_odonto_actual[0]
         except:
             messagebox.showinfo("Odontograma", "Cargar odontograma")
             #print("ID odonto1")
-            self.miCursor.execute("SELECT ID_odontograma from Odontograma ORDER BY ID_odontograma DESC LIMIT 1")
+            self.miCursor.execute("SELECT id_odontograma from Odontogramas ORDER BY id_odontograma DESC LIMIT 1")
             self.miConexion.commit()
             #print("ID odonto2")
             self.ID_odonto_actual= self.miCursor.fetchone()
@@ -147,7 +146,7 @@ class Odontograma:
                 #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
                 self.miCursor = self.miConexion.cursor()
                 #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
-                sql = "INSERT INTO Odontograma VALUES (NULL,?,?,?)"
+                sql = "INSERT INTO Odontogramas VALUES (NULL,?,?,?)"
 
                 self.miCursor.execute(sql, datos)
                 self.miConexion.commit()
@@ -433,7 +432,7 @@ class Odontograma:
                 #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
                 self.miCursor = self.miConexion.cursor()
                 #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
-                sql = "INSERT INTO Diente VALUES (?,?,?,?,?,?,?,?,?,?)"
+                sql = "INSERT INTO Dientes VALUES (?,?,?,?,?,?,?,?,?,?)"
                 datos= self.diente_actual[0], self.ID_odonto+1, self.diente_actual[2], self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8], self.dni_paciente
                 self.miCursor.execute(sql, datos)
                 self.miConexion.commit()
@@ -457,7 +456,7 @@ class Odontograma:
             #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor = self.miConexion.cursor()
             #sql = "SELECT * from Diente WHERE ID_odontograma = ? ORDER BY ID_odontograma"
-            self.miCursor.execute("SELECT * from Diente WHERE DNI_paciente = ?", (self.dni_paciente,))
+            self.miCursor.execute("SELECT * from Dientes WHERE DNI_paciente = ?", (self.dni_paciente,))
             self.miConexion.commit()
             self.dientes= self.miCursor.fetchall()
             #print(self.dientes)

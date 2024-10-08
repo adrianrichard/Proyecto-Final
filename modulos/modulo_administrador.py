@@ -150,6 +150,7 @@ class MasterPanel:
         odonto= Odontograma()
         item = self.tabla_historia.focus()
         self.data = self.tabla_historia.item(item)
+        print(self.data['values'][2])
         try:
             self.dni_paciente = self.data['values'][2]
             odonto.cargar_paciente(self.dni_paciente)
