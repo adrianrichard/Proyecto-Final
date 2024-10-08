@@ -3,12 +3,12 @@ from tkinter import ttk
 from tkinter.font import BOLD
 import util.config as utl
 from bd.conexion import Conexion
-
+import re
 from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
 #from bd.conexion import Conexion
 import sqlite3
 
-import re
+
 class Usuario:
 
     def __init__(self, *args, **kwargs):
@@ -39,46 +39,52 @@ class Usuario:
         self.menu = True
         self.color = True
         self.frame_top = Frame(self.frame_usuario, bg= '#1F704B', height= 50)
-        
+
         self.frame_top.grid(column= 1, row= 0, sticky= 'nsew')
         self.frame_principal = Frame(self.frame_usuario)
         self.frame_principal.config(bg='gray90')
         self.frame_principal.grid(column= 1, row= 1, sticky= 'nsew')
 
-        Button(self.frame_principal, text= 'Cerrar',  font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.Salir).grid(column= 2, row=6, pady= 5, padx= 5)
-
         #Entradas Y ETIQUETAS DATOS DEL USUARIO
-        #Entry(self.frame_principal, textvariable=self.nombre_usuario, width=25, font= fuenten).grid(column=1, row=1, pady=5, padx=10)
-        Entry(self.frame_principal, textvariable=self.nombre_usuario, width=25, font= self.fuenten, validate="key", validatecommand=(self.frame_principal.register(self.validar_nombre), "%S"), invalidcommand=(self.frame_principal.register(self.on_invalid), )).grid(column=1, row=1, pady=5, padx=10)
-        Entry(self.frame_principal, textvariable=self.clave, width=25, font= self.fuenten).grid(column=1, row=2, pady=5, padx=10)        
-        
-        Label(self.frame_principal, text= 'Nombre del usuario', anchor="e", width=20, bg='gray90', fg= 'black', font= self.fuenteb).grid(column=0, row=1, pady=5)
-        Label(self.frame_principal, text= 'Clave', anchor="e", width=20, bg='gray90', fg= 'black', font= self.fuenteb).grid(column=0, row=2, pady=5, padx=2)
+        Label(self.frame_principal, text= 'Nombre del usuario', anchor= "e", width= 20, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 1, pady= 5)
+        self.entry_nombre = Entry(self.frame_principal, textvariable= self.nombre_usuario, width= 25, font= self.fuenten)
+        self.entry_nombre.grid(column= 1, row= 1, pady= 5, padx= 5)
+        self.nombre_usuario_valido = Label(self.frame_principal, text= '*', anchor= 'w', width= 25, bg= 'gray90', fg= 'red', font= self.fuenten)
+        self.nombre_usuario_valido.grid(column= 2, row= 1, pady= 5, padx= 2)
 
-        Label(self.frame_principal, text= 'Tipo de usuario', anchor="e", width=20, bg='gray90', fg= 'black', font= self.fuenteb).grid(column=0, row=3, pady=5, padx=2)
+        Label(self.frame_principal, text= 'Clave', anchor= "e", width= 20, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 2, pady= 5, padx= 2)
+        self.entry_clave = Entry(self.frame_principal, textvariable= self.clave, width= 25, font= self.fuenten)
+        self.entry_clave.grid(column= 1, row= 2, pady= 5, padx= 5)
+        Label(self.frame_principal, text= '*', anchor= "w", width= 25, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 2, pady= 5, padx= 2)
+
+        Label(self.frame_principal, text= 'Tipo de usuario', anchor= "e", width= 20, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 3, pady= 5, padx= 2)
         if(self.nombre_usuario.get()==''):
-            self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= self.fuenteb).grid(column= 0, row=0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Guardar',  font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.guardar).grid(column= 0, row=6, pady= 5, padx= 5)
-            combo=ttk.Combobox(self.frame_principal, textvariable=self.tipo_usuario, width=23, font= self.fuenten, state="readonly", values=["administrador", "odontologo", "secretario"])
-            combo.grid(column=1, row=3, pady=5, padx=10)
+            self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= self.fuenteb).grid(column= 0, row= 0, pady= 20, padx= 10)
+            Button(self.frame_principal, text= 'Guardar',  font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 20, command= self.guardar).grid(column= 0, row= 6, pady= 5, padx= 5)
+            combo=ttk.Combobox(self.frame_principal, textvariable= self.tipo_usuario, width= 23, font= self.fuenten, state= "readonly", values=["administrador", "odontologo", "secretario"])
+            combo.grid(column= 1, row= 3, pady= 5, padx= 5)
             combo.current(2)
-            Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= self.fuenten).grid(column=2, row=3, pady=5, padx=2)
+            Label(self.frame_principal, text= '*', anchor= "w", width= 25, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 3, pady= 5, padx= 2)
         else:
-            self.titulo = Label(self.frame_top, text= 'Actualizar usuario', bg= '#1F704B', fg= 'white', font= self.fuenteb).grid(column= 0, row=0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Actualizar',  font=self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width=20, command= self.actualizar).grid(column= 0, row=6, pady= 5, padx= 5)
-            combo=ttk.Combobox(self.frame_principal, textvariable=self.tipo_usuario, width=23, font= self.fuenten, state="disabled", values=["administrador", "odontologo", "secretario"])
-            combo.grid(column=1, row=3, pady=5, padx=10)
-        Label(self.frame_principal, text= '* Campos obligatorios', anchor="w", width=20, bg='gray90', fg= 'red', font= self.fuenten).grid(column=2, row=4, pady=5, padx=2)
-        Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= self.fuenten).grid(column=2, row=1, pady=5, padx=2)
-        Label(self.frame_principal, text= '*', anchor="w", width=20, bg='gray90', fg= 'red', font= self.fuenten).grid(column=2, row=2, pady=5, padx=2)
-        Label(self.frame_principal, text= 'Contraseña: debe poseer un mínimo de 8 caracteres\n al menos una minuscula\n al menos una mayuscula\n al menos un digito', width=50, borderwidth=2, relief="solid", bg='gray90', fg= 'black', font= self.fuenten).grid( column=0, columnspan=3, row=5, pady=5)
+            self.titulo = Label(self.frame_top, text= 'Actualizar usuario', bg= '#1F704B', fg= 'white', font= self.fuenteb).grid(column= 0, row= 0, pady= 20, padx= 10)
+            Button(self.frame_principal, text= 'Actualizar',  font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 20, command= self.actualizar).grid(column= 0, row= 6, pady= 5, padx= 5)
+            combo=ttk.Combobox(self.frame_principal, textvariable= self.tipo_usuario, width= 23, font= self.fuenten, state= "disabled", values=["administrador", "odontologo", "secretario"])
+            combo.grid(column= 1, row= 3, pady= 5, padx= 10)
+        Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 20, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 4, pady= 5, padx= 2)
+
+        Label(self.frame_principal, text= 'Contraseña: debe poseer un mínimo de 8 caracteres\n al menos una minuscula\n al menos una mayuscula\n al menos un digito', width= 50, borderwidth= 2, relief= "solid", bg= 'gray90', fg= 'black', font= self.fuenten).grid( column= 0, columnspan= 3, row= 5, pady= 5)
+        Button(self.frame_principal, text= 'Cerrar',  font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 20, command= self.Salir).grid(column= 2, row= 6, pady= 5, padx= 5)
         self.frame_usuario.protocol("WM_DELETE_WINDOW", self.Salir)
 
         self.frame_usuario.mainloop()
-    
+
     def guardar(self):
-        if(self.validar_usuario(self.nombre_usuario.get())):
-            messagebox.showinfo("Usuario existente", "Ya existe este usuario")
+        if not self.validar_nombre(self.nombre_usuario.get()):
+            messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")            
+            self.entry_nombre.config(bg= "orange red")
+        elif self.validar_usuario(self.nombre_usuario.get()):
+            self.nombre_usuario_valido.config(text= "* Ya existe este usuario", fg= 'red')
+            self.entry_nombre.config(bg= "orange red")
         else:
             if(self.validar_contrasenia(self.clave.get()) and self.nombre_usuario.get()!=''):
                 datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
@@ -103,25 +109,41 @@ class Usuario:
             messagebox.showinfo("Buscar usuario", "No se ha podido cargar el usuario")            
 
     def validar_usuario(self, nombre_usuario):
-       
         try:
             self.miCursor.execute('SELECT COUNT(nombre_usuario) FROM usuarios WHERE nombre_usuario=?', (nombre_usuario,))
             existe = self.miCursor.fetchone()[0]
             self.usuario_existente = bool(existe)
-            
         except:
             messagebox.showinfo("Usuario existente", "USUARIO EXISTENTE")
-
         return self.usuario_existente
 
     def actualizar(self):
-        datos=self.nombre_usuario.get(), self.clave.get(), self.nombre_usuario_anterior
-        if self.validar_contrasenia(self.clave.get()):
+        datos= self.clave.get(), self.nombre_usuario_anterior
+        usuario_valido=False
+
+        if not self.validar_nombre(self.nombre_usuario.get()):
+            messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")            
+            self.entry_nombre.config(bg= "orange red")
+        elif self.validar_nombre(self.nombre_usuario.get()):
+            self.entry_nombre.config(bg= "pale green")
+            usuario_valido = True
+        if self.validar_contrasenia(self.clave.get()) and usuario_valido:
             
-            if self.validar_usuario(self.nombre_usuario.get()):
-                messagebox.showinfo("Usuario existente", "USUARIO EXISTENTE")
+            if self.nombre_usuario.get() == self.nombre_usuario_anterior:
+                try:
+                    sql="UPDATE usuarios SET pass_usuario=? where nombre_usuario=?"
+                    self.miCursor.execute(sql, datos)
+                    self.miConexion.commit()
+                    messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente")
+                    self.frame_usuario.destroy()
+                except:
+                    messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
+            elif self.validar_usuario(self.nombre_usuario.get()):
+                self.nombre_usuario_valido.config(text= "* Ya existe este usuario", fg= 'red')
+                self.entry_nombre.config(bg= "orange red")
                 pass
-            else:                
+            else:
+                datos=self.nombre_usuario.get(), self.clave.get(), self.nombre_usuario_anterior
                 try:
                     sql="UPDATE usuarios SET nombre_usuario =?, pass_usuario=? where nombre_usuario=?"
                     self.miCursor.execute(sql, datos)
@@ -134,7 +156,6 @@ class Usuario:
             pass
 
     def eliminar_usuario(self, nombre):
-
         msg_box = messagebox.askquestion('Eliminar usuario', '¿Desea elminar al usuario?', icon='warning')
         if msg_box == 'yes'and nombre != 'admin':
             try:
@@ -149,48 +170,50 @@ class Usuario:
         if answer:
             self.miConexion.close()
             self.frame_usuario.destroy()
-    
+
     def on_invalid(self):
         messagebox.showinfo("NOMBRE USUARIO","Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
 
-    def validar_nombre(self, value):
-        pattern = r'\b[A-Za-z_]\b'
-        if re.fullmatch(pattern, value) is None:
-            return False 
-        return True
+    def validar_nombre(self, nombre_usuario):
+        patron = r'^[a-zA-Z][a-zA-Z_]+$'
+        if re.match(patron, nombre_usuario):
+            return True
+        else:
+            return False
 
     def validar_contrasenia(self, password):
         largo = re.compile(r'.{8,}')
         digito = re.compile(r'\d+')
         letra_may = re.compile(r'[A-Z]+')
         letra_min = re.compile(r'[a-z]+')
-        self.longitud=False
-        self.numero=False
-        self.mayuscula=False
-        self.minuscula=False
-        self.valido=False
+        self.longitud= False
+        self.numero= False
+        self.mayuscula= False
+        self.minuscula= False
+        self.valido= False
         a="Debe contener al menos 8 caracteres"
         if(largo.search(password)):
-            a=""
-            self.longitud=True
+            a= ""
+            self.longitud= True
         b="\nAgregar un digito"
         if(digito.search(password)):
-            b=""
-            self.numero=True
+            b= ""
+            self.numero= True
         c="\nAgregar una mayúscula"
         if(letra_may.search(password)):
-            c=""
-            self.mayuscula=True
+            c= ""
+            self.mayuscula= True
         d="\nAgregar una minúscula"
         if(letra_min.search(password)):
-            d=""
-            self.minuscula=True
+            d= ""
+            self.minuscula= True
         if(self.longitud and self.numero and self.mayuscula and self.minuscula):
             self.valido = True
 
-        cadena=a+b+c+d
+        cadena= a+b+c+d
         if(cadena != ""):
             messagebox.showwarning("CONTRASEÑA INVÁLIDA", cadena)
+            self.entry_clave.config(bg= "orange red")
 
         return self.valido
 
