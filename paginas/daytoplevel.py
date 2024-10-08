@@ -83,14 +83,13 @@ class DayTopWindow(Toplevel):
     def cargar_turnos(self):
         start_date = date(self.anio, self.mes, self.dia)        
         self.cur= self.conn.cursor()
-        try:                    
-            self.cur.execute("SELECT * FROM turnos WHERE fecha= ? ORDER BY hora", (start_date,))
+        try:
+            self.cur.execute("SELECT Turnos.Hora, Turnos.Paciente, Odontologos.Apellido_odontologo, Turnos.Prestacion FROM Odontologos JOIN Turnos ON Odontologos.Matricula = Turnos.Odontologo WHERE Turnos.Fecha=? ORDER BY Turnos.Hora", (start_date,))
             self.turnos_dados = self.cur.fetchall()
+            #print(self.turnos_dados)
             self.conn.commit()
         except:
             messagebox.showinfo("Turnos", "No hay turnos")
-
-        #self.conn.close()
 
         start_time = datetime.strptime("08:00", "%H:%M")
         # Intervalo de 30 minutos
@@ -102,9 +101,9 @@ class DayTopWindow(Toplevel):
             if not self.turnos_dados:
                 self.tabla_turnos.insert(parent= '', index= 'end', values=(current_time.strftime("%H:%M"), '', '', ''))
             else:
-                if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][1] and self.j < len(self.turnos_dados)):
+                if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][0] and self.j < len(self.turnos_dados)):
                     self.tabla_turnos.tag_configure('anotado', font=fuenteb, background="lightgreen")
-                    self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][2], self.turnos_dados[self.j][3], self.turnos_dados[self.j][4]), tags=('anotado',))
+                    self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][1], self.turnos_dados[self.j][3], self.turnos_dados[self.j][2]), tags=('anotado',))
                     if(self.j+1 < len(self.turnos_dados)):
                         self.j=self.j+1
                 else:
@@ -162,6 +161,7 @@ class DayTopWindow(Toplevel):
         if answer:
             self.grab_set_global()
             self.focus_set()
+            self.conn.close()
             self.ventana_secundaria.destroy()
 
     def eliminar_turno(self):
@@ -177,6 +177,7 @@ class DayTopWindow(Toplevel):
                 #self.conn.close()
                 self.grab_set_global()
                 self.focus_set()
+                self.conn.close()
                 self.ventana_secundaria.destroy()
             except:
                 messagebox.showerror("Eliminar", "No se pudo eliminar.")
@@ -187,7 +188,16 @@ class DayTopWindow(Toplevel):
         start_date = date(self.anio, self.mes, self.dia)
         self.conn=  self.db.conectar()
         self.cur= self.conn.cursor()
-        datos = start_date, self.horario, self.nombre_entry.get().upper(), self.selector_prestacion.get().upper(), self.selector_odontologo.get().upper()
+        odontologo= self.selector_odontologo.get()
+        print(odontologo)
+        try:
+            sql = "SELECT Matricula FROM odontologos WHERE Apellido_odontologo LIKE ?"
+            self.cur.execute(sql, (odontologo,))
+            matricula = self.cur.fetchone()
+        except:
+            messagebox.showerror("Guardar", "No existe el odontólogo")
+        print(matricula[0])
+        datos = start_date, self.horario, self.nombre_entry.get().upper(), matricula[0], self.selector_prestacion.get().upper() 
         if self.nombre_entry.get().upper() != "PACIENTE" and self.selector_prestacion.get().upper() != "PRESTACIÓN" and self.selector_odontologo.get().upper() != "ODONTÓLOGO":
             answer = messagebox.askokcancel(title='Guardar', message='¿Desea guardar el turno?', icon='warning')
             if answer:
@@ -215,7 +225,7 @@ class DayTopWindow(Toplevel):
         self.cur= self.conn.cursor()
         self.lista_odontologos = []
         self.odontologos = []
-        try:                    
+        try:
             self.cur.execute("SELECT Apellido_odontologo FROM odontologos")
             self.lista_odontologos = self.cur.fetchall()
             self.odontologos = [odontologo[0] for odontologo in self.lista_odontologos]

@@ -163,8 +163,12 @@ class Paciente:
         else:
             return False
     
-    
-    
+    def convertir_fecha(self, fecha):
+        fecha_obj = datetime.strptime(fecha, "%d-%m-%Y")
+        # Convertir el objeto datetime al formato deseado (aaaa-mm-dd)
+        self.fecha_transformada = fecha_obj.strftime("%Y-%m-%d")        
+        return self.fecha_transformada 
+
     def calcular_edad(self, fecha_nacimiento_str):
     # Convertir la cadena de fecha a un objeto datetime
         edad=''
@@ -208,15 +212,19 @@ class Paciente:
         try:
             self.miCursor.execute("SELECT * FROM Pacientes WHERE ID=?", (dni,))
             campos=self.miCursor.fetchall()
-
+            self.dni_paciente.set(dni)
             self.nombre_paciente.set(campos[0][1])
             self.apellido_paciente.set(campos[0][2])
-            self.dni_paciente.set(dni)
             self.domicilio_paciente.set(campos[0][3])
             self.telefono_paciente.set(campos[0][4])
             self.email_paciente.set(campos[0][5])
             self.obrasocial_paciente.set(campos[0][6])
             self.nrosocio_paciente.set(campos[0][7])
+            self.edad_paciente.set(campos[0][8])
+            fecha_obj = datetime.strptime(campos[0][9], "%Y-%m-%d")
+            fecha_date = fecha_obj.date()            
+            self.nacimiento_paciente.set(fecha_date.strftime("%d-%m-%Y"))
+            
         except:
             messagebox.showinfo("Buscar paciente", "No se ha podido encontrar el paciente")
 
@@ -294,8 +302,8 @@ class Paciente:
             self.entry_domicilio.config(bg= "pale green")
             self.domicilio_valido.config(text= "*", fg='red')
         
-        if not self.validar_alfanum(self.telefono_paciente.get()):
-            self.telefono_valido.config(text= "* Sólo números", fg='red')
+        if not self.validar_telefono(self.telefono_paciente.get()):
+            self.telefono_valido.config(text= "* Sólo números, hasta 11 dígitos", fg='red')
             self.entry_telefono.config(bg= "orange red")
             campos_validos= False
         else:
@@ -305,30 +313,30 @@ class Paciente:
         return campos_validos    
     
     def actualizar(self):        
-        if self.completar_campos():
-            print("campos completos")
+        if self.completar_campos() and self.validar_datos():
+            self.calcular_edad(self.nacimiento_paciente.get())
+            fecha = self.convertir_fecha(self.nacimiento_paciente.get()) 
         
-        datos=self.nombre_paciente.get().upper(), self.apellido_paciente.get().upper(), self.dni_paciente.get(), self.domicilio_paciente.get().upper(),self.telefono_paciente.get(),self.email_paciente.get(),self.obrasocial_paciente.get().upper(),self.nrosocio_paciente.get(), self.dni_paciente_anterior
-        
-        try:
-            sql="UPDATE Pacientes SET nombre =?, apellido=?, ID=?, domicilio=?, telefono=?, email=?, obrasocial=?, nrosocio=? where ID=?"
-            self.miCursor.execute(sql, datos)
-            self.miConexion.commit()
-            messagebox.showinfo("GUARDAR","Paciente actualizado exitosamente")
-            self.frame_paciente.destroy()
-        except:
-            messagebox.showinfo("GUARDAR", "No se ha podido actualizar el paciente")
+            datos=self.dni_paciente.get(), self.nombre_paciente.get().upper(), self.apellido_paciente.get().upper(), self.domicilio_paciente.get().upper(), self.telefono_paciente.get(),\
+                self.email_paciente.get(), self.obrasocial_paciente.get().upper(), self.nrosocio_paciente.get(), self.edad_paciente.get(), fecha, self.dni_paciente_anterior
+            try:
+                sql="UPDATE Pacientes SET ID=?, nombre =?, apellido=?,  domicilio=?, telefono=?, email=?, obrasocial=?, nrosocio=?, edad=?, fechanacimiento=? where ID=?"
+                self.miCursor.execute(sql, datos)
+                self.miConexion.commit()
+                messagebox.showinfo("GUARDAR","Paciente actualizado exitosamente")
+                self.frame_paciente.destroy()
+            except:
+                messagebox.showinfo("GUARDAR", "No se ha podido actualizar el paciente")
             
     def guardar(self):
         if self.completar_campos() and self.validar_datos():
             self.calcular_edad(self.nacimiento_paciente.get())
+            fecha = self.convertir_fecha(self.nacimiento_paciente.get())            
+            datos=self.dni_paciente.get(), self.nombre_paciente.get().upper(), self.apellido_paciente.get().upper(),  self.domicilio_paciente.get().upper(), self.telefono_paciente.get(),\
+                self.email_paciente.get(), self.obrasocial_paciente.get().upper(), self.nrosocio_paciente.get(), self.edad_paciente.get(), fecha
             
-            print("podemos guardar")
-            datos=self.nombre_paciente.get().upper(), self.apellido_paciente.get().upper(), self.dni_paciente.get(), self.domicilio_paciente.get().upper(), self.telefono_paciente.get(),\
-                self.email_paciente.get(), self.obrasocial_paciente.get().upper(), self.nrosocio_paciente.get(), self.edad_paciente.get(), '2010-10-10'
-            print(datos)
             try:
-                self.miCursor.execute("INSERT INTO Pacientes VALUES(NULL,?,?,?,?,?,?,?,?,?,?)", (datos))
+                self.miCursor.execute("INSERT INTO Pacientes VALUES(?,?,?,?,?,?,?,?,?,?)", (datos))
                 self.miConexion.commit()
                 messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
                 self.frame_paciente.destroy()
