@@ -160,8 +160,7 @@ class DayTopWindow(Toplevel):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
         if answer:
             self.grab_set_global()
-            self.focus_set()
-            self.conn.close()
+            self.focus_set()            
             self.ventana_secundaria.destroy()
 
     def eliminar_turno(self):
@@ -176,8 +175,7 @@ class DayTopWindow(Toplevel):
                 self.conn.commit()
                 #self.conn.close()
                 self.grab_set_global()
-                self.focus_set()
-                self.conn.close()
+                self.focus_set()                
                 self.ventana_secundaria.destroy()
             except:
                 messagebox.showerror("Eliminar", "No se pudo eliminar.")
