@@ -32,27 +32,40 @@ class Odontograma:
         utl.centrar_ventana(self.ventana_odontograma, 900, 700)
         self.fecha_actual = datetime.now().date()
         self.fecha_actual = self.fecha_actual.strftime("%d-%m-%Y")
-        Label(self.ventana_odontograma, text= 'Odontograma', font= 'Arial 20 bold', bg="gray", fg='white').grid(column= 0, row= 0)
+        Label(self.ventana_odontograma, text= 'Odontograma', font= 'Arial 20 bold', bg= "gray", fg= 'white').grid(column= 0, row= 0)
         
-        apellido=self.paciente[0]
-        nombre=self.paciente[1]
-        dni=self.paciente[2]
-        obra_social=self.paciente[3]
+        apellido= self.paciente[0]
+        nombre= self.paciente[1]
+        dni= self.paciente[2]
+        fechanac= self.convertir_fecha(self.paciente[3])
+        obra_social= self.paciente[4]
+        nrosocio= self.paciente[5]
         #print(nombre, apellido, obra_social,dni)
         self.frame_datos_paciente=Frame(self.ventana_odontograma, border= 1, borderwidth= 2, bg= "gray90")
         self.frame_datos_paciente.grid(column= 0, row= 1, sticky= "nsew")
-        Label(self.frame_datos_paciente, text= 'Nombre Completo:', font= self.fuenteb, bg= "gray90").grid(column= 0, row= 0, sticky= 'e', padx= (5,0))
-        Label(self.frame_datos_paciente, text= apellido+', '+nombre, font= self.fuenten, bg= "gray90").grid(column= 1, row= 0, sticky= 'e', padx= (0, 15))
-        Label(self.frame_datos_paciente, text= 'D.N.I.:', font= self.fuenteb, bg= "gray90").grid(column= 2, row= 0, sticky= 'e', padx= (5,0))
-        Label(self.frame_datos_paciente, text= dni, font= self.fuenten, bg= "gray90").grid(column= 3, row= 0, sticky= 'e', padx= (0, 15))
-        Label(self.frame_datos_paciente, text= 'Obra Social: ',  font= self.fuenteb, bg= "gray90").grid(column=4, row= 0, sticky= 'e', padx= (5,0))
-        Label(self.frame_datos_paciente, text= obra_social, font= self.fuenten, bg= "gray90").grid(column= 5, row= 0, sticky= 'e')
+        Label(self.frame_datos_paciente, text= 'Nombre Completo:', font= self.fuenteb, bg= "gray90").grid(column= 0, row= 0, sticky= 'e', padx= (5, 0))
+        Label(self.frame_datos_paciente, text= apellido+', '+nombre, font= self.fuenten, bg= "gray90").grid(column= 1, row= 0, sticky= 'w', padx= (0, 10))
+        Label(self.frame_datos_paciente, text= 'D.N.I.:', font= self.fuenteb, bg= "gray90").grid(column= 2, row= 0, sticky= 'e', padx= (5, 0))
+        Label(self.frame_datos_paciente, text= dni, font= self.fuenten, bg= "gray90").grid(column= 3, row= 0, sticky= 'w', padx= (0, 10))
+        Label(self.frame_datos_paciente, text= 'Fecha de nacimiento:', font= self.fuenteb, bg= "gray90").grid(column= 4, row= 0, sticky= 'e', padx= (5, 0))
+        Label(self.frame_datos_paciente, text= fechanac, font= self.fuenten, bg= "gray90").grid(column= 5, row= 0, sticky= 'w', padx= (0, 10))
+        Label(self.frame_datos_paciente, text= 'Obra Social: ',  font= self.fuenteb, bg= "gray90").grid(column= 0, row= 1, sticky= 'e', padx= (5, 0))
+        Label(self.frame_datos_paciente, text= obra_social, font= self.fuenten, bg= "gray90").grid(column= 1, row= 1, sticky= 'w', padx= (0, 10))
+        Label(self.frame_datos_paciente, text= 'Nº socio: ',  font= self.fuenteb, bg= "gray90").grid(column= 2, row= 1, sticky= 'e', padx= (5, 0))
+        Label(self.frame_datos_paciente, text= nrosocio, font= self.fuenten, bg= "gray90").grid(column= 3, row= 1, sticky= 'w', padx= (0, 10))
         self.ancho = 700
+        self.cargar_odontologos()
+        self.selector_odontologo= ttk.Combobox(self.frame_datos_paciente, state= "readonly", values= self.odontologos, width= 15, justify= CENTER, background= "white")
+        self.selector_odontologo.grid(column= 5, row= 1, sticky= 'w', padx= (10, 10))
+        self.selector_odontologo.set("Odontólogo")
+        self.aviso_odontologo = Label(self.frame_datos_paciente, text= '', font= self.fuenteb, bg= "gray90")
+        self.aviso_odontologo.grid(column= 4, row= 1, sticky= 'e', padx= (5, 0))
+        #self.selector_odontologo.bind("<<ComboboxSelected>>", lambda e: print(self.selector_odontologo.get()))
         # self.dientes = []
         # self.crear_dientes()
 
         self.frame_dientes = Frame(self.ventana_odontograma)
-        self.frame_dientes.grid(column= 0, row= 2, pady= (10,10))
+        self.frame_dientes.grid(column= 0, row= 3, pady= (10, 10))
         self.cargar_ultimo_odontograma()
         print(self.ID_odonto)
         self.cargar_dientes(self.ID_odonto)
@@ -61,7 +74,7 @@ class Odontograma:
         # self.colores=["red", "green", "blue", "white"]
         self.crear_dientes()
         self.frame_tabla = Frame(self.ventana_odontograma)
-        self.frame_tabla.grid(column= 0, row= 3, pady= (10,10))
+        self.frame_tabla.grid(column= 0, row= 4, pady= (10, 10))
         self.estilo_tabla2 = ttk.Style(self.ventana_odontograma)
         #estilo_tabla.theme_use('classic')
         self.estilo_tabla2.configure("Treeview", font= self.fuenten, foreground= 'black', rowheight= 20)
@@ -84,12 +97,12 @@ class Odontograma:
         self.tabla_prestaciones.column("Prestacion", width= 250)
         self.tabla_prestaciones.column("Odontologo", width= 200)
 
-        self.frame_botones = Frame(self.ventana_odontograma, bg= "gray")
-        self.frame_botones.grid(column= 0, row= 4, pady= (10,0))
-        self.boton_guardar_odonto=Button(self.frame_botones, text= 'Guardar', command= self.guardar_odontograma, bg= "white", width= 8)
-        self.boton_guardar_odonto.grid(row= 0, column= 0, padx= 10)
-        self.boton_guardar_odonto=Button(self.frame_botones, text= 'Salir', command= self.salir, bg= "orange", width= 8)
-        self.boton_guardar_odonto.grid(row= 0, column= 1, padx= 10)
+        # self.frame_botones = Frame(self.ventana_odontograma, bg= "gray")
+        # self.frame_botones.grid(column= 0, row= 5, pady= (10,0))
+        self.boton_guardar_odonto=Button(self.frame_datos_paciente, text= 'Guardar', command= self.guardar_odontograma, font= self.fuenteb, bg= '#1F704B', fg= 'white', width= 8)
+        self.boton_guardar_odonto.grid(row= 0, column= 6, padx= 10, pady= 10)
+        self.boton_salir_odonto=Button(self.frame_datos_paciente, text= 'Salir', command= self.salir, font= self.fuenteb, bg= "orange", width= 8)
+        self.boton_salir_odonto.grid(row= 1, column= 6, padx= 10)
 
         self.ventana_odontograma.mainloop()
 
@@ -98,12 +111,25 @@ class Odontograma:
         if answer:
             self.ventana_odontograma.destroy()
 
+    def cargar_odontologos(self):
+        self.cur= self.miConexion.cursor()
+        self.lista_odontologos = []
+        self.odontologos = []
+        try:
+            self.cur.execute("SELECT Apellido_odontologo FROM odontologos")
+            self.lista_odontologos = self.cur.fetchall()
+            self.odontologos = [odontologo[0] for odontologo in self.lista_odontologos]
+            #print(apellidos)
+            self.miConexion.commit()
+        except:
+            messagebox.showinfo("Odontologos", "No hay odontologos cargados")
+
     def cargar_paciente(self, dni):
         self.dni_paciente = dni
         try:
             #self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
-            self.miCursor.execute("SELECT apellido, nombre, ID, obrasocial FROM Pacientes WHERE ID=?", (dni,))
+            self.miCursor.execute("SELECT apellido, nombre, ID, fechanacimiento, obrasocial, nrosocio FROM Pacientes WHERE ID=?", (dni,))
             self.paciente = self.miCursor.fetchone()
             self.miConexion.commit()
             #print(self.paciente)
@@ -112,6 +138,11 @@ class Odontograma:
         #print(self.pacientes[0][2])
         #datos= self.pacientes[0][2], self.fecha_actual, 'Militello'
         #print(datos)
+
+    def convertir_fecha(self, fecha):
+        fecha_obj = datetime.strptime(fecha, "%Y-%m-%d")
+        fecha_date = fecha_obj.date()
+        return fecha_date.strftime("%d-%m-%Y")
 
     def cargar_ultimo_odontograma(self):
         self.miCursor=self.miConexion.cursor()
@@ -122,40 +153,55 @@ class Odontograma:
             self.ID_odonto_actual= self.miCursor.fetchone()
             self.ID_odonto = self.ID_odonto_actual[0]
         except:
-            messagebox.showinfo("Odontograma", "Cargar odontograma")
+            messagebox.showinfo("Odontograma", "Crear odontograma")
             #print("ID odonto1")
             self.miCursor.execute("SELECT id_odontograma from Odontogramas ORDER BY id_odontograma DESC LIMIT 1")
             self.miConexion.commit()
             #print("ID odonto2")
             self.ID_odonto_actual= self.miCursor.fetchone()
             #print(self.ID_odonto_actual)
-            self.ID_odonto = self.ID_odonto_actual[0] + 1
+            self.ID_odonto = self.ID_odonto_actual[0]
             #print(self.ID_odonto)
+    
+    def obtener_matricula(self, apellido):
+        self.cur= self.miConexion.cursor()        
+        try:
+            self.cur.execute("SELECT matricula FROM odontologos WHERE Apellido_odontologo=?",(apellido,))
+            matricula = self.cur.fetchone()            
+            self.miConexion.commit()
+            return matricula[0]
+        except:
+            messagebox.showinfo("Odontologos", "No hay odontologos cargados")
 
     def guardar_odontograma(self):
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea guardar?', icon= 'warning')
         if answer:
+            matricula=0
+            if self.selector_odontologo.get() != 'Odontólogo':
+                matricula = self.obtener_matricula(self.selector_odontologo.get().upper())
+            else:
+                self.aviso_odontologo.config(text= "Escoja un odontólogo", fg= 'red')
+                messagebox.showinfo("Odontologo", "Escoja un odontólogo")
+            print(matricula)
+            #f = datetime.today()
+            # fecha = f.strftime("%Y")+"-"+f.strftime("%m")+"-"+f.strftime("%d")
+            # #print(fecha)
+            # datos= self.ID_odonto+1, self.dni_paciente, fecha, matricula 
+            # #print(datos)
+            # try:
+            #     #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+            #     self.miCursor = self.miConexion.cursor()
+            #     #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
+            #     sql = "INSERT INTO Odontogramas VALUES (NULL,?,?,?)"
 
-        #print("guardar odontograma")
-            f = datetime.today()
-            fecha = f.strftime("%Y")+"-"+f.strftime("%m")+"-"+f.strftime("%d")
-            #print(fecha)
-            datos= self.dni_paciente,fecha,"Militello"
-            #print(datos)
-            try:
-                #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
-                self.miCursor = self.miConexion.cursor()
-                #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
-                sql = "INSERT INTO Odontogramas VALUES (NULL,?,?,?)"
-
-                self.miCursor.execute(sql, datos)
-                self.miConexion.commit()
-                #self.ID_odonto_actual= self.miCursor.fetchone()
-                #print(self.ID_odonto_actual[0])
-                messagebox.showinfo("GUARDAR","Odontograma guardado exitosamente")
-                self.ventana_odontograma.destroy()
-            except:
-                messagebox.showinfo("Odontograma", "No se pudo guardar el odontograma")
+            #     self.miCursor.execute(sql, datos)
+            #     self.miConexion.commit()
+            #     #self.ID_odonto_actual= self.miCursor.fetchone()
+            #     #print(self.ID_odonto_actual[0])
+            #     messagebox.showinfo("GUARDAR", "Odontograma guardado exitosamente")
+            #     self.ventana_odontograma.destroy()
+            # except:
+            #     messagebox.showinfo("Odontograma", "No se pudo guardar el odontograma")
 
     def editar_diente(self, numero):
         #print('prueba', numero)
@@ -432,8 +478,8 @@ class Odontograma:
                 #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
                 self.miCursor = self.miConexion.cursor()
                 #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
-                sql = "INSERT INTO Dientes VALUES (?,?,?,?,?,?,?,?,?,?)"
-                datos= self.diente_actual[0], self.ID_odonto+1, self.diente_actual[2], self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8], self.dni_paciente
+                sql = "INSERT INTO Dientes VALUES (?,?,?,?,?,?,?,?,?)"
+                datos= self.diente_actual[0], self.ID_odonto+1, self.diente_actual[2], self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8]
                 self.miCursor.execute(sql, datos)
                 self.miConexion.commit()
                 #self.ID_odonto_actual= self.miCursor.fetchone()
@@ -456,10 +502,10 @@ class Odontograma:
             #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor = self.miConexion.cursor()
             #sql = "SELECT * from Diente WHERE ID_odontograma = ? ORDER BY ID_odontograma"
-            self.miCursor.execute("SELECT * from Dientes WHERE DNI_paciente = ?", (self.dni_paciente,))
+            self.miCursor.execute("SELECT DISTINCT nro_diente, id_odonto, v, d, m, i,o, corona, extraccion FROM dientes join Odontogramas WHERE Odontogramas.dni_paciente=?", (self.dni_paciente,))
             self.miConexion.commit()
             self.dientes= self.miCursor.fetchall()
-            #print(self.dientes)
+            print(self.dientes)
         except:
             print("error diente")
             self.dientes=[]
@@ -474,6 +520,7 @@ class Odontograma:
                     indice+=1
         except ValueError:
             return None
+    
     def change_cursor_enter(self, event):
         # Cambiar el cursor al pasar sobre un cuadrado
         self.canvas.config(cursor= "hand2")
@@ -555,18 +602,20 @@ class Odontograma:
 
         #primera hilera de dientes
         hilera1 = 18
-        for i in range(num_buttons):
+        for _ in range(num_buttons):
             x1 = x1 + padding
             y1 = 30
             x2 = x1 + width
             y2 = y1 + height
-
+            print(hilera1)
             tag_diente = 'D' + str(hilera1)
 
             indice = self.buscar_valor(hilera1)
+            
             self.texto1 = self.canvas.create_text(x1+ width/2, 15, text= hilera1, fill= "black", font= ('Helvetica 10 bold'))
             if(indice is not None):
-                #print(indice)
+                print(indice)
+                print(self.dientes[indice])
                 if self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")

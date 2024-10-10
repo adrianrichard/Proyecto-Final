@@ -6,4 +6,5 @@
 --SELECT Turnos.Hora, Turnos.Paciente, Odontologos.Apellido_odontologo, Turnos.Prestacion 
 --FROM Odontologos JOIN Turnos ON Odontologos.Matricula = Turnos.Odontologo
 --WHERE Turnos.Fecha= '2024-10-10' ORDER BY Turnos.Hora
-SELECT Matricula FROM odontologos WHERE Apellido_odontologo LIKE '%MA%'
+--SELECT Matricula FROM odontologos WHERE Apellido_odontologo LIKE '%MA%'
+SELECT nro, id_odonto, v, d, m, i,o, corona, extraccion FROM dientes join Odontogramas on Odontogramas.id_odontograma=dientes.id_odonto

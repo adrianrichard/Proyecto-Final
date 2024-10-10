@@ -230,7 +230,8 @@ class DayTopWindow(Toplevel):
             #print(apellidos)
             self.conn.commit()
         except:
-            messagebox.showinfo("Turnos", "No hay turnos")
+            messagebox.showinfo("Odontologos", "No hay odontologos cargados")
+            
     def avanzar_dia(self):
         """ AVANZAR 1 DIA """
         cant_dias = DateHandler().days_in_month(self.mes, self.anio)
