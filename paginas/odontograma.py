@@ -134,7 +134,7 @@ class Odontograma:
             self.miConexion.commit()
             #print(self.paciente)
         except:
-            print("error")
+            messagebox.showinfo("Paciente", "No se cargo el paciente")
         #print(self.pacientes[0][2])
         #datos= self.pacientes[0][2], self.fecha_actual, 'Militello'
         #print(datos)
@@ -471,14 +471,14 @@ class Odontograma:
     def guardar_diente(self):
         print(self.ID_odonto)
         #print(self.diente_actual)
-        print(self.dni_paciente)
+        #print(self.dni_paciente)
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea guardar?', icon= 'warning')
         if answer:
             try:
                 #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
                 self.miCursor = self.miConexion.cursor()
                 #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
-                sql = "INSERT INTO Dientes VALUES (?,?,?,?,?,?,?,?,?)"
+                sql = "INSERT INTO Dientes VALUES (NULL,?,?,?,?,?,?,?,?,?)"
                 datos= self.diente_actual[0], self.ID_odonto+1, self.diente_actual[2], self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8]
                 self.miCursor.execute(sql, datos)
                 self.miConexion.commit()
@@ -502,12 +502,12 @@ class Odontograma:
             #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor = self.miConexion.cursor()
             #sql = "SELECT * from Diente WHERE ID_odontograma = ? ORDER BY ID_odontograma"
-            self.miCursor.execute("SELECT DISTINCT nro_diente, id_odonto, v, d, m, i,o, corona, extraccion FROM dientes join Odontogramas WHERE Odontogramas.dni_paciente=?", (self.dni_paciente,))
+            self.miCursor.execute("SELECT DISTINCT nro_diente, id_odonto, d, v, m, i, o, extraccion, corona FROM dientes join Odontogramas WHERE Odontogramas.dni_paciente=? AND dientes.id_odonto <=? ORDER BY dientes.id_odonto DESC", (self.dni_paciente, id_odonto,))
             self.miConexion.commit()
             self.dientes= self.miCursor.fetchall()
-            print(self.dientes)
+            #print(self.dientes)
         except:
-            print("error diente")
+            messagebox.showinfo("Dientes", "No se pudieron cargar prestaciones")
             self.dientes=[]
 
     def buscar_valor(self, valor):
