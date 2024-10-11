@@ -67,7 +67,7 @@ class Odontograma:
         self.frame_dientes = Frame(self.ventana_odontograma)
         self.frame_dientes.grid(column= 0, row= 3, pady= (10, 10))
         self.cargar_ultimo_odontograma()
-        print(self.ID_odonto)
+        #print(self.ID_odonto)
         self.cargar_dientes(self.ID_odonto)
         self.canvas = tk.Canvas(self.frame_dientes, width= self.ancho-20, height= 300)
         self.canvas.pack()
@@ -109,13 +109,13 @@ class Odontograma:
     def salir(self):
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea salir sin guardar?', icon= 'warning')
         if answer:
-            print(self.ID_odonto+1)
+            #print(self.ID_odonto+1)
             self.ID_odonto=self.ID_odonto+1
             try:                
                 self.miCursor.execute("DELETE FROM Dientes WHERE id_odonto=?", (self.ID_odonto,))
                 self.miConexion.commit()
             except:
-                print("no hay dientes")
+                messagebox.showinfo("Diente", "No se pudo borrar")
             self.ventana_odontograma.destroy()
 
     def cargar_odontologos(self):
@@ -225,10 +225,10 @@ class Odontograma:
         diente_frame.pack(pady= (10, 10))
         botones_frame = Frame(self.ventana_secundaria)
         botones_frame.pack(pady= (10, 10))
-        self.boton_extraccion=Button(botones_frame, text= 'Extracción', command= partial(self.extraccion, numero), bg= "white", width= 8)
+        self.boton_extraccion=Button(botones_frame, text= 'Extracción', command= self.extraccion, bg= "white", width= 8)
         self.boton_extraccion.grid(row= 0, column= 0, padx= 10)
         #Button(botones_frame, text= 'X Azul', command= partial(self.extraccion, numero), bg= "blue", width= 5).grid(row= 0, column= 1, padx= 10)
-        self.boton_corona=Button(botones_frame, text= 'Corona', command= partial(self.corona, numero), bg= "white", width= 8)
+        self.boton_corona=Button(botones_frame, text= 'Corona', command= self.corona, bg= "white", width= 8)
         self.boton_corona.grid(row= 0, column= 1, padx= 10)
         #Button(botones_frame, text= 'O Azul', command= partial(self.corona, numero), bg= "blue", width= 5).grid(row= 0, column= 3, padx= 10)
         Button(botones_frame, text= 'CANCELAR', command= self.cancelar, width= 8).grid(row= 1, column= 1, padx= 10, pady=(10, 0))
@@ -246,7 +246,7 @@ class Odontograma:
             else:
                 self.diente_actual=[0, numero, self.ID_odonto, 'white','white','white','white','white','white','white']
 
-        print("diente cargado", self.diente_actual)
+        #print("diente cargado", self.diente_actual)
         width = 100
         height = 100
         x1 = 100
@@ -400,7 +400,7 @@ class Odontograma:
             self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C4'))
             self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
 
-    def corona(self, numero):
+    def corona(self):
         #print(color)
 
         if self.diente_actual[9] == "red":
@@ -434,7 +434,7 @@ class Odontograma:
                 self.diente_actual[i] = 'white'    
             #self.diente_actual=[numero, 'white', 'white', 'white', 'white', 'white', 'white', self.diente_actual[8]]
 
-    def extraccion(self, numero):
+    def extraccion(self):
         if self.diente_actual[8] == "red":
             self.diente_actual[8] = "white"
             self.boton_extraccion.config(bg='blue')
@@ -477,12 +477,12 @@ class Odontograma:
             self.crear_dientes()
 
     def guardar_diente(self):
-        print(self.ID_odonto)
+        #print(self.ID_odonto)
         #print(self.diente_actual)
         #print(self.dni_paciente)
-        print("Guardar diente")
+        #print("Guardar diente")
         datos= self.diente_actual[1], self.ID_odonto+1, self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8], self.diente_actual[9]
-        print(datos)
+        #print(datos)
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea guardar?', icon= 'warning')
         if answer:
             try:
@@ -511,7 +511,7 @@ class Odontograma:
             
     def cargar_dientes_modificados(self, id_odonto):
         #print('crear vector con los dientes')
-        print(self.ID_odonto)
+        #print(self.ID_odonto)
         try:
             #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor = self.miConexion.cursor()
@@ -520,7 +520,7 @@ class Odontograma:
                 UNION SELECT * FROM dientes WHERE dientes.id_odonto <=? ORDER by nro DESC", (self.dni_paciente, id_odonto, id_odonto, ))
             self.miConexion.commit()
             self.dientes= self.miCursor.fetchall()
-            print(self.dientes)
+            #print(self.dientes)
         except:
             messagebox.showinfo("Dientes", "No se pudieron cargar dientes actuales")
             self.dientes=[]
@@ -535,7 +535,7 @@ class Odontograma:
             self.miCursor.execute("SELECT DISTINCT nro, nro_diente, id_odonto, d, v, m, i, o, extraccion, corona FROM dientes INNER JOIN Odontogramas ON dientes.id_odonto=Odontogramas.id_odontograma WHERE Odontogramas.dni_paciente=? AND dientes.id_odonto <=? ORDER BY dientes.id_odonto DESC", (self.dni_paciente, id_odonto,))            
             self.miConexion.commit()
             self.dientes= self.miCursor.fetchall()
-            print(self.dientes)
+            #print(self.dientes)
         except:
             messagebox.showinfo("Dientes", "No se pudieron cargar prestaciones")
             self.dientes=[]
