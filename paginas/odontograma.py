@@ -480,6 +480,7 @@ class Odontograma:
         print(self.ID_odonto)
         #print(self.diente_actual)
         #print(self.dni_paciente)
+        print("Guardar diente")
         datos= self.diente_actual[1], self.ID_odonto+1, self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8], self.diente_actual[9]
         print(datos)
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea guardar?', icon= 'warning')
@@ -489,7 +490,7 @@ class Odontograma:
                 self.miCursor = self.miConexion.cursor()
                 #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
                 sql = "INSERT INTO Dientes VALUES (NULL,?,?,?,?,?,?,?,?,?)"
-                datos= self.diente_actual[0], self.ID_odonto+1, self.diente_actual[2], self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8]
+                datos= self.diente_actual[1], self.ID_odonto+1, self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8], self.diente_actual[9]
                 self.miCursor.execute(sql, datos)
                 self.miConexion.commit()
                 #self.ID_odonto_actual= self.miCursor.fetchone()
@@ -499,16 +500,18 @@ class Odontograma:
                 self.ventana_odontograma.focus_set() # Mantiene el foco cuando se abre la ventana.
                 
                 self.canvas.delete("all")
+                self.cargar_dientes_modificados(self.ID_odonto+1)
                 self.crear_dientes()
+                
                 self.ventana_secundaria.destroy()
             except:
                 messagebox.showinfo("Diente", "No se pudieron guardar los cambios")
-            self.cargar_dientes_modificados(self.ID_odonto+1)
+            
             #print()
             
     def cargar_dientes_modificados(self, id_odonto):
         #print('crear vector con los dientes')
-        #print(self.ID_odonto)
+        print(self.ID_odonto)
         try:
             #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor = self.miConexion.cursor()
