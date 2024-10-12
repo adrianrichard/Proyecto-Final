@@ -35,7 +35,7 @@ class MasterPanel:
         self.menu = True
         self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
         self.ventana.iconphoto(False, self.imagen_ventana)
-        
+        self.ventana.protocol("WM_DELETE_WINDOW", self.salir)
         self.db = Conexion()
         self.miConexion = self.db.conectar()
         
