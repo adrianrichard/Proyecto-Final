@@ -1,10 +1,9 @@
-import sqlite3
+#import sqlite3
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
-#from paginas.dienteodontograma import Diente
-from functools import partial
+#from functools import partial
 import util.config as utl
 from bd.conexion import Conexion
 
@@ -28,12 +27,12 @@ class Odontograma:
         #self.ventana_odontograma = tk.Tk()
         self.ventana_odontograma.geometry('750x600')
         self.ventana_odontograma.grid_columnconfigure(0, weight= 1)
-        self.ventana_odontograma.configure(bg="gray")
+        self.ventana_odontograma.configure(bg= "gray")
         utl.centrar_ventana(self.ventana_odontograma, 900, 700)
         self.fecha_actual = datetime.now().date()
         self.fecha_actual = self.fecha_actual.strftime("%d-%m-%Y")
         Label(self.ventana_odontograma, text= 'Odontograma', font= 'Arial 20 bold', bg= "gray", fg= 'white').grid(column= 0, row= 0)
-        
+
         apellido= self.paciente[0]
         nombre= self.paciente[1]
         dni= self.paciente[2]
@@ -54,6 +53,7 @@ class Odontograma:
         Label(self.frame_datos_paciente, text= 'Nº socio: ',  font= self.fuenteb, bg= "gray90").grid(column= 2, row= 1, sticky= 'e', padx= (5, 0))
         Label(self.frame_datos_paciente, text= nrosocio, font= self.fuenten, bg= "gray90").grid(column= 3, row= 1, sticky= 'w', padx= (0, 10))
         self.ancho = 700
+        
         self.cargar_odontologos()
         self.selector_odontologo= ttk.Combobox(self.frame_datos_paciente, state= "readonly", values= self.odontologos, width= 15, justify= CENTER, background= "white")
         self.selector_odontologo.grid(column= 5, row= 1, sticky= 'w', padx= (10, 10))
@@ -61,12 +61,11 @@ class Odontograma:
         self.aviso_odontologo = Label(self.frame_datos_paciente, text= '', font= self.fuenteb, bg= "gray90")
         self.aviso_odontologo.grid(column= 4, row= 1, sticky= 'e', padx= (5, 0))
         #self.selector_odontologo.bind("<<ComboboxSelected>>", lambda e: print(self.selector_odontologo.get()))
-        # self.dientes = []
-        # self.crear_dientes()
 
         self.frame_dientes = Frame(self.ventana_odontograma)
         self.frame_dientes.grid(column= 0, row= 3, pady= (10, 10))
-        self.cargar_ultimo_odontograma()
+        self.iniciar_odontograma()
+        self.cargar_odontograma()
         #print(self.ID_odonto)
         self.cargar_dientes(self.ID_odonto)
         self.canvas = tk.Canvas(self.frame_dientes, width= self.ancho-20, height= 300)
@@ -115,7 +114,8 @@ class Odontograma:
                 self.miCursor.execute("DELETE FROM Dientes WHERE id_odonto=?", (self.ID_odonto,))
                 self.miConexion.commit()
             except:
-                messagebox.showinfo("Diente", "No se pudo borrar")
+                self.ventana_odontograma.destroy()
+                #messagebox.showinfo("Diente", "No se pudo borrar")
             self.ventana_odontograma.destroy()
 
     def cargar_odontologos(self):
@@ -150,31 +150,56 @@ class Odontograma:
         fecha_obj = datetime.strptime(fecha, "%Y-%m-%d")
         fecha_date = fecha_obj.date()
         return fecha_date.strftime("%d-%m-%Y")
-
-    def cargar_ultimo_odontograma(self):
+    
+    def iniciar_odontograma(self):
+        self.miCursor=self.miConexion.cursor()
+        self.crear_odontograma=False
+        try:
+            self.miCursor.execute("SELECT id_odontograma from Odontogramas WHERE dni_paciente=? ORDER BY id_odontograma DESC", (self.dni_paciente,))
+            self.miConexion.commit()
+            #print("no hay odontograma")
+            self.ID_odonto_actual= self.miCursor.fetchone()
+            if not self.ID_odonto_actual:
+                self.crear_odontograma=True
+                messagebox.showinfo("Odontograma", "Crear odontograma")
+        except:
+            messagebox.showinfo("Odontograma", "Problema con BD")    
+        
+    def cargar_odontograma(self):
         self.miCursor=self.miConexion.cursor()
         #print(self.dni_paciente)
-        try:            
-            self.miCursor.execute("SELECT id_odontograma from Odontogramas WHERE dni_paciente = ? ORDER BY id_odontograma DESC", (self.dni_paciente,))
-            self.miConexion.commit()
-            self.ID_odonto_actual= self.miCursor.fetchone()
-            self.ID_odonto = self.ID_odonto_actual[0]
-        except:
-            messagebox.showinfo("Odontograma", "Crear odontograma")
-            #print("ID odonto1")
-            self.miCursor.execute("SELECT id_odontograma from Odontogramas ORDER BY id_odontograma DESC LIMIT 1")
-            self.miConexion.commit()
-            #print("ID odonto2")
-            self.ID_odonto_actual= self.miCursor.fetchone()
-            #print(self.ID_odonto_actual)
-            self.ID_odonto = self.ID_odonto_actual[0]
-            #print(self.ID_odonto)
-    
+        self.agregar_prestacion= True
+        if self.crear_odontograma or self.agregar_prestacion:
+            try:
+                self.miCursor.execute("SELECT id_odontograma from Odontogramas ORDER BY id_odontograma DESC")
+                self.miConexion.commit()
+                self.ID_odonto_actual= self.miCursor.fetchone()
+                self.ID_odonto = self.ID_odonto_actual[0]
+            except:
+                messagebox.showinfo("Odontograma", "Crear odontograma")
+        #UTIL PARA CUANDO PODAMOS ELEGIR UN ODONTOGRAMA ANTERIOR
+        else:
+            try:
+                self.miCursor.execute("SELECT id_odontograma from Odontogramas WHERE dni_paciente=? ORDER BY id_odontograma DESC", (self.dni_paciente,))
+                self.miConexion.commit()
+                self.ID_odonto_actual= self.miCursor.fetchone()
+                self.ID_odonto = self.ID_odonto_actual[0]
+            except:
+                messagebox.showinfo("Odontograma", "Crear odontograma")
+                #print("ID odonto1")
+                self.miCursor.execute("SELECT id_odontograma from Odontogramas ORDER BY id_odontograma DESC LIMIT 1")
+                self.miConexion.commit()
+                #print("ID odonto2")
+                self.ID_odonto_actual= self.miCursor.fetchone()
+                #print(self.ID_odonto_actual)
+                self.ID_odonto = self.ID_odonto_actual[0]
+                #print(self.ID_odonto)
+
     def obtener_matricula(self, apellido):
-        self.cur= self.miConexion.cursor()        
+        self.cur= self.miConexion.cursor()
         try:
             self.cur.execute("SELECT matricula FROM odontologos WHERE Apellido_odontologo=?",(apellido,))
-            matricula = self.cur.fetchone()            
+            matricula = self.cur.fetchone()
             self.miConexion.commit()
             return matricula[0]
         except:
@@ -209,10 +234,10 @@ class Odontograma:
                 self.aviso_odontologo.config(text= "Escoja un odontólogo", fg= 'red')
                 messagebox.showinfo("Odontologo", "Escoja un odontólogo")
             #print(matricula)
-            
 
     def editar_diente(self, numero):
         #print('prueba', numero)
+        self.numero_actual = numero
         self.ventana_secundaria = tk.Toplevel()
         self.ventana_secundaria.title("Editar diente")
         self.ventana_secundaria.geometry('300x350')
@@ -281,7 +306,6 @@ class Odontograma:
                 self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= self.diente_actual[5], outline = "black", tags= 'C3')
                 self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= self.diente_actual[6], outline = "black", tags= 'C4')
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= self.diente_actual[7], tags= 'CO')
-
             self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C1'))
             self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C2'))
             self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C3'))
@@ -314,7 +338,7 @@ class Odontograma:
                 self.canvas2.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= self.diente_actual[3], outline = "black", tags= 'C3')
                 self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= self.diente_actual[6], outline = "black", tags= 'C4')
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= self.diente_actual[7], tags= 'CO')
-
+          
             self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C1'))
             self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C2'))
             self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C3'))
@@ -438,6 +462,11 @@ class Odontograma:
         if self.diente_actual[8] == "red":
             self.diente_actual[8] = "white"
             self.boton_extraccion.config(bg='blue')
+            self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= self.numero_actual: self.cambiar_color(event, num, 'C1'))
+            self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= self.numero_actual: self.cambiar_color(event, num, 'C2'))
+            self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= self.numero_actual: self.cambiar_color(event, num, 'C3'))
+            self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= self.numero_actual: self.cambiar_color(event, num, 'C4'))
+            self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= self.numero_actual: self.cambiar_color(event, num, 'CO'))
         elif self.diente_actual[8] == "white":
             self.diente_actual[8] = "blue"
             self.boton_extraccion.config(bg='green')
@@ -517,7 +546,7 @@ class Odontograma:
             self.miCursor = self.miConexion.cursor()
             #sql = "SELECT * from Diente WHERE ID_odontograma = ? ORDER BY ID_odontograma"
             self.miCursor.execute("SELECT DISTINCT nro, nro_diente, id_odonto, d, v, m, i, o, extraccion, corona FROM dientes INNER JOIN Odontogramas ON dientes.id_odonto=Odontogramas.id_odontograma WHERE Odontogramas.dni_paciente=? AND dientes.id_odonto <=?\
-                UNION SELECT * FROM dientes WHERE dientes.id_odonto <=? ORDER by nro DESC", (self.dni_paciente, id_odonto, id_odonto, ))
+                UNION SELECT * FROM dientes WHERE dientes.id_odonto =? ORDER by nro DESC", (self.dni_paciente, id_odonto, id_odonto, ))
             self.miConexion.commit()
             self.dientes= self.miCursor.fetchall()
             #print(self.dientes)
@@ -528,17 +557,20 @@ class Odontograma:
     def cargar_dientes(self, id_odonto):
         #print('crear vector con los dientes')
         #print(self.ID_odonto)
-        try:
-            #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
-            self.miCursor = self.miConexion.cursor()
-            #sql = "SELECT * from Diente WHERE ID_odontograma = ? ORDER BY ID_odontograma"
-            self.miCursor.execute("SELECT DISTINCT nro, nro_diente, id_odonto, d, v, m, i, o, extraccion, corona FROM dientes INNER JOIN Odontogramas ON dientes.id_odonto=Odontogramas.id_odontograma WHERE Odontogramas.dni_paciente=? AND dientes.id_odonto <=? ORDER BY dientes.id_odonto DESC", (self.dni_paciente, id_odonto,))            
-            self.miConexion.commit()
-            self.dientes= self.miCursor.fetchall()
-            #print(self.dientes)
-        except:
-            messagebox.showinfo("Dientes", "No se pudieron cargar prestaciones")
+        if self.crear_odontograma:
             self.dientes=[]
+        else:
+            try:
+                #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
+                self.miCursor = self.miConexion.cursor()
+                #sql = "SELECT * from Diente WHERE ID_odontograma = ? ORDER BY ID_odontograma"
+                self.miCursor.execute("SELECT DISTINCT nro, nro_diente, id_odonto, d, v, m, i, o, extraccion, corona FROM dientes INNER JOIN Odontogramas ON dientes.id_odonto=Odontogramas.id_odontograma WHERE Odontogramas.dni_paciente=? AND dientes.id_odonto <=? ORDER BY dientes.id_odonto DESC", (self.dni_paciente, id_odonto,))            
+                self.miConexion.commit()
+                self.dientes= self.miCursor.fetchall()
+                #print(self.dientes)
+            except:
+                messagebox.showinfo("Dientes", "No se pudieron cargar prestaciones")
+            
 
     def buscar_valor(self, valor):
         indice = 0
@@ -560,67 +592,68 @@ class Odontograma:
         self.canvas.config(cursor= "")
 
     def cambiar_color(self, event, numero, tag):
-        item = self.canvas2.find_closest(event.x, event.y)
-        current_color = self.canvas2.itemcget(item, "fill")
+        if self.diente_actual[8] == 'white' and self.diente_actual[9] == 'white':
+            item = self.canvas2.find_closest(event.x, event.y)
+            current_color = self.canvas2.itemcget(item, "fill")
         #i=0
     # Cambiar el color del cuadrado según su estado actual
-        if current_color == "white":
-            self.canvas2.itemconfig(item, fill="red")
-        elif current_color == "red":
-            self.canvas2.itemconfig(item, fill="blue")
-        elif current_color == "blue":
-            self.canvas2.itemconfig(item, fill="green")
-        elif current_color == "green":
-            self.canvas2.itemconfig(item, fill="white")
-        color_actual=self.canvas2.itemcget(item, "fill")
-        if tag =='C1':
-            if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
-                or numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
-                or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
-                or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85:
-                self.diente_actual[3]=color_actual
-            elif numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
-                or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
-                or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65 \
-                or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
-                self.diente_actual[5]=color_actual    
-        if tag =='C2':
-            #i=2
-            if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
-                or numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
-                or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
-                or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65:
-                self.diente_actual[4]=color_actual
-            elif numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
-                or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
-                or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85 \
-                or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
-                self.diente_actual[6]=color_actual    
-        if tag =='C3':
-            if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
-                or numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
-                or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
-                or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85:
-                self.diente_actual[5]=color_actual
-            elif numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
-                or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
-                or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65 \
-                or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
-                self.diente_actual[3]=color_actual    
-        if tag =='C4':
-            #i=4
-            if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
-                or numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
-                or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
-                or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65:
-                self.diente_actual[6]=color_actual
-            elif numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
-                or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
-                or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85 \
-                or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
-                self.diente_actual[4]=color_actual 
-        if tag =='CO':
-            self.diente_actual[7]=color_actual
+            if current_color == "white":
+                self.canvas2.itemconfig(item, fill="red")
+            elif current_color == "red":
+                self.canvas2.itemconfig(item, fill="blue")
+            elif current_color == "blue":
+                self.canvas2.itemconfig(item, fill="green")
+            elif current_color == "green":
+                self.canvas2.itemconfig(item, fill="white")
+            color_actual=self.canvas2.itemcget(item, "fill")
+            if tag =='C1':
+                if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
+                    or numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
+                    or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
+                    or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85:
+                    self.diente_actual[3]=color_actual
+                elif numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
+                    or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
+                    or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65 \
+                    or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
+                    self.diente_actual[5]=color_actual    
+            if tag =='C2':
+                #i=2
+                if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
+                    or numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
+                    or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
+                    or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65:
+                    self.diente_actual[4]=color_actual
+                elif numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
+                    or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
+                    or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85 \
+                    or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
+                    self.diente_actual[6]=color_actual    
+            if tag =='C3':
+                if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
+                    or numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
+                    or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
+                    or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85:
+                    self.diente_actual[5]=color_actual
+                elif numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
+                    or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
+                    or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65 \
+                    or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
+                    self.diente_actual[3]=color_actual    
+            if tag =='C4':
+                #i=4
+                if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
+                    or numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
+                    or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
+                    or numero == 61 or numero == 62 or numero == 63 or numero == 64 or numero == 65:
+                    self.diente_actual[6]=color_actual
+                elif numero == 41 or numero == 42 or numero == 43 or numero == 44 or numero == 45 or numero == 46 or numero == 47 or numero == 48 \
+                    or numero == 31 or numero == 32 or numero == 33 or numero == 34 or numero == 35 or numero == 36 or numero == 37 or numero == 38 \
+                    or numero == 81 or numero == 82 or numero == 83 or numero == 84 or numero == 85 \
+                    or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
+                    self.diente_actual[4]=color_actual 
+            if tag =='CO':
+                self.diente_actual[7]=color_actual
         #print (numero, tag, self.diente[i])
 
     def crear_dientes(self):
