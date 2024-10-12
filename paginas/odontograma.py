@@ -292,6 +292,7 @@ class Odontograma:
                 self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                 self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= self.diente_actual[9])
+                self.boton_corona.config(bg=self.determinar_color(self.diente_actual[9]))
             elif self.diente_actual[8] == 'red' or self.diente_actual[8] == 'blue' or self.diente_actual[8] == 'green':
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
@@ -300,6 +301,7 @@ class Odontograma:
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                 self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.diente_actual[8], width= 5)
                 self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.diente_actual[8], width= 5)
+                self.boton_extraccion.config(bg=self.determinar_color(self.diente_actual[8]))
             else:
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.diente_actual[3], outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.diente_actual[4], outline = "black", tags= 'C2')
@@ -324,6 +326,7 @@ class Odontograma:
                 self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                 self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= self.diente_actual[9])
+                self.boton_corona.config(bg=self.determinar_color(self.diente_actual[9]))
             elif self.diente_actual[8] == 'red' or self.diente_actual[8] == 'blue' or self.diente_actual[8] == 'green':
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
@@ -332,6 +335,7 @@ class Odontograma:
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                 self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.diente_actual[8], width= 5)
                 self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.diente_actual[8], width= 5)
+                self.boton_extraccion.config(bg= self.determinar_color(self.diente_actual[8]))
             else:
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.diente_actual[5], outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.diente_actual[4], outline = "black", tags= 'C2')
@@ -357,6 +361,7 @@ class Odontograma:
                 self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                 self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= self.diente_actual[9])
+                self.boton_corona.config(bg=self.determinar_color(self.diente_actual[9]))
             elif self.diente_actual[8] == 'red' or self.diente_actual[8] == 'blue' or self.diente_actual[8] == 'green':
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
@@ -365,6 +370,7 @@ class Odontograma:
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                 self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.diente_actual[8], width= 5)
                 self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.diente_actual[8], width= 5)
+                self.boton_extraccion.config(bg= self.determinar_color(self.diente_actual[8]))
             else:
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.diente_actual[5], outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.diente_actual[4], outline = "black", tags= 'C2')
@@ -390,6 +396,7 @@ class Odontograma:
                 self.canvas2.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= 'white', outline = "black", tags= 'C4')
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                 self.canvas2.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= self.diente_actual[9])
+                self.boton_corona.config(bg=self.determinar_color(self.diente_actual[9]))
             elif self.diente_actual[8] == 'red' or self.diente_actual[8] == 'blue' or self.diente_actual[8] == 'green':
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= 'white', outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= 'white', outline = "black", tags= 'C2')
@@ -398,6 +405,7 @@ class Odontograma:
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                 self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.diente_actual[8], width= 5)
                 self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.diente_actual[8], width= 5)
+                self.boton_extraccion.config(bg= self.determinar_color(self.diente_actual[8]))
             else:
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.diente_actual[3], outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.diente_actual[6], outline = "black", tags= 'C2')
@@ -457,7 +465,17 @@ class Odontograma:
             if i != 9:
                 self.diente_actual[i] = 'white'    
             #self.diente_actual=[numero, 'white', 'white', 'white', 'white', 'white', 'white', self.diente_actual[8]]
-
+    def determinar_color(self, color):
+        if color == "white":
+            bg='blue'
+        elif color == "blue":
+            bg='green'
+        elif color == "green":
+            bg='red'
+        elif color == "red":
+            bg='white'
+        return bg
+    
     def extraccion(self):
         if self.diente_actual[8] == "red":
             self.diente_actual[8] = "white"
@@ -468,7 +486,7 @@ class Odontograma:
         elif self.diente_actual[8] == "blue":
             self.diente_actual[8] = "green"
             self.boton_extraccion.config(bg='red')
-        else:
+        elif self.diente_actual[8] == "green":
             self.diente_actual[8] = "red"
             self.boton_extraccion.config(bg='white')
 
@@ -505,7 +523,7 @@ class Odontograma:
         #print(self.diente_actual)
         #print(self.dni_paciente)
         #print("Guardar diente")
-        datos= self.diente_actual[1], self.ID_odonto+1, self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8], self.diente_actual[9]
+        #datos= self.diente_actual[1], self.ID_odonto+1, self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8], self.diente_actual[9]
         #print(datos)
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea guardar?', icon= 'warning')
         if answer:
@@ -674,14 +692,14 @@ class Odontograma:
             if(indice is not None):
                 #print(indice)
                 #print(self.dientes[indice])
-                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue':
+                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= "white", tags= tag_diente)
                     self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width= 2, outline= self.dientes[indice][9])
-                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue':
+                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue' or self.dientes[indice][8] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
@@ -726,14 +744,14 @@ class Odontograma:
             tag_diente = 'D' + str(hilera2)
             if(indice is not None):
                 #print(indice)
-                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue':
+                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= "white", tags= tag_diente)
                     self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width= 2, outline= self.dientes[indice][9])
-                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue':
+                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue' or self.dientes[indice][8] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
@@ -773,14 +791,14 @@ class Odontograma:
             tag_diente = 'D' + str(hilera4)
             if(indice is not None):
                 #print(indice)
-                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue':
+                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= "white", tags= tag_diente)
                     self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width= 2, outline= self.dientes[indice][9])
-                elif self.dientes[indice][7] == 'red' or self.dientes[indice][7] == 'blue':
+                elif self.dientes[indice][7] == 'red' or self.dientes[indice][7] == 'blue' or self.dientes[indice][8] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
@@ -817,14 +835,14 @@ class Odontograma:
             tag_diente = 'D' + str(hilera3)
             if(indice is not None):
                 #print(indice)
-                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue':
+                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= "white", tags= tag_diente)
                     self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width= 2, outline= self.dientes[indice][9])
-                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue':
+                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue' or self.dientes[indice][8] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
@@ -861,14 +879,14 @@ class Odontograma:
             tag_diente = 'D' + str(hilera5)
             if(indice is not None):
                 #print(indice)
-                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue':
+                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= "white", tags= tag_diente)
                     self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width= 2, outline= self.dientes[indice][9])
-                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue':
+                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue' or self.dientes[indice][8] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
@@ -906,14 +924,14 @@ class Odontograma:
             tag_diente = 'D' + str(hilera6)
             if(indice is not None):
                 #print(indice)
-                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue':
+                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= "white", tags= tag_diente)
                     self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width= 2, outline= self.dientes[indice][9])
-                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue':
+                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue' or self.dientes[indice][8] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
@@ -954,14 +972,14 @@ class Odontograma:
 
             if(indice is not None):
                 #print(indice)
-                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue':
+                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= "white", tags= tag_diente)
                     self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width= 2, outline= self.dientes[indice][9])
-                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue':
+                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue' or self.dientes[indice][8] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
@@ -998,14 +1016,14 @@ class Odontograma:
             tag_diente = 'D' + str(hilera7)
             if(indice is not None):
                 #print(indice)
-                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue':
+                if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= "white", tags= tag_diente)
                     self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width= 5, outline= self.dientes[indice][9])
-                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue':
+                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue' or self.dientes[indice][8] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
