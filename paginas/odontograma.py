@@ -462,11 +462,6 @@ class Odontograma:
         if self.diente_actual[8] == "red":
             self.diente_actual[8] = "white"
             self.boton_extraccion.config(bg='blue')
-            self.canvas2.tag_bind('C1', '<Button-1>', lambda event, num= self.numero_actual: self.cambiar_color(event, num, 'C1'))
-            self.canvas2.tag_bind('C2', '<Button-1>', lambda event, num= self.numero_actual: self.cambiar_color(event, num, 'C2'))
-            self.canvas2.tag_bind('C3', '<Button-1>', lambda event, num= self.numero_actual: self.cambiar_color(event, num, 'C3'))
-            self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= self.numero_actual: self.cambiar_color(event, num, 'C4'))
-            self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= self.numero_actual: self.cambiar_color(event, num, 'CO'))
         elif self.diente_actual[8] == "white":
             self.diente_actual[8] = "blue"
             self.boton_extraccion.config(bg='green')
