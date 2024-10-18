@@ -4,7 +4,7 @@ from tkinter import ttk
 from tkinter import *
 from tkinter import messagebox
 from datetime import *
-import sqlite3
+#import sqlite3
 from tkinter import Button
 from paginas.datehandler.datehandler import DateHandler
 from bd.conexion import Conexion

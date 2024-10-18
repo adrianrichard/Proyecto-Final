@@ -38,7 +38,7 @@ class MasterPanel:
         self.ventana.protocol("WM_DELETE_WINDOW", self.salir)
         self.db = Conexion()
         self.miConexion = self.db.conectar()
-        
+        self.mes_estadistica = ''
         self.dni_paciente = StringVar()
         self.dato_paciente = StringVar()
         self.dato_paciente2 = StringVar()
@@ -120,6 +120,12 @@ class MasterPanel:
         self.historia.columnconfigure(1, weight= 1)
         self.estilo_tabla.configure('Treeview.Heading', background= 'green', fg= 'black', padding= 3, font= fuenteb)        
         self.estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 35)
+
+    def pantalla_informes(self):
+        self.paginas.select([self.frame_informes])
+        # Gallery=ImageGalleryApp(self.frame_galeria)
+        # Gallery.configurar_filas_columnas(self.frame_galeria)
+        pass
 
     def pantalla_galeria(self):
         self.paginas.select([self.frame_galeria])
@@ -233,7 +239,7 @@ class MasterPanel:
         datos = self.miCursor.fetchall()
         #print(len(datos))
         #if  len(datos)<incremento:
-            
+
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
         if (len(datos)>incremento):
             for i in range(0, incremento):
@@ -242,7 +248,7 @@ class MasterPanel:
             self.boton_pos.config(state= 'disabled', bg= '#1F704B')
             for i in range(0, len(datos)):
                     self.tabla_paciente.insert('', i, text= datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
-    
+
     def buscar_paciente(self, event=None):
         self.miCursor = self.miConexion.cursor()
         self.buscar = self.dato_paciente.get()
@@ -293,7 +299,7 @@ class MasterPanel:
 
     def mostrar_usuarios(self):
         self.miCursor = self.miConexion.cursor()
-        
+
         bd = "SELECT nombre_usuario, pass_usuario, tipo_usuario FROM usuarios"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
@@ -323,7 +329,6 @@ class MasterPanel:
             user = Usuario()
             user.cargar_datos(self.usuario)
             user.ventana()
-            
         except:
             pass
         #self.mostrar_usuarios()
@@ -338,7 +343,11 @@ class MasterPanel:
 
     def nada(self):
         pass
-
+    
+    def obtener_mes_anio(self):
+        self.mes_estadistica=self.selector_mes.get()
+        print(self.mes_estadistica)
+        
     def widgets(self):
         self.imagen_usuario = utl.leer_imagen('dentist-icon2-removebg-preview.png', (38, 38))
         #tself.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
@@ -346,6 +355,7 @@ class MasterPanel:
         self.imagen_calendario = PhotoImage(file= './imagenes/calendario-removebg-preview.png')
         self.imagen_historia_clinica = PhotoImage(file= './imagenes/historial3.png')
         self.imagen_galeria = PhotoImage(file= './imagenes/foto-removebg-preview.png')
+        self.imagen_informes =utl.leer_imagen('statistics-removebg.png', (38, 38)) #  PhotoImage(file= './imagenes/statistics.png')
         self.imagen_agregar_paciente = PhotoImage(file= './imagenes/agregar_paciente.png')
         self.imagen_editar_paciente = PhotoImage(file= './imagenes/editar_paciente.png')
         self.imagen_refrescar = PhotoImage(file= './imagenes/refrescar.png')
@@ -371,14 +381,16 @@ class MasterPanel:
         Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 4, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_galeria, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
-        Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column= 0, row= 7, pady= 20, padx= 10)
+        Button(self.frame_menu, image= self.imagen_informes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_informes).grid(column= 0, row= 7, pady= 20, padx= 10)
+        Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column= 0, row= 8, pady= 20, padx= 10)
 
         Label(self.frame_menu, text= 'Usuarios', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 1, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 2, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 3, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 4, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 5, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'informes', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 8, pady= 20, padx= 2)
 
 		#############################  CREAR  PAGINAS  ##############################
         estilo_paginas = ttk.Style(self.frame_raiz)
@@ -397,6 +409,7 @@ class MasterPanel:
         self.frame_pacientes = Frame(self.paginas, bg= 'gray90') #color de fondo
         self.frame_calendario = Frame(self.paginas, bg= 'gray90')
         self.historia = Frame(self.paginas, bg= 'gray90')
+        self.frame_informes = Frame(self.paginas, bg= 'gray90')
         self.frame_galeria = Frame(self.paginas, bg= 'gray90')
         self.paginas.add(self.frame_principal)
         self.paginas.add(self.frame_usuarios)
@@ -404,7 +417,7 @@ class MasterPanel:
         self.paginas.add(self.frame_calendario)
         self.paginas.add(self.historia)
         self.paginas.add(self.frame_galeria)
-
+        self.paginas.add(self.frame_informes)
 		##############################         PAGINAS       #############################################
 		######################## FRAME TITULO #################
         self.titulo = Label(self.frame_top, text= 'Consultorio Odontológico MyM', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold'))
@@ -520,4 +533,18 @@ class MasterPanel:
 		######################## GALERIA #################
         Label(self.frame_galeria, text= 'GALERIA', fg= '#1F704B', bg= 'gray90', font=('Comic Sans MS', 24,'bold')).grid(column= 0,  row= 0)
 
+        ######################## informes #################
+        Label(self.frame_informes, text= 'Informes', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
+        
+        meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+        self.selector_mes= ttk.Combobox(self.frame_informes, state= "readonly", values= meses, width= 25, background= "white")
+        self.selector_mes.grid(column=0, row= 1)
+        self.selector_mes.set("Elija mes")
+        #if (self.selector_mes.get() != 'Elija mes'):
+        #self.mes_estadistica=self.selector_mes.get()
+        
+            #self.selector_odontologo.bind("<<ComboboxSelected>>", lambda e: self.frame_informes.focus())
+        self.boton_previo = tk.Button(self.frame_informes, text= 'Graficar', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.obtener_mes_anio)
+        self.boton_previo.grid(column= 0, row= 3, padx= 10, pady=(0,5), sticky= "W")
+        
         self.ventana.mainloop()
