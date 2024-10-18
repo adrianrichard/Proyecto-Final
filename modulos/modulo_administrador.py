@@ -26,7 +26,7 @@ class MasterPanel:
 
     def __init__(self):
 
-        self.ventana= tk.Tk()        
+        self.ventana= tk.Tk()
         self.ventana.title('DentalMatic')
         self.ventana.geometry('1000x500+180+80')
         self.ventana.config(bg= '#fcfcfc')
@@ -232,7 +232,7 @@ class MasterPanel:
         self.boton_pos.config(state= 'normal', bg= '#1F704B')
         self.boton_previo.config(state= 'disabled', bg= '#1F704B')
         indice_paciente= 0
-        
+
         self.miCursor = self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido"
         self.miCursor.execute(bd)
@@ -534,17 +534,23 @@ class MasterPanel:
         Label(self.frame_galeria, text= 'GALERIA', fg= '#1F704B', bg= 'gray90', font=('Comic Sans MS', 24,'bold')).grid(column= 0,  row= 0)
 
         ######################## informes #################
-        Label(self.frame_informes, text= 'Informes', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
+        Label(self.frame_informes, text= 'Base de datos', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
+        self.guardarBD = tk.Button(self.frame_informes, text= 'Guardar BD', fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 15, command= self.obtener_mes_anio)
+        self.guardarBD.grid(column= 0, row= 1, padx= 10, pady=(0,5), sticky= "W")
+        self.cargarBD = tk.Button(self.frame_informes, text= 'Cargar BD', fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 15, command= self.obtener_mes_anio)
+        self.cargarBD.grid(column= 1, row= 1, padx= 10, pady=(0,5), sticky= "W")
+        
+        Label(self.frame_informes, text= 'Informes', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 2, pady=(0,5))
         
         meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
         self.selector_mes= ttk.Combobox(self.frame_informes, state= "readonly", values= meses, width= 25, background= "white")
-        self.selector_mes.grid(column=0, row= 1)
+        self.selector_mes.grid(column=0, row= 3, pady=(0,5))
         self.selector_mes.set("Elija mes")
         #if (self.selector_mes.get() != 'Elija mes'):
         #self.mes_estadistica=self.selector_mes.get()
         
             #self.selector_odontologo.bind("<<ComboboxSelected>>", lambda e: self.frame_informes.focus())
-        self.boton_previo = tk.Button(self.frame_informes, text= 'Graficar', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.obtener_mes_anio)
-        self.boton_previo.grid(column= 0, row= 3, padx= 10, pady=(0,5), sticky= "W")
+        self.grafica1 = tk.Button(self.frame_informes, text= 'Graficar', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.obtener_mes_anio)
+        self.grafica1.grid(column= 0, row= 5, padx= 10, pady=(0,5), sticky= "W")
         
         self.ventana.mainloop()
