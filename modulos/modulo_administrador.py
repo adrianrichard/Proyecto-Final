@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter.font import BOLD
+#from tkinter.font import BOLD
 from tkinter import ttk
 import util.config as utl
 from tkinter import  Button, messagebox, Label, ttk, PhotoImage
@@ -9,7 +9,7 @@ from modulos.modulo_usuario import Usuario
 from paginas.tkcalendar import TKCalendar
 from paginas.odontograma import Odontograma
 from util.visorimagenes import ImageGalleryApp
-import sqlite3
+#import sqlite3
 from bd.conexion import Conexion
 
 fuenteb = utl.definir_fuente_bold()
