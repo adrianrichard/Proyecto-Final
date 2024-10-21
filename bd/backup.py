@@ -38,13 +38,15 @@ class Backup:
         self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_desde_tabla)
 
         # Listar las bases de datos en la tabla
+        self.frame_botones = tk.Frame(frame)
+        self.frame_botones.grid(column= 0, row= 3)
         #self.listar_bases_datos()
-        btn_cargar_copia = tk.Button(frame, text="Cargar copia de seguridad", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command=self.crear_backup)
-        btn_cargar_copia.grid(column= 0, row=3, padx=(10, 10), pady=(10, 10))
+        btn_cargar_copia = tk.Button(self.frame_botones, text="Cargar copia de seguridad", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command=self.crear_backup)
+        btn_cargar_copia.grid(column= 0, row=0, padx=(10, 10), pady=(10, 10))
 
         # Botón para crear una copia de seguridad
-        btn_guardar_copia = tk.Button(frame, text="Crear copia de seguridad", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command=self.crear_backup)
-        btn_guardar_copia.grid(column= 1, row=3, padx=(10, 10), pady=(10, 10))
+        btn_guardar_copia = tk.Button(self.frame_botones, text="Crear copia de seguridad", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command=self.crear_backup)
+        btn_guardar_copia.grid(column= 2, row=0, padx=(10, 10), pady=(10, 10))
 
     def crear_backup(self):
         if not self.bd_seleccionada:
