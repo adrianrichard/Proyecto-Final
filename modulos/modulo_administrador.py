@@ -8,6 +8,7 @@ from modulos.modulo_paciente import Paciente
 from modulos.modulo_usuario import Usuario
 from paginas.tkcalendar import TKCalendar
 from paginas.odontograma import Odontograma
+from bd.backup import Backup
 from util.visorimagenes import ImageGalleryApp
 #import sqlite3
 from bd.conexion import Conexion
@@ -121,8 +122,11 @@ class MasterPanel:
         self.estilo_tabla.configure('Treeview.Heading', background= 'green', fg= 'black', padding= 3, font= fuenteb)        
         self.estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 35)
 
-    def pantalla_informes(self):
-        self.paginas.select([self.frame_informes])
+    def pantalla_herramientas(self):
+        self.paginas.select([self.frame_herramientas])
+        backup=Backup()
+        backup.configurar_interfaz(self.frame_herramientas)
+        backup.listar_bases_datos()
         # Gallery=ImageGalleryApp(self.frame_galeria)
         # Gallery.configurar_filas_columnas(self.frame_galeria)
         pass
@@ -355,7 +359,7 @@ class MasterPanel:
         self.imagen_calendario = PhotoImage(file= './imagenes/calendario-removebg-preview.png')
         self.imagen_historia_clinica = PhotoImage(file= './imagenes/historial3.png')
         self.imagen_galeria = PhotoImage(file= './imagenes/foto-removebg-preview.png')
-        self.imagen_informes =utl.leer_imagen('statistics-removebg.png', (38, 38)) #  PhotoImage(file= './imagenes/statistics.png')
+        self.imagen_herramientas =utl.leer_imagen('statistics-removebg.png', (38, 38)) #  PhotoImage(file= './imagenes/statistics.png')
         self.imagen_agregar_paciente = PhotoImage(file= './imagenes/agregar_paciente.png')
         self.imagen_editar_paciente = PhotoImage(file= './imagenes/editar_paciente.png')
         self.imagen_refrescar = PhotoImage(file= './imagenes/refrescar.png')
@@ -381,7 +385,7 @@ class MasterPanel:
         Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 4, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_galeria, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
-        Button(self.frame_menu, image= self.imagen_informes, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_informes).grid(column= 0, row= 7, pady= 20, padx= 10)
+        Button(self.frame_menu, image= self.imagen_herramientas, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_herramientas).grid(column= 0, row= 7, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column= 0, row= 8, pady= 20, padx= 10)
 
         Label(self.frame_menu, text= 'Usuarios', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 1, pady= 20, padx= 2)
@@ -389,7 +393,7 @@ class MasterPanel:
         Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 3, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 4, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 5, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'informes', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Herramientas', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 8, pady= 20, padx= 2)
 
 		#############################  CREAR  PAGINAS  ##############################
@@ -409,7 +413,7 @@ class MasterPanel:
         self.frame_pacientes = Frame(self.paginas, bg= 'gray90') #color de fondo
         self.frame_calendario = Frame(self.paginas, bg= 'gray90')
         self.historia = Frame(self.paginas, bg= 'gray90')
-        self.frame_informes = Frame(self.paginas, bg= 'gray90')
+        self.frame_herramientas = Frame(self.paginas, bg= 'gray90')
         self.frame_galeria = Frame(self.paginas, bg= 'gray90')
         self.paginas.add(self.frame_principal)
         self.paginas.add(self.frame_usuarios)
@@ -417,7 +421,7 @@ class MasterPanel:
         self.paginas.add(self.frame_calendario)
         self.paginas.add(self.historia)
         self.paginas.add(self.frame_galeria)
-        self.paginas.add(self.frame_informes)
+        self.paginas.add(self.frame_herramientas)
 		##############################         PAGINAS       #############################################
 		######################## FRAME TITULO #################
         self.titulo = Label(self.frame_top, text= 'Consultorio Odontológico MyM', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold'))
@@ -507,7 +511,7 @@ class MasterPanel:
         self.tabla_paciente.bind("<Double-1>", self.editar_paciente)
 
 		######################## HISTORIA CLINICA #################
-        Label(self.historia, text= 'HISTORIA CLINICA', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
+        Label(self.historia, text= 'HISTORIA CLINICA', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 4, row= 0, sticky= 'W')
         #Button(self.historia, text= 'Nuevo odontograma', bg= '#1F704B', fg= 'white', font= fuenteb, command= self.editar_nuevo_odontograma).grid(column= 0, row= 1, padx=(10,5), pady= 5)
         self.busqueda2 = ttk.Entry(self.historia, textvariable= self.dato_paciente2, width= 20, font= fuenten)
         self.busqueda2.grid(column= 1, row= 1, pady= 5, sticky="e")
@@ -531,26 +535,26 @@ class MasterPanel:
         self.tabla_historia.bind("<Double-1>", self.editar_odontograma)
 
 		######################## GALERIA #################
-        Label(self.frame_galeria, text= 'GALERIA', fg= '#1F704B', bg= 'gray90', font=('Comic Sans MS', 24,'bold')).grid(column= 0,  row= 0)
+        Label(self.frame_galeria, text= 'GALERIA', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, sticky= 'W')
 
-        ######################## informes #################
-        Label(self.frame_informes, text= 'Base de datos', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 0)
-        self.guardarBD = tk.Button(self.frame_informes, text= 'Guardar BD', fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 15, command= self.obtener_mes_anio)
-        self.guardarBD.grid(column= 0, row= 1, padx= 10, pady=(0,5), sticky= "W")
-        self.cargarBD = tk.Button(self.frame_informes, text= 'Cargar BD', fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 15, command= self.obtener_mes_anio)
-        self.cargarBD.grid(column= 1, row= 1, padx= 10, pady=(0,5), sticky= "W")
+        ######################## herramientas #################
+        Label(self.frame_herramientas, text= 'HERRAMIENTAS', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 3, row= 0, sticky= 'W')
+        # self.guardarBD = tk.Button(self.frame_herramientas, text= 'Guardar BD', fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 15, command= self.obtener_mes_anio)
+        # self.guardarBD.grid(column= 0, row= 1, padx= 10, pady=(0,5), sticky= "W")
+        # self.cargarBD = tk.Button(self.frame_herramientas, text= 'Cargar BD', fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 15, command= self.obtener_mes_anio)
+        # self.cargarBD.grid(column= 1, row= 1, padx= 10, pady=(0,5), sticky= "W")
         
-        Label(self.frame_informes, text= 'Informes', fg= '#1F704B', bg='gray90', font=('Comic Sans MS', 24, 'bold')).grid(columnspan= 4, row= 2, pady=(0,5))
+        Label(self.frame_herramientas, text= 'Copia de seguridad (Backup)', bg='gray90', font=fuenteb).grid(column= 0, row= 1, pady=(0, 5))
         
         meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-        self.selector_mes= ttk.Combobox(self.frame_informes, state= "readonly", values= meses, width= 25, background= "white")
-        self.selector_mes.grid(column=0, row= 3, pady=(0,5))
+        self.selector_mes= ttk.Combobox(self.frame_herramientas, state= "readonly", values= meses, width= 25, background= "white")
+        self.selector_mes.grid(column=0, row= 4, pady=(0,5))
         self.selector_mes.set("Elija mes")
         #if (self.selector_mes.get() != 'Elija mes'):
         #self.mes_estadistica=self.selector_mes.get()
         
-            #self.selector_odontologo.bind("<<ComboboxSelected>>", lambda e: self.frame_informes.focus())
-        self.grafica1 = tk.Button(self.frame_informes, text= 'Graficar', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.obtener_mes_anio)
+            #self.selector_odontologo.bind("<<ComboboxSelected>>", lambda e: self.frame_herramientas.focus())
+        self.grafica1 = tk.Button(self.frame_herramientas, text= 'Graficar', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.obtener_mes_anio)
         self.grafica1.grid(column= 0, row= 5, padx= 10, pady=(0,5), sticky= "W")
         
         self.ventana.mainloop()

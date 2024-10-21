@@ -3,7 +3,7 @@ from functools import partial
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
-import sqlite3
+#import sqlite3
 from tkinter import  messagebox
 from paginas.datehandler.datehandler import DateHandler as dH
 from paginas.daytoplevel import DayTopWindow
@@ -64,22 +64,22 @@ class TKCalendar():
     def crear_encabezado(self, frame):
         """ Crea el encabezado """
         encabezado_texto = f"{self.dh.month_num_to_string(self.mes)} {self.anio}"
-        self.encabezado = Label(frame, text=encabezado_texto,  font= (fuente, 15), justify=CENTER)
-        self.encabezado.grid(row=0, column=0, columnspan=7, sticky=EW, ipady=10)
+        self.encabezado = Label(frame, text= encabezado_texto,  font= (fuente, 15), justify= CENTER)
+        self.encabezado.grid(row= 0, column= 0, columnspan= 7, sticky= EW, ipady= 10)
 
         dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sabado", "Domingo"]
         for i, j in enumerate(dias):
-            Label(frame, text=dias[i], bd=1, font= (fuente, 12, "bold"), relief=SOLID).grid(row=1, column=i, sticky=NSEW, ipady=10)
+            Label(frame, text= dias[i], bd= 1, font= (fuente, 12, "bold"), relief= SOLID).grid(row= 1, column= i, sticky= NSEW, ipady= 10)
 
-        Button(frame, text="<", command=self.mes_anterior, fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row=0, column=1)
-        Button(frame, text=">", command=self.mes_siguiente, fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row=0, column=5)
+        Button(frame, text="<", command= self.mes_anterior, fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 1)
+        Button(frame, text=">", command= self.mes_siguiente, fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 5)
 
     def crear_botones_fechas(self, frame):
         """ Crea botones de fechas mes actual """
         coords = [(i, j) for i in range(2, 8) for j in range(0, 7)]
         for coord in coords:
-            btn = tk.Button(frame, font= (fuente, 10), bg="green", relief=SUNKEN, bd=2, height=4, width=10)
-            btn.grid(row=coord[0], column=coord[1], sticky=NSEW)
+            btn = tk.Button(frame, font= (fuente, 10), bg= "green", relief= SUNKEN, bd= 2, height= 4, width= 10)
+            btn.grid(row= coord[0], column= coord[1], sticky= NSEW)
             self.botones_fecha.append(btn)
 
     def actualizar_encabezado(self):
@@ -94,32 +94,32 @@ class TKCalendar():
 
         for i, j in enumerate(self.fechas):  # Configura el texto del boton para mostrar la fecha
             if j == 0:
-                self.botones_fecha[i].configure(text="", state=DISABLED, bg="#808080") #botones sin fecha
+                self.botones_fecha[i].configure(text= "", state= DISABLED, bg= "#808080") #botones sin fecha
                 #print(i)
             else:
-                if i==6 or i==13 or i==20 or i==27 or i==34:
-                    self.botones_fecha[i].configure(text=j, state=DISABLED, bg="gray90") #DIA DOMINGO
+                if i == 6 or i == 13 or i == 20 or i == 27 or i == 34:
+                    self.botones_fecha[i].configure(text= j, state= DISABLED, bg= "gray90") #DIA DOMINGO
                 else:    
-                    self.botones_fecha[i].configure(text=j, command=partial(self.info_dia, j), bg="white", state=NORMAL)
+                    self.botones_fecha[i].configure(text= j, command= partial(self.info_dia, j), bg= "white", state= NORMAL)
                     for dia in self.dias_turno:
                         #print(type(dia), type(j))
                         if j == int(dia) :
                             #print(j, dia, i)
                             self.botones_fecha[i].configure(bg="sky blue")
-            if i==40:
-                self.botones_fecha[i].configure(text="TURNOS\nASIGNADOS", state=DISABLED, bg="sky blue", disabledforeground="black")#Marca si hay turnos
-            if i==41:
-                self.botones_fecha[i].configure(text="DÍA ACTUAL", state=DISABLED, bg="orange", disabledforeground="black")#Marca la fecha actual
+            if i == 40:
+                self.botones_fecha[i].configure(text= "TURNOS\nASIGNADOS", state= DISABLED, bg= "sky blue", disabledforeground= "black")#Marca si hay turnos
+            if i == 41:
+                self.botones_fecha[i].configure(text= "DÍA ACTUAL", state= DISABLED, bg= "orange", disabledforeground= "black")#Marca la fecha actual
             if j == datetime.today().day \
                     and self.mes == datetime.today().month \
                     and self.anio == datetime.today().year:
-                self.botones_fecha[i].configure(bg="orange")
+                self.botones_fecha[i].configure(bg= "orange")
             
 
     def configurar_filas_columnas(self, frame):
         """ Configura filas y columnas para expandandirlas al tamaño de la ventana """
-        [frame.rowconfigure(i, weight=1) for i in range(frame.grid_size()[1])]
-        [frame.columnconfigure(i, weight=1) for i in range(frame.grid_size()[0])]
+        [frame.rowconfigure(i, weight= 1) for i in range(frame.grid_size()[1])]
+        [frame.columnconfigure(i, weight= 1) for i in range(frame.grid_size()[0])]
 
     def mes_siguiente(self):
         """ Aumenta el mes y reconfigura la interface del calendario """
