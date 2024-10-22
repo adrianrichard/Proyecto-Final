@@ -8,6 +8,7 @@ from modulos.modulo_paciente import Paciente
 from modulos.modulo_usuario import Usuario
 from paginas.tkcalendar import TKCalendar
 from paginas.odontograma import Odontograma
+from paginas.informes import Informes
 from bd.backup import Backup
 from util.visorimagenes import ImageGalleryApp
 #import sqlite3
@@ -127,6 +128,8 @@ class MasterPanel:
         backup=Backup()
         backup.configurar_interfaz(self.frame_herramientas)
         backup.listar_bases_datos()
+        informes = Informes()
+        informes.configurar_interfaz(self.frame_herramientas)
         # Gallery=ImageGalleryApp(self.frame_galeria)
         # Gallery.configurar_filas_columnas(self.frame_galeria)
         pass
