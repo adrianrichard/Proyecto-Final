@@ -10,7 +10,16 @@ def generar_fechas_aleatorias(n):
     for _ in range(n):
         año = random.randint(2000, 2024)
         mes = random.randint(1, 12)
-        día = random.randint(1, 28)  # Para evitar problemas con febrero
+        # Ajustar el día según el mes
+        if mes == 2:
+            # Febrero, considerar años bisiestos
+            día = random.randint(1, 29 if (año % 4 == 0 and (año % 100 != 0 or año % 400 == 0)) else 28)
+        elif mes in [4, 6, 9, 11]:
+            # Abril, junio, septiembre, noviembre tienen 30 días
+            día = random.randint(1, 30)
+        else:
+            # Otros meses tienen 31 días
+            día = random.randint(1, 31)
         fecha = datetime.date(año, mes, día)
         fechas.append(fecha)
     return fechas
@@ -41,13 +50,29 @@ def crear_pdf():
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
+
+    # Agregar logo, si existe
+    try:
+        pdf.image('LOGO.png', x=10, y=10, w=180)
+    except FileNotFoundError:
+        pdf.cell(200, 10, txt="LOGO no encontrado", ln=True, align='C')
+    
     pdf.cell(200, 10, txt="Odontologia MyM", ln=True, align='C')
     pdf.cell(200, 10, txt="Domicilio: M David 1987  Teléfono: 34345678978", ln=True, align='C')
     pdf.cell(200, 10, txt=f"Fecha: {datetime.date.today()}", ln=True, align='C')
-    pdf.ln(20)  # Espacio antes de la imagen
-    pdf.image('grafica.png', x=10, y=50, w=180)
+    pdf.ln(40)  # Espacio antes de la imagen de la gráfica
+    
+    # Agregar gráfica
+    try:
+        pdf.image('grafica.png', x=10, y=60, w=180)
+    except FileNotFoundError:
+        pdf.cell(200, 10, txt="Gráfica no encontrada", ln=True, align='C')
+    
     pdf.output("reporte.pdf")
-    os.remove('grafica.png')  # Borrar la imagen después de crear el PDF
+
+    # Borrar la imagen después de crear el PDF, si existe
+    if os.path.exists('grafica.png'):
+        os.remove('grafica.png')
 
 # Ejecutar funciones
 fechas = generar_fechas_aleatorias(100)
