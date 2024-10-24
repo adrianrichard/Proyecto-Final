@@ -69,7 +69,7 @@ class Informes:
         self.selector_mes= ttk.Combobox(self.nueva_ventana, state= "readonly", values= meses, width= 20, background= "white")
         self.selector_mes.grid(column= 0, row= 1, padx= (10, 10), pady= (0, 5))
         self.selector_mes.set(meses[0])
-        if self.informe_seleccionado == 'Cantidad de turnos' or self.informe_seleccionado == 'Horario de turnos por año':
+        if self.informe_seleccionado == 'Cantidad de turnos' or self.informe_seleccionado == 'Horario de turnos por año' or self.informe_seleccionado == 'Día de turnos':
             self.selector_mes.config(state="disabled")
         self.selector_anio= ttk.Combobox(self.nueva_ventana, state= "readonly", values= anios, width= 20, background= "white")
         self.selector_anio.grid(column= 1, row= 1, padx= (10, 10), pady= (0, 5))
@@ -78,11 +78,11 @@ class Informes:
         self.frame_grafico = tk.Frame(self.nueva_ventana, background='white', relief="raised", width=450, height=350)
         self.frame_grafico.grid(column= 0, row= 3, columnspan=3, pady=(10, 10), padx=(10, 10))
 
-        boton_graficar = tk.Button(self.nueva_ventana, text="Graficar", command= self.crear_grafica)
+        boton_graficar = tk.Button(self.nueva_ventana, text="Graficar", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.crear_grafica)
         boton_graficar.grid(column= 0, row= 2)
-        boton_pdf = tk.Button(self.nueva_ventana, text="Guardar PDF", command= self.create_pdf)
+        boton_pdf = tk.Button(self.nueva_ventana, text="Guardar PDF", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.create_pdf)
         boton_pdf.grid(column= 1, row= 2)
-        boton_salir = tk.Button(self.nueva_ventana, text="Salir", command= self.salir, bg= "orange", width= 8)
+        boton_salir = tk.Button(self.nueva_ventana, text="Salir", command= self.salir, bg= "orange", width= 8, font = self.fuenteb,  bd= 2, borderwidth= 2)
         boton_salir.grid(column= 2, row= 2)
 
     def salir(self):
@@ -173,7 +173,8 @@ class Informes:
             ax.set_ylabel('Cantidad de turnos')
             ax.set_title(titulo)
             plt.xticks(rotation=90, ha='right')
-
+        if self.informe_seleccionado == 'Día de turnos':
+            self.contar_dias_semana()
         plt.tight_layout()
 
         # Crear el canvas de matplotlib en Tkinter y asignarlo al frame de la nueva ventana
@@ -194,13 +195,6 @@ class Informes:
         plt.close('all')        
         self.create_bar_chart()
         
-    def borrar_grafica(self):
-        global canvas  # Usar la variable global
-        if canvas is not None:
-            # Limpiar el canvas
-            canvas.figure.clf()  # Limpia la figura
-            canvas.draw()  # Redibuja el canvas
-            canvas = None   
 # Función para obtener los datos agrupados por mes y año
     def obtener_anios(self):
         conn = sqlite3.connect('./bd/consultorio2.sqlite3')
@@ -299,6 +293,35 @@ class Informes:
             img_width = img_height * aspect_ratio
 
         return img_width, img_height
+
+    def contar_dias_semana(self):
+        
+        conn = sqlite3.connect('./bd/consultorio2.sqlite3')
+        cursor = conn.cursor()
+        # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
+        cursor.execute("SELECT CASE strftime('%w', Fecha)  WHEN '0' THEN 'Domingo'\
+            WHEN '1' THEN 'Lunes'\
+            WHEN '2' THEN 'Martes'\
+            WHEN '3' THEN 'Miércoles'\
+            WHEN '4' THEN 'Jueves'\
+            WHEN '5' THEN 'Viernes'\
+            WHEN '6' THEN 'Sábado'\
+            END,\
+            COUNT(*) AS Cantidad_Turnos FROM Turnos WHERE strftime('%Y', Fecha) = ? GROUP BY strftime('%w', Fecha) ORDER BY strftime('%w', Fecha)""", (self.selector_anio.get(),))
+        datos = cursor.fetchall()
+        # Convertir los resultados a una lista de años
+        dias = [day[0] for day in datos]
+        cantidad=[cant[1] for cant in datos]
+        conn.close()
+        #return años_unicos
+        print(dias, cantidad)
+        # dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+        # conteo = {dia: 0 for dia in dias_semana}
+        # for fecha in fechas:
+        #     dia_semana = dias_semana[fecha.weekday()]
+        #     conteo[dia_semana] += 1
+        # print(conteo)
+        # return conteo
 # Función para guardar el gráfico como un PDF
     def guardar_grafico_pdf(self):
         print('guardarPDF')
