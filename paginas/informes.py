@@ -1,5 +1,6 @@
 import sqlite3  # O el conector de tu base de datos
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 from tkinter import filedialog
@@ -11,7 +12,7 @@ from datetime import datetime
 from tkinter import ttk, messagebox
 import os
 import util.config as utl
-
+canvas = None
 class Informes:
     def __init__(self):
         super().__init__()
@@ -20,15 +21,16 @@ class Informes:
         self.fuenteb = utl.definir_fuente_bold()
         self.fuenten = utl.definir_fuente()
         #self.configurar_interfaz()
+        
 
     def configurar_interfaz(self, frame):
         self.frame=frame
         # Estilo de la tabla
-        estilo_tabla = ttk.Style(frame)
+        estilo_tabla = ttk.Style(self.frame)
         estilo_tabla.configure('Treeview.Heading', background='green', fg='black', padding=3, font=('Arial', 11, 'bold'))
 
         # Crear la tabla para mostrar las bases de datos
-        self.tabla = ttk.Treeview(frame, columns=("Informe", "Descripcion"), show="headings", height=5)
+        self.tabla = ttk.Treeview(self.frame, columns=("Informe", "Descripcion"), show="headings", height=4)
         self.tabla.heading("Informe", text="Informe")
         self.tabla.heading("Descripcion", text="Descripción")
         self.tabla.column('Informe', width= 200 , anchor= 'w')
@@ -60,17 +62,17 @@ class Informes:
         titulo.grid(column= 0, row= 0)
         anios=self.obtener_anios()                   
         meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-        self.selector_mes= ttk.Combobox(self.nueva_ventana, state= "readonly", values= meses, width= 25, background= "white")
+        self.selector_mes= ttk.Combobox(self.nueva_ventana, state= "readonly", values= meses, width= 20, background= "white")
         self.selector_mes.grid(column= 0, row= 1, padx= (10, 10), pady= (0, 5))
         self.selector_mes.set('Elija mes')
         if self.informe_seleccionado == 'Cantidad de pacientes':
             self.selector_mes.config(state="disabled")
-        self.selector_anio= ttk.Combobox(self.nueva_ventana, state= "readonly", values= anios, width= 25, background= "white")
+        self.selector_anio= ttk.Combobox(self.nueva_ventana, state= "readonly", values= anios, width= 20, background= "white")
         self.selector_anio.grid(column= 1, row= 1, padx= (10, 10), pady= (0, 5))
         self.selector_anio.set('Elija año')
         # Frame para el gráfico en la nueva ventana
-        self.frame_grafico = tk.Frame(self.nueva_ventana)
-        self.frame_grafico.grid(column= 0, row= 3, columnspan=3)
+        self.frame_grafico = tk.Frame(self.nueva_ventana, background='white', relief="raised")
+        self.frame_grafico.grid(column= 0, row= 3, columnspan=3, pady=(10, 10), padx=(10, 10))
 
         boton_graficar = tk.Button(self.nueva_ventana, text="Graficar", command= self.crear_grafica)
         boton_graficar.grid(column= 0, row= 2)
@@ -104,34 +106,53 @@ class Informes:
             #self.bd_seleccionada =  seleccion+'.sqlite3'
     
     def turnosxmes(self):
+        global canvas
         # Obtener los datos de la base de datos
         datos = self.obtener_datos_por_mes_anio()
         #print(datos)
+        #self.borrar_grafica()
         # # Procesar los datos para graficar
-        meses_anios = [fila[0] for fila in datos]
+        #meses_anios = [fila[0] for fila in datos]
+        meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
         conteos = [fila[1] for fila in datos]
         # Crear la figura
-        self.fig, ax = plt.subplots()
-        ax.bar(meses_anios, conteos, color='skyblue')  # Gráfico de barras
+        self.fig, ax = plt.subplots(figsize=(4, 3))
+        ax.bar(meses, conteos, color='skyblue')  # Gráfico de barras
         ax.set_xlabel('Meses')
         ax.set_ylabel('Cantidad de turnos')
         ax.set_title('Turnos por Mes')
-
+        # Ajustar la escala del eje Y (ejemplo)
+        # ax.set_ylim(0, max(conteos) + 5)  # Limitar entre 0 y un poco más del máximo valor
+    
+        # # Ajustar la escala del eje X (ejemplo)
+        # ax.set_xlim(-0.5, len(meses_anios) - 0.5) 
         # Ajustar los ticks del eje X para que no se solapen
         plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
 
         # Crear el canvas de matplotlib en Tkinter y asignarlo al frame de la nueva ventana
         canvas = FigureCanvasTkAgg(self.fig, self.frame_grafico)
+        #self.canvas.get_tk_widget().destroy()
         canvas.draw()
-        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=False)
+        canvas.get_tk_widget().grid(row=0, column=0, columnspan=3)
+        
 
         # Cerrar los recursos de la figura
         plt.close(self.fig)
-        
+  
     def crear_grafica(self):
         #print('Graficar')
+        plt.clf()
+        plt.close('all')
+        
         self.turnosxmes()
-
+    def borrar_grafica(self):
+        global canvas  # Usar la variable global
+        if canvas is not None:
+            # Limpiar el canvas
+            canvas.figure.clf()  # Limpia la figura
+            canvas.draw()  # Redibuja el canvas
+            canvas = None   
 # Función para obtener los datos agrupados por mes y año
     def obtener_anios(self):
         conn = sqlite3.connect('./bd/consultorio2.sqlite3')

@@ -19,7 +19,7 @@ class Backup:
         estilo_tabla.configure('Treeview.Heading', background='green', fg='black', padding=3, font=('Arial', 11, 'bold'))
 
         # Crear la tabla para mostrar las bases de datos
-        self.tabla = ttk.Treeview(frame, columns=("Nombre", "Fecha"), show="headings", height=5)
+        self.tabla = ttk.Treeview(frame, columns=("Nombre", "Fecha"), show="headings", height=4)
         self.tabla.heading("Nombre", text="Nombre BD")
         self.tabla.heading("Fecha", text="Fecha de creación")
         self.tabla.column('Nombre', width= 350 , anchor= 'w')
