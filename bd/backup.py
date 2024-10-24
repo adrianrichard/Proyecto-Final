@@ -22,7 +22,7 @@ class Backup:
         self.tabla = ttk.Treeview(frame, columns=("Nombre", "Fecha"), show="headings", height=5)
         self.tabla.heading("Nombre", text="Nombre BD")
         self.tabla.heading("Fecha", text="Fecha de creación")
-        self.tabla.column('Nombre', width= 300 , anchor= 'w')
+        self.tabla.column('Nombre', width= 350 , anchor= 'w')
         self.tabla.column('Fecha',  width= 200 , anchor= 'w')
         [frame.columnconfigure(i, weight= 1) for i in range(frame.grid_size()[0]-1)]
         self.tabla.grid(column= 0, row= 2, columnspan= 2, padx= (10,0), sticky= 'nsew')

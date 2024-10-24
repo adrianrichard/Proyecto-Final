@@ -64,8 +64,8 @@ pacientes = [
 
 # Generar una fecha aleatoria entre 2024-01-01 y 2024-12-31
 def generar_fecha_aleatoria():
-    inicio = datetime(2024, 1, 1)
-    fin = datetime(2024, 12, 31)
+    inicio = datetime(2020, 1, 1)
+    fin = datetime(2023, 12, 31)
     delta = fin - inicio
     while True:
         dias_aleatorios = random.randint(0, delta.days)
