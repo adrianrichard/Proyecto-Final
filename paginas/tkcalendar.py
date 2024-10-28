@@ -71,8 +71,8 @@ class TKCalendar():
         for i, j in enumerate(dias):
             Label(frame, text= dias[i], bd= 1, font= (fuente, 12, "bold"), relief= SOLID).grid(row= 1, column= i, sticky= NSEW, ipady= 10)
 
-        Button(frame, text="<", command= self.mes_anterior, fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 1)
-        Button(frame, text=">", command= self.mes_siguiente, fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 5)
+        Button(frame, text="<", command= self.mes_anterior, fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 1)
+        Button(frame, text=">", command= self.mes_siguiente, fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 5)
 
     def crear_botones_fechas(self, frame):
         """ Crea botones de fechas mes actual """

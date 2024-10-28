@@ -26,7 +26,7 @@ global indice_paciente
 
 class MasterPanel:
 
-    def __init__(self):
+    def __init__(self, tipousuario):
 
         self.ventana= tk.Tk()
         self.ventana.title('DentalMatic')
@@ -44,7 +44,10 @@ class MasterPanel:
         self.dni_paciente = StringVar()
         self.dato_paciente = StringVar()
         self.dato_paciente2 = StringVar()
+        self.tipo_usuario = StringVar()
         self.nombre_usuario = StringVar()
+        self.tipo_usuario = tipousuario
+        #print(self.tipo_usuario)
 
         self.frame_inicio = Frame(self.ventana, bg= color_fondo1, width= 50, height= 45)
         self.frame_inicio.grid_propagate(0)
@@ -110,7 +113,7 @@ class MasterPanel:
     def pantalla_calendario(self):
         self.paginas.select([self.frame_calendario])
         Tcal = TKCalendar()
-        Tcal.crear_encabezado(self.frame_calendario)        
+        Tcal.crear_encabezado(self.frame_calendario)
         Tcal.crear_botones_fechas(self.frame_calendario)
         Tcal.marcar_dia_turno()
         Tcal.actualizar_botones_fechas()
@@ -350,11 +353,7 @@ class MasterPanel:
 
     def nada(self):
         pass
-    
-    def obtener_mes_anio(self):
-        self.mes_estadistica=self.selector_mes.get()
-        print(self.mes_estadistica)
-        
+ 
     def widgets(self):
         self.imagen_usuario = utl.leer_imagen('dentist-icon2-removebg-preview.png', (38, 38))
         #tself.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
@@ -383,33 +382,31 @@ class MasterPanel:
         self.bt_cerrar.grid(column= 0, row= 0, padx= 5, pady= 10)
 
         #BOTONES Y ETIQUETAS DEL MENU LATERAL
-        Button(self.frame_menu, image= self.imagen_usuario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_usuarios).grid(column= 0, row= 1, pady= 20, padx= 10)
         Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_pacientes).grid(column= 0, row= 2, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 4, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_galeria, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
-        Button(self.frame_menu, image= self.imagen_herramientas, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_herramientas).grid(column= 0, row= 7, pady= 20, padx= 10)
-        Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column= 0, row= 8, pady= 20, padx= 10)
-
-        Label(self.frame_menu, text= 'Usuarios', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 1, pady= 20, padx= 2)
         Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 2, pady= 20, padx= 2)
+        Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)
         Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 3, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 4, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 5, pady= 20, padx= 2)
-        Label(self.frame_menu, text= 'Herramientas', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
+        Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column= 0, row= 8, pady= 20, padx= 10)
         Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 8, pady= 20, padx= 2)
 
+        if self.tipo_usuario == 'administrador' or self.tipo_usuario == 'odontologo':
+            Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 4, pady= 20, padx= 10)
+            Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 4, pady= 20, padx= 2)
+            Button(self.frame_menu, image= self.imagen_herramientas, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_herramientas).grid(column= 0, row= 7, pady= 20, padx= 10)
+            Label(self.frame_menu, text= 'Herramientas', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
+            Button(self.frame_menu, image= self.imagen_galeria, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
+            Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 5, pady= 20, padx= 2)            
+            
+        if self.tipo_usuario == 'administrador':
+            Button(self.frame_menu, image= self.imagen_usuario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_usuarios).grid(column= 0, row= 1, pady= 20, padx= 10)
+            Label(self.frame_menu, text= 'Usuarios', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 1, pady= 20, padx= 2)            
+
 		#############################  CREAR  PAGINAS  ##############################
-        estilo_paginas = ttk.Style(self.frame_raiz)
-        estilo_paginas.layout('TNotebook.Tab', []) #desactiva las pestañas
-##        estilo_paginas.configure("TNotebook", background='#1F704B', foreground='#1F704B', padding= 0, borderwidth= 0)
-##        estilo_paginas.theme_use('default')
-##        estilo_paginas.configure("TNotebook", background='#1F704B', borderwidth= 0)
-##        estilo_paginas.configure("TNotebook.Tab", background="#1F704B", borderwidth= 0)
-##        estilo_paginas.map("TNotebook", background=[("selected", '#1F704B')])
-##        estilo_paginas.map("TNotebook.Tab", background=[("selected", '#1F704B')], foreground=[("selected", '#1F704B')]);
+        self.estilo_paginas = ttk.Style(self.frame_raiz)
+        self.estilo_paginas.layout('TNotebook.Tab', []) #desactiva las pestañas
 
         self.paginas = ttk.Notebook(self.frame_raiz, style= 'TNotebook')
+        
         self.paginas.grid(column= 0, row= 0, sticky= 'nsew')
         self.frame_principal = Frame(self.paginas, bg= 'gray90') #color de fondo
         self.frame_usuarios = Frame(self.paginas, bg= 'gray90') #color de fondo
@@ -434,11 +431,12 @@ class MasterPanel:
         Label(self.frame_principal, image= self.logo, bg= 'gray90').pack(expand= 1)
 
         #ESTILO DE LAS TABLAS DE DATOS TREEVIEW
-        self.estilo_tabla = ttk.Style(self.frame_usuarios)
-        #estilo_tabla.theme_use('classic')
-        self.estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 30)
+        self.estilo_tabla = ttk.Style()
+        self.estilo_tabla.theme_use('default')
+        self.estilo_tabla.configure('TablaUsuario.Treeview', font= fuenten, foreground= 'black', rowheight= 30)
         #estilo_tabla.map('Treeview.Heading', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
-        self.estilo_tabla.configure('Treeview.Heading', background= 'green', fg= 'black', padding= 3, font= fuenteb)
+        self.estilo_tabla.configure('Treeview.Heading', background= 'green', fg= 'white', padding= 3, font= fuenteb)
+        self.estilo_paginas.layout('TNotebook.Tab', [])
 ##        estilo_tabla.configure('Item', foreground = 'red', focuscolor ='green')
 ##        estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
 
@@ -454,7 +452,7 @@ class MasterPanel:
         #TABLA USUARIO
         self.frame_tabla_usuario = Frame(self.frame_usuarios, bg= 'gray90')
         self.frame_tabla_usuario.grid(columnspan= 3, row= 3, sticky= 'nsew')
-        self.tabla_usuario = ttk.Treeview(self.frame_tabla_usuario, selectmode ='browse')
+        self.tabla_usuario = ttk.Treeview(self.frame_tabla_usuario, selectmode ='browse', style="TablaUsuario.Treeview")
         self.tabla_usuario.grid(column= 0, row= 3, columnspan= 3, sticky='nsew')
         ladoy = ttk.Scrollbar(self.frame_tabla_usuario, orient ='vertical', command = self.tabla_usuario.yview)
         ladoy.grid(column = 4, row = 3, sticky='ns')
@@ -484,15 +482,15 @@ class MasterPanel:
         Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'white', font= fuenteb, command= self.buscar_paciente).grid(column= 3, row= 2, pady=(0,5))
         self.busqueda.bind('<Return>', (lambda event: self.buscar_paciente()))#es para apretar Intro y se ejecute, una opción a el botón
 
-        self.boton_previo = tk.Button(self.frame_pacientes, text= '<', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_previos)
+        self.boton_previo = tk.Button(self.frame_pacientes, text= '<', fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_previos)
         self.boton_previo.grid(column= 0, row= 3, padx= 10, pady=(0,5), sticky= "W")
-        self.boton_pos = tk.Button(self.frame_pacientes, text= '>', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_posteriores)
+        self.boton_pos = tk.Button(self.frame_pacientes, text= '>', fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_posteriores)
         self.boton_pos.grid(column= 3, row= 3, padx=(0,10), pady=(0,5), sticky= "E")
 
 		#TABLA PACIENTE
         self.frame_tabla_paciente = Frame(self.frame_pacientes, bg= 'gray90')
         self.frame_tabla_paciente.grid(columnspan= 4, row= 4, sticky= 'nsew')
-        self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, selectmode= 'browse')
+        self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, selectmode= 'browse', style="TablaUsuario.Treeview")
         self.tabla_paciente.grid(column= 0, row= 4, columnspan= 4, sticky= 'nsew')
         ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient= 'vertical', command= self.tabla_paciente.yview)
         ladoy.grid(column = 5, row = 4, sticky= 'ns')
@@ -524,7 +522,7 @@ class MasterPanel:
         
         self.frame_tabla_historia= Frame(self.historia, bg= 'gray90')
         self.frame_tabla_historia.grid(columnspan= 4, row= 4, sticky= 'nsew')
-        self.tabla_historia = ttk.Treeview(self.historia, columns= ("Apellido", "Nombre", "D.N.I.", "Obra social"), show= 'headings', height= 25, selectmode ='browse')
+        self.tabla_historia = ttk.Treeview(self.historia, columns= ("Apellido", "Nombre", "D.N.I.", "Obra social"), show= 'headings', height= 25, selectmode ='browse', style="TablaUsuario.Treeview")
         self.tabla_historia.grid(column= 0, row= 4, columnspan= 4, sticky= 'nsew')
         ladoy = ttk.Scrollbar(self.frame_tabla_historia, orient= 'vertical', command= self.tabla_historia.yview)
         ladoy.grid(column = 5, row = 4, sticky= 'ns')
@@ -542,23 +540,9 @@ class MasterPanel:
 
         ######################## herramientas #################
         Label(self.frame_herramientas, text= 'HERRAMIENTAS', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 3, row= 0, sticky= 'W')
-        # self.guardarBD = tk.Button(self.frame_herramientas, text= 'Guardar BD', fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 15, command= self.obtener_mes_anio)
-        # self.guardarBD.grid(column= 0, row= 1, padx= 10, pady=(0,5), sticky= "W")
-        # self.cargarBD = tk.Button(self.frame_herramientas, text= 'Cargar BD', fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 15, command= self.obtener_mes_anio)
-        # self.cargarBD.grid(column= 1, row= 1, padx= 10, pady=(0,5), sticky= "W")
-        
-        Label(self.frame_herramientas, text= 'Copia de seguridad (Backup)', bg='gray90', font=fuenteb, relief="groove", width= 125).grid(column= 0, row= 1, padx=(10, 0), pady=(0, 5), sticky= 'W')
-        
-        Label(self.frame_herramientas, text= 'Informes', bg='gray90', font=fuenteb, relief="groove", width= 125).grid(column= 0, row= 4, padx=(10, 0), pady=(0, 5), sticky= 'W')
-        # meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-        # self.selector_mes= ttk.Combobox(self.frame_herramientas, state= "readonly", values= meses, width= 25, background= "white")
-        # self.selector_mes.grid(column=0, row= 4, pady=(0,5))
-        # self.selector_mes.set("Elija mes")
-        # #if (self.selector_mes.get() != 'Elija mes'):
-        # #self.mes_estadistica=self.selector_mes.get()
-        
-        #     #self.selector_odontologo.bind("<<ComboboxSelected>>", lambda e: self.frame_herramientas.focus())
-        # self.grafica1 = tk.Button(self.frame_herramientas, text= 'Graficar', fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.obtener_mes_anio)
-        # self.grafica1.grid(column= 0, row= 5, padx= 10, pady=(0,5), sticky= "W")
-        
+
+        Label(self.frame_herramientas, text= 'Copia de seguridad (Backup)', bg='gray90', font=fuenteb, relief="groove", width= 125).grid(column= 0, row= 1, padx= (10, 0), pady= (0, 5), sticky= 'W')
+
+        Label(self.frame_herramientas, text= 'Informes', bg='gray90', font=fuenteb, relief="groove", width= 125).grid(column= 0, row= 4, padx= (10, 0), pady= (0, 5), sticky= 'W')
+
         self.ventana.mainloop()

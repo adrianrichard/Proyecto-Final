@@ -53,18 +53,19 @@ class DayTopWindow(Toplevel):
 
     def crear_botones_cambio_fecha(self):
         """ Crea botones para cambiar fecha """
-        Button(self, text= ">", command= self.avanzar_dia,fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 2)
-        Button(self, text= "<", command= self.retroceder_dia, fg= 'black', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 0)
+        Button(self, text= ">", command= self.avanzar_dia,fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 2)
+        Button(self, text= "<", command= self.retroceder_dia, fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 0)
         Button(self, text= "Salir", bg= "orange", bd= 2, borderwidth= 2, width= 10, command= self.destroy).grid(row= 0, column= 3, pady= (5,5))
 
     def crear_lista_turnos(self):
+        estilo_tabla2 = ttk.Style(self)
+        estilo_tabla2.theme_use("default")
+        estilo_tabla2.configure("TablaTurnos.Treeview", font= fuenten, foreground= 'black', rowheight= 20)
+        estilo_tabla2.configure('TablaTurnos.Treeview.Heading', background= '#1F704B', foreground= 'white', padding= 3, font= fuenteb)
         self.frame_tabla = ttk.Frame(self)
         self.frame_tabla.grid(column= 0, columnspan= 4, row= 2, sticky= 'nsew')
-        self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns= ("Horario", "Paciente", "Prestacion", "Odontologo"), show= 'headings', height= 25, selectmode ='browse')
+        self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns= ("Horario", "Paciente", "Prestacion", "Odontologo"), show= 'headings', height= 25, selectmode ='browse', style="TablaTurnos.Treeview")
         self.tabla_turnos.grid(column= 0, row= 2, columnspan= 4, sticky= 'nsew', padx= 5, pady= 5)
-        estilo_tabla = ttk.Style(self)
-        estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 20)
-        estilo_tabla.configure('Treeview.Heading', background= '#1F704B', foreground= 'black', padding= 3, font= fuenteb)
 
         # Definir los encabezados de las columnas
         self.tabla_turnos.heading("Horario", text= "Horario")
@@ -86,7 +87,6 @@ class DayTopWindow(Toplevel):
         try:
             self.cur.execute("SELECT Turnos.Hora, Turnos.Paciente, Odontologos.Apellido_odontologo, Turnos.Prestacion FROM Odontologos JOIN Turnos ON Odontologos.Matricula = Turnos.Odontologo WHERE Turnos.Fecha=? ORDER BY Turnos.Hora", (start_date,))
             self.turnos_dados = self.cur.fetchall()
-            #print(self.turnos_dados)
             self.conn.commit()
         except:
             messagebox.showinfo("Turnos", "No hay turnos")
@@ -102,12 +102,14 @@ class DayTopWindow(Toplevel):
                 self.tabla_turnos.insert(parent= '', index= 'end', values=(current_time.strftime("%H:%M"), '', '', ''))
             else:
                 if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][0] and self.j < len(self.turnos_dados)):
-                    self.tabla_turnos.tag_configure('anotado', font=fuenteb, background="lightgreen")
+                    
                     self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][1], self.turnos_dados[self.j][3], self.turnos_dados[self.j][2]), tags=('anotado',))
+                    self.tabla_turnos.tag_configure('anotado', font=fuenteb, background="green")
                     if(self.j+1 < len(self.turnos_dados)):
                         self.j=self.j+1
                 else:
                     self.tabla_turnos.insert(parent='', index='end', values=(current_time.strftime("%H:%M"), '', '', ''))
+            self.tabla_turnos.tag_configure('anotado', font=fuenteb, background="green")
 
     def editar_turno(self, event):
         self.ventana_secundaria = tk.Toplevel(self, background= 'gray')
@@ -187,14 +189,14 @@ class DayTopWindow(Toplevel):
         self.conn=  self.db.conectar()
         self.cur= self.conn.cursor()
         odontologo= self.selector_odontologo.get()
-        print(odontologo)
+        #print(odontologo)
         try:
             sql = "SELECT Matricula FROM odontologos WHERE Apellido_odontologo LIKE ?"
             self.cur.execute(sql, (odontologo,))
             matricula = self.cur.fetchone()
         except:
             messagebox.showerror("Guardar", "No existe el odontólogo")
-        print(matricula[0])
+        #print(matricula[0])
         datos = start_date, self.horario, self.nombre_entry.get().upper(), matricula[0], self.selector_prestacion.get().upper() 
         if self.nombre_entry.get().upper() != "PACIENTE" and self.selector_prestacion.get().upper() != "PRESTACIÓN" and self.selector_odontologo.get().upper() != "ODONTÓLOGO":
             answer = messagebox.askokcancel(title='Guardar', message='¿Desea guardar el turno?', icon='warning')

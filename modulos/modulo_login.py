@@ -33,7 +33,7 @@ class Login:
                     self.nombre_usuario.set('')
                     self.pass_usuario.set('')
                     self.frame_login.destroy()
-                    MasterPanel()
+                    MasterPanel('administrador')
                 """Si es odontologo"""
                 if tipo_user[0][0] == 'odontologo':
                     messagebox.showinfo(title = "Ingreso", message = "Ingreso autorizado")
@@ -41,7 +41,7 @@ class Login:
                     self.nombre_usuario.set('')
                     self.pass_usuario.set('')
                     self.frame_login.destroy()
-                    OdontologoPanel()
+                    MasterPanel('odontologo')
                 """Si es secretario"""
                 if tipo_user[0][0] == 'secretario':
                     messagebox.showinfo(title = "Ingreso", message = "Ingreso autorizado")
@@ -49,7 +49,7 @@ class Login:
                     self.nombre_usuario.set('')
                     self.pass_usuario.set('')
                     self.frame_login.destroy()
-                    SecretarioPanel()
+                    MasterPanel('secretario')
 
             else:
                 """Si usuario y/o contraseña son incorrectos"""
