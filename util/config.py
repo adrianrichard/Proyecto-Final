@@ -1,4 +1,6 @@
+import PIL
 from PIL import ImageTk, Image
+
 path_relativo=""
 import re
 
