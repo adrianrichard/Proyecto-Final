@@ -36,7 +36,7 @@ class Informes:
         self.estilo_tablai.configure('TablaInforme.Treeview.Heading', background= '#1F704B', foreground= 'white', padding= 3, font= self.fuenteb)
 
         # Crear la tabla para mostrar las bases de datos
-        self.tabla = ttk.Treeview(self.frame, columns=("Informe", "Descripcion"), show="headings", height=4, style="TablaInforme.Treeview")
+        self.tabla = ttk.Treeview(self.frame, columns=("Informe", "Descripcion"), show="headings", height=6, style="TablaInforme.Treeview")
         self.tabla.heading("Informe", text="Informe")
         self.tabla.heading("Descripcion", text="Descripción")
         self.tabla.column('Informe', width= 200 , anchor= 'w')
@@ -48,15 +48,16 @@ class Informes:
         self.listar_informes()
         # Bind para seleccionar la base de datos desde la tabla
         self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_desde_tabla)
+        self.tabla.bind("<Double-1>", self.graficar_ventana)
 
-        btn_crear_grafico = tk.Button(frame, text="Crear gráfica", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.graficar_ventana)
-        btn_crear_grafico.grid(column= 0, row= 6, padx=(10, 10), pady=(10, 10))
+        # btn_crear_grafico = tk.Button(frame, text="Crear gráfica", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.graficar_ventana)
+        # btn_crear_grafico.grid(column= 0, row= 6, padx=(10, 10), pady=(10, 10))
         # # Botón para crear una copia de seguridad
 
         # btn_guardar_copia = tk.Button(frame, text="Crear copia de seguridad", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command=self.crear_backup)
         # btn_guardar_copia.grid(column= 1, row=6, padx=(10, 10), pady=(10, 10))
 
-    def graficar_ventana(self):
+    def graficar_ventana(self, event):
         # Crear una nueva ventana
         self.nueva_ventana = tk.Toplevel(self.frame)
         self.nueva_ventana.title('Informes')
@@ -82,7 +83,7 @@ class Informes:
 
         boton_graficar = tk.Button(self.nueva_ventana, text="Graficar", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.crear_grafica)
         boton_graficar.grid(column= 0, row= 2)
-        boton_pdf = tk.Button(self.nueva_ventana, text="Guardar PDF", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.create_pdf)
+        boton_pdf = tk.Button(self.nueva_ventana, text="Crear PDF", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.create_pdf)
         boton_pdf.grid(column= 1, row= 2)
         boton_salir = tk.Button(self.nueva_ventana, text="Salir", command= self.salir, bg= "orange", width= 8, font = self.fuenteb,  bd= 2, borderwidth= 2)
         boton_salir.grid(column= 2, row= 2)
@@ -214,10 +215,7 @@ class Informes:
         datos=['Vacio']
         try:
             conn = sqlite3.connect('./bd/consultorio2.sqlite3')
-            cursor = conn.cursor()
-            # mes=self.selector_mes.get()
-            # anio=self.selector_anio.get()
-            # print('obtener datos')
+            cursor = conn.cursor()            
             # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
             cursor.execute(""" SELECT strftime('%m', Fecha) AS Mes, COUNT(*) AS CantidadTurnos FROM Turnos WHERE strftime('%Y', Fecha) = ? GROUP BY Mes ORDER BY Mes""", (self.selector_anio.get(),))
             datos = cursor.fetchall()
@@ -247,13 +245,9 @@ class Informes:
     # Conexión a la base de datos (ajusta la ruta si usas sqlite)
         datos=['Vacio']
         mes=self.mes_a_numero(self.selector_mes.get())
-        #print(mes)
         try:
             conn = sqlite3.connect('./bd/consultorio2.sqlite3')
             cursor = conn.cursor()
-            # mes=self.selector_mes.get()
-            # anio=self.selector_anio.get()
-            # print('obtener datos')
             # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
             cursor.execute(""" SELECT Hora, COUNT(*) AS Cantidad_Turnos FROM Turnos WHERE strftime('%Y', Fecha) = ? AND strftime('%m', Fecha) = ? GROUP BY Hora ORDER BY Hora ASC""", (self.selector_anio.get(),mes,))
             datos = cursor.fetchall()

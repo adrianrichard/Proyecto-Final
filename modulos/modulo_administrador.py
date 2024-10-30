@@ -98,6 +98,7 @@ class MasterPanel:
 
     def pantalla_usuarios(self):
         self.paginas.select([self.frame_usuarios])
+        
         [self.frame_tabla_usuario.columnconfigure(i, weight= 1) for i in range(self.frame_usuarios.grid_size()[0])]
         [self.frame_usuarios.columnconfigure(i, weight= 1) for i in range(self.frame_usuarios.grid_size()[0])]
         [self.frame_tabla_usuario.rowconfigure(i, weight= 1) for i in range(self.frame_usuarios.grid_size()[1])]
@@ -107,8 +108,8 @@ class MasterPanel:
         [self.frame_pacientes.columnconfigure(i, weight= 1) for i in range(self.frame_pacientes.grid_size()[0])]
         [self.frame_tabla_paciente.columnconfigure(i, weight= 1) for i in range(self.frame_pacientes.grid_size()[0])]
         [self.frame_tabla_paciente.rowconfigure(i, weight= 1) for i in range(self.frame_pacientes.grid_size()[1])]
-        self.estilo_tabla.configure('Treeview.Heading', background= 'green', fg= 'black', padding= 3, font= fuenteb)        
-        self.estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 35)
+        # self.estilo_tabla.configure('Treeview.Heading', background= 'green', fg= 'black', padding= 3, font= fuenteb)        
+        # self.estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 35)
 
     def pantalla_calendario(self):
         self.paginas.select([self.frame_calendario])
@@ -348,6 +349,7 @@ class MasterPanel:
                     messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
             except:
                 messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
+        
         #self.mostrar_usuarios()
 
     def eliminar_usuario(self):
