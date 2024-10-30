@@ -30,7 +30,7 @@ class MasterPanel:
 
         self.ventana= tk.Tk()
         self.ventana.title('DentalMatic')
-        self.ventana.geometry('1000x500+180+80')
+        self.ventana.geometry('1000x500+200+80')
         self.ventana.config(bg= '#fcfcfc')
         self.ventana.resizable(width= 0, height= 0)
         utl.centrar_ventana(self.ventana, 900, 600)
@@ -314,18 +314,16 @@ class MasterPanel:
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
         self.tabla_usuario.delete(*self.tabla_usuario.get_children())
-        i = -1
+        #i = 0
         for dato in datos:
-            i= i+1
-            self.tabla_usuario.insert('', i, text = datos[i][0], values=("*********", datos[i][2]))
+            self.tabla_usuario.insert('', 'end', values=(dato[0],"*********", dato[2]))
         self.miCursor.close()
 
-    def seleccionar_usuario(self, event):
-        (sel,) = self.tabla_usuario.selection()
-        try:
-            self.nombre_usuario = self.tabla_usuario.item(sel, "text")
-        except:
-            pass
+    def seleccionar_usuario(self, event):        
+        selected_item = self.tabla_usuario.selection()
+        if selected_item:
+            item = self.tabla_usuario.item(selected_item)
+            self.nombre_usuario=item['values'][0]
 
     def agregar_usuario(self):
         user = Usuario()
@@ -333,14 +331,23 @@ class MasterPanel:
         #self.mostrar_usuarios()
 
     def editar_usuario(self, event):
-        try:
-            (sel,) = self.tabla_usuario.selection()
-            self.usuario = self.tabla_usuario.item(sel, "text")
-            user = Usuario()
-            user.cargar_datos(self.usuario)
-            user.ventana()
-        except:
-            pass
+        region = self.tabla_usuario.identify("region", event.x, event.y)
+        if region == "heading":  # Si el doble clic es en el encabezado
+            return "break"
+        else:
+            try:
+                selected_item = self.tabla_usuario.selection()
+                item = self.tabla_usuario.item(selected_item)
+                self.usuario=item['values'][0]
+                #self.usuario = self.tabla_usuario.item(sel, "text")
+                if self.usuario != 'Usuario':
+                    user = Usuario()
+                    user.cargar_datos(self.usuario)
+                    user.ventana()
+                else:
+                    messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
+            except:
+                messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
         #self.mostrar_usuarios()
 
     def eliminar_usuario(self):
@@ -383,23 +390,23 @@ class MasterPanel:
 
         #BOTONES Y ETIQUETAS DEL MENU LATERAL
         Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_pacientes).grid(column= 0, row= 2, pady= 20, padx= 10)
-        Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 2, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (fuente2, 10, 'bold')).grid(column= 1, row= 2, pady= 20, padx= 2)
         Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)
-        Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 3, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (fuente2, 10, 'bold')).grid(column= 1, row= 3, pady= 20, padx= 2)
         Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column= 0, row= 8, pady= 20, padx= 10)
-        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 8, pady= 20, padx= 2)
+        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (fuente2, 10, 'bold')).grid(column= 1, row= 8, pady= 20, padx= 2)
 
         if self.tipo_usuario == 'administrador' or self.tipo_usuario == 'odontologo':
             Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 4, pady= 20, padx= 10)
-            Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 4, pady= 20, padx= 2)
+            Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (fuente2, 10, 'bold')).grid(column= 1, row= 4, pady= 20, padx= 2)
             Button(self.frame_menu, image= self.imagen_herramientas, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_herramientas).grid(column= 0, row= 7, pady= 20, padx= 10)
-            Label(self.frame_menu, text= 'Herramientas', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
+            Label(self.frame_menu, text= 'Herramientas', bg= '#1F704B', fg= 'white', font= (fuente2, 10, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
             Button(self.frame_menu, image= self.imagen_galeria, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
-            Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 5, pady= 20, padx= 2)            
+            Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (fuente2, 10, 'bold')).grid(column= 1, row= 5, pady= 20, padx= 2)            
             
         if self.tipo_usuario == 'administrador':
             Button(self.frame_menu, image= self.imagen_usuario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_usuarios).grid(column= 0, row= 1, pady= 20, padx= 10)
-            Label(self.frame_menu, text= 'Usuarios', bg= '#1F704B', fg= 'white', font= (fuente2, 12, 'bold')).grid(column= 1, row= 1, pady= 20, padx= 2)            
+            Label(self.frame_menu, text= 'Usuarios', bg= '#1F704B', fg= 'white', font= (fuente2, 10, 'bold')).grid(column= 1, row= 1, pady= 20, padx= 2)            
 
 		#############################  CREAR  PAGINAS  ##############################
         self.estilo_paginas = ttk.Style(self.frame_raiz)
@@ -431,11 +438,11 @@ class MasterPanel:
         Label(self.frame_principal, image= self.logo, bg= 'gray90').pack(expand= 1)
 
         #ESTILO DE LAS TABLAS DE DATOS TREEVIEW
-        self.estilo_tabla = ttk.Style()
-        self.estilo_tabla.theme_use('default')
-        self.estilo_tabla.configure('TablaUsuario.Treeview', font= fuenten, foreground= 'black', rowheight= 30)
+        self.estilo_tabla = ttk.Style(self.frame_usuarios)
+        self.estilo_tabla.theme_use('alt')
+        self.estilo_tabla.configure('TablaUsuario.Treeview', font= fuenten, foreground= 'black', rowheight= 20)
         #estilo_tabla.map('Treeview.Heading', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
-        self.estilo_tabla.configure('Treeview.Heading', background= 'green', fg= 'white', padding= 3, font= fuenteb)
+        self.estilo_tabla.configure('TablaUsuario.Treeview.Heading', background= '#1F704B', foreground= 'white', padding= 3, font= fuenteb)
         self.estilo_paginas.layout('TNotebook.Tab', [])
 ##        estilo_tabla.configure('Item', foreground = 'red', focuscolor ='green')
 ##        estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
@@ -452,19 +459,19 @@ class MasterPanel:
         #TABLA USUARIO
         self.frame_tabla_usuario = Frame(self.frame_usuarios, bg= 'gray90')
         self.frame_tabla_usuario.grid(columnspan= 3, row= 3, sticky= 'nsew')
-        self.tabla_usuario = ttk.Treeview(self.frame_tabla_usuario, selectmode ='browse', style="TablaUsuario.Treeview")
+        self.tabla_usuario = ttk.Treeview(self.frame_tabla_usuario, columns=("Usuario", "Clave", 'Tipo_usuario'), show="headings", selectmode ='browse', style="TablaUsuario.Treeview")
         self.tabla_usuario.grid(column= 0, row= 3, columnspan= 3, sticky='nsew')
         ladoy = ttk.Scrollbar(self.frame_tabla_usuario, orient ='vertical', command = self.tabla_usuario.yview)
         ladoy.grid(column = 4, row = 3, sticky='ns')
         self.tabla_usuario.configure(yscrollcommand = ladoy.set)
-        self.tabla_usuario['columns'] = ( 'Clave', 'Tipo_usuario')
-        self.tabla_usuario.column('#0', minwidth= 100, width= 120, anchor= 'w')
+        #self.tabla_usuario['columns'] = ( 'Clave', 'Tipo_usuario')
+        self.tabla_usuario.column('Usuario', minwidth= 100, width= 120, anchor= 'w')
         self.tabla_usuario.column('Clave', minwidth= 100, width= 120, anchor= 'center')
         self.tabla_usuario.column('Tipo_usuario', minwidth= 100, width= 120, anchor= 'e')
 
-        self.tabla_usuario.heading('#0', text= 'Usuario', anchor= 'center')
-        self.tabla_usuario.heading('Clave', text= 'Clave', anchor= 'center')
-        self.tabla_usuario.heading('Tipo_usuario', text= 'Tipo de usuario', anchor= 'center')
+        self.tabla_usuario.heading('Usuario', text= 'Usuario', anchor= 'center', command=lambda: None)
+        self.tabla_usuario.heading('Clave', text= 'Clave', anchor= 'center', command=lambda: None)
+        self.tabla_usuario.heading('Tipo_usuario', text= 'Tipo de usuario', anchor= 'center', command=lambda: None)
         self.mostrar_usuarios()
         self.tabla_usuario.bind("<Double-1>", self.editar_usuario)
         self.tabla_usuario.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
@@ -532,7 +539,7 @@ class MasterPanel:
         self.tabla_historia.heading("D.N.I.", text= "D.N.I.")
         self.tabla_historia.heading("Obra social", text= "Obra social")
         # # Ajustar el ancho de las columnas
-        self.tabla_historia.bind("<<TreeviewSelect>>", self.seleccionar_paciente2)
+        #self.tabla_historia.bind("<<TreeviewSelect>>", self.seleccionar_paciente2)
         self.tabla_historia.bind("<Double-1>", self.editar_odontograma)
 
 		######################## GALERIA #################

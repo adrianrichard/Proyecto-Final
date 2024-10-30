@@ -30,11 +30,13 @@ class Informes:
     def configurar_interfaz(self, frame):
         self.frame=frame
         # Estilo de la tabla
-        estilo_tabla = ttk.Style(self.frame)
-        estilo_tabla.configure('Treeview.Heading', background='green', fg='black', padding=3, font=('Arial', 11, 'bold'))
+        self.estilo_tablai = ttk.Style(self.frame)
+        self.estilo_tablai.theme_use('alt')
+        self.estilo_tablai.configure('TablaInforme.Treeview', font= self.fuenten, foreground= 'black', rowheight= 20)
+        self.estilo_tablai.configure('TablaInforme.Treeview.Heading', background= '#1F704B', foreground= 'white', padding= 3, font= self.fuenteb)
 
         # Crear la tabla para mostrar las bases de datos
-        self.tabla = ttk.Treeview(self.frame, columns=("Informe", "Descripcion"), show="headings", height=4)
+        self.tabla = ttk.Treeview(self.frame, columns=("Informe", "Descripcion"), show="headings", height=4, style="TablaInforme.Treeview")
         self.tabla.heading("Informe", text="Informe")
         self.tabla.heading("Descripcion", text="Descripción")
         self.tabla.column('Informe', width= 200 , anchor= 'w')

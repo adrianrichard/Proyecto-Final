@@ -15,11 +15,13 @@ class Backup:
 
     def configurar_interfaz(self, frame):
         # Estilo de la tabla
-        estilo_tabla = ttk.Style(frame)
-        estilo_tabla.configure('Treeview.Heading', background='green', fg='black', padding=3, font=('Arial', 11, 'bold'))
+        self.estilo_tablab = ttk.Style(frame)
+        self.estilo_tablab.theme_use('alt')
+        self.estilo_tablab.configure('TablaBackup.Treeview', font= self.fuenten, foreground= 'black', rowheight= 20)
+        self.estilo_tablab.configure('TablaBackup.Treeview.Heading', background= '#1F704B', foreground= 'white', padding= 3, font= self.fuenteb)
 
         # Crear la tabla para mostrar las bases de datos
-        self.tabla = ttk.Treeview(frame, columns=("Nombre", "Fecha"), show="headings", height=4)
+        self.tabla = ttk.Treeview(frame, columns=("Nombre", "Fecha"), show="headings", height=4, style="TablaBackup.Treeview")
         self.tabla.heading("Nombre", text="Nombre BD")
         self.tabla.heading("Fecha", text="Fecha de creación")
         self.tabla.column('Nombre', width= 350 , anchor= 'w')

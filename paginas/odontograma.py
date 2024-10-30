@@ -25,10 +25,10 @@ class Odontograma:
         self.ventana_odontograma.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.ventana_odontograma.focus_set() # Mantiene el foco cuando se abre la ventana.
         #self.ventana_odontograma = tk.Tk()
-        self.ventana_odontograma.geometry('750x600')
+        self.ventana_odontograma.geometry('750x500')
         self.ventana_odontograma.grid_columnconfigure(0, weight= 1)
         self.ventana_odontograma.configure(bg= "gray")
-        utl.centrar_ventana(self.ventana_odontograma, 900, 700)
+        utl.centrar_ventana(self.ventana_odontograma, 900, 500)
         self.fecha_actual = datetime.now().date()
         self.fecha_actual = self.fecha_actual.strftime("%d-%m-%Y")
         Label(self.ventana_odontograma, text= 'Odontograma', font= 'Arial 20 bold', bg= "gray", fg= 'white').grid(column= 0, row= 0)
@@ -72,29 +72,29 @@ class Odontograma:
         self.canvas.pack()
         # self.colores=["red", "green", "blue", "white"]
         self.crear_dientes()
-        self.frame_tabla = Frame(self.ventana_odontograma)
-        self.frame_tabla.grid(column= 0, row= 4, pady= (10, 10))
-        self.estilo_tabla2 = ttk.Style(self.ventana_odontograma)
-        #estilo_tabla.theme_use('classic')
-        self.estilo_tabla2.configure("Treeview", font= self.fuenten, foreground= 'black', rowheight= 20)
-        #estilo_tabla.map('Treeview.Heading', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
-        self.estilo_tabla2.configure('Treeview.Heading', background= 'green', fg= 'black', padding= 3, font= self.fuenteb)
-        self.tabla_prestaciones = ttk.Treeview(self.frame_tabla, columns= ("Fecha",  "Prestacion", "Código", "Odontologo"), show= 'headings', height= 8, selectmode= 'browse')
-        self.tabla_prestaciones.grid(column= 0, row= 1, columnspan= 4, sticky= 'nsew', padx= 5, pady= 5)
-        ladoy = ttk.Scrollbar(self.frame_tabla, orient ='vertical', command = self.tabla_prestaciones.yview)
-        ladoy.grid(column = 5, row = 1, sticky='ns')
-        self.tabla_prestaciones.configure(yscrollcommand = ladoy.set)
+        # self.frame_tabla = Frame(self.ventana_odontograma)
+        # self.frame_tabla.grid(column= 0, row= 4, pady= (10, 10))
+        # self.estilo_tabla2 = ttk.Style(self.ventana_odontograma)
+        # estilo_tabla.theme_use('alt')
+        # self.estilo_tabla2.configure("Treeview", font= self.fuenten, foreground= 'black', rowheight= 20)
+        # #estilo_tabla.map('Treeview.Heading', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
+        # self.estilo_tabla2.configure('Treeview.Heading', background= 'green', fg= 'black', padding= 3, font= self.fuenteb)
+        # self.tabla_prestaciones = ttk.Treeview(self.frame_tabla, columns= ("Fecha",  "Prestacion", "Código", "Odontologo"), show= 'headings', height= 8, selectmode= 'browse')
+        # self.tabla_prestaciones.grid(column= 0, row= 1, columnspan= 4, sticky= 'nsew', padx= 5, pady= 5)
+        # ladoy = ttk.Scrollbar(self.frame_tabla, orient ='vertical', command = self.tabla_prestaciones.yview)
+        # ladoy.grid(column = 5, row = 1, sticky='ns')
+        # self.tabla_prestaciones.configure(yscrollcommand = ladoy.set)
 
-        self.tabla_prestaciones.heading("Fecha", text= "Fecha")
-        self.tabla_prestaciones.heading("Código", text= "Código")
-        self.tabla_prestaciones.heading("Prestacion", text= "Prestacion")
-        self.tabla_prestaciones.heading("Odontologo", text= "Odontologo")
+        # self.tabla_prestaciones.heading("Fecha", text= "Fecha")
+        # self.tabla_prestaciones.heading("Código", text= "Código")
+        # self.tabla_prestaciones.heading("Prestacion", text= "Prestacion")
+        # self.tabla_prestaciones.heading("Odontologo", text= "Odontologo")
 
-        # Ajustar el ancho de las columnas
-        self.tabla_prestaciones.column("Fecha", width= 80, anchor= 'center')
-        self.tabla_prestaciones.column("Código", width= 80)
-        self.tabla_prestaciones.column("Prestacion", width= 250)
-        self.tabla_prestaciones.column("Odontologo", width= 200)
+        # # Ajustar el ancho de las columnas
+        # self.tabla_prestaciones.column("Fecha", width= 80, anchor= 'center')
+        # self.tabla_prestaciones.column("Código", width= 80)
+        # self.tabla_prestaciones.column("Prestacion", width= 250)
+        # self.tabla_prestaciones.column("Odontologo", width= 200)
 
         # self.frame_botones = Frame(self.ventana_odontograma, bg= "gray")
         # self.frame_botones.grid(column= 0, row= 5, pady= (10,0))
@@ -257,7 +257,7 @@ class Odontograma:
         self.boton_corona.grid(row= 0, column= 1, padx= 10)
         #Button(botones_frame, text= 'O Azul', command= partial(self.corona, numero), bg= "blue", width= 5).grid(row= 0, column= 3, padx= 10)
         Button(botones_frame, text= 'CANCELAR', command= self.cancelar, width= 8).grid(row= 1, column= 1, padx= 10, pady=(10, 0))
-        Button(botones_frame, text= 'GUARDAR', command= self.guardar_diente, width= 8).grid(row= 1, column= 0, padx= 10, pady=(10, 0))
+        Button(botones_frame, text= 'GUARDAR', command= self.guardar_diente, font= self.fuenteb, bg= '#1F704B', fg= 'white', width= 8).grid(row= 1, column= 0, padx= 10, pady=(10, 0))
 
         self.canvas2 = tk.Canvas(diente_frame, width= 400, height= 150)
         self.canvas2.pack()
@@ -798,7 +798,7 @@ class Odontograma:
                     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= "white", tags= tag_diente)
                     self.canvas.create_oval(x1+5, y1+5, x2-5, y2-5, width= 2, outline= self.dientes[indice][9])
-                elif self.dientes[indice][7] == 'red' or self.dientes[indice][7] == 'blue' or self.dientes[indice][8] == 'green':
+                elif self.dientes[indice][8] == 'red' or self.dientes[indice][8] == 'blue' or self.dientes[indice][8] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
@@ -848,8 +848,8 @@ class Odontograma:
                     self.canvas.create_polygon(x2, y1, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y2, x1 + width/2, y1 + height/2, x2, y2, fill= "white", outline = "black")
                     self.canvas.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= "white", tags= tag_diente)
-                    self.canvas.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.dientes[indice][8], width= 5)
-                    self.canvas.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.dientes[indice][8], width= 5)
+                    self.canvas.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.dientes[indice][8], width= 2)
+                    self.canvas.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.dientes[indice][8], width= 2)
                 else:
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.dientes[indice][5], outline = "black")#MEDIAL
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.dientes[indice][6], outline = "black")#INTERIOR

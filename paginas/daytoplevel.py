@@ -27,6 +27,8 @@ class DayTopWindow(Toplevel):
         self.focus_set()
         self.extension = None
         self.confirmation = None
+        self.fuenten= utl.definir_fuente()
+        self.fuenteb= utl.definir_fuente_bold()
         self.db = Conexion()
         self.conn= self.db.conectar()
 
@@ -55,11 +57,11 @@ class DayTopWindow(Toplevel):
         """ Crea botones para cambiar fecha """
         Button(self, text= ">", command= self.avanzar_dia,fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 2)
         Button(self, text= "<", command= self.retroceder_dia, fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 0)
-        Button(self, text= "Salir", bg= "orange", bd= 2, borderwidth= 2, width= 10, command= self.destroy).grid(row= 0, column= 3, pady= (5,5))
+        Button(self, text= "Salir", font= self.fuenteb, bg= "orange", width= 8, command= self.destroy).grid(row= 0, column= 3, pady= (5,5))
 
     def crear_lista_turnos(self):
         estilo_tabla2 = ttk.Style(self)
-        estilo_tabla2.theme_use("default")
+        estilo_tabla2.theme_use("alt")
         estilo_tabla2.configure("TablaTurnos.Treeview", font= fuenten, foreground= 'black', rowheight= 20)
         estilo_tabla2.configure('TablaTurnos.Treeview.Heading', background= '#1F704B', foreground= 'white', padding= 3, font= fuenteb)
         self.frame_tabla = ttk.Frame(self)
@@ -112,13 +114,17 @@ class DayTopWindow(Toplevel):
             self.tabla_turnos.tag_configure('anotado', font=fuenteb, background="green")
 
     def editar_turno(self, event):
+        region = self.tabla_turnos.identify("region", event.x, event.y)
+        if region == "heading":  # Si el doble clic es en el encabezado
+            messagebox.showwarning("Advertencia", "Debe seleccionar un horario")
+            return
         self.ventana_secundaria = tk.Toplevel(self, background= 'gray')
         self.ventana_secundaria.title("Ventana Secundaria")
         self.ventana_secundaria.geometry('400x300')
         utl.centrar_ventana(self.ventana_secundaria, 400, 300)
         self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
-
+        
         self.turno_seleccionado = self.tabla_turnos.selection()[0]
         self.data = self.tabla_turnos.item(self.turno_seleccionado)
         self.horario = self.data['values'][0]
@@ -156,7 +162,7 @@ class DayTopWindow(Toplevel):
 
         Button(self.button_frame, text= 'Guardar', command= self.guardar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 0, padx= 10)
         Button(self.button_frame, text= 'Eliminar', command= self.eliminar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 1, padx= 10)
-        Button(self.button_frame, text= 'Salir', command= self.cancelar_turno, bg= "orange red", width= 10).grid(row= 0, column= 2, padx= 10)
+        Button(self.button_frame, text= 'Salir', command= self.cancelar_turno, font= self.fuenteb, bg= "orange", width= 8).grid(row= 0, column= 2, padx= 10)
 
     def cancelar_turno(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
@@ -220,7 +226,7 @@ class DayTopWindow(Toplevel):
                 messagebox.showerror("Prestación", "Elija la prestación")
             elif self.selector_odontologo.get().upper() == "ODONTÓLOGO":
                 messagebox.showerror("Odontólogo", "Elija odontólogo")
-    
+
     def cargar_odontologos(self):
         self.cur= self.conn.cursor()
         self.lista_odontologos = []
