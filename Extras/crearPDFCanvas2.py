@@ -1,7 +1,8 @@
 import tkinter as tk
 from PIL import Image, ImageGrab
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import letter, A4
 from reportlab.pdfgen import canvas as pdf_canvas
+import os
 
 def crear_pdf():
     # Captura la ventana y guarda el área del Canvas
@@ -13,8 +14,45 @@ def crear_pdf():
     imagen_canvas.save("canvas_image.png")
 
     # Crear el PDF con ReportLab e insertar la imagen
-    pdf = pdf_canvas.Canvas("output.pdf", pagesize=letter)
-    pdf.drawImage("canvas_image.png", 0, 0, width=400, height=300)  # Ajustar según el tamaño del canvas
+    pdf = pdf_canvas.Canvas("output.pdf", pagesize=A4)
+    ancho_pagina, alto_pagina = A4
+    logo_path = "LOGO.png"
+    alto_imagen=400
+    if os.path.exists(logo_path):
+        with Image.open(logo_path) as img:
+            logo_width, logo_height = img.size
+            escala_logo = min(alto_imagen / logo_width, alto_imagen / logo_height)  # Escalar a máximo 80x80
+            logo_width = int(logo_width * escala_logo)
+            logo_height = int(logo_height * escala_logo)
+            logo_x = (ancho_pagina - logo_width) / 2  # Centrar en X
+            logo_y = alto_pagina - 120  # Posición en Y desde la parte superior
+
+        pdf.drawImage(logo_path, logo_x, logo_y, width=logo_width, height=logo_height)
+
+    pdf.setFont("Helvetica", 12)
+    pdf.drawString(50, alto_pagina - 150, f"Apellido/s y Nombre/s:")
+    pdf.drawString(50, alto_pagina - 170, f"DNI: ")
+    pdf.drawString(50, alto_pagina - 190, f"Obra Social:")
+    pdf.drawString(ancho_pagina - 300, alto_pagina - 190, f"N° de Socio: ")
+    captura_path = "canvas_image.png"
+    if os.path.exists(captura_path):
+        with Image.open(captura_path) as img:
+            img_width, img_height = img.size
+            max_width = ancho_pagina - 200
+            max_height = alto_pagina - 300
+            escala_canvas = min(max_width / img_width, max_height / img_height)
+            img_width = int(img_width * escala_canvas)
+            img_height = int(img_height * escala_canvas)
+            captura_x = (ancho_pagina - img_width) / 2  # Centrar en X
+            captura_y = alto_pagina - 500  # Margen inferior de 50
+
+        pdf.drawImage(
+            captura_path,
+            captura_x,
+            captura_y,
+            width=img_width,
+            height=img_height
+        )
     pdf.save()
     print("PDF creado exitosamente")
 

@@ -6,7 +6,10 @@ from datetime import datetime
 #from functools import partial
 import util.config as utl
 from bd.conexion import Conexion
-
+from PIL import Image, ImageGrab
+from reportlab.lib.pagesizes import letter, A4
+from reportlab.pdfgen import canvas as pdf_canvas
+import os
 pacientes=[]
 buttons = []
 
@@ -69,7 +72,7 @@ class Odontograma:
         #print(self.ID_odonto)
         self.cargar_dientes(self.ID_odonto)
         self.canvas = tk.Canvas(self.frame_dientes, width= self.ancho-20, height= 300)
-        self.canvas.pack()
+        self.canvas.grid(row= 0, column= 0,columnspan=3, padx= 10)
         # self.colores=["red", "green", "blue", "white"]
         self.crear_dientes()
         # self.frame_tabla = Frame(self.ventana_odontograma)
@@ -98,11 +101,12 @@ class Odontograma:
 
         # self.frame_botones = Frame(self.ventana_odontograma, bg= "gray")
         # self.frame_botones.grid(column= 0, row= 5, pady= (10,0))
-        self.boton_guardar_odonto=Button(self.frame_datos_paciente, text= 'Guardar', command= self.guardar_odontograma, font= self.fuenteb, bg= '#1F704B', fg= 'white', width= 8)
-        self.boton_guardar_odonto.grid(row= 0, column= 6, padx= 10, pady= 10)
-        self.boton_salir_odonto=Button(self.frame_datos_paciente, text= 'Salir', command= self.salir, font= self.fuenteb, bg= "orange", width= 8)
-        self.boton_salir_odonto.grid(row= 1, column= 6, padx= 10)
-
+        self.boton_guardar_odonto=Button(self.frame_dientes, text= 'Guardar', command= self.guardar_odontograma, font= self.fuenteb, bg= '#1F704B', fg= 'white', width= 8)
+        self.boton_guardar_odonto.grid(row= 1, column= 0, padx= 10, pady= 10)
+        self.boton_salir_odonto=Button(self.frame_dientes, text= 'Crear PDF', command= self.crear_pdf, font= self.fuenteb, bg= "gray", width= 8)
+        self.boton_salir_odonto.grid(row= 1, column= 1, padx= 10)
+        self.boton_PDF=Button(self.frame_dientes, text= 'Salir', command= self.salir, font= self.fuenteb, bg= "orange", width= 8)
+        self.boton_PDF.grid(row= 1, column= 2, padx= 10)
         self.ventana_odontograma.mainloop()
 
     def salir(self):
@@ -235,6 +239,57 @@ class Odontograma:
                 messagebox.showinfo("Odontologo", "Escoja un odontólogo")
             #print(matricula)
 
+    def crear_pdf(self):
+        # Captura la ventana y guarda el área del Canvas
+        x0 = self.frame_dientes.winfo_rootx() + self.canvas.winfo_x()
+        y0 = self.frame_dientes.winfo_rooty() + self.canvas.winfo_y()
+        x1 = x0 + self.canvas.winfo_width()
+        y1 = y0 + self.canvas.winfo_height()
+        imagen_canvas = ImageGrab.grab((x0, y0, x1, y1))
+        imagen_canvas.save("canvas_image.png")
+
+        # Crear el PDF con ReportLab e insertar la imagen
+        pdf = pdf_canvas.Canvas("output.pdf", pagesize=A4)
+        ancho_pagina, alto_pagina = A4
+        logo_path = "./imagenes/LOGO.png"
+        alto_imagen=400
+        if os.path.exists(logo_path):
+            with Image.open(logo_path) as img:
+                logo_width, logo_height = img.size
+                escala_logo = min(alto_imagen / logo_width, alto_imagen / logo_height)  # Escalar a máximo 80x80
+                logo_width = int(logo_width * escala_logo)
+                logo_height = int(logo_height * escala_logo)
+                logo_x = (ancho_pagina - logo_width) / 2  # Centrar en X
+                logo_y = alto_pagina - 120  # Posición en Y desde la parte superior
+
+            pdf.drawImage(logo_path, logo_x, logo_y, width=logo_width, height=logo_height)
+
+        pdf.setFont("Helvetica", 20)
+        pdf.drawString(50, alto_pagina - 150, f"Apellido/s y Nombre/s:")
+        pdf.drawString(50, alto_pagina - 170, f"DNI: ")
+        pdf.drawString(50, alto_pagina - 190, f"Obra Social:")
+        pdf.drawString(ancho_pagina - 300, alto_pagina - 190, f"N° de Socio: ")
+        captura_path = "canvas_image.png"
+        if os.path.exists(captura_path):
+            with Image.open(captura_path) as img:
+                img_width, img_height = img.size
+                max_width = ancho_pagina - 100
+                max_height = alto_pagina - 200
+                escala_canvas = min(max_width / img_width, max_height / img_height)
+                img_width = int(img_width * escala_canvas)
+                img_height = int(img_height * escala_canvas)
+                captura_x = (ancho_pagina - img_width) / 2  # Centrar en X
+                captura_y = alto_pagina - 500  # Margen inferior de 50
+
+            pdf.drawImage(
+                captura_path,
+                captura_x,
+                captura_y,
+                width=img_width,
+                height=img_height
+            )
+        pdf.save()
+    
     def editar_diente(self, numero):
         #print('prueba', numero)
         self.numero_actual = numero
