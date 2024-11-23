@@ -247,12 +247,17 @@ class Odontograma:
         y1 = y0 + self.canvas.winfo_height()
         imagen_canvas = ImageGrab.grab((x0, y0, x1, y1))
         imagen_canvas.save("canvas_image.png")
-
+        apellido= self.paciente[0]
+        nombre= self.paciente[1]
+        dni= self.paciente[2]
+        fechanac= self.convertir_fecha(self.paciente[3])
+        obra_social= self.paciente[4]
+        nrosocio= self.paciente[5]
         # Crear el PDF con ReportLab e insertar la imagen
         pdf = pdf_canvas.Canvas("output.pdf", pagesize=A4)
         ancho_pagina, alto_pagina = A4
         logo_path = "./imagenes/LOGO.png"
-        alto_imagen=400
+        alto_imagen=500
         if os.path.exists(logo_path):
             with Image.open(logo_path) as img:
                 logo_width, logo_height = img.size
@@ -264,11 +269,11 @@ class Odontograma:
 
             pdf.drawImage(logo_path, logo_x, logo_y, width=logo_width, height=logo_height)
 
-        pdf.setFont("Helvetica", 20)
-        pdf.drawString(50, alto_pagina - 150, f"Apellido/s y Nombre/s:")
-        pdf.drawString(50, alto_pagina - 170, f"DNI: ")
-        pdf.drawString(50, alto_pagina - 190, f"Obra Social:")
-        pdf.drawString(ancho_pagina - 300, alto_pagina - 190, f"N° de Socio: ")
+        pdf.setFont("Helvetica", 15)
+        pdf.drawString(50, alto_pagina - 150, f"Apellido/s y Nombre/s: {apellido}, {nombre}")
+        pdf.drawString(50, alto_pagina - 170, f"DNI: {dni} ")
+        pdf.drawString(50, alto_pagina - 190, f"Obra Social: {obra_social}")
+        pdf.drawString(ancho_pagina - 300, alto_pagina - 190, f"N° de Socio: {nrosocio}")
         captura_path = "canvas_image.png"
         if os.path.exists(captura_path):
             with Image.open(captura_path) as img:
