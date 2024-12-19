@@ -67,7 +67,7 @@ class Informes:
         self.nueva_ventana.focus_set() # Mantiene el foco cuando se abre la ventana.
         titulo = tk.Label(self.nueva_ventana, text= "Informes", font= ("Arial", 16))
         titulo.grid(column= 0, row= 0)
-        anios=self.obtener_anios()                   
+        anios=self.obtener_anios()
         meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
         self.selector_mes= ttk.Combobox(self.nueva_ventana, state= "readonly", values= meses, width= 20, background= "white")
         self.selector_mes.grid(column= 0, row= 1, padx= (10, 10), pady= (0, 5))
@@ -168,7 +168,7 @@ class Informes:
         if self.informe_seleccionado == 'Horario de turnos por año':
             titulo='Turnos por horario en el año '+self.selector_anio.get()
             datos = self.obtener_horario_anio()
-            print(datos)
+            #print(datos)
             valoresy = [fila[1] for fila in datos]
             valoresx = [fila[0] for fila in datos]
             ax.bar(valoresx, valoresy, color='skyblue')  # Gráfico de barras
@@ -178,6 +178,7 @@ class Informes:
             plt.xticks(rotation=90, ha='right')
         if self.informe_seleccionado == 'Día de turnos':
             self.contar_dias_semana()
+       
         plt.tight_layout()
 
         # Crear el canvas de matplotlib en Tkinter y asignarlo al frame de la nueva ventana
@@ -195,7 +196,7 @@ class Informes:
 
     def crear_grafica(self):
         plt.clf()
-        plt.close('all')        
+        plt.close('all')
         self.create_bar_chart()
         
 # Función para obtener los datos agrupados por mes y año
@@ -215,7 +216,7 @@ class Informes:
         datos=['Vacio']
         try:
             conn = sqlite3.connect('./bd/consultorio2.sqlite3')
-            cursor = conn.cursor()            
+            cursor = conn.cursor()
             # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
             cursor.execute(""" SELECT strftime('%m', Fecha) AS Mes, COUNT(*) AS CantidadTurnos FROM Turnos WHERE strftime('%Y', Fecha) = ? GROUP BY Mes ORDER BY Mes""", (self.selector_anio.get(),))
             datos = cursor.fetchall()
@@ -357,7 +358,12 @@ class Informes:
         #name=''
         if self.informe_seleccionado == 'Cantidad de turnos':
             pdf_filename='CantidadTurnos'+self.selector_anio.get()+'.pdf'
-        #pdf_filename = "documento_con_graficas.pdf"
+        if self.informe_seleccionado == 'Horario de turnos por mes':
+            pdf_filename='HorarioTurnos'+self.selector_mes.get()+self.selector_anio.get()+'.pdf'
+        if self.informe_seleccionado == 'Horario de turnos por año':
+            pdf_filename='HorarioTurnos'+self.selector_anio.get()+'.pdf'
+        print(pdf_filename)
+        # pdf_filename = "documento_con_graficas.pdf"
         document = SimpleDocTemplate(pdf_filename, pagesize=A4)
 
         # Obtener los estilos de muestra

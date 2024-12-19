@@ -1,4 +1,4 @@
-import PIL
+#import PIL
 from PIL import ImageTk, Image
 
 path_relativo=""
@@ -56,12 +56,12 @@ def validar_password(password):
         if minuscula and mayuscula and numero and espacio and caracter:
             valido = True
     return valido
-    print(valido)
+    #print(valido)
 
 def validar_correo(self, value):
     pattern = r'\b[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
     if re.fullmatch(pattern, value) is None:
-        return False    
+        return False
     return True
 
 #validar_password("Na2@dA")    
