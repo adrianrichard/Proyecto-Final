@@ -22,11 +22,12 @@ fuente2= 'Comic Sans MS'
 color_fuente = 'black'
 color_fondo1 = utl.definir_color_fondo()
 color_fondo2 = 'gray90'
-global indice_paciente
+#global indice_paciente
 
 class MasterPanel:
 
     def __init__(self, tipousuario):
+        self.indice_paciente = 0  # Mover la variable global aquí
 
         self.ventana= tk.Tk()
         self.ventana.title('DentalMatic')
@@ -146,6 +147,8 @@ class MasterPanel:
     def salir(self):
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea salir?', icon= 'warning')
         if answer:
+            self.db.cerrar_bd()
+            #self.ventana.withdraw()
             self.ventana.destroy()
 
     def agregar_paciente(self):
@@ -198,51 +201,51 @@ class MasterPanel:
         return pacientes
 
     def cargar_pacientes_previos(self):
-        global indice_paciente
+        #global self.indice_paciente
         self.boton_pos.config(state= 'normal', bg= '#1F704B')
-        if indice_paciente == 0:
+        if self.indice_paciente == 0:
             self.boton_previo.config(state= 'disabled', bg= '#1F704B')
 
         paciente_lista = self.cargar_tabla_pacientes()
         offset = len(paciente_lista)%incremento
-        if indice_paciente ==  len(paciente_lista):
-            indice_paciente = indice_paciente - offset
+        if self.indice_paciente ==  len(paciente_lista):
+            self.indice_paciente = self.indice_paciente - offset
             if offset == 0:
-                indice_paciente = indice_paciente - incremento
-        indice_paciente = indice_paciente - incremento
-        if(indice_paciente >= 0):
+                self.indice_paciente = self.indice_paciente - incremento
+        self.indice_paciente = self.indice_paciente - incremento
+        if(self.indice_paciente >= 0):
             self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-            for i in range(indice_paciente, indice_paciente + incremento):
+            for i in range(self.indice_paciente, self.indice_paciente + incremento):
                 self.tabla_paciente.insert('', i, text = paciente_lista[i][0], values= (paciente_lista[i][1], paciente_lista[i][2], paciente_lista[i][3], paciente_lista[i][4]))            
-        if indice_paciente < 0 :
-            indice_paciente = 0
+        if self.indice_paciente < 0 :
+            self.indice_paciente = 0
 
     def cargar_pacientes_posteriores(self):
-        global indice_paciente        
+        #global indice_paciente        
         self.boton_previo.config(state= 'normal', bg= '#1F704B')
         paciente_lista = self.cargar_tabla_pacientes()
-        if indice_paciente != len(paciente_lista):
-            indice_paciente = indice_paciente + incremento
-            if indice_paciente+incremento <= len(paciente_lista):
+        if self.indice_paciente != len(paciente_lista):
+            self.indice_paciente = self.indice_paciente + incremento
+            if self.indice_paciente+incremento <= len(paciente_lista):
                 self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-                for i in range(indice_paciente, indice_paciente + incremento):
+                for i in range(self.indice_paciente, self.indice_paciente + incremento):
                     self.tabla_paciente.insert('', i, text = paciente_lista[i][0], values=(paciente_lista[i][1], paciente_lista[i][2], paciente_lista[i][3], paciente_lista[i][4]))
-                if(indice_paciente+incremento == len(paciente_lista)):
-                    indice_paciente = len(paciente_lista)
+                if(self.indice_paciente+incremento == len(paciente_lista)):
+                    self.indice_paciente = len(paciente_lista)
                     self.boton_pos.config(state= 'disabled', bg= '#1F704B')
-            elif indice_paciente+incremento > len(paciente_lista):
+            elif self.indice_paciente+incremento > len(paciente_lista):
                 offset = len(paciente_lista)%incremento
                 self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-                for i in range(indice_paciente, indice_paciente + offset):
+                for i in range(self.indice_paciente, self.indice_paciente + offset):
                     self.tabla_paciente.insert('', i, text = paciente_lista[i][0], values=(paciente_lista[i][1], paciente_lista[i][2], paciente_lista[i][3], paciente_lista[i][4]))        
-                indice_paciente = len(paciente_lista)
+                self.indice_paciente = len(paciente_lista)
                 self.boton_pos.config(state= 'disabled', bg= '#1F704B')
 
     def mostrar_pacientes(self):
-        global indice_paciente
+        #global indice_paciente
         self.boton_pos.config(state= 'normal', bg= '#1F704B')
         self.boton_previo.config(state= 'disabled', bg= '#1F704B')
-        indice_paciente= 0
+        self.indice_paciente= 0
 
         self.miCursor = self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido"
@@ -263,9 +266,10 @@ class MasterPanel:
     def buscar_paciente(self, event=None):
         self.miCursor = self.miConexion.cursor()
         self.buscar = self.dato_paciente.get()
+        #se realiza  de esta forma para evitar inyección SQL
+        bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes WHERE Apellido LIKE ? OR Nombre LIKE ? ORDER BY Apellido ASC"
+        self.miCursor.execute(bd, (f"%{self.buscar}%", f"%{self.buscar}%"))
 
-        bd = f"SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' ORDER BY Apellido ASC"
-        self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
         i = -1

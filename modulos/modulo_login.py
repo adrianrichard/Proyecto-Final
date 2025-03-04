@@ -3,8 +3,8 @@ from tkinter import ttk
 from tkinter import  *
 import util.config as utl
 from modulos.modulo_administrador import MasterPanel
-from modulos.modulo_secretario import SecretarioPanel
-from modulos.modulo_odontologo import OdontologoPanel
+# from modulos.modulo_secretario import SecretarioPanel
+# from modulos.modulo_odontologo import OdontologoPanel
 from tkinter  import messagebox
 from bd.conexion import Conexion
 import re
@@ -23,52 +23,52 @@ class Login:
             db.conectar()
             db.obtener_cursor()
             """Busca el usuario y contraseña"""
-            if db.buscar_usuario(username, password):
-                """Determina que tipo de usuario ingreso"""
-                tipo_user = db.determinar_usuario(username, password)
-                """Si es administrador"""
-                if tipo_user[0][0] == 'administrador':
+            usuario=db.buscar_usuario(username, password)            
+            if usuario is not None:
+                """Si es administrador"""                
+                if  usuario[2] == 'administrador':
                     messagebox.showinfo(title = "Ingreso", message = "Ingreso autorizado")
-                    db.cerrar_bd()
-                    self.nombre_usuario.set('')
-                    self.pass_usuario.set('')
+                    #db.cerrar_bd()
+                    self.usuario.delete(0, tk.END)
+                    self.password.delete(0, tk.END)
                     self.frame_login.destroy()
-                    MasterPanel('administrador')
+                    MasterPanel(usuario[2])
                 """Si es odontologo"""
-                if tipo_user[0][0] == 'odontologo':
+                if usuario[2] == 'odontologo':
                     messagebox.showinfo(title = "Ingreso", message = "Ingreso autorizado")
-                    db.cerrar_bd()
-                    self.nombre_usuario.set('')
-                    self.pass_usuario.set('')
+                    #db.cerrar_bd()
+                    self.usuario.delete(0, tk.END)
+                    self.password.delete(0, tk.END)
                     self.frame_login.destroy()
-                    MasterPanel('odontologo')
+                    MasterPanel(usuario[2])
                 """Si es secretario"""
-                if tipo_user[0][0] == 'secretario':
+                if usuario[2] == 'secretario':
                     messagebox.showinfo(title = "Ingreso", message = "Ingreso autorizado")
-                    db.cerrar_bd()
-                    self.nombre_usuario.set('')
-                    self.pass_usuario.set('')
+                    #db.cerrar_bd()
+                    self.usuario.delete(0, tk.END)
+                    self.password.delete(0, tk.END)
                     self.frame_login.destroy()
-                    MasterPanel('secretario')
+                    MasterPanel(usuario[2])
 
             else:
                 """Si usuario y/o contraseña son incorrectos"""
                 messagebox.showerror(title = "Advertencia", message = "Usuario o contraseña incorrectos")
-            db.cerrar_bd()
 
         else:
             messagebox.showerror(title = "Advertencia", message = "Error de conexión a base de datos")
 
     """Sólo acepta Letras"""
     def validar_nombre(self, value):
-        pattern = r'\b[A-Za-z_]\b'
+        pattern = r'^[A-Za-z_]+$'  #r'\b[A-Za-z_]\b'  cambiado por sugerencia de chatgpt
         if re.fullmatch(pattern, value) is None:
+            messagebox.showerror("Error", "El nombre de usuario solo puede contener letras y guiones bajos.")
             return False 
         return True
     """Sólo acepta alfanuméricos"""
     def validar_pass(self, value):
-        pattern = r'\b[A-Za-z0-9_]\b'
+        pattern = r'^[A-Za-z0-9_]+$' #r'\b[A-Za-z0-9_]\b'  cambiado por sugerencia de chatgpt
         if re.fullmatch(pattern, value) is None:
+            messagebox.showerror("Error", "La contraseña solo puede contener letras, números y guiones bajos.")
             return False
         return True
 
