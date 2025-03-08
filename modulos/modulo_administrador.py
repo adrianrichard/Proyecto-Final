@@ -338,7 +338,7 @@ class MasterPanel:
     def editar_usuario(self, event):
         region = self.tabla_usuario.identify("region", event.x, event.y)
         if region == "heading":  # Si el doble clic es en el encabezado
-            return "break"
+            return
         else:
             try:
                 selected_item = self.tabla_usuario.selection()
@@ -447,7 +447,7 @@ class MasterPanel:
         self.estilo_tabla = ttk.Style(self.frame_usuarios)
         self.estilo_tabla.theme_use('alt')
         self.estilo_tabla.configure('TablaUsuario.Treeview', font= fuenten, foreground= 'black', rowheight= 20)
-        #estilo_tabla.map('Treeview.Heading', background=[('selected', '#1F704B')], foreground=[('selected','white')] )
+        self.estilo_tabla.map('Treeview.Heading', background=[("active", '#1F704B')], foreground=[("active", "white")])
         self.estilo_tabla.configure('TablaUsuario.Treeview.Heading', background= '#1F704B', foreground= 'white', padding= 3, font= fuenteb)
         self.estilo_paginas.layout('TNotebook.Tab', [])
 ##        estilo_tabla.configure('Item', foreground = 'red', focuscolor ='green')
