@@ -156,15 +156,16 @@ class MasterPanel:
         paciente.ventana_paciente()
 
     def editar_paciente(self, event):
-        paciente= Paciente()
         item = self.tabla_paciente.focus()
-        self.data = self.tabla_paciente.item(item)
-        try:
-            self.dni_paciente = self.data['values'][1]
-            paciente.cargar_datos(self.dni_paciente)
-            paciente.ventana_paciente()
-        except:
-            pass
+        if item:
+            self.data = self.tabla_paciente.item(item)
+            try:
+                self.dni_paciente = self.data['values'][1]
+                paciente = Paciente()
+                paciente.cargar_datos(self.dni_paciente)
+                paciente.ventana_paciente()
+            except Exception as e:
+                messagebox.showerror("ERROR", f"No se pudo cargar el paciente: {e}")
 
     def editar_odontograma(self, event):
         odonto= Odontograma()
