@@ -1,6 +1,5 @@
 import tkinter as tk
-#from tkinter.font import BOLD
-from tkinter import ttk
+import sqlite3
 import util.config as utl
 from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Frame
@@ -13,7 +12,6 @@ from bd.backup import Backup
 from util.visorimagenes import ImageGalleryApp
 #import sqlite3
 from bd.conexion import Conexion
-
 
 pacientes = []
 
@@ -32,7 +30,7 @@ class MasterPanel:
         self.ventana= tk.Tk()
         self.ventana.title('DentalMatic')
         self.ventana.geometry('1000x500+200+80')
-        self.ventana.config(bg= '#fcfcfc')
+        self.ventana.config(bg= self.color_fondo2)
         self.ventana.resizable(width= 0, height= 0)
         utl.centrar_ventana(self.ventana, 900, 600)
         self.menu = True
@@ -45,7 +43,7 @@ class MasterPanel:
         self.dni_paciente = StringVar()
         self.dato_paciente = StringVar()
         self.dato_paciente2 = StringVar()
-        self.tipo_usuario = StringVar()
+        #self.tipo_usuario = StringVar() #porque se declara nuevamente 2 líneas abajo
         self.nombre_usuario = StringVar()
         self.tipo_usuario = tipousuario
         #print(self.tipo_usuario)
@@ -148,7 +146,6 @@ class MasterPanel:
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea salir?', icon= 'warning')
         if answer:
             self.db.cerrar_bd()
-            #self.ventana.withdraw()
             self.ventana.destroy()
 
     def agregar_paciente(self):
@@ -181,7 +178,6 @@ class MasterPanel:
 
     def eliminar_paciente(self):
         try:
-            #self.miConexion = self.db.conectar()
             self.miCursor = self.miConexion.cursor()
             msg_box = messagebox.askquestion('Eliminar paciente', '¿Desea elminar al paciente?', icon='warning')
             if msg_box == 'yes':
@@ -190,62 +186,64 @@ class MasterPanel:
                 messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
                 self.dni_paciente=[]
                 self.mostrar_pacientes()
-        except:
-            messagebox.showinfo("ELIMINAR", "No se ha podido elimnar el paciente")
+        except sqlite3.Error as e:
+            messagebox.showerror("ERROR", f"No se pudo eliminar el paciente: {e}")
+        except Exception as e:
+            messagebox.showerror("ERROR", f"Error inesperado: {e}")
 
     def cargar_tabla_pacientes(self):
-        #self.miConexion = self.db.conectar()
-        self.miCursor = self.miConexion.cursor()
-        bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido"
-        self.miCursor.execute(bd)
-        pacientes = self.miCursor.fetchall()
-        return pacientes
+        """Carga todos los pacientes desde la base de datos."""
+        try:
+            cursor = self.miConexion.cursor()
+            cursor.execute("SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido")
+            return cursor.fetchall()
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al cargar pacientes: {e}")
+            return []
+    def cargar_pacientes_paginados(self):
+        """Muestra los pacientes paginados de acuerdo al índice actual y controla los botones de navegación."""
+        pacientes = self.cargar_tabla_pacientes()
+        total = len(pacientes)
+        inicio = self.indice_paciente
+        fin = min(inicio + self.incremento, total)  # Control de índice final
+
+        # Limpiar la tabla antes de insertar nuevos datos
+        self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+
+        # Insertar pacientes en la tabla
+        for i in range(inicio, fin):
+            self.tabla_paciente.insert('', 'end', text=pacientes[i][0], values=pacientes[i][1:])
+
+        # --- Control de botones ---
+        # Botón previo
+        if self.indice_paciente == 0:
+            self.boton_previo.config(state='disabled', bg='gray')  # Desactivado y gris
+        else:
+            self.boton_previo.config(state='normal', bg= self.color_fondo1)    # Activado y verde
+
+        # Botón siguiente
+        if fin >= total:
+            self.boton_pos.config(state='disabled', bg='gray')    # Desactivado y gris
+        else:
+            self.boton_pos.config(state='normal', bg= self.color_fondo1)      # Activado y verde
 
     def cargar_pacientes_previos(self):
-        #global self.indice_paciente
-        self.boton_pos.config(state= 'normal', bg= '#1F704B')
-        if self.indice_paciente == 0:
-            self.boton_previo.config(state= 'disabled', bg= '#1F704B')
-
-        paciente_lista = self.cargar_tabla_pacientes()
-        offset = len(paciente_lista)%self.incremento
-        if self.indice_paciente ==  len(paciente_lista):
-            self.indice_paciente = self.indice_paciente - offset
-            if offset == 0:
-                self.indice_paciente = self.indice_paciente - self.incremento
-        self.indice_paciente = self.indice_paciente - self.incremento
-        if(self.indice_paciente >= 0):
-            self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-            for i in range(self.indice_paciente, self.indice_paciente + self.incremento):
-                self.tabla_paciente.insert('', i, text = paciente_lista[i][0], values= (paciente_lista[i][1], paciente_lista[i][2], paciente_lista[i][3], paciente_lista[i][4]))            
-        if self.indice_paciente < 0 :
-            self.indice_paciente = 0
+        """Carga la página anterior de pacientes."""
+        self.indice_paciente = max(0, self.indice_paciente - self.incremento)  # No permite índice negativo
+        self.cargar_pacientes_paginados()
 
     def cargar_pacientes_posteriores(self):
-        #global indice_paciente        
-        self.boton_previo.config(state= 'normal', bg= '#1F704B')
-        paciente_lista = self.cargar_tabla_pacientes()
-        if self.indice_paciente != len(paciente_lista):
-            self.indice_paciente = self.indice_paciente + self.incremento
-            if self.indice_paciente+self.incremento <= len(paciente_lista):
-                self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-                for i in range(self.indice_paciente, self.indice_paciente + self.incremento):
-                    self.tabla_paciente.insert('', i, text = paciente_lista[i][0], values=(paciente_lista[i][1], paciente_lista[i][2], paciente_lista[i][3], paciente_lista[i][4]))
-                if(self.indice_paciente+self.incremento == len(paciente_lista)):
-                    self.indice_paciente = len(paciente_lista)
-                    self.boton_pos.config(state= 'disabled', bg= '#1F704B')
-            elif self.indice_paciente+self.incremento > len(paciente_lista):
-                offset = len(paciente_lista)%self.incremento
-                self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-                for i in range(self.indice_paciente, self.indice_paciente + offset):
-                    self.tabla_paciente.insert('', i, text = paciente_lista[i][0], values=(paciente_lista[i][1], paciente_lista[i][2], paciente_lista[i][3], paciente_lista[i][4]))        
-                self.indice_paciente = len(paciente_lista)
-                self.boton_pos.config(state= 'disabled', bg= '#1F704B')
+        """Carga la página siguiente de pacientes."""
+        pacientes = self.cargar_tabla_pacientes()
+        total = len(pacientes)
+        if self.indice_paciente + self.incremento < total:
+            self.indice_paciente += self.incremento  # Avanza a la siguiente página
+        self.cargar_pacientes_paginados()
 
     def mostrar_pacientes(self):
         #global indice_paciente
-        self.boton_pos.config(state= 'normal', bg= '#1F704B')
-        self.boton_previo.config(state= 'disabled', bg= '#1F704B')
+        self.boton_pos.config(state= 'normal', bg= self.color_fondo1)
+        self.boton_previo.config(state= 'disabled', bg= self.color_fondo1)
         self.indice_paciente= 0
 
         self.miCursor = self.miConexion.cursor()
@@ -260,39 +258,53 @@ class MasterPanel:
             for i in range(0, self.incremento):
                     self.tabla_paciente.insert('', i, text= datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
         else:
-            self.boton_pos.config(state= 'disabled', bg= '#1F704B')
+            self.boton_pos.config(state= 'disabled', bg= self.color_fondo1)
             for i in range(0, len(datos)):
                     self.tabla_paciente.insert('', i, text= datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
 
     def buscar_paciente(self, event=None):
-        self.miCursor = self.miConexion.cursor()
-        self.buscar = self.dato_paciente.get()
-        bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes WHERE Apellido LIKE ? OR Nombre LIKE ? ORDER BY Apellido ASC"
-        self.miCursor.execute(bd, (f"%{self.buscar}%", f"%{self.buscar}%"))
-        datos = self.miCursor.fetchall()
-        self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-        if datos:
-            for i, dato in enumerate(datos):
-                self.tabla_paciente.insert('', i, text=dato[0], values=(dato[1], dato[2], dato[3], dato[4]))
-        else:
-            messagebox.showinfo("BUSCAR", "No se encontraron coincidencias")
+        """Busca pacientes por nombre o apellido y muestra mensaje si no hay resultados."""
+        buscar = self.dato_paciente.get()
+        try:
+            cursor = self.miConexion.cursor()
+            cursor.execute(
+                "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes WHERE Apellido LIKE ? OR Nombre LIKE ? ORDER BY Apellido",
+                (f'%{buscar}%', f'%{buscar}%')
+            )
+            datos = cursor.fetchall()
+            self.tabla_paciente.delete(*self.tabla_paciente.get_children())
+            
+            if datos:  # Si encuentra resultados
+                for i, dato in enumerate(datos):
+                    self.tabla_paciente.insert('', 'end', text=dato[0], values=dato[1:])
+            else:  # Si no encuentra resultados
+                messagebox.showinfo("BUSCAR", "No se encontraron coincidencias")
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al buscar paciente: {e}")
 
     def buscar_historia(self, event=None):
-        self.miCursor = self.miConexion.cursor()
-        self.buscar = self.dato_paciente2.get()
+        """Busca historia clínica por apellido, nombre o DNI y muestra mensaje si no hay resultados."""
+        buscar = self.dato_paciente2.get()
         try:
-            bd = f"SELECT Apellido, Nombre, ID, ObraSocial FROM Pacientes WHERE Apellido LIKE '%{self.buscar}%' OR Nombre LIKE '%{self.buscar}%' OR ID LIKE '{self.buscar}%' ORDER BY Apellido ASC"
-            self.miCursor.execute(bd)
-            datos = self.miCursor.fetchall()
+            cursor = self.miConexion.cursor()
+            cursor.execute(
+                "SELECT Apellido, Nombre, ID, ObraSocial FROM Pacientes WHERE Apellido LIKE ? OR Nombre LIKE ? OR ID LIKE ? ORDER BY Apellido",
+                (f'%{buscar}%', f'%{buscar}%', f'{buscar}%')
+            )
+            datos = cursor.fetchall()
+
+            # Limpiar tabla antes de insertar nuevos datos
             self.tabla_historia.delete(*self.tabla_historia.get_children())
-            i = -1
-            if datos == []:
-                messagebox.showinfo("BUSCAR", "No hay resultados")
-            for dato in datos:
-                i= i+1
-                self.tabla_historia.insert('', i, text = datos[i][0], values=(datos[i][0], datos[i][1], datos[i][2], datos[i][3]))
-        except:
-            messagebox.showinfo("ERROR", "Error en base de datos")
+
+            if datos:  # Si encuentra resultados
+                for i, dato in enumerate(datos):
+                    self.tabla_historia.insert('', 'end', values=dato)
+            else:  # Si no encuentra resultados
+                messagebox.showinfo("BUSCAR", "No se encontraron coincidencias")
+
+        except Exception as e:
+            messagebox.showerror("ERROR", f"Error en la búsqueda: {e}")
 
     def seleccionar_paciente(self, event):
         item = self.tabla_paciente.focus()
@@ -385,34 +397,34 @@ class MasterPanel:
         try:
             self.imagen_inicio = PhotoImage(file ='./imagenes/home-removebg-preview.png')
             self.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
-            self.bt_inicio = Button(self.frame_inicio, image= self.imagen_inicio, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.menu_lateral)
-            self.bt_cerrar = Button(self.frame_inicio, image= self.imagen_menu, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.menu_lateral)
+            self.bt_inicio = Button(self.frame_inicio, image= self.imagen_inicio, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.menu_lateral)
+            self.bt_cerrar = Button(self.frame_inicio, image= self.imagen_menu, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.menu_lateral)
         except:
-            self.bt_inicio = Button(self.frame_inicio, text= 'INICIO', font= (self.fuente_titulo, 12, 'bold'), bg= '#1F704B', activebackground= 'white', bd= 0, command= self.menu_lateral)
-            self.bt_cerrar = Button(self.frame_inicio, text= '☰', font= ('Comic Sans MS', 12, 'bold'), bg= '#1F704B', activebackground= 'white', bd= 0, command= self.menu_lateral)
+            self.bt_inicio = Button(self.frame_inicio, text= 'INICIO', font= (self.fuente_titulo, 12, 'bold'), bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.menu_lateral)
+            self.bt_cerrar = Button(self.frame_inicio, text= '☰', font= ('Comic Sans MS', 12, 'bold'), bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.menu_lateral)
 
         self.bt_inicio.grid(column= 0, row= 0, padx= 5, pady= 10)
         self.bt_cerrar.grid(column= 0, row= 0, padx= 5, pady= 10)
 
         #BOTONES Y ETIQUETAS DEL MENU LATERAL
-        Button(self.frame_menu, image= self.imagen_paciente, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_pacientes).grid(column= 0, row= 2, pady= 20, padx= 10)
-        Label(self.frame_menu, text= 'Pacientes', bg= '#1F704B', fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 2, pady= 20, padx= 2)
-        Button(self.frame_menu, image= self.imagen_calendario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)
-        Label(self.frame_menu, text= 'Calendario', bg= '#1F704B', fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 3, pady= 20, padx= 2)
-        Button(self.frame_menu, image= self.imagen_salir, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.salir).grid(column= 0, row= 8, pady= 20, padx= 10)
-        Label(self.frame_menu, text= 'Salir', bg= '#1F704B', fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 8, pady= 20, padx= 2)
+        Button(self.frame_menu, image= self.imagen_paciente, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.pantalla_pacientes).grid(column= 0, row= 2, pady= 20, padx= 10)
+        Label(self.frame_menu, text= 'Pacientes', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 2, pady= 20, padx= 2)
+        Button(self.frame_menu, image= self.imagen_calendario, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.pantalla_calendario ).grid(column= 0, row= 3, pady= 20, padx= 10)
+        Label(self.frame_menu, text= 'Calendario', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 3, pady= 20, padx= 2)
+        Button(self.frame_menu, image= self.imagen_salir, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.salir).grid(column= 0, row= 8, pady= 20, padx= 10)
+        Label(self.frame_menu, text= 'Salir', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 8, pady= 20, padx= 2)
 
         if self.tipo_usuario == 'administrador' or self.tipo_usuario == 'odontologo':
-            Button(self.frame_menu, image= self.imagen_historia_clinica, bg= '#1F704B',activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 4, pady= 20, padx= 10)
-            Label(self.frame_menu, text= 'Historia \nClinica', bg= '#1F704B', fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 4, pady= 20, padx= 2)
-            Button(self.frame_menu, image= self.imagen_herramientas, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_herramientas).grid(column= 0, row= 7, pady= 20, padx= 10)
-            Label(self.frame_menu, text= 'Herramientas', bg= '#1F704B', fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
-            Button(self.frame_menu, image= self.imagen_galeria, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
-            Label(self.frame_menu, text= 'Galeria', bg= '#1F704B', fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 5, pady= 20, padx= 2)            
+            Button(self.frame_menu, image= self.imagen_historia_clinica, bg= self.color_fondo1,activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 4, pady= 20, padx= 10)
+            Label(self.frame_menu, text= 'Historia \nClinica', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 4, pady= 20, padx= 2)
+            Button(self.frame_menu, image= self.imagen_herramientas, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.pantalla_herramientas).grid(column= 0, row= 7, pady= 20, padx= 10)
+            Label(self.frame_menu, text= 'Herramientas', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
+            Button(self.frame_menu, image= self.imagen_galeria, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
+            Label(self.frame_menu, text= 'Galeria', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 5, pady= 20, padx= 2)            
             
         if self.tipo_usuario == 'administrador':
-            Button(self.frame_menu, image= self.imagen_usuario, bg= '#1F704B', activebackground= 'white', bd= 0, command= self.pantalla_usuarios).grid(column= 0, row= 1, pady= 20, padx= 10)
-            Label(self.frame_menu, text= 'Usuarios', bg= '#1F704B', fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 1, pady= 20, padx= 2)            
+            Button(self.frame_menu, image= self.imagen_usuario, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.pantalla_usuarios).grid(column= 0, row= 1, pady= 20, padx= 10)
+            Label(self.frame_menu, text= 'Usuarios', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 1, pady= 20, padx= 2)            
 
 		#############################  CREAR  PAGINAS  ##############################
         self.estilo_paginas = ttk.Style(self.frame_raiz)
@@ -437,7 +449,7 @@ class MasterPanel:
         self.paginas.add(self.frame_herramientas)
 		##############################         PAGINAS       #############################################
 		######################## FRAME TITULO #################
-        self.titulo = Label(self.frame_top, text= 'Consultorio Odontológico MyM', bg= '#1F704B', fg= 'white', font= ('Comic Sans MS', 15, 'bold'))
+        self.titulo = Label(self.frame_top, text= 'Consultorio Odontológico MyM', bg= self.color_fondo1, fg= 'white', font= ('Comic Sans MS', 15, 'bold'))
         self.titulo.pack(expand= 1)
 
 		######################## VENTANA PRINCIPAL #################
@@ -447,19 +459,19 @@ class MasterPanel:
         self.estilo_tabla = ttk.Style(self.frame_usuarios)
         self.estilo_tabla.theme_use('alt')
         self.estilo_tabla.configure('TablaUsuario.Treeview', font= self.fuenten, foreground= 'black', rowheight= 20)
-        self.estilo_tabla.map('Treeview.Heading', background=[("active", '#1F704B')], foreground=[("active", "white")])
-        self.estilo_tabla.configure('TablaUsuario.Treeview.Heading', background= '#1F704B', foreground= 'white', padding= 3, font= self.fuenteb)
+        self.estilo_tabla.map('Treeview.Heading', background=[("active", self.color_fondo1)], foreground=[("active", "white")])
+        self.estilo_tabla.configure('TablaUsuario.Treeview.Heading', background= self.color_fondo1, foreground= 'white', padding= 3, font= self.fuenteb)
         self.estilo_paginas.layout('TNotebook.Tab', [])
 ##        estilo_tabla.configure('Item', foreground = 'red', focuscolor ='green')
 ##        estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
 
         ######################## USUARIOS #################
-        Label(self.frame_usuarios, text= 'USUARIOS', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 3, padx=5, sticky="W")       
-        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 1, pady= 5)
+        Label(self.frame_usuarios, text= 'USUARIOS', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 3, padx=5, sticky="W")       
+        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 1, pady= 5)
         Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 2)
-        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 1, pady= 5)
+        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 1, pady= 5)
         Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 2)
-        Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 1, pady= 5)
+        Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 1, pady= 5)
         Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
 
         #TABLA USUARIO
@@ -483,21 +495,21 @@ class MasterPanel:
         self.tabla_usuario.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
 
 		######################## PACIENTES #################
-        Label(self.frame_pacientes, text= 'PACIENTES', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 4, padx=5, sticky="W")       
-        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 0, row= 1, pady= 5)
+        Label(self.frame_pacientes, text= 'PACIENTES', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 4, padx=5, sticky="W")       
+        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 0, row= 1, pady= 5)
         Label(self.frame_pacientes, text= 'Agregar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 2)
-        Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 1, row= 1, pady= 5)
+        Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 1, row= 1, pady= 5)
         Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 2)
-        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = self.fuenten, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 2, row= 1, pady= 5)
+        Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 2, row= 1, pady= 5)
         Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
         self.busqueda = ttk.Entry(self.frame_pacientes, textvariable= self.dato_paciente, width= 20 ,font= self.fuenten)
         self.busqueda.grid(column= 3, row= 1, pady= 5)
-        Button(self.frame_pacientes, text= 'Buscar', bg= '#1F704B', fg= 'white', font= self.fuenteb, command= self.buscar_paciente).grid(column= 3, row= 2, pady=(0,5))
+        Button(self.frame_pacientes, text= 'Buscar', bg= self.color_fondo1, fg= 'white', font= self.fuenteb, command= self.buscar_paciente).grid(column= 3, row= 2, pady=(0,5))
         self.busqueda.bind('<Return>', (lambda event: self.buscar_paciente()))#es para apretar Intro y se ejecute, una opción a el botón
 
-        self.boton_previo = tk.Button(self.frame_pacientes, text= '<', fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_previos)
+        self.boton_previo = tk.Button(self.frame_pacientes, text= '<', fg= 'white', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_previos)
         self.boton_previo.grid(column= 0, row= 3, padx= 10, pady=(0,5), sticky= "W")
-        self.boton_pos = tk.Button(self.frame_pacientes, text= '>', fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_posteriores)
+        self.boton_pos = tk.Button(self.frame_pacientes, text= '>', fg= 'white', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_posteriores)
         self.boton_pos.grid(column= 3, row= 3, padx=(0,10), pady=(0,5), sticky= "E")
 
 		#TABLA PACIENTE
@@ -525,11 +537,11 @@ class MasterPanel:
         self.tabla_paciente.bind("<Double-1>", self.editar_paciente)
 
 		######################## HISTORIA CLINICA #################
-        Label(self.historia, text= 'HISTORIA CLINICA', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 4, row= 0, sticky= 'W')
-        #Button(self.historia, text= 'Nuevo odontograma', bg= '#1F704B', fg= 'white', font= self.fuenteb, command= self.editar_nuevo_odontograma).grid(column= 0, row= 1, padx=(10,5), pady= 5)
+        Label(self.historia, text= 'HISTORIA CLINICA', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 4, row= 0, sticky= 'W')
+        #Button(self.historia, text= 'Nuevo odontograma', bg= self.color_fondo1, fg= 'white', font= self.fuenteb, command= self.editar_nuevo_odontograma).grid(column= 0, row= 1, padx=(10,5), pady= 5)
         self.busqueda2 = ttk.Entry(self.historia, textvariable= self.dato_paciente2, width= 20, font= self.fuenten)
         self.busqueda2.grid(column= 1, row= 1, pady= 5, sticky="e")
-        self.busqueda3 = Button(self.historia, text= 'Buscar', bg= '#1F704B', fg= 'white', font= self.fuenteb, command= self.buscar_historia)
+        self.busqueda3 = Button(self.historia, text= 'Buscar', bg= self.color_fondo1, fg= 'white', font= self.fuenteb, command= self.buscar_historia)
         self.busqueda3.grid(column= 2, row= 1, padx=(10,5), pady= 5)
         self.busqueda2.bind('<Return>', (lambda event: self.buscar_historia()))#es para apretar Intro y se ejecute, una opción a el botón
         
@@ -549,10 +561,10 @@ class MasterPanel:
         self.tabla_historia.bind("<Double-1>", self.editar_odontograma)
 
 		######################## GALERIA #################
-        Label(self.frame_galeria, text= 'GALERIA', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, sticky= 'W')
+        Label(self.frame_galeria, text= 'GALERIA', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, sticky= 'W')
 
         ######################## herramientas #################
-        Label(self.frame_herramientas, text= 'HERRAMIENTAS', bg= 'gray90', fg= '#1F704B', font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 3, row= 0, sticky= 'W')
+        Label(self.frame_herramientas, text= 'HERRAMIENTAS', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 3, row= 0, sticky= 'W')
 
         Label(self.frame_herramientas, text= 'Copia de seguridad (Backup)', bg='gray90', font=self.fuenteb, relief="groove", width= 125).grid(column= 0, row= 1, padx= (10, 0), pady= (0, 5), sticky= 'W')
 

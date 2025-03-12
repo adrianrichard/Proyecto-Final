@@ -2,9 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import  *
 import util.config as utl
-from modulos.modulo_administrador import MasterPanel
-# from modulos.modulo_secretario import SecretarioPanel
-# from modulos.modulo_odontologo import OdontologoPanel
+from modulos.modulo_principal import MasterPanel
 from tkinter  import messagebox
 from bd.conexion import Conexion
 import re
@@ -74,8 +72,7 @@ class Login:
         return True
 
     def __init__(self):
-        """Vemtana de Login
-        """
+        """Ventana de Login"""
         self.frame_login = tk.Tk()
         self.frame_login.title('DENTALMATIC')
         self.frame_login.geometry('500x500')
@@ -87,11 +84,10 @@ class Login:
         self.fuente_login='Comic Sans MS'
         self.color_fuente1, self.color_fuente2 = utl.definir_color_fuente()
         self.color_fondo1, self.color_fondo2 = utl.definir_color_fondo()
-        #color_fondo2 = 'gray90'
         self.nombre_usuario = StringVar()
         self.pass_usuario = StringVar()
 
-        # frame_logo
+        """frame_logo"""
         try:
             logo = utl.leer_imagen("logo1.png", (250, 200))
             frame_logo = tk.Frame(self.frame_login, bd=0, width=300, relief=tk.SOLID, padx=10, pady=10, bg=self.color_fondo1)
@@ -102,17 +98,16 @@ class Login:
             frame_logo.pack(side="left", expand=tk.YES, fill= tk.BOTH)
             tk.Label(frame_logo, text="DENTALMATIC", font=(self.fuente_login, 25), fg="white", bg=self.color_fondo1, anchor="w").place(x=0, y=0, relwidth=1, relheight=1)
 
-        #frame_ingreso
+        """frame_ingreso"""
         frame_ingreso = tk.Frame(self.frame_login, bd=0, relief=tk.SOLID, bg=self.color_fondo2)
         frame_ingreso.pack(side="right", expand=tk.YES, fill=tk.BOTH)
 
-        #frame_form_top
+        """frame_form_top"""
         frame_form_top = tk.Frame(frame_ingreso, height=50, bd=0, relief=tk.SOLID, bg=self.color_fondo2)
         frame_form_top.pack(side="top", fill=tk.X)
         tk.Label(frame_form_top, text="Inicio de sesión", font=(self.fuente_login, 20), fg=self.color_fuente1, bg=self.color_fondo2, pady=50).pack(expand=tk.YES, fill=tk.BOTH)
-        #end frame_form_top
 
-        #frame_form_completar
+        """frame_form_completar"""
         frame_form_completar = tk.Frame(frame_ingreso, height=50,  bd=0, relief=tk.SOLID, bg=self.color_fondo2)
         frame_form_completar.pack(side="bottom", expand=tk.YES, fill=tk.BOTH)
 
