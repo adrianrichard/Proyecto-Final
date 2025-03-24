@@ -28,7 +28,7 @@ class Paciente:
         self.email_paciente =  StringVar()
         self.obrasocial_paciente =  StringVar()
         self.nrosocio_paciente =  StringVar()
-        self.correovalido=False
+        #self.correovalido=False
         self.db = Conexion()
         self.miConexion=self.db.conectar()
         self.miCursor=self.miConexion.cursor()
@@ -145,11 +145,11 @@ class Paciente:
         if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
             self.entry_correo.config(bg= "pale green")
             self.email_valido_label.config(text= "Formato válido", fg='green')
-            self.correovalido = True
+            #self.correovalido = True
         else:
             self.entry_correo.config( bg="orange red")
             self.email_valido_label.config(text= "Formato inválido", fg='red')
-            self.correovalido = False
+            #self.correovalido = False
 
     def validar_dni(self, dni):
         if len(dni) > 8:
@@ -186,7 +186,7 @@ class Paciente:
         
         self.edad_paciente.set(edad)
         
-    def validar_alfanum(sel, texto):
+    def validar_alfanum(self, texto):
         if texto == '':
             return False
         for char in texto:
@@ -332,16 +332,26 @@ class Paciente:
         if self.completar_campos() and self.validar_datos():
             self.calcular_edad(self.nacimiento_paciente.get())
             fecha = self.convertir_fecha(self.nacimiento_paciente.get())            
-            datos=self.dni_paciente.get(), self.nombre_paciente.get().upper(), self.apellido_paciente.get().upper(),  self.domicilio_paciente.get().upper(), self.telefono_paciente.get(),\
-                self.email_paciente.get(), self.obrasocial_paciente.get().upper(), self.nrosocio_paciente.get(), self.edad_paciente.get(), fecha
-            
+            datos = (
+                self.dni_paciente.get(), 
+                self.nombre_paciente.get().upper(), 
+                self.apellido_paciente.get().upper(),  
+                self.domicilio_paciente.get().upper(), 
+                self.telefono_paciente.get(),
+                self.email_paciente.get(), 
+                self.obrasocial_paciente.get().upper(), 
+                self.nrosocio_paciente.get(), 
+                self.edad_paciente.get(), 
+                fecha
+            )
+
             try:
-                self.miCursor.execute("INSERT INTO Pacientes VALUES(?,?,?,?,?,?,?,?,?,?)", (datos))
+                self.miCursor.execute("INSERT INTO Pacientes VALUES(?,?,?,?,?,?,?,?,?,?)", datos)
                 self.miConexion.commit()
                 messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
                 self.frame_paciente.destroy()
-            except:
-                messagebox.showinfo("GUARDAR", "No se ha podido guardar el paciente")
+            except Exception as e:
+                messagebox.showerror("GUARDAR", f"No se ha podido guardar el paciente. Error: {str(e)}")
 
     def Salir(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
