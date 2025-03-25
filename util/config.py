@@ -1,8 +1,8 @@
 #import PIL
 from PIL import ImageTk, Image
+import re
 
 path_relativo=""
-import re
 
 def obtener_path(path):
         path_relativo=path

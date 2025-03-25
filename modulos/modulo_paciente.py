@@ -170,21 +170,35 @@ class Paciente:
         return self.fecha_transformada 
 
     def calcular_edad(self, fecha_nacimiento_str):
-    # Convertir la cadena de fecha a un objeto datetime
-        edad=''
-        fecha_nacimiento = datetime.strptime(fecha_nacimiento_str, "%d-%m-%Y")
-        
-        # Obtener la fecha actual
-        fecha_actual = datetime.now()
-        
-        # Calcular la diferencia en años
-        edad = fecha_actual.year - fecha_nacimiento.year
-        
-        # Ajustar la edad si el cumpleaños aún no ha ocurrido este año
-        if (fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month, fecha_nacimiento.day):
-            edad -= 1
-        
-        self.edad_paciente.set(edad)
+        try:
+            # Validar formato de fecha primero
+            if not self.validar_fecha(fecha_nacimiento_str):
+                raise ValueError("Formato de fecha inválido")
+
+            fecha_nacimiento = datetime.strptime(fecha_nacimiento_str, "%d-%m-%Y")
+            fecha_actual = datetime.now()
+
+            # Calcular edad
+            edad = fecha_actual.year - fecha_nacimiento.year
+
+            # Ajustar si aún no ha cumplido años este año
+            if (fecha_actual.month, fecha_actual.day) < (fecha_nacimiento.month, fecha_nacimiento.day):
+                edad -= 1
+
+            # Validar rangos de edad razonables
+            if edad < 0:
+                raise ValueError("La fecha de nacimiento no puede ser futura")
+            if edad > 120:
+                raise ValueError("Edad improbable, verifique la fecha")
+                
+            self.edad_paciente.set(str(edad))
+            return edad
+
+        except ValueError as e:
+            self.edad_paciente.set("")
+            self.fecha_valida.config(text=f"* Error: {str(e)}", fg='red')
+            self.entry_fecha.config(bg="orange red")
+            return None
         
     def validar_alfanum(self, texto):
         if texto == '':
@@ -327,32 +341,53 @@ class Paciente:
                 self.frame_paciente.destroy()
             except:
                 messagebox.showinfo("GUARDAR", "No se ha podido actualizar el paciente")
-            
+
+    def dni_existe(self, dni):
+        """Verifica si un DNI ya existe en la base de datos"""
+        self.miCursor.execute("SELECT 1 FROM Pacientes WHERE ID=?", (dni,))
+        return self.miCursor.fetchone() is not None
+
     def guardar(self):
-        if self.completar_campos() and self.validar_datos():
-            self.calcular_edad(self.nacimiento_paciente.get())
-            fecha = self.convertir_fecha(self.nacimiento_paciente.get())            
-            datos = (
-                self.dni_paciente.get(), 
-                self.nombre_paciente.get().upper(), 
-                self.apellido_paciente.get().upper(),  
-                self.domicilio_paciente.get().upper(), 
-                self.telefono_paciente.get(),
-                self.email_paciente.get(), 
-                self.obrasocial_paciente.get().upper(), 
-                self.nrosocio_paciente.get(), 
-                self.edad_paciente.get(), 
-                fecha
-            )
-
-            try:
-                self.miCursor.execute("INSERT INTO Pacientes VALUES(?,?,?,?,?,?,?,?,?,?)", datos)
-                self.miConexion.commit()
-                messagebox.showinfo("GUARDAR","Paciente guardado exitosamente")
-                self.frame_paciente.destroy()
-            except Exception as e:
-                messagebox.showerror("GUARDAR", f"No se ha podido guardar el paciente. Error: {str(e)}")
-
+        # Primero validar campos y datos
+        if not (self.completar_campos() and self.validar_datos()):
+            return
+        
+        # Verificar si el DNI ya existe
+        dni = self.dni_paciente.get()
+        if self.dni_existe(dni):
+            messagebox.showwarning("DNI Existente", 
+                                f"Ya existe un paciente registrado con el DNI {dni}.\n"
+                                "Verifique los datos o utilice la opción 'Actualizar'.")
+            self.entry_dni.config(bg="orange red")
+            self.dni_valido.config(text="* DNI ya registrado", fg='red')
+            self.entry_dni.focus_set()  # Coloca el foco en el campo DNI
+            return
+        
+        # Si todo está bien, proceder con el guardado
+        self.calcular_edad(self.nacimiento_paciente.get())
+        fecha = self.convertir_fecha(self.nacimiento_paciente.get())            
+        datos = (
+            dni, 
+            self.nombre_paciente.get().upper(), 
+            self.apellido_paciente.get().upper(),  
+            self.domicilio_paciente.get().upper(), 
+            self.telefono_paciente.get(),
+            self.email_paciente.get(), 
+            self.obrasocial_paciente.get().upper(), 
+            self.nrosocio_paciente.get(), 
+            self.edad_paciente.get(), 
+            fecha
+        )
+        
+        try:
+            self.miCursor.execute("INSERT INTO Pacientes VALUES(?,?,?,?,?,?,?,?,?,?)", datos)
+            self.miConexion.commit()
+            messagebox.showinfo("Éxito", "Paciente guardado exitosamente")
+            self.frame_paciente.destroy()
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo guardar el paciente. Error: {str(e)}")
+            # Opcional: hacer rollback si es necesario
+            self.miConexion.rollback()
     def Salir(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
         if answer:

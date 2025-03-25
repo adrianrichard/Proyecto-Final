@@ -477,7 +477,7 @@ class MasterPanel:
         #TABLA USUARIO
         self.frame_tabla_usuario = Frame(self.frame_usuarios, bg= 'gray90')
         self.frame_tabla_usuario.grid(columnspan= 3, row= 3, sticky= 'nsew')
-        self.tabla_usuario = ttk.Treeview(self.frame_tabla_usuario, columns=("Usuario", "Clave", 'Tipo_usuario'), show="headings", selectmode ='browse', style="TablaUsuario.Treeview")
+        self.tabla_usuario = ttk.Treeview(self.frame_tabla_usuario, columns=("Usuario", "Clave", 'Tipo_usuario'), show="headings", selectmode ='browse', height=6, style="TablaUsuario.Treeview")
         self.tabla_usuario.grid(column= 0, row= 3, columnspan= 3, sticky='nsew')
         ladoy = ttk.Scrollbar(self.frame_tabla_usuario, orient ='vertical', command = self.tabla_usuario.yview)
         ladoy.grid(column = 4, row = 3, sticky='ns')
@@ -493,6 +493,35 @@ class MasterPanel:
         self.mostrar_usuarios()
         self.tabla_usuario.bind("<Double-1>", self.editar_usuario)
         self.tabla_usuario.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
+        
+        ######################## ODONTÓLOGOS #################
+        Label(self.frame_usuarios, text= 'ODONTÓLOGOS', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 4, columnspan= 3, padx=5, sticky="W")       
+        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 5, pady= 5)
+        Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 6)
+        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 5, pady= 5)
+        Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 6)
+        Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 5, pady= 5)
+        Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 6)
+        
+        #TABLA ODONTÓLOGOS
+        self.frame_tabla_odontologos = Frame(self.frame_usuarios, bg= 'gray90')
+        self.frame_tabla_odontologos.grid(columnspan= 3, row= 7, sticky= 'nsew')
+        self.tabla_odontologos = ttk.Treeview(self.frame_tabla_odontologos, columns=("Apellido", "Nombre", 'Matricula'), show="headings", selectmode ='browse', height=6, style="TablaUsuario.Treeview")
+        self.tabla_odontologos.grid(column= 0, row= 7, columnspan= 3, sticky='nsew')
+        ladoyy = ttk.Scrollbar(self.frame_tabla_odontologos, orient ='vertical', command = self.tabla_odontologos.yview)
+        ladoyy.grid(column = 4, row = 7, sticky='ns')
+        self.tabla_odontologos.configure(yscrollcommand = ladoyy.set)
+        # #self.tabla_usuario['columns'] = ( 'Clave', 'Tipo_usuario')
+        self.tabla_odontologos.column('Apellido', minwidth= 100, width= 120, anchor= 'w')
+        self.tabla_odontologos.column('Nombre', minwidth= 100, width= 120, anchor= 'center')
+        self.tabla_odontologos.column('Matricula', minwidth= 100, width= 120, anchor= 'e')
+
+        self.tabla_odontologos.heading('Apellido', text= 'Apellido', anchor= 'center', command=lambda: None)
+        self.tabla_odontologos.heading('Nombre', text= 'Nombre', anchor= 'center', command=lambda: None)
+        self.tabla_odontologos.heading('Matricula', text= 'Matricula', anchor= 'center', command=lambda: None)
+        # # self.mostrar_usuarios()
+        # # self.frame_tabla_odontologos.bind("<Double-1>", self.editar_usuario)
+        # # self.frame_tabla_odontologos.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
 
 		######################## PACIENTES #################
         Label(self.frame_pacientes, text= 'PACIENTES', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 4, padx=5, sticky="W")       
@@ -507,9 +536,9 @@ class MasterPanel:
         Button(self.frame_pacientes, text= 'Buscar', bg= self.color_fondo1, fg= 'white', font= self.fuenteb, command= self.buscar_paciente).grid(column= 3, row= 2, pady=(0,5))
         self.busqueda.bind('<Return>', (lambda event: self.buscar_paciente()))#es para apretar Intro y se ejecute, una opción a el botón
 
-        self.boton_previo = tk.Button(self.frame_pacientes, text= '<', fg= 'white', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_previos)
+        self.boton_previo = tk.Button(self.frame_pacientes, text= '◀', fg= 'white', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_previos)
         self.boton_previo.grid(column= 0, row= 3, padx= 10, pady=(0,5), sticky= "W")
-        self.boton_pos = tk.Button(self.frame_pacientes, text= '>', fg= 'white', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_posteriores)
+        self.boton_pos = tk.Button(self.frame_pacientes, text= '▶', fg= 'white', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, width= 5, command= self.cargar_pacientes_posteriores)
         self.boton_pos.grid(column= 3, row= 3, padx=(0,10), pady=(0,5), sticky= "E")
 
 		#TABLA PACIENTE

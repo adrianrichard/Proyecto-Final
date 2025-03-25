@@ -8,7 +8,6 @@ from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
 #from bd.conexion import Conexion
 import sqlite3
 
-
 class Usuario:
 
     def __init__(self, *args, **kwargs):
@@ -175,47 +174,29 @@ class Usuario:
         messagebox.showinfo("NOMBRE USUARIO","Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
 
     def validar_nombre(self, nombre_usuario):
-        patron = r'^[a-zA-Z][a-zA-Z_]+$'
-        if re.match(patron, nombre_usuario):
-            return True
-        else:
-            return False
+        patron = r'^[a-zA-Z][a-zA-Z0-9_]*$'  # Permite 1+ caracteres, números y _
+        return bool(re.match(patron, nombre_usuario))
 
+    # Mejor validación de nombre de usuario
+    def validar_nombre(self, nombre_usuario):
+        patron = r'^[a-zA-Z][a-zA-Z0-9_]*$'  # Permite 1+ caracteres, números y _
+        return bool(re.match(patron, nombre_usuario))
+
+    # Validación de contraseña
     def validar_contrasenia(self, password):
-        largo = re.compile(r'.{8,}')
-        digito = re.compile(r'\d+')
-        letra_may = re.compile(r'[A-Z]+')
-        letra_min = re.compile(r'[a-z]+')
-        self.longitud= False
-        self.numero= False
-        self.mayuscula= False
-        self.minuscula= False
-        self.valido= False
-        a="Debe contener al menos 8 caracteres"
-        if(largo.search(password)):
-            a= ""
-            self.longitud= True
-        b="\nAgregar un digito"
-        if(digito.search(password)):
-            b= ""
-            self.numero= True
-        c="\nAgregar una mayúscula"
-        if(letra_may.search(password)):
-            c= ""
-            self.mayuscula= True
-        d="\nAgregar una minúscula"
-        if(letra_min.search(password)):
-            d= ""
-            self.minuscula= True
-        if(self.longitud and self.numero and self.mayuscula and self.minuscula):
-            self.valido = True
+        requisitos = [
+            (len(password) >= 8, "Debe contener al menos 8 caracteres"),
+            (any(c.isdigit() for c in password), "Agregar al menos un dígito"),
+            (any(c.isupper() for c in password), "Agregar al menos una mayúscula"),
+            (any(c.islower() for c in password), "Agregar al menos una minúscula")
+        ]
 
-        cadena= a+b+c+d
-        if(cadena != ""):
-            messagebox.showwarning("CONTRASEÑA INVÁLIDA", cadena)
-            self.entry_clave.config(bg= "orange red")
-
-        return self.valido
+        errores = [msg for (cumple, msg) in requisitos if not cumple]
+        if errores:
+            messagebox.showwarning("CONTRASEÑA INVÁLIDA", "\n".join(errores))
+            self.entry_clave.config(bg="orange red")
+            return False
+        return True
 
 if __name__ == "__main__":
     Usuario()
