@@ -101,6 +101,9 @@ class MasterPanel:
         [self.frame_tabla_usuario.columnconfigure(i, weight= 1) for i in range(self.frame_usuarios.grid_size()[0])]
         [self.frame_usuarios.columnconfigure(i, weight= 1) for i in range(self.frame_usuarios.grid_size()[0])]
         [self.frame_tabla_usuario.rowconfigure(i, weight= 1) for i in range(self.frame_usuarios.grid_size()[1])]
+        [self.frame_tabla_odontologos.columnconfigure(i, weight= 1) for i in range(self.frame_usuarios.grid_size()[0])]
+        [self.frame_usuarios.columnconfigure(i, weight= 1) for i in range(self.frame_usuarios.grid_size()[0])]
+        [self.frame_tabla_odontologos.rowconfigure(i, weight= 1) for i in range(self.frame_usuarios.grid_size()[1])]
 
     def pantalla_pacientes(self):
         self.paginas.select([self.frame_pacientes])
@@ -325,16 +328,68 @@ class MasterPanel:
             #messagebox.showinfo("Continuar", "Continuar")
 
     def mostrar_usuarios(self):
-        self.miCursor = self.miConexion.cursor()
+        try:
+        # Constantes para mejor legibilidad
+            CONSULTA_USUARIOS = """
+                SELECT nombre_usuario, pass_usuario, tipo_usuario 
+                FROM usuarios
+                ORDER BY nombre_usuario
+            """
+            MASCARA_CONTRASENA = "********"
+            
+            cur = self.miConexion.cursor()
+            cur.execute(CONSULTA_USUARIOS)
+            datos = cur.fetchall()
+            
+            # Limpiar tabla existente
+            self.tabla_usuario.delete(*self.tabla_usuario.get_children())
+            
+            # Insertar nuevos datos
+            for nombre, _, tipo in datos:
+                self.tabla_usuario.insert(
+                    '', 
+                    'end', 
+                    values=(nombre, MASCARA_CONTRASENA, tipo)
+                )
+                
+        except Exception as e:
+            # Mostrar error al usuario de forma amigable
+            messagebox.showerror(
+                "Error al cargar usuarios",
+                f"No se pudieron cargar los usuarios:\n{str(e)}\n\n"
+                "Por favor verifique la conexión a la base de datos e intente nuevamente."
+            )
+    def mostrar_odontologos(self):
+        try:
+        # Constantes para mejor legibilidad
+            CONSULTA_ODONTOLOGOS = """
+                SELECT Matricula, Apellido_odontologo, Nombre_odontologo 
+                FROM odontologos
+                ORDER BY Apellido_odontologo
+            """
 
-        bd = "SELECT nombre_usuario, pass_usuario, tipo_usuario FROM usuarios"
-        self.miCursor.execute(bd)
-        datos = self.miCursor.fetchall()
-        self.tabla_usuario.delete(*self.tabla_usuario.get_children())
-        #i = 0
-        for dato in datos:
-            self.tabla_usuario.insert('', 'end', values=(dato[0],"*********", dato[2]))
-        self.miCursor.close()
+            cur = self.miConexion.cursor()
+            cur.execute(CONSULTA_ODONTOLOGOS)
+            datos = cur.fetchall()
+
+            # Limpiar tabla existente
+            self.tabla_odontologos.delete(*self.tabla_odontologos.get_children())
+            
+            # Insertar nuevos datos
+            for matricula, apellido_odontologo, nombre_odontologo in datos:
+                self.tabla_odontologos.insert(
+                    '', 
+                    'end', 
+                    values=(apellido_odontologo, nombre_odontologo, matricula)
+                )
+                
+        except Exception as e:
+            # Mostrar error al usuario de forma amigable
+            messagebox.showerror(
+                "Error al cargar usuarios",
+                f"No se pudieron cargar los usuarios:\n{str(e)}\n\n"
+                "Por favor verifique la conexión a la base de datos e intente nuevamente."
+            )
 
     def seleccionar_usuario(self, event):        
         selected_item = self.tabla_usuario.selection()
@@ -511,7 +566,6 @@ class MasterPanel:
         ladoyy = ttk.Scrollbar(self.frame_tabla_odontologos, orient ='vertical', command = self.tabla_odontologos.yview)
         ladoyy.grid(column = 4, row = 7, sticky='ns')
         self.tabla_odontologos.configure(yscrollcommand = ladoyy.set)
-        # #self.tabla_usuario['columns'] = ( 'Clave', 'Tipo_usuario')
         self.tabla_odontologos.column('Apellido', minwidth= 100, width= 120, anchor= 'w')
         self.tabla_odontologos.column('Nombre', minwidth= 100, width= 120, anchor= 'center')
         self.tabla_odontologos.column('Matricula', minwidth= 100, width= 120, anchor= 'e')
@@ -519,7 +573,7 @@ class MasterPanel:
         self.tabla_odontologos.heading('Apellido', text= 'Apellido', anchor= 'center', command=lambda: None)
         self.tabla_odontologos.heading('Nombre', text= 'Nombre', anchor= 'center', command=lambda: None)
         self.tabla_odontologos.heading('Matricula', text= 'Matricula', anchor= 'center', command=lambda: None)
-        # # self.mostrar_usuarios()
+        self.mostrar_odontologos()
         # # self.frame_tabla_odontologos.bind("<Double-1>", self.editar_usuario)
         # # self.frame_tabla_odontologos.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
 
