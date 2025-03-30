@@ -5,6 +5,7 @@ from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Frame
 from modulos.modulo_paciente import Paciente
 from modulos.modulo_usuario import Usuario
+from modulos.modulo_odontologo import Odontologo
 from paginas.tkcalendar import TKCalendar
 from paginas.odontograma import Odontograma
 from paginas.informes import Informes
@@ -45,6 +46,7 @@ class MasterPanel:
         self.dato_paciente2 = StringVar()
         #self.tipo_usuario = StringVar() #porque se declara nuevamente 2 líneas abajo
         self.nombre_usuario = StringVar()
+        self.matricula = StringVar()
         self.tipo_usuario = tipousuario
         #print(self.tipo_usuario)
 
@@ -203,6 +205,7 @@ class MasterPanel:
         except Exception as e:
             messagebox.showerror("Error", f"Error al cargar pacientes: {e}")
             return []
+
     def cargar_pacientes_paginados(self):
         """Muestra los pacientes paginados de acuerdo al índice actual y controla los botones de navegación."""
         pacientes = self.cargar_tabla_pacientes()
@@ -336,14 +339,14 @@ class MasterPanel:
                 ORDER BY nombre_usuario
             """
             MASCARA_CONTRASENA = "********"
-            
+
             cur = self.miConexion.cursor()
             cur.execute(CONSULTA_USUARIOS)
             datos = cur.fetchall()
-            
+
             # Limpiar tabla existente
             self.tabla_usuario.delete(*self.tabla_usuario.get_children())
-            
+
             # Insertar nuevos datos
             for nombre, _, tipo in datos:
                 self.tabla_usuario.insert(
@@ -351,38 +354,7 @@ class MasterPanel:
                     'end', 
                     values=(nombre, MASCARA_CONTRASENA, tipo)
                 )
-                
-        except Exception as e:
-            # Mostrar error al usuario de forma amigable
-            messagebox.showerror(
-                "Error al cargar usuarios",
-                f"No se pudieron cargar los usuarios:\n{str(e)}\n\n"
-                "Por favor verifique la conexión a la base de datos e intente nuevamente."
-            )
-    def mostrar_odontologos(self):
-        try:
-        # Constantes para mejor legibilidad
-            CONSULTA_ODONTOLOGOS = """
-                SELECT Matricula, Apellido_odontologo, Nombre_odontologo 
-                FROM odontologos
-                ORDER BY Apellido_odontologo
-            """
 
-            cur = self.miConexion.cursor()
-            cur.execute(CONSULTA_ODONTOLOGOS)
-            datos = cur.fetchall()
-
-            # Limpiar tabla existente
-            self.tabla_odontologos.delete(*self.tabla_odontologos.get_children())
-            
-            # Insertar nuevos datos
-            for matricula, apellido_odontologo, nombre_odontologo in datos:
-                self.tabla_odontologos.insert(
-                    '', 
-                    'end', 
-                    values=(apellido_odontologo, nombre_odontologo, matricula)
-                )
-                
         except Exception as e:
             # Mostrar error al usuario de forma amigable
             messagebox.showerror(
@@ -391,11 +363,11 @@ class MasterPanel:
                 "Por favor verifique la conexión a la base de datos e intente nuevamente."
             )
 
-    def seleccionar_usuario(self, event):        
+    def seleccionar_usuario(self, event):
         selected_item = self.tabla_usuario.selection()
         if selected_item:
             item = self.tabla_usuario.item(selected_item)
-            self.nombre_usuario=item['values'][0]
+            self.nombre_usuario= item['values'][0]
 
     def agregar_usuario(self):
         user = Usuario()
@@ -431,9 +403,58 @@ class MasterPanel:
             pass
         self.mostrar_usuarios()
 
-    def nada(self):
-        pass
- 
+    def mostrar_odontologos(self):
+        try:
+        # Constantes para mejor legibilidad
+            CONSULTA_ODONTOLOGOS = """
+                SELECT Matricula, Apellido_odontologo, Nombre_odontologo 
+                FROM odontologos
+                ORDER BY Apellido_odontologo
+            """
+
+            cur = self.miConexion.cursor()
+            cur.execute(CONSULTA_ODONTOLOGOS)
+            datos = cur.fetchall()
+
+            # Limpiar tabla existente
+            self.tabla_odontologos.delete(*self.tabla_odontologos.get_children())
+            
+            # Insertar nuevos datos
+            for matricula, apellido_odontologo, nombre_odontologo in datos:
+                self.tabla_odontologos.insert(
+                    '', 
+                    'end', 
+                    values=(apellido_odontologo, nombre_odontologo, matricula)
+                )
+
+        except Exception as e:
+            # Mostrar error al usuario de forma amigable
+            messagebox.showerror(
+                "Error al cargar usuarios",
+                f"No se pudieron cargar los usuarios:\n{str(e)}\n\n"
+                "Por favor verifique la conexión a la base de datos e intente nuevamente."
+            )
+
+    def seleccionar_odontologo(self, event):
+        selected_item = self.tabla_odontologos.selection()
+        if selected_item:
+            item = self.tabla_odontologos.item(selected_item)
+            self.matricula= item['values'][2]
+            print(self.matricula)
+
+    def agregar_odontologo(self):
+        profesional = Odontologo()
+        profesional.ventana()
+        #self.mostrar_usuarios()
+
+    def eliminar_odontologo(self):
+        try:
+            profesional = Odontologo()
+            profesional.eliminar_odontologo(self.matricula)
+        except:
+            pass
+        self.mostrar_odontologos()
+
     def widgets(self):
         self.imagen_usuario = utl.leer_imagen('dentist-icon2-removebg-preview.png', (38, 38))
         #tself.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
@@ -551,9 +572,9 @@ class MasterPanel:
         
         ######################## ODONTÓLOGOS #################
         Label(self.frame_usuarios, text= 'ODONTÓLOGOS', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 4, columnspan= 3, padx=5, sticky="W")       
-        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 5, pady= 5)
+        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_odontologo).grid(column= 0, row= 5, pady= 5)
         Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 6)
-        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 5, pady= 5)
+        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_odontologo).grid(column= 1, row= 5, pady= 5)
         Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 6)
         Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 5, pady= 5)
         Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 6)
@@ -575,7 +596,7 @@ class MasterPanel:
         self.tabla_odontologos.heading('Matricula', text= 'Matricula', anchor= 'center', command=lambda: None)
         self.mostrar_odontologos()
         # # self.frame_tabla_odontologos.bind("<Double-1>", self.editar_usuario)
-        # # self.frame_tabla_odontologos.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
+        self.tabla_odontologos.bind("<<TreeviewSelect>>", self.seleccionar_odontologo)
 
 		######################## PACIENTES #################
         Label(self.frame_pacientes, text= 'PACIENTES', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 4, padx=5, sticky="W")       
@@ -598,19 +619,16 @@ class MasterPanel:
 		#TABLA PACIENTE
         self.frame_tabla_paciente = Frame(self.frame_pacientes, bg= 'gray90')
         self.frame_tabla_paciente.grid(columnspan= 4, row= 4, sticky= 'nsew')
-        self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, selectmode= 'browse', style="TablaUsuario.Treeview")
+        self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, columns= ('Nombre', 'D.N.I.', 'Teléfono', 'Obra Social'), show= "headings", selectmode= 'browse', style= "TablaUsuario.Treeview")
         self.tabla_paciente.grid(column= 0, row= 4, columnspan= 4, sticky= 'nsew')
         ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient= 'vertical', command= self.tabla_paciente.yview)
         ladoy.grid(column = 5, row = 4, sticky= 'ns')
-        self.tabla_paciente.configure(yscrollcommand = ladoy.set)
-        self.tabla_paciente['columns'] = ('Nombre', 'D.N.I.', 'Teléfono', 'Obra Social')
-        self.tabla_paciente.column('#0', minwidth= 100, width= 120, anchor= 'w')
+        self.tabla_paciente.configure(yscrollcommand = ladoy.set)       
         self.tabla_paciente.column('Nombre', minwidth= 100, width= 130 , anchor= 'w')
         self.tabla_paciente.column('D.N.I.', minwidth= 100, width= 120, anchor= 'center' )
         self.tabla_paciente.column('Teléfono', minwidth= 100, width= 120 , anchor= 'center')
         self.tabla_paciente.column('Obra Social', minwidth= 100, width= 105, anchor= 'center')
 
-        self.tabla_paciente.heading('#0', text= 'Apellido', anchor= 'center', command= self.nada)
         self.tabla_paciente.heading('Nombre', text= 'Nombre', anchor= 'center')
         self.tabla_paciente.heading('D.N.I.', text= 'D.N.I.', anchor = 'center')
         self.tabla_paciente.heading('Teléfono', text= 'Teléfono', anchor= 'center')

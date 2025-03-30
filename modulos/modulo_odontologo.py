@@ -13,11 +13,13 @@ class Odontologo:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.nombre_odontologo = StringVar()
-        #self.nombre_odontologo_anterior = StringVar()
+        self.apellido_odontologo =  StringVar() 
         self.matricula = StringVar()
-        self.apellido_odontologo =  StringVar()        
+        #self.nombre_odontologo_anterior = StringVar()
         self.fuenteb= utl.definir_fuente_bold()
         self.fuenten= utl.definir_fuente()
+        self.color_fuente1, self.color_fuente2 = utl.definir_color_fuente()
+        self.color_fondo1, self.color_fondo2 = utl.definir_color_fondo()
         self.db = Conexion()
         self.miConexion=self.db.conectar()
         self.miCursor=self.miConexion.cursor()
@@ -36,50 +38,45 @@ class Odontologo:
         utl.centrar_ventana(self.frame_odontologo, 680, 400)        
         self.menu = True
         self.color = True
-        self.frame_top = Frame(self.frame_odontologo, bg= '#1F704B')
+        self.frame_top = Frame(self.frame_odontologo, bg= self.color_fondo1)
         self.frame_top.grid(column= 1, row= 0, sticky= "nsew")
         self.frame_principal = Frame(self.frame_odontologo)
-        self.frame_principal.config(bg='gray90')
+        self.frame_principal.config(bg=self.color_fondo2)
         self.frame_principal.grid(column= 1, row= 1, sticky= 'nsew')
 
-        #Entradas Y ETIQUETAS DATOS DEL USUARIO
-        Label(self.frame_principal, text= 'Nombre del usuario', anchor= "e", width= 20, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 1, pady= 5)
-        self.entry_nombre = Entry(self.frame_principal, textvariable= self.nombre_usuario, width= 25, font= self.fuenten)
-        self.entry_nombre.grid(column= 1, row= 1, pady= 5, padx= 5)
-        self.nombre_usuario_valido = Label(self.frame_principal, text= '*', anchor= 'w', width= 25, bg= 'gray90', fg= 'red', font= self.fuenten)
-        self.nombre_usuario_valido.grid(column= 2, row= 1, pady= 5, padx= 2)
+        #Entradas Y ETIQUETAS DATOS DEL ODONTOLOGO
+        Label(self.frame_principal, text= 'Apellido', anchor= "e", width= 20, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 1, pady= 5)
+        self.entry_apellido = Entry(self.frame_principal, textvariable= self.apellido_odontologo, width= 25, font= self.fuenten)
+        self.entry_apellido.grid(column= 1, row= 1, pady= 5, padx= 5)
+        #self.nombre_usuario_valido = Label(self.frame_principal, text= '*', anchor= 'w', width= 25, bg= 'gray90', fg= 'red', font= self.fuenten)
+        #self.nombre_usuario_valido.grid(column= 2, row= 1, pady= 5, padx= 2)
 
-        Label(self.frame_principal, text= 'Clave', anchor= "e", width= 20, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 2, pady= 5, padx= 2)
-        self.entry_clave = Entry(self.frame_principal, textvariable= self.clave, width= 25, font= self.fuenten)
-        self.entry_clave.grid(column= 1, row= 2, pady= 5, padx= 5)
-        Label(self.frame_principal, text= '*', anchor= "w", width= 25, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 2, pady= 5, padx= 2)
+        Label(self.frame_principal, text= 'Nombre', anchor= "e", width= 20, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 2, pady= 5, padx= 2)
+        self.entry_nombre = Entry(self.frame_principal, textvariable= self.nombre_odontologo, width= 25, font= self.fuenten)
+        self.entry_nombre.grid(column= 1, row= 2, pady= 5, padx= 5)
+        #Label(self.frame_principal, text= '*', anchor= "w", width= 25, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 2, pady= 5, padx= 2)
 
-        Label(self.frame_principal, text= 'Tipo de usuario', anchor= "e", width= 20, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 3, pady= 5, padx= 2)
-        if(self.nombre_usuario.get()==''):
+        Label(self.frame_principal, text= 'Matricula', anchor= "e", width= 20, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 3, pady= 5, padx= 2)
+        if(self.matricula.get()==''):
             self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= self.fuenteb).grid(column= 0, row= 0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Guardar', font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 10, command= self.guardar).grid(column= 0, row= 6, pady= 5, padx= 5)
-            combo=ttk.Combobox(self.frame_principal, textvariable= self.tipo_usuario, width= 23, font= self.fuenten, state= "readonly", values=["administrador", "odontologo", "secretario"])
-            combo.grid(column= 1, row= 3, pady= 5, padx= 5)
-            combo.current(2)
-            Label(self.frame_principal, text= '*', anchor= "w", width= 25, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 3, pady= 5, padx= 2)
+            Button(self.frame_principal, text= 'Guardar', font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 10, command= self.guardar).grid(column= 0, row= 6, pady= 5, padx= 5)            
+            #Label(self.frame_principal, text= '*', anchor= "w", width= 25, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 3, pady= 5, padx= 2)
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar usuario', bg= '#1F704B', fg= 'white', font= self.fuenteb).grid(column= 0, row= 0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Actualizar',  font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 10, command= self.actualizar).grid(column= 0, row= 6, pady= 5, padx= 5)
-            combo=ttk.Combobox(self.frame_principal, textvariable= self.tipo_usuario, width= 23, font= self.fuenten, state= "disabled", values=["administrador", "odontologo", "secretario"])
-            combo.grid(column= 1, row= 3, pady= 5, padx= 10)
-        Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 20, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 4, pady= 5, padx= 2)
+            Button(self.frame_principal, text= 'Actualizar',  font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 10, command= self.actualizar).grid(column= 0, row= 6, pady= 5, padx= 5)            
+        # Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 20, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 4, pady= 5, padx= 2)
 
-        Label(self.frame_principal, text= 'Contraseña: debe poseer un mínimo de 8 caracteres\n al menos una minuscula\n al menos una mayuscula\n al menos un digito', width= 50, borderwidth= 2, relief= "solid", bg= 'gray90', fg= 'black', font= self.fuenten).grid( column= 0, columnspan= 3, row= 5, pady= 5)
+        #Label(self.frame_principal, text= 'Contraseña: debe poseer un mínimo de 8 caracteres\n al menos una minuscula\n al menos una mayuscula\n al menos un digito', width= 50, borderwidth= 2, relief= "solid", bg= 'gray90', fg= 'black', font= self.fuenten).grid( column= 0, columnspan= 3, row= 5, pady= 5)
         Button(self.frame_principal, text= 'Cerrar',  font= self.fuenteb, bg= "orange", width= 10, command= self.Salir).grid(column= 2, row= 6, pady= 5, padx= 5)
         self.frame_odontologo.protocol("WM_DELETE_WINDOW", self.Salir)
 
         self.frame_odontologo.mainloop()
 
     def guardar(self):
-        if not self.validar_nombre(self.nombre_usuario.get()):
+        if not self.validar_nombre(self.nombre_odontologo.get()):
             messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")            
             self.entry_nombre.config(bg= "orange red")
-        elif self.validar_usuario(self.nombre_usuario.get()):
+        elif self.validar_usuario(self.nombre_odontologo.get()):
             self.nombre_usuario_valido.config(text= "* Ya existe este usuario", fg= 'red')
             self.entry_nombre.config(bg= "orange red")
         else:
@@ -105,14 +102,13 @@ class Odontologo:
         except:
             messagebox.showinfo("Buscar usuario", "No se ha podido cargar el usuario")
 
-    def validar_usuario(self, nombre_usuario):
+    def obtener_datos_odontologo(self, matricula):
         try:
-            self.miCursor.execute('SELECT COUNT(nombre_usuario) FROM usuarios WHERE nombre_usuario=?', (nombre_usuario,))
-            existe = self.miCursor.fetchone()[0]
-            self.usuario_existente = bool(existe)
+            self.miCursor.execute('SELECT Apellido_odontologo, Nombre_odontologo FROM Odontologos WHERE Matricula=?', (matricula,))
+            datos_odontologo = self.miCursor.fetchone()            
         except:
-            messagebox.showinfo("Usuario existente", "USUARIO EXISTENTE")
-        return self.usuario_existente
+            messagebox.showinfo("Aviso", "No se encontró el odontólogo")
+        return datos_odontologo
 
     def actualizar(self):
         datos= self.clave.get(), self.nombre_usuario_anterior
@@ -152,15 +148,20 @@ class Odontologo:
         else:
             pass
 
-    def eliminar_usuario(self, nombre):
-        msg_box = messagebox.askquestion('Eliminar usuario', '¿Desea elminar al usuario?', icon='warning')
-        if msg_box == 'yes'and nombre != 'admin':
+    def eliminar_odontologo(self, matricula):
+        try:
+            datos= self.obtener_datos_odontologo(matricula)
+        except:
+            messagebox.showinfo("AVISO", "No se ha podido encontrar el odontólogo")
+
+        msg_box = messagebox.askquestion('Eliminar odontólogo', f'¿Desea eliminar a {datos[0]}, {datos[1]}?', icon='warning')
+        if msg_box == 'yes'and matricula != 'admin':
             try:
-                self.miCursor.execute("DELETE FROM usuarios WHERE nombre_usuario = ?", (nombre,))
+                self.miCursor.execute("DELETE FROM odontologos WHERE matricula = ?", (matricula,))
                 self.miConexion.commit()
-                messagebox.showinfo("ELIMINAR","Usuario eliminado exitosamente")
+                messagebox.showinfo("ELIMINAR","Odontólogo eliminado exitosamente")
             except:
-                messagebox.showinfo("ELIMINAR", "No se ha podido eliminar el usuario")
+                messagebox.showinfo("ELIMINAR", "No se ha podido eliminar el odontólogo")
 
     def Salir(self):
         answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
