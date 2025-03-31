@@ -1,12 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter.font import BOLD
 import util.config as utl
 from bd.conexion import Conexion
 import re
 from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
-#from bd.conexion import Conexion
-import sqlite3
+#import sqlite3
 
 class Usuario:
 
@@ -101,9 +99,9 @@ class Usuario:
         self.nombre_usuario_anterior=usuario
         try:
             self.miCursor.execute("SELECT * FROM usuarios WHERE nombre_usuario=?", (usuario,))
-            campos=self.miCursor.fetchall()        
-            self.clave.set(campos[0][2])
-            self.tipo_usuario.set(campos[0][3])
+            campos=self.miCursor.fetchone()        
+            self.clave.set(campos[2])
+            self.tipo_usuario.set(campos[3])
         except:
             messagebox.showinfo("Buscar usuario", "No se ha podido cargar el usuario")
 
@@ -170,12 +168,8 @@ class Usuario:
             self.miConexion.close()
             self.frame_usuario.destroy()
 
-    def on_invalid(self):
-        messagebox.showinfo("NOMBRE USUARIO","Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
-
-    def validar_nombre(self, nombre_usuario):
-        patron = r'^[a-zA-Z][a-zA-Z0-9_]*$'  # Permite 1+ caracteres, números y _
-        return bool(re.match(patron, nombre_usuario))
+    # def on_invalid(self):
+    #     messagebox.showinfo("NOMBRE USUARIO","Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
 
     # Mejor validación de nombre de usuario
     def validar_nombre(self, nombre_usuario):

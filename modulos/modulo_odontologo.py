@@ -1,12 +1,9 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter.font import BOLD
 import util.config as utl
 from bd.conexion import Conexion
 import re
 from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
-#from bd.conexion import Conexion
-import sqlite3
+#import sqlite3
 
 class Odontologo:
 
@@ -31,43 +28,48 @@ class Odontologo:
         self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
         self.frame_odontologo.iconphoto(False, self.imagen_ventana)        
         self.frame_odontologo.title('DentalMatic')
-        self.frame_odontologo.geometry('800x500')
-        self.frame_odontologo.config(bg='gray90')
+        self.frame_odontologo.geometry('700x500')
+        self.frame_odontologo.config(bg= self.color_fondo2)
         self.frame_odontologo.resizable(width= 0, height= 0)
         self.frame_odontologo.columnconfigure(0, weight= 1)
-        utl.centrar_ventana(self.frame_odontologo, 680, 400)        
+        utl.centrar_ventana(self.frame_odontologo, 510, 400)
         self.menu = True
         self.color = True
         self.frame_top = Frame(self.frame_odontologo, bg= self.color_fondo1)
         self.frame_top.grid(column= 1, row= 0, sticky= "nsew")
         self.frame_principal = Frame(self.frame_odontologo)
-        self.frame_principal.config(bg=self.color_fondo2)
+        self.frame_principal.config(bg= self.color_fondo2)
         self.frame_principal.grid(column= 1, row= 1, sticky= 'nsew')
 
         #Entradas Y ETIQUETAS DATOS DEL ODONTOLOGO
-        Label(self.frame_principal, text= 'Apellido', anchor= "e", width= 20, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 1, pady= 5)
+        Label(self.frame_principal, text= 'Apellido', anchor= "e", width= 15, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 1, pady= 5)
         self.entry_apellido = Entry(self.frame_principal, textvariable= self.apellido_odontologo, width= 25, font= self.fuenten)
         self.entry_apellido.grid(column= 1, row= 1, pady= 5, padx= 5)
         #self.nombre_usuario_valido = Label(self.frame_principal, text= '*', anchor= 'w', width= 25, bg= 'gray90', fg= 'red', font= self.fuenten)
         #self.nombre_usuario_valido.grid(column= 2, row= 1, pady= 5, padx= 2)
 
-        Label(self.frame_principal, text= 'Nombre', anchor= "e", width= 20, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 2, pady= 5, padx= 2)
+        Label(self.frame_principal, text= 'Nombre', anchor= "e", width= 15, bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 2, pady= 5)
         self.entry_nombre = Entry(self.frame_principal, textvariable= self.nombre_odontologo, width= 25, font= self.fuenten)
         self.entry_nombre.grid(column= 1, row= 2, pady= 5, padx= 5)
         #Label(self.frame_principal, text= '*', anchor= "w", width= 25, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 2, pady= 5, padx= 2)
 
-        Label(self.frame_principal, text= 'Matricula', anchor= "e", width= 20, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 3, pady= 5, padx= 2)
+        Label(self.frame_principal, text= 'Matricula', anchor= "e", width= 15, bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 3, pady= 5)
+        self.entry_matricula = Entry(self.frame_principal, textvariable= self.nombre_odontologo, width= 25, font= self.fuenten)
+        self.entry_matricula.grid(column= 1, row= 3, pady= 5, padx= 5)
         if(self.matricula.get()==''):
-            self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= self.fuenteb).grid(column= 0, row= 0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Guardar', font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 10, command= self.guardar).grid(column= 0, row= 6, pady= 5, padx= 5)            
+            self.titulo = Label(self.frame_top, text= 'Crear odontólogo', bg= self.color_fondo1, fg= 'white', font= self.fuenteb)
+            self.titulo.grid(column= 0, row= 0, pady= 20, padx= 10)
+            Button(self.frame_principal, text= 'Guardar', font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 10, command= self.guardar).grid(column= 0, row= 5, pady= 5)
             #Label(self.frame_principal, text= '*', anchor= "w", width= 25, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 3, pady= 5, padx= 2)
         else:
-            self.titulo = Label(self.frame_top, text= 'Actualizar usuario', bg= '#1F704B', fg= 'white', font= self.fuenteb).grid(column= 0, row= 0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Actualizar',  font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 10, command= self.actualizar).grid(column= 0, row= 6, pady= 5, padx= 5)            
-        # Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 20, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 4, pady= 5, padx= 2)
+            self.titulo = Label(self.frame_top, text= 'Actualizar odontólogo', bg= self.color_fondo1, fg= 'white', font= self.fuenteb)
+            self.titulo.grid(column= 0, row= 0, pady= 20, padx= 10)
+            Button(self.frame_principal, text= 'Actualizar',  font= self.fuenteb, fg= 'white', bg= self.color_fondo1, activebackground= 'gray', bd= 2, width= 10, command= self.actualizar).grid(column= 0, row= 5, pady= 5)
+            
+        #Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 20, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 1, row= 4, pady= 5, padx= 2)
 
         #Label(self.frame_principal, text= 'Contraseña: debe poseer un mínimo de 8 caracteres\n al menos una minuscula\n al menos una mayuscula\n al menos un digito', width= 50, borderwidth= 2, relief= "solid", bg= 'gray90', fg= 'black', font= self.fuenten).grid( column= 0, columnspan= 3, row= 5, pady= 5)
-        Button(self.frame_principal, text= 'Cerrar',  font= self.fuenteb, bg= "orange", width= 10, command= self.Salir).grid(column= 2, row= 6, pady= 5, padx= 5)
+        Button(self.frame_principal, text= 'Cerrar',  font= self.fuenteb, bg= "orange", width= 10, command= self.Salir).grid(column= 2, row= 5, pady= 5, padx= (0, 10))
         self.frame_odontologo.protocol("WM_DELETE_WINDOW", self.Salir)
 
         self.frame_odontologo.mainloop()
@@ -172,30 +174,21 @@ class Odontologo:
     def on_invalid(self):
         messagebox.showinfo("NOMBRE USUARIO","Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
 
-    def validar_nombre(self, nombre_usuario):
-        patron = r'^[a-zA-Z][a-zA-Z0-9_]*$'  # Permite 1+ caracteres, números y _
-        return bool(re.match(patron, nombre_usuario))
+    def validar_nombre(self, cadena):
+        patron = r'^[a-zA-Z]*$'  # Permite 1+ caracteres, números y _
+        return bool(re.match(patron, cadena))
 
-    # Mejor validación de nombre de usuario
-    def validar_nombre(self, nombre_usuario):
-        patron = r'^[a-zA-Z][a-zA-Z0-9_]*$'  # Permite 1+ caracteres, números y _
-        return bool(re.match(patron, nombre_usuario))
+        """
+        def validar_con_feedback():
+            if not entry.get().isdigit():
+                tk.messagebox.showerror("Error", "Solo se permiten números")
+                entry.delete(0, tk.END)
 
-    # Validación de contraseña
-    def validar_contrasenia(self, password):
-        requisitos = [
-            (len(password) >= 8, "Debe contener al menos 8 caracteres"),
-            (any(c.isdigit() for c in password), "Agregar al menos un dígito"),
-            (any(c.isupper() for c in password), "Agregar al menos una mayúscula"),
-            (any(c.islower() for c in password), "Agregar al menos una minúscula")
-        ]
+        entry = ttk.Entry(root)
+        entry.bind('<FocusOut>', lambda e: validar_con_feedback())
+        """
 
-        errores = [msg for (cumple, msg) in requisitos if not cumple]
-        if errores:
-            messagebox.showwarning("CONTRASEÑA INVÁLIDA", "\n".join(errores))
-            self.entry_clave.config(bg="orange red")
-            return False
-        return True
+
 
 if __name__ == "__main__":
     Odontologo()

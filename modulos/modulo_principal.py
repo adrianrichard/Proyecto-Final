@@ -440,7 +440,7 @@ class MasterPanel:
         if selected_item:
             item = self.tabla_odontologos.item(selected_item)
             self.matricula= item['values'][2]
-            print(self.matricula)
+            #print(self.matricula)
 
     def agregar_odontologo(self):
         profesional = Odontologo()
