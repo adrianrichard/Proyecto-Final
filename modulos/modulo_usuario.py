@@ -168,9 +168,6 @@ class Usuario:
             self.miConexion.close()
             self.frame_usuario.destroy()
 
-    # def on_invalid(self):
-    #     messagebox.showinfo("NOMBRE USUARIO","Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
-
     # Mejor validación de nombre de usuario
     def validar_nombre(self, nombre_usuario):
         patron = r'^[a-zA-Z][a-zA-Z0-9_]*$'  # Permite 1+ caracteres, números y _

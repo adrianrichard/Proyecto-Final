@@ -32,7 +32,7 @@ class Odontologo:
         self.frame_odontologo.config(bg= self.color_fondo2)
         self.frame_odontologo.resizable(width= 0, height= 0)
         self.frame_odontologo.columnconfigure(0, weight= 1)
-        utl.centrar_ventana(self.frame_odontologo, 510, 400)
+        utl.centrar_ventana(self.frame_odontologo, 510, 300)
         self.menu = True
         self.color = True
         self.frame_top = Frame(self.frame_odontologo, bg= self.color_fondo1)
@@ -54,7 +54,7 @@ class Odontologo:
         #Label(self.frame_principal, text= '*', anchor= "w", width= 25, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 2, pady= 5, padx= 2)
 
         Label(self.frame_principal, text= 'Matricula', anchor= "e", width= 15, bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 3, pady= 5)
-        self.entry_matricula = Entry(self.frame_principal, textvariable= self.nombre_odontologo, width= 25, font= self.fuenten)
+        self.entry_matricula = Entry(self.frame_principal, textvariable= self.matricula, width= 25, font= self.fuenten)
         self.entry_matricula.grid(column= 1, row= 3, pady= 5, padx= 5)
         if(self.matricula.get()==''):
             self.titulo = Label(self.frame_top, text= 'Crear odontólogo', bg= self.color_fondo1, fg= 'white', font= self.fuenteb)
@@ -65,7 +65,7 @@ class Odontologo:
             self.titulo = Label(self.frame_top, text= 'Actualizar odontólogo', bg= self.color_fondo1, fg= 'white', font= self.fuenteb)
             self.titulo.grid(column= 0, row= 0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Actualizar',  font= self.fuenteb, fg= 'white', bg= self.color_fondo1, activebackground= 'gray', bd= 2, width= 10, command= self.actualizar).grid(column= 0, row= 5, pady= 5)
-            
+
         #Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 20, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 1, row= 4, pady= 5, padx= 2)
 
         #Label(self.frame_principal, text= 'Contraseña: debe poseer un mínimo de 8 caracteres\n al menos una minuscula\n al menos una mayuscula\n al menos un digito', width= 50, borderwidth= 2, relief= "solid", bg= 'gray90', fg= 'black', font= self.fuenten).grid( column= 0, columnspan= 3, row= 5, pady= 5)
@@ -75,34 +75,36 @@ class Odontologo:
         self.frame_odontologo.mainloop()
 
     def guardar(self):
-        if not self.validar_nombre(self.nombre_odontologo.get()):
-            messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")            
+        if not self.validar_apellido(self.apellido_odontologo.get()):
+            messagebox.showinfo("Apellido inválido", "Sólo se permiten letras")
+            self.entry_apellido.config(bg= "orange red")
+        elif not self.validar_nombre(self.nombre_odontologo.get()):
+            messagebox.showinfo("Nombre inválido", "Sólo se permiten letras")
             self.entry_nombre.config(bg= "orange red")
-        elif self.validar_usuario(self.nombre_odontologo.get()):
-            self.nombre_usuario_valido.config(text= "* Ya existe este usuario", fg= 'red')
-            self.entry_nombre.config(bg= "orange red")
+        elif not self.validar_matricula(self.matricula.get()):
+            messagebox.showinfo("Matricula inválida", "Sólo números")
+            self.entry_matricula.config(bg= "orange red")
         else:
-            if(self.validar_contrasenia(self.clave.get()) and self.nombre_usuario.get()!=''):
-                datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
-                try:
-                    self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
-                    self.miConexion.commit()
-                    self.frame_odontologo.destroy()
-                except:
-                    messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
-            else:
-                messagebox.showwarning("Nombre usuario", "Completar campos")
+            datos=self.apellido_odontologo.get(), self.nombre_odontologo.get(), self.matricula.get()
+            # try:
+            #     self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
+            #     self.miConexion.commit()
+            #     self.frame_odontologo.destroy()
+            # except:
+            #         messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")        
 
-    def cargar_datos(self, usuario):
-        self.nombre_usuario.set(usuario)
-        self.nombre_usuario_anterior=usuario
+    def cargar_datos(self, matricula):
         try:
-            self.miCursor.execute("SELECT * FROM usuarios WHERE nombre_usuario=?", (usuario,))
-            campos=self.miCursor.fetchall()        
-            self.clave.set(campos[0][2])
-            self.tipo_usuario.set(campos[0][3])
+            datos= self.obtener_datos_odontologo(matricula)
         except:
-            messagebox.showinfo("Buscar usuario", "No se ha podido cargar el usuario")
+            messagebox.showinfo("AVISO", "No se ha podido encontrar el odontólogo")
+        try:
+            self.miCursor.execute("SELECT * FROM Odontologos WHERE matricula=?", (matricula,))
+            campos=self.miCursor.fetchone()        
+            self.apellido_odontologo.set(campos[1])
+            self.nombre_odontologo.set(campos[2])
+        except:
+            messagebox.showinfo("Odontólogo", "No se ha podido cargar el odontólogo")
 
     def obtener_datos_odontologo(self, matricula):
         try:
@@ -171,24 +173,16 @@ class Odontologo:
             self.miConexion.close()
             self.frame_odontologo.destroy()
 
-    def on_invalid(self):
-        messagebox.showinfo("NOMBRE USUARIO","Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
-
     def validar_nombre(self, cadena):
-        patron = r'^[a-zA-Z]*$'  # Permite 1+ caracteres, números y _
+        patron = r'^[a-zA-Z]*$'  # Permite caracteres
         return bool(re.match(patron, cadena))
 
-        """
-        def validar_con_feedback():
-            if not entry.get().isdigit():
-                tk.messagebox.showerror("Error", "Solo se permiten números")
-                entry.delete(0, tk.END)
+    def validar_apellido(self, cadena):
+        patron = r'^[a-zA-Z]*$'  # Permite caracteres
+        return bool(re.match(patron, cadena))
 
-        entry = ttk.Entry(root)
-        entry.bind('<FocusOut>', lambda e: validar_con_feedback())
-        """
-
-
+    def validar_matricula(self, cadena):
+        return bool(re.fullmatch(r'\d+', cadena))
 
 if __name__ == "__main__":
     Odontologo()
