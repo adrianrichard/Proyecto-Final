@@ -152,6 +152,8 @@ class MasterPanel:
         if answer:
             self.db.cerrar_bd()
             self.ventana.destroy()
+            from modulos.modulo_login import Login
+            Login()
 
     def agregar_paciente(self):
         paciente= Paciente()
@@ -445,7 +447,7 @@ class MasterPanel:
     def agregar_odontologo(self):
         profesional = Odontologo()
         profesional.ventana()
-        #self.mostrar_usuarios()
+        #self.mostrar_odontologos()
 
     def eliminar_odontologo(self):
         try:
