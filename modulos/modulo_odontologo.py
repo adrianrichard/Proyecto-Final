@@ -9,6 +9,7 @@ class Odontologo:
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.master_panel_ref = kwargs.get('master_panel_ref', None)
         self.nombre_odontologo = StringVar()
         self.apellido_odontologo =  StringVar() 
         self.matricula = StringVar()
@@ -21,7 +22,9 @@ class Odontologo:
         self.miConexion=self.db.conectar()
         self.miCursor=self.miConexion.cursor()
 
-    def ventana(self):
+    def ventana(self, master_panel_ref=None):
+        if master_panel_ref:
+            self.master_panel_ref = master_panel_ref
         self.frame_odontologo= tk.Toplevel()
         self.frame_odontologo.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.frame_odontologo.focus_set() # Mantiene el foco cuando se abre la ventana.
@@ -114,6 +117,8 @@ class Odontologo:
             try:
                 self.miCursor.execute("INSERT INTO Odontologos VALUES(?,?,?)", (datos))
                 self.miConexion.commit()
+                if self.master_panel_ref:  # Si tenemos referencia al panel principal
+                    self.master_panel_ref.mostrar_odontologos()
                 self.frame_odontologo.destroy()                
                 messagebox.showinfo("GUARDAR", "Guardado exitosamente")
             except:

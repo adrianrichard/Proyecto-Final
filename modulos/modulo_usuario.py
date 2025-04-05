@@ -10,6 +10,7 @@ class Usuario:
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.master_panel_ref = kwargs.get('master_panel_ref', None)
         self.nombre_usuario = StringVar()
         self.nombre_usuario_anterior = StringVar()
         self.clave = StringVar()
@@ -22,7 +23,9 @@ class Usuario:
         self.miConexion=self.db.conectar()
         self.miCursor=self.miConexion.cursor()
 
-    def ventana(self):
+    def ventana(self, master_panel_ref=None):
+        if master_panel_ref:
+            self.master_panel_ref = master_panel_ref
         self.frame_usuario= tk.Toplevel()
         self.frame_usuario.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.frame_usuario.focus_set() # Mantiene el foco cuando se abre la ventana.
@@ -131,6 +134,8 @@ class Usuario:
                     sql="UPDATE usuarios SET pass_usuario=? where nombre_usuario=?"
                     self.miCursor.execute(sql, datos)
                     self.miConexion.commit()
+                    if self.master_panel_ref:  # Si tenemos referencia al panel principal
+                        self.master_panel_ref.mostrar_usuarios()
                     messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente")
                     self.frame_usuario.destroy()
                 except:
