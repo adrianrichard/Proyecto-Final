@@ -19,9 +19,9 @@ class Usuario:
         self.usuario_existente = False
         self.fuenteb= utl.definir_fuente_bold()
         self.fuenten= utl.definir_fuente()
-        self.db = Conexion()
-        self.miConexion=self.db.conectar()
-        self.miCursor=self.miConexion.cursor()
+        self.db= Conexion()
+        self.miConexion= self.db.conectar()
+        self.miCursor= self.miConexion.cursor()
 
     def ventana(self, master_panel_ref=None):
         if master_panel_ref:
@@ -137,6 +137,7 @@ class Usuario:
                     if self.master_panel_ref:  # Si tenemos referencia al panel principal
                         self.master_panel_ref.mostrar_usuarios()
                     messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente")
+                    self.db.cerrar_bd()
                     self.frame_usuario.destroy()
                 except:
                     messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")

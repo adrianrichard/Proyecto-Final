@@ -7,7 +7,7 @@ from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
 
 class Odontologo:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwarg):
         super().__init__(*args, **kwargs)
         self.master_panel_ref = kwargs.get('master_panel_ref', None)
         self.nombre_odontologo = StringVar()
@@ -146,42 +146,39 @@ class Odontologo:
         return datos_odontologo
 
     def actualizar(self):
-        datos= self.clave.get(), self.nombre_usuario_anterior
-        usuario_valido=False
+        apellido_valido = False
+        nombre_valido = False
 
-        if not self.validar_nombre(self.nombre_usuario.get()):
-            messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
-            self.entry_nombre.config(bg= "orange red")
-        elif self.validar_nombre(self.nombre_usuario.get()):
-            self.entry_nombre.config(bg= "pale green")
-            usuario_valido = True
-        if self.validar_contrasenia(self.clave.get()) and usuario_valido:
-
-            if self.nombre_usuario.get() == self.nombre_usuario_anterior:
-                try:
-                    sql="UPDATE usuarios SET pass_usuario=? where nombre_usuario=?"
-                    self.miCursor.execute(sql, datos)
-                    self.miConexion.commit()
-                    messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente")
-                    self.frame_odontologo.destroy()
-                except:
-                    messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
-            elif self.validar_usuario(self.nombre_usuario.get()):
-                self.nombre_usuario_valido.config(text= "* Ya existe este usuario", fg= 'red')
-                self.entry_nombre.config(bg= "orange red")
-                pass
-            else:
-                datos=self.nombre_usuario.get(), self.clave.get(), self.nombre_usuario_anterior
-                try:
-                    sql="UPDATE usuarios SET nombre_usuario =?, pass_usuario=? where nombre_usuario=?"
-                    self.miCursor.execute(sql, datos)
-                    self.miConexion.commit()
-                    messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente")
-                    self.frame_odontologo.destroy()
-                except:
-                    messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
+        if not self.validar_alfa(self.apellido_odontologo.get()):
+            self.apellido_odontologo_valido.config(fg="red", text="Sólo letras")
+            self.entry_apellido.config(bg="red")
+            apellido_valido = False
         else:
-            pass
+            self.apellido_odontologo_valido.config(fg="green", text="Válido")
+            self.entry_apellido.config(bg="green")
+            apellido_valido = True
+
+        if not self.validar_alfa(self.nombre_odontologo.get()):
+            self.nombre_odontologo_valido.config(fg="red", text="Sólo letras")
+            self.entry_nombre.config(bg="red")
+            nombre_valido = False
+        else:
+            self.nombre_odontologo_valido.config(fg="green", text="Válido")
+            self.entry_nombre.config(bg="green")
+            nombre_valido = True
+
+        if apellido_valido and nombre_valido:
+            try:
+                sql = "UPDATE Odontologos SET Apellido_odontologo = ?, Nombre_odontologo = ? WHERE Matricula = ?"
+                datos = (self.apellido_odontologo.get(), self.nombre_odontologo.get(), self.matricula.get())
+                self.miCursor.execute(sql, datos)
+                self.miConexion.commit()
+                if self.master_panel_ref:
+                    self.master_panel_ref.mostrar_odontologos()
+                messagebox.showinfo("ACTUALIZAR", "Odontólogo actualizado exitosamente")
+                self.frame_odontologo.destroy()
+            except:
+                messagebox.showinfo("ERROR", "No se pudo actualizar el odontólogo")
 
     def eliminar_odontologo(self, matricula):
         try:

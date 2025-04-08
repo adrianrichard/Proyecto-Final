@@ -334,6 +334,7 @@ class MasterPanel:
 
     def mostrar_usuarios(self):
         try:
+            
         # Constantes para mejor legibilidad
             CONSULTA_USUARIOS = """
                 SELECT nombre_usuario, pass_usuario, tipo_usuario 
@@ -389,7 +390,7 @@ class MasterPanel:
                 if self.usuario != 'Usuario':
                     user = Usuario()
                     user.cargar_datos(self.usuario)
-                    user.ventana()
+                    user.ventana(master_panel_ref=self)
                     self.mostrar_usuarios()
                 else:
                     messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
@@ -446,9 +447,29 @@ class MasterPanel:
             #print(self.matricula)
 
     def agregar_odontologo(self):
-        profesional = Odontologo()
-        profesional.ventana(master_panel_ref=self)
-        #self.mostrar_odontologos()
+        profesional = Odontologo(master_panel_ref=self)
+        profesional.ventana()
+        self.mostrar_odontologos()
+
+    def editar_odontologo(self, event):
+        region = self.tabla_odontologo.identify("region", event.x, event.y)
+        if region == "heading":  # Si el doble clic es en el encabezado
+            return
+        else:
+            try:
+                selected_item = self.tabla_odontologo.selection()
+                item = self.tabla_odontologo.item(selected_item)
+                self.odontologo=item['values'][0]
+                #self.usuario = self.tabla_usuario.item(sel, "text")
+                if self.odontologo != 'Usuario':
+                    profesional = Odontologo()
+                    profesional.cargar_datos(self.odontologo)
+                    profesional.ventana()
+                    self.mostrar_odontologos()
+                else:
+                    messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
+            except:
+                messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
 
     def eliminar_odontologo(self):
         try:
@@ -598,7 +619,7 @@ class MasterPanel:
         self.tabla_odontologos.heading('Nombre', text= 'Nombre', anchor= 'center', command=lambda: None)
         self.tabla_odontologos.heading('Matricula', text= 'Matricula', anchor= 'center', command=lambda: None)
         self.mostrar_odontologos()
-        # # self.frame_tabla_odontologos.bind("<Double-1>", self.editar_usuario)
+        self.frame_tabla_odontologos.bind("<Double-1>", self.editar_usuario)
         self.tabla_odontologos.bind("<<TreeviewSelect>>", self.seleccionar_odontologo)
 
 		######################## PACIENTES #################
