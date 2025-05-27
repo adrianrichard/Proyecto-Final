@@ -61,15 +61,16 @@ class Usuario:
         if(self.nombre_usuario.get()==''):
             self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= '#1F704B', fg= 'white', font= self.fuenteb).grid(column= 0, row= 0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Guardar', font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 10, command= self.guardar).grid(column= 0, row= 6, pady= 5, padx= 5)
-            combo=ttk.Combobox(self.frame_principal, textvariable= self.tipo_usuario, width= 23, font= self.fuenten, state= "readonly", values=["administrador", "odontologo", "secretario"])
-            combo.grid(column= 1, row= 3, pady= 5, padx= 5)
-            combo.current(2)
+            self.combo=ttk.Combobox(self.frame_principal, textvariable= self.tipo_usuario, width= 23, font= self.fuenten, state= "readonly", values=["administrador", "odontologo", "secretario"])
+            self.combo.grid(column= 1, row= 3, pady= 5, padx= 5)
+            self.combo.current(2)
+            self.combo.set("Elegir tipo usuario")
             Label(self.frame_principal, text= '*', anchor= "w", width= 25, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 3, pady= 5, padx= 2)
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar usuario', bg= '#1F704B', fg= 'white', font= self.fuenteb).grid(column= 0, row= 0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Actualizar',  font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 10, command= self.actualizar).grid(column= 0, row= 6, pady= 5, padx= 5)
-            combo=ttk.Combobox(self.frame_principal, textvariable= self.tipo_usuario, width= 23, font= self.fuenten, state= "disabled", values=["administrador", "odontologo", "secretario"])
-            combo.grid(column= 1, row= 3, pady= 5, padx= 10)
+            self.combo=ttk.Combobox(self.frame_principal, textvariable= self.tipo_usuario, width= 23, font= self.fuenten, state= "disabled", values=["administrador", "odontologo", "secretario"])
+            self.combo.grid(column= 1, row= 3, pady= 5, padx= 10)
         Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 20, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 2, row= 4, pady= 5, padx= 2)
 
         Label(self.frame_principal, text= 'Contraseña: debe poseer un mínimo de 8 caracteres\n al menos una minuscula\n al menos una mayuscula\n al menos un digito', width= 50, borderwidth= 2, relief= "solid", bg= 'gray90', fg= 'black', font= self.fuenten).grid( column= 0, columnspan= 3, row= 5, pady= 5)
@@ -79,23 +80,39 @@ class Usuario:
         self.frame_usuario.mainloop()
 
     def guardar(self):
+        # 1° Validación: Formato del nombre de usuario
         if not self.validar_nombre(self.nombre_usuario.get()):
-            messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")            
-            self.entry_nombre.config(bg= "orange red")
-        elif self.validar_usuario(self.nombre_usuario.get()):
-            self.nombre_usuario_valido.config(text= "* Ya existe este usuario", fg= 'red')
-            self.entry_nombre.config(bg= "orange red")
-        else:
-            if(self.validar_contrasenia(self.clave.get()) and self.nombre_usuario.get()!=''):
-                datos=self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get()
-                try:
-                    self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", (datos))
-                    self.miConexion.commit()
-                    self.frame_usuario.destroy()
-                except:
-                    messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
-            else:
-                messagebox.showwarning("Nombre usuario", "Completar campos")
+            messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
+            self.entry_nombre.config(bg="orange red")
+            return  # Sale si el formato no es válido
+
+        # 2° Validación: Usuario único (que no exista previamente)
+        if self.validar_usuario(self.nombre_usuario.get()):  # Si devuelve True, ya existe
+            self.nombre_usuario_valido.config(text="* Ya existe este usuario", fg='red')
+            self.entry_nombre.config(bg="orange red")
+            return  # Sale si el usuario ya está registrado
+
+        # 3° Validación: Contraseña (solo se verifica si las anteriores pasaron)
+        if not self.validar_contrasenia(self.clave.get()):
+            #messagebox.showinfo("Contraseña inválida", "La contraseña no cumple los requisitos")
+            return  # Sale si la contraseña no es válida
+
+        # 4° Validación: Tipo de usuario seleccionado
+        if self.tipo_usuario.get() == "Elegir tipo usuario":
+            messagebox.showinfo("Tipo de usuario inválido", "Elija un tipo de usuario")
+            return  # Sale si no se seleccionó tipo
+
+        # Si todo es correcto, guarda en la base de datos
+        datos = (self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get())
+        try:
+            self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", datos)
+            self.miConexion.commit()
+            if self.master_panel_ref:  # Si tenemos referencia al panel principal
+                    self.master_panel_ref.mostrar_usuarios()
+            self.frame_usuario.destroy()
+            messagebox.showinfo("Éxito", "Usuario guardado correctamente")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo guardar. Error: {str(e)}")
 
     def cargar_datos(self, usuario):
         self.nombre_usuario.set(usuario)
@@ -176,7 +193,7 @@ class Usuario:
 
     # Mejor validación de nombre de usuario
     def validar_nombre(self, nombre_usuario):
-        patron = r'^[a-zA-Z][a-zA-Z0-9_]*$'  # Permite 1+ caracteres, números y _
+        patron = r'^[a-zA-Z][a-zA-Z_]*$'  # Permite 1+ caracteres y _
         return bool(re.match(patron, nombre_usuario))
 
     # Validación de contraseña
