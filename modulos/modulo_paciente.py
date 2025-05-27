@@ -190,7 +190,7 @@ class Paciente:
                 raise ValueError("La fecha de nacimiento no puede ser futura")
             if edad > 120:
                 raise ValueError("Edad improbable, verifique la fecha")
-                
+
             self.edad_paciente.set(str(edad))
             return edad
 
@@ -199,7 +199,7 @@ class Paciente:
             self.fecha_valida.config(text=f"* Error: {str(e)}", fg='red')
             self.entry_fecha.config(bg="orange red")
             return None
-        
+
     def validar_alfanum(self, texto):
         if texto == '':
             return False
@@ -238,7 +238,7 @@ class Paciente:
             fecha_obj = datetime.strptime(campos[0][9], "%Y-%m-%d")
             fecha_date = fecha_obj.date()            
             self.nacimiento_paciente.set(fecha_date.strftime("%d-%m-%Y"))
-            
+
         except:
             messagebox.showinfo("Buscar paciente", "No se ha podido encontrar el paciente")
 
@@ -273,7 +273,7 @@ class Paciente:
             self.entry_correo.config(bg="orange red")
             campos_vacios= False
         return campos_vacios    
-    
+
     def validar_datos(self):
         campos_validos = True
         if not self.validar_alfa(self.nombre_paciente.get()):
@@ -315,7 +315,7 @@ class Paciente:
         else:
             self.entry_domicilio.config(bg= "pale green")
             self.domicilio_valido.config(text= "*", fg='red')
-        
+
         if not self.validar_telefono(self.telefono_paciente.get()):
             self.telefono_valido.config(text= "* Sólo números, hasta 11 dígitos", fg='red')
             self.entry_telefono.config(bg= "orange red")
@@ -323,14 +323,14 @@ class Paciente:
         else:
             self.entry_telefono.config(bg= "pale green")
             self.telefono_valido.config(text= "*", fg='red')
-            
+
         return campos_validos    
-    
+
     def actualizar(self):        
         if self.completar_campos() and self.validar_datos():
             self.calcular_edad(self.nacimiento_paciente.get())
             fecha = self.convertir_fecha(self.nacimiento_paciente.get()) 
-        
+
             datos=self.dni_paciente.get(), self.nombre_paciente.get().upper(), self.apellido_paciente.get().upper(), self.domicilio_paciente.get().upper(), self.telefono_paciente.get(),\
                 self.email_paciente.get(), self.obrasocial_paciente.get().upper(), self.nrosocio_paciente.get(), self.edad_paciente.get(), fecha, self.dni_paciente_anterior
             try:
@@ -351,7 +351,7 @@ class Paciente:
         # Primero validar campos y datos
         if not (self.completar_campos() and self.validar_datos()):
             return
-        
+
         # Verificar si el DNI ya existe
         dni = self.dni_paciente.get()
         if self.dni_existe(dni):
@@ -362,7 +362,7 @@ class Paciente:
             self.dni_valido.config(text="* DNI ya registrado", fg='red')
             self.entry_dni.focus_set()  # Coloca el foco en el campo DNI
             return
-        
+
         # Si todo está bien, proceder con el guardado
         self.calcular_edad(self.nacimiento_paciente.get())
         fecha = self.convertir_fecha(self.nacimiento_paciente.get())            
@@ -378,7 +378,7 @@ class Paciente:
             self.edad_paciente.get(), 
             fecha
         )
-        
+
         try:
             self.miCursor.execute("INSERT INTO Pacientes VALUES(?,?,?,?,?,?,?,?,?,?)", datos)
             self.miConexion.commit()

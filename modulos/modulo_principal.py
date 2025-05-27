@@ -333,9 +333,7 @@ class MasterPanel:
             #messagebox.showinfo("Continuar", "Continuar")
 
     def mostrar_usuarios(self):
-        try:
-            
-        # Constantes para mejor legibilidad
+        try:            
             CONSULTA_USUARIOS = """
                 SELECT nombre_usuario, pass_usuario, tipo_usuario 
                 FROM usuarios
@@ -359,7 +357,7 @@ class MasterPanel:
                 )
 
         except Exception as e:
-            # Mostrar error al usuario de forma amigable
+            # Mostrar error al usuario
             messagebox.showerror(
                 "Error al cargar usuarios",
                 f"No se pudieron cargar los usuarios:\n{str(e)}\n\n"
@@ -391,7 +389,7 @@ class MasterPanel:
                     user = Usuario()
                     user.cargar_datos(self.usuario)
                     user.ventana(master_panel_ref=self)
-                    self.mostrar_usuarios()
+                    #self.mostrar_usuarios()
                 else:
                     messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
             except:
@@ -403,13 +401,12 @@ class MasterPanel:
         try:
             user = Usuario()
             user.eliminar_usuario(self.nombre_usuario)
+            self.mostrar_usuarios()
         except:
-            pass
-        self.mostrar_usuarios()
+            messagebox.showwarning("Usuario", "No se pudo eliminar el usuario")
 
     def mostrar_odontologos(self):
         try:
-        # Constantes para mejor legibilidad
             CONSULTA_ODONTOLOGOS = """
                 SELECT Matricula, Apellido_odontologo, Nombre_odontologo 
                 FROM odontologos
@@ -432,10 +429,10 @@ class MasterPanel:
                 )
 
         except Exception as e:
-            # Mostrar error al usuario de forma amigable
+            # Mostrar error al usuario
             messagebox.showerror(
-                "Error al cargar usuarios",
-                f"No se pudieron cargar los usuarios:\n{str(e)}\n\n"
+                "Error al cargar odontologos",
+                f"No se pudieron cargar los odontologos:\n{str(e)}\n\n"
                 "Por favor verifique la conexión a la base de datos e intente nuevamente."
             )
 
@@ -447,25 +444,25 @@ class MasterPanel:
             #print(self.matricula)
 
     def agregar_odontologo(self):
-        profesional = Odontologo(master_panel_ref=self)
-        profesional.ventana()
-        self.mostrar_odontologos()
+        profesional = Odontologo()
+        profesional.ventana(master_panel_ref=self)
+        #self.mostrar_odontologos()
 
     def editar_odontologo(self, event):
-        region = self.tabla_odontologo.identify("region", event.x, event.y)
+        region = self.tabla_odontologos.identify("region", event.x, event.y)
         if region == "heading":  # Si el doble clic es en el encabezado
             return
         else:
             try:
-                selected_item = self.tabla_odontologo.selection()
-                item = self.tabla_odontologo.item(selected_item)
-                self.odontologo=item['values'][0]
+                selected_item = self.tabla_odontologos.selection()
+                item = self.tabla_odontologos.item(selected_item)
+                matricula=item['values'][2]
                 #self.usuario = self.tabla_usuario.item(sel, "text")
-                if self.odontologo != 'Usuario':
+                if matricula != '':
                     profesional = Odontologo()
-                    profesional.cargar_datos(self.odontologo)
-                    profesional.ventana()
-                    self.mostrar_odontologos()
+                    profesional.cargar_datos(matricula)
+                    profesional.ventana(master_panel_ref=self)
+                    #self.mostrar_odontologos()
                 else:
                     messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
             except:
@@ -567,10 +564,10 @@ class MasterPanel:
 
         ######################## USUARIOS #################
         Label(self.frame_usuarios, text= 'USUARIOS', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 3, padx=5, sticky="W")       
-        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 1, row= 1, pady= 5)
-        Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 2)
-        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 2, row= 1, pady= 5)
-        Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
+        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 1, pady= 5)
+        Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 2)
+        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 1, pady= 5)
+        Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 2)
         # Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 1, pady= 5)
         # Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
 
@@ -593,7 +590,7 @@ class MasterPanel:
         self.mostrar_usuarios()
         self.tabla_usuario.bind("<Double-1>", self.editar_usuario)
         self.tabla_usuario.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
-        
+
         ######################## ODONTÓLOGOS #################
         Label(self.frame_usuarios, text= 'ODONTÓLOGOS', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 4, columnspan= 3, padx=5, sticky="W")       
         Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_odontologo).grid(column= 0, row= 5, pady= 5)
@@ -602,7 +599,7 @@ class MasterPanel:
         Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 6)
         # Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 5, pady= 5)
         # Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 6)
-        
+
         #TABLA ODONTÓLOGOS
         self.frame_tabla_odontologos = Frame(self.frame_usuarios, bg= 'gray90')
         self.frame_tabla_odontologos.grid(columnspan= 3, row= 7, sticky= 'nsew')
@@ -619,7 +616,7 @@ class MasterPanel:
         self.tabla_odontologos.heading('Nombre', text= 'Nombre', anchor= 'center', command=lambda: None)
         self.tabla_odontologos.heading('Matricula', text= 'Matricula', anchor= 'center', command=lambda: None)
         self.mostrar_odontologos()
-        self.frame_tabla_odontologos.bind("<Double-1>", self.editar_usuario)
+        self.tabla_odontologos.bind("<Double-1>", self.editar_odontologo)
         self.tabla_odontologos.bind("<<TreeviewSelect>>", self.seleccionar_odontologo)
 
 		######################## PACIENTES #################

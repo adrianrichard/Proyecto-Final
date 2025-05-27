@@ -7,7 +7,7 @@ from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
 
 class Odontologo:
 
-    def __init__(self, *args, **kwarg):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.master_panel_ref = kwargs.get('master_panel_ref', None)
         self.nombre_odontologo = StringVar()
@@ -84,6 +84,7 @@ class Odontologo:
         apellido = False
         nombre = False
         matricula = False
+
         if not self.validar_alfa(self.apellido_odontologo.get()):
             self.apellido_odontologo_valido.config(fg= "red", text= "Sólo letras")
             self.entry_apellido.config(bg= "red")
@@ -112,8 +113,7 @@ class Odontologo:
             matricula = True
 
         if apellido and nombre and matricula:            
-            datos = self.matricula.get(), self.apellido_odontologo.get(), self.nombre_odontologo.get()
-            #print(datos)
+            datos = self.matricula.get(), self.apellido_odontologo.get().upper(), self.nombre_odontologo.get().upper()
             try:
                 self.miCursor.execute("INSERT INTO Odontologos VALUES(?,?,?)", (datos))
                 self.miConexion.commit()
@@ -124,30 +124,20 @@ class Odontologo:
             except:
                 messagebox.showinfo("GUARDAR", "No se ha podido guardar el odontólogo")        
 
-    def cargar_datos(self, matricula):
-        try:
-            datos= self.obtener_datos_odontologo(matricula)
-        except:
-            messagebox.showinfo("AVISO", "No se ha podido encontrar el odontólogo")
+    def cargar_datos(self, matricula):        
         try:
             self.miCursor.execute("SELECT * FROM Odontologos WHERE matricula=?", (matricula,))
             campos=self.miCursor.fetchone()        
             self.apellido_odontologo.set(campos[1])
             self.nombre_odontologo.set(campos[2])
+            self.matricula.set(matricula)
+            self.matricula_anterior = matricula
         except:
             messagebox.showinfo("Odontólogo", "No se ha podido cargar el odontólogo")
 
-    def obtener_datos_odontologo(self, matricula):
-        try:
-            self.miCursor.execute('SELECT Apellido_odontologo, Nombre_odontologo FROM Odontologos WHERE Matricula=?', (matricula,))
-            datos_odontologo = self.miCursor.fetchone()            
-        except:
-            messagebox.showinfo("Aviso", "No se encontró el odontólogo")
-        return datos_odontologo
-
     def actualizar(self):
         apellido_valido = False
-        nombre_valido = False
+        nombre_valido = False        
 
         if not self.validar_alfa(self.apellido_odontologo.get()):
             self.apellido_odontologo_valido.config(fg="red", text="Sólo letras")
@@ -169,8 +159,8 @@ class Odontologo:
 
         if apellido_valido and nombre_valido:
             try:
-                sql = "UPDATE Odontologos SET Apellido_odontologo = ?, Nombre_odontologo = ? WHERE Matricula = ?"
-                datos = (self.apellido_odontologo.get(), self.nombre_odontologo.get(), self.matricula.get())
+                sql = "UPDATE Odontologos SET Apellido_odontologo = ?, Nombre_odontologo = ?, Matricula = ? WHERE Matricula = ?"
+                datos = (self.apellido_odontologo.get().upper(), self.nombre_odontologo.get().upper(), self.matricula.get(), self.matricula_anterior)
                 self.miCursor.execute(sql, datos)
                 self.miConexion.commit()
                 if self.master_panel_ref:
