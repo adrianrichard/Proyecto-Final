@@ -119,7 +119,7 @@ class Usuario:
         self.nombre_usuario_anterior=usuario
         try:
             self.miCursor.execute("SELECT * FROM usuarios WHERE nombre_usuario=?", (usuario,))
-            campos=self.miCursor.fetchone()        
+            campos=self.miCursor.fetchone()
             self.clave.set(campos[2])
             self.tipo_usuario.set(campos[3])
         except:
