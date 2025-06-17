@@ -80,7 +80,7 @@ class Usuario:
         self.frame_usuario.mainloop()
 
     def guardar(self):
-        # 1° Validación: Formato del nombre de usuario
+        # Validar Formato del nombre de usuario
         if not self.validar_nombre(self.nombre_usuario.get()):
             messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
             self.entry_nombre.config(bg="orange red")

@@ -80,6 +80,11 @@ class Odontologo:
 
         self.frame_odontologo.mainloop()
 
+    def verificar_matricula_existente(self, matricula):
+        """Verifica si una matrícula ya existe en la base de datos"""
+        self.miCursor.execute("SELECT 1 FROM Odontologos WHERE matricula=?", (matricula,))
+        return self.miCursor.fetchone() is not None
+
     def guardar(self):
         apellido = False
         nombre = False
@@ -112,8 +117,13 @@ class Odontologo:
             self.entry_matricula.config(bg= "green")
             matricula = True
 
-        if apellido and nombre and matricula:            
+        if apellido and nombre and matricula:
             datos = self.matricula.get(), self.apellido_odontologo.get().upper(), self.nombre_odontologo.get().upper()
+            if self.verificar_matricula_existente(self.matricula.get()):
+                messagebox.showerror("Error", "La matrícula ya existe")
+                self.matricula_valida.config(fg= "red", text= "Ya existe")
+                self.entry_matricula.config(bg= "red")
+                return
             try:
                 self.miCursor.execute("INSERT INTO Odontologos VALUES(?,?,?)", (datos))
                 self.miConexion.commit()
@@ -158,6 +168,12 @@ class Odontologo:
             nombre_valido = True
 
         if apellido_valido and nombre_valido:
+            if self.matricula.get() != self.matricula_anterior:
+                if self.verificar_matricula_existente(self.matricula.get()):
+                    messagebox.showerror("Error", "La matrícula ya existe")
+                    self.matricula_valida.config(fg= "red", text= "Ya existe")
+                    self.entry_matricula.config(bg= "red")
+                    return
             try:
                 sql = "UPDATE Odontologos SET Apellido_odontologo = ?, Nombre_odontologo = ?, Matricula = ? WHERE Matricula = ?"
                 datos = (self.apellido_odontologo.get().upper(), self.nombre_odontologo.get().upper(), self.matricula.get(), self.matricula_anterior)

@@ -375,6 +375,16 @@ class MasterPanel:
         user.ventana(master_panel_ref=self)
         #self.mostrar_usuarios()
 
+    def editar_user(self):
+        print(self.nombre_usuario)
+        try:
+            user = Usuario()
+            user.cargar_datos(self.nombre_usuario)
+            user.ventana(master_panel_ref=self)
+            user.actualizar()
+        except:
+            return
+
     def editar_usuario(self, event):
         region = self.tabla_usuario.identify("region", event.x, event.y)
         if region == "heading":  # Si el doble clic es en el encabezado
@@ -389,7 +399,6 @@ class MasterPanel:
                     user = Usuario()
                     user.cargar_datos(self.usuario)
                     user.ventana(master_panel_ref=self)
-                    #self.mostrar_usuarios()
                 else:
                     messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
             except:
@@ -483,10 +492,10 @@ class MasterPanel:
         self.imagen_calendario = PhotoImage(file= './imagenes/calendario-removebg-preview.png')
         self.imagen_historia_clinica = PhotoImage(file= './imagenes/historial3.png')
         self.imagen_galeria = PhotoImage(file= './imagenes/foto-removebg-preview.png')
-        self.imagen_herramientas =utl.leer_imagen('statistics-removebg.png', (38, 38)) #  PhotoImage(file= './imagenes/statistics.png')
+        self.imagen_herramientas = utl.leer_imagen('statistics-removebg.png', (38, 38)) #  PhotoImage(file= './imagenes/statistics.png')
         self.imagen_agregar_paciente = PhotoImage(file= './imagenes/agregar_paciente.png')
         self.imagen_editar_paciente = PhotoImage(file= './imagenes/editar_paciente.png')
-        self.imagen_refrescar = PhotoImage(file= './imagenes/refrescar.png')
+        self.imagen_editar = utl.leer_imagen('editar22.png', (38, 38))
         self.imagen_eliminar_paciente = PhotoImage(file= './imagenes/eliminar22.png')
         self.imagen_salir = PhotoImage(file= './imagenes/salir.png')
         self.logo = PhotoImage(file= './imagenes/logo1.png')
@@ -568,8 +577,8 @@ class MasterPanel:
         Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 2)
         Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 1, pady= 5)
         Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 2)
-        # Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 1, pady= 5)
-        # Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
+        Button(self.frame_usuarios, image= self.imagen_editar, text= 'Editar', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.editar_user).grid(column= 2, row= 1, pady= 5)
+        Label(self.frame_usuarios, text= 'Editar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
 
         #TABLA USUARIO
         self.frame_tabla_usuario = Frame(self.frame_usuarios, bg= 'gray90')
