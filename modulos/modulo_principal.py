@@ -373,10 +373,9 @@ class MasterPanel:
     def agregar_usuario(self):
         user = Usuario()
         user.ventana(master_panel_ref=self)
-        #self.mostrar_usuarios()
 
     def editar_user(self):
-        print(self.nombre_usuario)
+        #print(self.nombre_usuario)
         try:
             user = Usuario()
             user.cargar_datos(self.nombre_usuario)
@@ -403,8 +402,6 @@ class MasterPanel:
                     messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
             except:
                 messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
-        
-        #self.mostrar_usuarios()
 
     def eliminar_usuario(self):
         try:
@@ -450,12 +447,10 @@ class MasterPanel:
         if selected_item:
             item = self.tabla_odontologos.item(selected_item)
             self.matricula= item['values'][2]
-            #print(self.matricula)
 
     def agregar_odontologo(self):
         profesional = Odontologo()
         profesional.ventana(master_panel_ref=self)
-        #self.mostrar_odontologos()
 
     def editar_odontologo(self, event):
         region = self.tabla_odontologos.identify("region", event.x, event.y)
@@ -466,16 +461,22 @@ class MasterPanel:
                 selected_item = self.tabla_odontologos.selection()
                 item = self.tabla_odontologos.item(selected_item)
                 matricula=item['values'][2]
-                #self.usuario = self.tabla_usuario.item(sel, "text")
                 if matricula != '':
                     profesional = Odontologo()
                     profesional.cargar_datos(matricula)
                     profesional.ventana(master_panel_ref=self)
-                    #self.mostrar_odontologos()
                 else:
-                    messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
+                    messagebox.showwarning("Advertencia", "Debe seleccionar un profesional")
             except:
-                messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
+                messagebox.showwarning("Advertencia", "Debe seleccionar un profesional")
+
+    def editar_profesional(self):
+        try:
+            profesional = Odontologo()
+            profesional.cargar_datos(self.matricula)
+            profesional.ventana(master_panel_ref=self)
+        except:
+            return
 
     def eliminar_odontologo(self):
         try:
@@ -527,7 +528,7 @@ class MasterPanel:
             Label(self.frame_menu, text= 'Herramientas', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
             Button(self.frame_menu, image= self.imagen_galeria, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column=0, row=5, pady=20, padx=10)
             Label(self.frame_menu, text= 'Galeria', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 5, pady= 20, padx= 2)            
-            
+
         if self.tipo_usuario == 'administrador':
             Button(self.frame_menu, image= self.imagen_usuario, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.pantalla_usuarios).grid(column= 0, row= 1, pady= 20, padx= 10)
             Label(self.frame_menu, text= 'Usuarios', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 1, pady= 20, padx= 2)            
@@ -537,7 +538,7 @@ class MasterPanel:
         self.estilo_paginas.layout('TNotebook.Tab', []) #desactiva las pestañas
 
         self.paginas = ttk.Notebook(self.frame_raiz, style= 'TNotebook')
-        
+
         self.paginas.grid(column= 0, row= 0, sticky= 'nsew')
         self.frame_principal = Frame(self.paginas, bg= 'gray90') #color de fondo
         self.frame_usuarios = Frame(self.paginas, bg= 'gray90') #color de fondo
@@ -553,6 +554,7 @@ class MasterPanel:
         self.paginas.add(self.historia)
         self.paginas.add(self.frame_galeria)
         self.paginas.add(self.frame_herramientas)
+
 		##############################         PAGINAS       #############################################
 		######################## FRAME TITULO #################
         self.titulo = Label(self.frame_top, text= 'Consultorio Odontológico MyM', bg= self.color_fondo1, fg= 'white', font= ('Comic Sans MS', 15, 'bold'))
@@ -606,8 +608,8 @@ class MasterPanel:
         Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 6)
         Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_odontologo).grid(column= 1, row= 5, pady= 5)
         Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 6)
-        # Button(self.frame_usuarios, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.mostrar_usuarios).grid(column= 2, row= 5, pady= 5)
-        # Label(self.frame_usuarios, text= 'Refrescar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 6)
+        Button(self.frame_usuarios, image= self.imagen_editar, text= 'Editar', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.editar_profesional).grid(column= 2, row= 5, pady= 5)
+        Label(self.frame_usuarios, text= 'Editar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 6)
 
         #TABLA ODONTÓLOGOS
         self.frame_tabla_odontologos = Frame(self.frame_usuarios, bg= 'gray90')

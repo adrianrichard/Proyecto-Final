@@ -66,11 +66,11 @@ class Odontologo:
         if(self.matricula.get()==''):
             self.titulo = Label(self.frame_top, text= 'Crear odontólogo', bg= self.color_fondo1, fg= 'white', font= self.fuenteb)
             self.titulo.grid(column= 0, row= 0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Guardar', font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 10, command= self.guardar).grid(column= 0, row= 5, pady= 5)
+            Button(self.frame_principal, text= 'Guardar', font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 10, command= self.guardar_odontologo).grid(column= 0, row= 5, pady= 5)
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar odontólogo', bg= self.color_fondo1, fg= 'white', font= self.fuenteb)
             self.titulo.grid(column= 0, row= 0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Actualizar',  font= self.fuenteb, fg= 'white', bg= self.color_fondo1, activebackground= 'gray', bd= 2, width= 10, command= self.actualizar).grid(column= 0, row= 5, pady= 5)
+            Button(self.frame_principal, text= 'Actualizar',  font= self.fuenteb, fg= 'white', bg= self.color_fondo1, activebackground= 'gray', bd= 2, width= 10, command= self.actualizar_odontologo).grid(column= 0, row= 5, pady= 5)
 
         Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 25, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 1, row= 4, pady= 5, padx= 2)
 
@@ -85,7 +85,7 @@ class Odontologo:
         self.miCursor.execute("SELECT 1 FROM Odontologos WHERE matricula=?", (matricula,))
         return self.miCursor.fetchone() is not None
 
-    def guardar(self):
+    def guardar_odontologo(self):
         apellido = False
         nombre = False
         matricula = False
@@ -145,7 +145,7 @@ class Odontologo:
         except:
             messagebox.showinfo("Odontólogo", "No se ha podido cargar el odontólogo")
 
-    def actualizar(self):
+    def actualizar_odontologo(self):
         apellido_valido = False
         nombre_valido = False        
 
@@ -168,7 +168,9 @@ class Odontologo:
             nombre_valido = True
 
         if apellido_valido and nombre_valido:
-            if self.matricula.get() != self.matricula_anterior:
+            print(self.matricula_anterior,type(self.matricula_anterior),  self.matricula.get(),type(self.matricula))
+            if int(self.matricula.get()) != self.matricula_anterior:
+                print("ingresa")
                 if self.verificar_matricula_existente(self.matricula.get()):
                     messagebox.showerror("Error", "La matrícula ya existe")
                     self.matricula_valida.config(fg= "red", text= "Ya existe")
