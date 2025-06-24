@@ -3,6 +3,7 @@ import sqlite3
 import util.config as utl
 from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Frame
+import re
 from modulos.modulo_paciente import Paciente
 from modulos.modulo_usuario import Usuario
 from modulos.modulo_odontologo import Odontologo
@@ -163,8 +164,22 @@ class MasterPanel:
         item = self.tabla_paciente.focus()
         if item:
             self.data = self.tabla_paciente.item(item)
+            #print(self.data)
             try:
-                self.dni_paciente = self.data['values'][1]
+                self.dni_paciente = self.data['values'][2]
+                paciente = Paciente()
+                paciente.cargar_datos(self.dni_paciente)
+                paciente.ventana_paciente()
+            except Exception as e:
+                messagebox.showerror("ERROR", f"No se pudo cargar el paciente: {e}")
+
+    def editar_paciente2(self):
+        item = self.tabla_paciente.focus()
+        if item:
+            self.data = self.tabla_paciente.item(item)
+            #print(self.data)
+            try:
+                self.dni_paciente = self.data['values'][2]
                 paciente = Paciente()
                 paciente.cargar_datos(self.dni_paciente)
                 paciente.ventana_paciente()
@@ -258,17 +273,18 @@ class MasterPanel:
         bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
+        #print(datos)
         #print(len(datos))
         #if  len(datos)<self.incremento:
 
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
         if (len(datos)>self.incremento):
             for i in range(0, self.incremento):
-                    self.tabla_paciente.insert('', i, text= datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
+                    self.tabla_paciente.insert('', i, text= datos[i][0], values=datos[i][0:])
         else:
             self.boton_pos.config(state= 'disabled', bg= self.color_fondo1)
             for i in range(0, len(datos)):
-                    self.tabla_paciente.insert('', i, text= datos[i][0], values=(datos[i][1], datos[i][2], datos[i][3], datos[i][4]))
+                    self.tabla_paciente.insert('', i, text= datos[i][0], values=datos[i][0:])
 
     def buscar_paciente(self, event=None):
         """Busca pacientes por nombre o apellido y muestra mensaje si no hay resultados."""
@@ -284,7 +300,7 @@ class MasterPanel:
             
             if datos:  # Si encuentra resultados
                 for i, dato in enumerate(datos):
-                    self.tabla_paciente.insert('', 'end', text=dato[0], values=dato[1:])
+                    self.tabla_paciente.insert('', 'end', text=dato[0], values=dato[0:])
             else:  # Si no encuentra resultados
                 messagebox.showinfo("BUSCAR", "No se encontraron coincidencias")
 
@@ -319,15 +335,6 @@ class MasterPanel:
         self.data = self.tabla_paciente.item(item)
         try:
             self.dni_paciente = self.data['values'][1]
-        except:
-            pass
-            #messagebox.showinfo("Continuar", "Continuar")
-
-    def seleccionar_paciente2(self, event):
-        item = self.tabla_historia.focus()
-        self.data2 = self.tabla_historia.item(item)
-        try:
-            self.dni_paciente = self.data2['values'][1]
         except:
             pass
             #messagebox.showinfo("Continuar", "Continuar")
@@ -375,14 +382,17 @@ class MasterPanel:
         user.ventana(master_panel_ref=self)
 
     def editar_user(self):
-        #print(self.nombre_usuario)
-        try:
-            user = Usuario()
-            user.cargar_datos(self.nombre_usuario)
-            user.ventana(master_panel_ref=self)
-            user.actualizar()
-        except:
-            return
+        item = self.tabla_usuario.focus()
+        if item:
+            self.data = self.tabla_usuario.item(item)
+            #print(self.data)
+            try:
+                self.nombre_usuario = self.data['values'][0]
+                user = Usuario()
+                user.cargar_datos(self.nombre_usuario)
+                user.ventana(master_panel_ref=self)
+            except Exception as e:
+                messagebox.showerror("ERROR", f"No se pudo cargar el usuario: {e}")
 
     def editar_usuario(self, event):
         region = self.tabla_usuario.identify("region", event.x, event.y)
@@ -470,13 +480,20 @@ class MasterPanel:
             except:
                 messagebox.showwarning("Advertencia", "Debe seleccionar un profesional")
 
-    def editar_profesional(self):
-        try:
-            profesional = Odontologo()
-            profesional.cargar_datos(self.matricula)
-            profesional.ventana(master_panel_ref=self)
-        except:
-            return
+    def editar_profesional(self):        
+        item = self.tabla_odontologos.focus()
+        if item:
+            self.data = self.tabla_odontologos.item(item)
+            #print(self.data)
+            try:
+                matricula=item['values'][2]       
+                profesional = Odontologo()
+                profesional.cargar_datos(matricula)
+                profesional.ventana(master_panel_ref=self)
+            except:
+                return
+        else:
+                    messagebox.showwarning("Advertencia", "Debe seleccionar un profesional")
 
     def eliminar_odontologo(self):
         try:
@@ -636,8 +653,8 @@ class MasterPanel:
         Label(self.frame_pacientes, text= 'Agregar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 2)
         Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 1, row= 1, pady= 5)
         Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 2)
-        # Button(self.frame_pacientes, image= self.imagen_refrescar, text= 'REFRESCAR', fg= 'black', font = self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.mostrar_pacientes).grid(column= 2, row= 1, pady= 5)
-        # Label(self.frame_pacientes, text= 'Refrescar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
+        Button(self.frame_pacientes, image= self.imagen_editar, text= 'Editar', fg= 'black', font = self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.editar_paciente2).grid(column= 2, row= 1, pady= 5)
+        Label(self.frame_pacientes, text= 'Editar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
         self.busqueda = ttk.Entry(self.frame_pacientes, textvariable= self.dato_paciente, width= 20 ,font= self.fuenten)
         self.busqueda.grid(column= 3, row= 1, pady= 5)
         Button(self.frame_pacientes, text= 'Buscar', bg= self.color_fondo1, fg= 'white', font= self.fuenteb, command= self.buscar_paciente).grid(column= 3, row= 2, pady=(0,5))
@@ -651,16 +668,18 @@ class MasterPanel:
 		#TABLA PACIENTE
         self.frame_tabla_paciente = Frame(self.frame_pacientes, bg= 'gray90')
         self.frame_tabla_paciente.grid(columnspan= 4, row= 4, sticky= 'nsew')
-        self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, columns= ('Nombre', 'D.N.I.', 'Teléfono', 'Obra Social'), show= "headings", selectmode= 'browse', style= "TablaUsuario.Treeview")
-        self.tabla_paciente.grid(column= 0, row= 4, columnspan= 4, sticky= 'nsew')
+        self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, columns= ('Apellido', 'Nombre', 'D.N.I.', 'Teléfono', 'Obra Social'), show= "headings", selectmode= 'browse', style= "TablaUsuario.Treeview")
+        self.tabla_paciente.grid(column= 0, row= 4, columnspan= 5, sticky= 'nsew')
         ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient= 'vertical', command= self.tabla_paciente.yview)
         ladoy.grid(column = 5, row = 4, sticky= 'ns')
-        self.tabla_paciente.configure(yscrollcommand = ladoy.set)       
+        self.tabla_paciente.configure(yscrollcommand = ladoy.set)
+        self.tabla_paciente.column('Apellido', minwidth= 100, width= 130 , anchor= 'w')
         self.tabla_paciente.column('Nombre', minwidth= 100, width= 130 , anchor= 'w')
-        self.tabla_paciente.column('D.N.I.', minwidth= 100, width= 120, anchor= 'center' )
+        self.tabla_paciente.column('D.N.I.', minwidth= 100, width= 120, anchor= 'center')
         self.tabla_paciente.column('Teléfono', minwidth= 100, width= 120 , anchor= 'center')
         self.tabla_paciente.column('Obra Social', minwidth= 100, width= 105, anchor= 'center')
 
+        self.tabla_paciente.heading('Apellido', text= 'Apellido', anchor= 'center')
         self.tabla_paciente.heading('Nombre', text= 'Nombre', anchor= 'center')
         self.tabla_paciente.heading('D.N.I.', text= 'D.N.I.', anchor = 'center')
         self.tabla_paciente.heading('Teléfono', text= 'Teléfono', anchor= 'center')
@@ -690,7 +709,6 @@ class MasterPanel:
         self.tabla_historia.heading("D.N.I.", text= "D.N.I.")
         self.tabla_historia.heading("Obra social", text= "Obra social")
         # # Ajustar el ancho de las columnas
-        #self.tabla_historia.bind("<<TreeviewSelect>>", self.seleccionar_paciente2)
         self.tabla_historia.bind("<Double-1>", self.editar_odontograma)
 
 		######################## GALERIA #################
