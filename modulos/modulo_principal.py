@@ -486,7 +486,7 @@ class MasterPanel:
             self.data = self.tabla_odontologos.item(item)
             #print(self.data)
             try:
-                matricula=item['values'][2]       
+                matricula=self.data['values'][2]       
                 profesional = Odontologo()
                 profesional.cargar_datos(matricula)
                 profesional.ventana(master_panel_ref=self)
