@@ -9,6 +9,9 @@ from bd.conexion import Conexion
 from PIL import Image, ImageGrab
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.pdfgen import canvas as pdf_canvas
+from reportlab.platypus import Table, TableStyle
+from reportlab.lib import colors
+
 import os
 pacientes=[]
 buttons = []
@@ -42,7 +45,7 @@ class Odontograma:
         fechanac= self.convertir_fecha(self.paciente[3])
         obra_social= self.paciente[4]
         nrosocio= self.paciente[5]
-        #print(nombre, apellido, obra_social,dni)
+        #print(nombre, apellido, obra_social, dni)
         self.frame_datos_paciente=Frame(self.ventana_odontograma, border= 1, borderwidth= 2, bg= "gray90")
         self.frame_datos_paciente.grid(column= 0, row= 1, sticky= "nsew")
         Label(self.frame_datos_paciente, text= 'Nombre Completo:', font= self.fuenteb, bg= "gray90").grid(column= 0, row= 0, sticky= 'e', padx= (5, 0))
@@ -254,9 +257,11 @@ class Odontograma:
         obra_social= self.paciente[4]
         nrosocio= self.paciente[5]
         # Crear el PDF con ReportLab e insertar la imagen
-        pdf = pdf_canvas.Canvas("output.pdf", pagesize=A4)
+        nombre_archivo = nombre+apellido+self.fecha_actual+".pdf"
+        #print(nombre_archivo)
+        pdf = pdf_canvas.Canvas(nombre_archivo, pagesize=A4)
         ancho_pagina, alto_pagina = A4
-        logo_path = "./imagenes/LOGO.png"
+        logo_path = "./imagenes/LOGO11.png"
         alto_imagen=500
         if os.path.exists(logo_path):
             with Image.open(logo_path) as img:
@@ -270,10 +275,19 @@ class Odontograma:
             pdf.drawImage(logo_path, logo_x, logo_y, width=logo_width, height=logo_height)
 
         pdf.setFont("Helvetica", 15)
+        pdf.setStrokeColor("black")
+        pdf.setLineWidth(1)
+        # Título
+        pdf.setFont("Helvetica-Bold", 16)
+        pdf.drawCentredString(ancho_pagina/2, alto_pagina - 150, "FICHA ODONTOLÓGICA")
+       
+        pdf.line(50, alto_pagina - 130, ancho_pagina - 50, alto_pagina - 130)
         pdf.drawString(50, alto_pagina - 150, f"Apellido/s y Nombre/s: {apellido}, {nombre}")
         pdf.drawString(50, alto_pagina - 170, f"DNI: {dni} ")
         pdf.drawString(50, alto_pagina - 190, f"Obra Social: {obra_social}")
         pdf.drawString(ancho_pagina - 300, alto_pagina - 190, f"N° de Socio: {nrosocio}")
+        # Línea divisoria antes de la imagen
+        pdf.line(50, alto_pagina - 370, ancho_pagina - 50, alto_pagina - 370)
         captura_path = "canvas_image.png"
         if os.path.exists(captura_path):
             with Image.open(captura_path) as img:

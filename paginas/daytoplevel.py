@@ -195,15 +195,22 @@ class DayTopWindow(Toplevel):
         self.conn=  self.db.conectar()
         self.cur= self.conn.cursor()
         odontologo= self.selector_odontologo.get()
+        self.matricula=""
         #print(odontologo)
         try:
-            sql = "SELECT Matricula FROM odontologos WHERE Apellido_odontologo LIKE ?"
+            sql = "SELECT Matricula FROM Odontologos WHERE Apellido_odontologo LIKE ?"
             self.cur.execute(sql, (odontologo,))
-            matricula = self.cur.fetchone()
+            self.matricula = self.cur.fetchone()[0]
+            
         except:
             messagebox.showerror("Guardar", "No existe el odontólogo")
         #print(matricula[0])
-        datos = start_date, self.horario, self.nombre_entry.get().upper(), matricula[0], self.selector_prestacion.get().upper() 
+        print(start_date)
+        print(self.horario)
+        print(self.nombre_entry.get().upper())
+        print(self.matricula)
+        datos = start_date, self.horario, self.nombre_entry.get().upper(), self.matricula, self.selector_prestacion.get().upper()
+        print (datos)
         if self.nombre_entry.get().upper() != "PACIENTE" and self.selector_prestacion.get().upper() != "PRESTACIÓN" and self.selector_odontologo.get().upper() != "ODONTÓLOGO":
             answer = messagebox.askokcancel(title='Guardar', message='¿Desea guardar el turno?', icon='warning')
             if answer:
