@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?> 
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<!--expect:name='aaaa'> (NextPageTemplate) @ 12:9 - 12:31-->
+<document filename="test_054_nextPage_run_error.pdf">
+    <template pageSize="(595, 842)" leftMargin="72" showBoundary="1">
+        <pageTemplate id="main">
+            <frame id="second" x1="35" y1="45" width="525" height="590"/>
+        </pageTemplate>
+    </template>
+    <stylesheet/>
+    <story>
+        <nextPage name='aaaa'/>
+    </story>
+</document>

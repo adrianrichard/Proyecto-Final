@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd"> 
+<document filename="test_062_arabic.pdf" invariant="1">
+  <docinit>
+        <registerTTFont faceName="Arial" fileName="Arial.ttf" shapable="1"/>
+        <registerTTFont faceName="Arial-Italic" fileName="Arial_Italic.ttf"/>
+        <registerTTFont faceName="Arial-Bold" fileName="Arial_Bold.ttf"/>
+        <registerTTFont faceName="Arial-BoldItalic" fileName="Arial_Bold_Italic.ttf"/>
+        <registerFontFamily
+            normal="Arial-Regular"
+            bold="Arial-Bold"
+            italic="Arial-Italic"
+            boldItalic="Arial-BoldItalic"
+        />
+  </docinit>
+
+<template pageSize="letter" leftMargin="72" showBoundary="0">
+<pageTemplate id="first" pageSize="(595,842)">
+	<pageGraphics>
+		<setFont name="Arial" size="18"/>
+		<drawString x="35" y="783">RML Example 62: Arabic</drawString>
+		<image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="749" width="72" height="72" required="no" alt_file=""/>
+    <image file="strapline.png" preserveAspectRatio="1" x="35" y="0" width="525" alt_file="" required="no"/>
+		
+		<setFont name="Arial" size="18"/>
+
+    <drawString x="36" y="384">left-aligned text</drawString>
+    <drawString x="36" y="364" direction="RTL">نص محاذي لليسار</drawString>
+    <image file="arabic left-aligned text.png" preserveAspectRatio="1" x="36" y="300" width="110" required="no" alt_file=""/>
+    <drawCentredString x="306" y="384">center-aligned text</drawCentredString>
+    <drawCentredString x="306" y="364" direction="RTL">نص محاذي للوسط</drawCentredString>
+    <image file="arabic center-aligned text.png" preserveAspectRatio="1" x="252" y="300" width="110" required="no" alt_file=""/>
+    <drawRightString x="554" y="384">right-aligned text</drawRightString>
+    <drawRightString x="554" y="364" direction="RTL">نص محاذي لليمين</drawRightString>
+    <image file="arabic right-aligned text.png" preserveAspectRatio="1" x="448" y="300" width="110" required="no" alt_file=""/>
+	</pageGraphics>
+	<frame id="second" x1="35" y1="45" width="525" height="590"/>
+	</pageTemplate>
+	
+	<pageTemplate id="main2" pageSize="(595,842)">
+	<pageGraphics>
+		<setFont name="Helvetica-Bold" size="18"/>
+		    <drawString x="35" y="783">RML Example 62: Arabic</drawString>
+			<image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="749" width="72" height="72" required="no" alt_file=""/>
+    		<image file="strapline.png" preserveAspectRatio="1" x="35" y="0" width="525" alt_file="" required="no"/>
+
+		<drawRightString x="504" y="750">to be completed</drawRightString>
+	</pageGraphics>
+	<frame id="first" x1="1in" y1="1in" width="6.27in" height="9in"/>
+	</pageTemplate>
+</template>
+
+<stylesheet>
+	<paraStyle name="h1" fontName="Arial-Bold" fontSize="32" leading="36"/>
+	<paraStyle name="h2" fontName="Arial-Bold" fontSize="16" leading="20" spaceBefore="12"/>
+	<paraStyle name="normal" fontName="Arial" fontSize="10" leading="12" spaceBefore="6"/>
+	<paraStyle name="right" parent="normal" alignment="right"/>
+	<paraStyle name="rightbidi" parent="right" wordWrap="RTL"/>
+	<paraStyle name="rightshaped" parent="right" shaping="1"/>
+	<paraStyle name="rightbidishaped" parent="rightshaped" wordWrap="RTL"/>
+	<paraStyle name="normal_ar" parent="normal" wordWrap="RTL" alignment="right"/>
+
+	<paraStyle name="intro"  fontName="Helvetica" fontSize="12" leading="12" spaceAfter="12"/>
+	
+	<blockTableStyle id="grid">
+		<lineStyle kind="GRID" colorName="black" thickness="0.1" start="0,0" stop="-1,-1"/>
+		<blockFont name="Arial-Bold" size="10" leading="12" start="0,0" stop="-1,0"/>		
+		<blockFont name="Arial" size="10" leading="12" start="0,1" stop="-1,-1"/>
+		<blockAlignment value="RIGHT" start="1,1" stop="1,-1"/>
+	</blockTableStyle>
+
+
+</stylesheet>
+
+<story>
+<storyPlace x="35" y="660" width="525" height="73" origin="page">
+<para style="intro">RML (Report Markup Language) is ReportLab's own language for specifying the appearance of a printed page, which is converted into PDF by the utility rml2pdf.</para>
+<hr color="white" thickness="8pt"/>
+<para style="intro">These RML samples showcase techniques and features for generating various types of ouput and are distributed within our commercial package as test cases. Each should be self explanatory and stand alone.</para>
+<illustration height="3" width="525" align="center">
+<fill color= "(0,0.99,0.97,0.0)" />
+<rect x="0" y = "-12" width="525" height="3" round="1" fill="1" stroke = "Yes" />
+</illustration>
+</storyPlace>
+<setNextTemplate name="main2"/>
+<para style="h1">Arabic Language Tests</para>
+<para style="normal">Character should be shaped - each one has different forms depending on
+whether it's at the beginning, middle, or end of a word. Text should be laid out right to left.</para>
+<para style="h2">Getting set up</para>
+<para style="normal">1) Set rtlSupport= 1 in your rl_settings.py</para>
+<para style="normal">2) In your parastyle set wordWrap="RTL" and alignment="right" </para>
+
+
+
+<para style="h2">Tests of basic drawing operations</para>
+<para style="normal">Here we test that we can draw an Arabic string with the three different alignments, using the canvas.</para>
+<para style="normal">This is where it gets messy; we have to detect fragments, and sometimes rearrange them.  In each section we have (a) some English, (b) our own rendering, and (c) an image rendered by Google Translate.  Hopefully (b) and (c) resemble each other!</para>
+
+<!-- These get drawn above in the template, hence the spacer -->
+<spacer length="144"/>
+
+
+<para style="h2">Tests of Table operations</para>
+<para style="normal">These use the TextObject and canvas <i>textOut</i> method, similar to above.  We show captured images in grey from Google Translate to compare to.</para>
+
+
+
+ <blockTable style="grid" colWidths="100%" align="LEFT">
+	<tr>
+		<td align="center">English</td><td align="center">Arabic</td><td align="center">Expected</td>
+	</tr>
+	<tr>
+		<td>Numbers in Arabic</td><td direction="RTL">الأرقام باللغة العربية</td><td><para alignment="right"><img src="arabic_numbers.png" height="15" width="115"/></para></td>
+	</tr>
+	<tr>
+		<td>One</td><td direction="RTL" shaping="false">واحد</td><td><para alignment="right"><img src="arabic_one.png" height="15" width="30"/></para></td>
+	</tr>
+	<tr>
+		<td>Two</td><td direction="RTL">اثنان</td><td><para alignment="right"><img src="arabic_two.png" height="15" width="30"/></para></td>
+	</tr>
+	<tr>
+		<td>Three</td><td direction="RTL">ثلاثة</td><td><para alignment="right"><img src="arabic_three.png" height="15" width="30"/></para></td>
+	</tr>
+	<tr>
+		<td>Four</td><td direction="RTL">أربعة</td><td><para alignment="right"><img src="arabic_four.png" height="15" width="30"/></para></td>
+	</tr>
+	<tr>
+		<td>Five</td><td direction="RTL">خمسة</td><td><para alignment="right"><img src="arabic_five.png" height="15" width="30"/></para></td>
+	</tr>
+</blockTable>
+
+<nextPage/>
+<para style="h2">Tests of paragraphs</para>
+<para style="normal">This is where it gets messy; we have to detect fragments, and sometimes rearrange them.  In each section we have (a) some English, (b) our own rendering, and (c) an image rendered by Google Translate.  Hopefully (b) and (c) resemble each other!</para>
+
+<para style="normal" alignment="center">This says "In Arabic we write from right to left"</para>
+<para style="normal_ar">في اللغة العربية نكتب من اليمين إلى اليسار </para>
+<para  alignment="center" spaceBefore="10" ><img src="Arabicwewritefromrighttoleft.png" height="20" width="250"/></para>
+<hr thickness="0.5"/>
+<para style="normal" alignment="center">This says "Arabic is spoken by as many as 380 million speakers."</para>
+<para style="normal_ar">يتحدث اللغة العربية ما يصل إلى 380 مليون شخص.</para>
+<para  alignment="center" spaceBefore="10"><img src="arabic380.png" height="20" width="300"/></para>
+
+<hr thickness="0.5"/>
+
+<para style="normal" alignment="center">This says "Arabic is the third most widespread official language after English and French"</para>
+<para style="normal_ar">اللغة العربية هي اللغة الرسمية الثالثة الأكثر انتشارا بعد اللغة الإنجليزية والفرنسية</para>
+<para  alignment="center" spaceBefore="20"><img src="arabicis3rdmost.png" height="30" width="300"/></para>
+
+
+<hr thickness="0.5"/>
+<para style="normal" alignment="center">This says "How to Use Perplexity's New Deep Search Tool"</para>
+<para style="normal_ar">كيفية استخدام أداة البحث العميق الجديدة من Perplexity</para>
+<para  alignment="center" spaceBefore="5"><img src="Arabicperplexity.png" height="15" width="250"/></para>
+
+
+<hr thickness="0.5"/>
+<para style="normal" alignment="center">This says "Al Riyadh is an Arab football team with 123 expensive players"</para>
+<para style="normal_ar">الرياض هو فريق كرة قدم عربي يضم 123 لاعبا غالي الثمن</para>
+<para  alignment="center" spaceBefore="5"><img src="arabic_footballers.png" height="15" width="250"/></para>
+<nextPage/>
+<para style="normal" alignment="center">Using TD only</para>
+
+<para style="normal">Note on 17 April 2025, release 4.4.0:  the examples below show that we clearly have a bug in the bidi+shaped case for drawString (which is used in naked text in table cells); and also have a problem using any kind of shaped glyphs within paras.</para>
+<para style="normal">Despite this, we are releasing, as there are usable combinations of properties, and we hope to get more test feedback</para>
+<para style="normal">If you want Arabic within paragraph styles, at present, use wordwrap=RTL (the BIDI option below), but do NOT use shaping=1.  We are working to understand this and hope to fix in a future release</para>
+
+<blockTable style="grid" colWidths="20%,80%" align="LEFT">
+	<tr><td align="center">Render</td><td align="centre">Result</td></tr>
+	<tr><td align="center">RAW</td><td align="right">الرياض هو فريق كرة قدم عربي يضم 123 لاعبًا باهظ الثمن</td></tr>
+	<tr><td align="center">BIDI</td><td align="right" direction="RTL">الرياض هو فريق كرة قدم عربي يضم 123 لاعبًا باهظ الثمن</td></tr>
+	<tr><td align="center">SHAPED</td><td align="right" shaping="1">الرياض هو فريق كرة قدم عربي يضم 123 لاعبًا باهظ الثمن</td></tr>
+	<tr><td align="center">BIDI SHAPED</td><td align="right" direction="RTL" shaping="1">الرياض هو فريق كرة قدم عربي يضم 123 لاعبًا باهظ الثمن</td></tr>
+</blockTable>
+
+<para style="normal" alignment="center">Using paras</para>
+<blockTable style="grid" colWidths="20%,80%" align="LEFT">
+	<tr><td align="center">Render</td><td align="centre">Result</td></tr>
+	<tr><td align="center">RAW</td><td><para style="right">الرياض هو فريق كرة قدم عربي يضم 123 لاعبًا باهظ الثمن</para></td></tr>
+	<tr><td align="center">BIDI</td><td><para style="right" wordWrap="RTL">الرياض هو فريق كرة قدم عربي يضم 123 لاعبًا باهظ الثمن</para></td></tr>
+	<tr><td align="center">SHAPED</td><td><para style="right" shaping="1">الرياض هو فريق كرة قدم عربي يضم 123 لاعبًا باهظ الثمن</para></td></tr>
+	<tr><td align="center">BIDI SHAPED</td><td><para style="right" wordWrap="RTL" shaping="1">الرياض هو فريق كرة قدم عربي يضم 123 لاعبًا باهظ الثمن</para></td></tr>
+</blockTable>
+
+<para style="normal" alignment="center">Using para styles</para>
+<blockTable style="grid" colWidths="20%,80%" align="LEFT">
+	<tr><td align="center">Render</td><td align="centre">Result</td></tr>
+	<tr><td align="center">RAW</td><td><para style="right">الرياض هو فريق كرة قدم عربي يضم 123 لاعبًا باهظ الثمن</para></td></tr>
+	<tr><td align="center">BIDI</td><td><para style="rightbidi">الرياض هو فريق كرة قدم عربي يضم 123 لاعبًا باهظ الثمن</para></td></tr>
+	<tr><td align="center">SHAPED</td><td><para style="rightshaped">الرياض هو فريق كرة قدم عربي يضم 123 لاعبًا باهظ الثمن</para></td></tr>
+	<tr><td align="center">BIDI SHAPED</td><td><para style="rightbidishaped">الرياض هو فريق كرة قدم عربي يضم 123 لاعبًا باهظ الثمن</para></td></tr>
+</blockTable>
+
+</story>
+</document>

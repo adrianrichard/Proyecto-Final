@@ -1,0 +1,51 @@
+<!DOCTYPE document SYSTEM "rml_1_0.dtd"> 
+<document filename="test_061_long_textfield.pdf" invariant="1">
+
+<template pageSize="a4" leftMargin="72" showBoundary="1"
+    author="A.N. Author"
+    subject="My subject"
+    title="My title"
+    creator="My creator"
+	displayDocTitle="1"
+	duplex="Simplex"
+	lang="en-US"
+    >
+	<pageTemplate id="main" pageSize="a4">
+	<pageGraphics>
+	</pageGraphics>
+	<frame id="1" x1="35" y1="45" width="525" height="590"/>
+	</pageTemplate>
+</template>
+
+<stylesheet>
+	<initialize>
+	<alias id="style.normal" value="style.Normal"/>
+	</initialize>
+	<paraStyle name="h1" fontName="Helvetica-BoldOblique" fontSize="16" leading="12" spaceAfter="16"/>
+	<paraStyle name="italic" fontName="Helvetica-Oblique" fontSize="10" leading="12"/>
+	<paraStyle name="normal" fontName="Helvetica" fontSize="10" leading="12" hyphenationLang="en_GB" hyphenationMinWordLength="5"/>
+    <paraStyle name="normalb" fontName="Helvetica-Bold" parent="normal" spaceBefore="10"/>
+	<paraStyle name="spaced" fontName="Helvetica" fontSize="12" leading="12" 
+		spaceBefore="12" spaceAfter="12"/>
+		<paraStyle 
+        name="intro" 
+        fontName="Helvetica" 
+        fontSize="12" 
+        leading="12"
+        spaceAfter="12"/>
+</stylesheet>
+
+<story>
+<illustration height="20cm" width="525">
+                <textField x="0cm" y="3cm"
+                name="LLM_summary"
+                width="10000" height="15cm"
+                fontSize="10"
+                multiline="1"
+				maxlen="10000"
+                value="Tacrolimus:&#10;- Evidence from PharmGKB shows genotype GG is associated with increased risk of remaining on steroids at 1 year after transplantation when treated with prednisone and tacrolimus in people with heart transplantation as compared to genotypes AA + AG.&#10;&#10;Prednisone:&#10;"></textField>
+<!--- Evidence from PharmGKB shows genotype GG is associated with increased risk of remaining on steroids at 1 year after transplantation when treated with prednisone and tacrolimus in people with heart transplantation as compared to genotypes AA + AG.&#10;&#10;Methotrexate:&#10;- Evidence from PharmGKB shows allele G is not associated with risk of Drug Toxicity due to methotrexate in children with Precursor Cell Lymphoblastic Leukemia-Lymphoma as compared to allele A.&#10;- Evidence from PharmGKB shows allele G is not associated with risk of Drug Toxicity due to methotrexate in children with Precursor Cell Lymphoblastic Leukemia-Lymphoma as compared to allele A.&#10;- Evidence from PharmGKB shows genotypes AA + AG are associated with decreased response to methotrexate in children with Precursor Cell Lymphoblastic Leukemia-Lymphoma as compared to genotype GG.&#10;- Evidence from PharmGKB shows allele A is not associated with response to methotrexate in children with Precursor Cell Lymphoblastic Leukemia-Lymphoma as compared to allele G.&#10;- Evidence from PharmGKB shows allele A is not associated with response to methotrexate in children with Precursor Cell Lymphoblastic Leukemia-Lymphoma as compared to allele G.&#10;- Evidence from PharmGKB shows allele G is not associated with exposure to methotrexate in children with Precursor Cell Lymphoblastic Leukemia-Lymphoma as compared to allele A.&#10;- Evidence from PharmGKB shows genotype AG is associated with increased concentrations of methotrexate in children with Precursor Cell Lymphoblastic Leukemia-Lymphoma as compared to genotype GG.&#10;- Evidence from PharmGKB shows genotype AA is not associated with concentrations of methotrexate in children with Precursor Cell Lymphoblastic Leukemia-Lymphoma as compared to genotypes AG + GG.&#10;- Evidence from PharmGKB shows genotypes AA + AG are not associated with concentrations of methotrexate in children with Precursor Cell Lymphoblastic Leukemia-Lymphoma as compared to genotype GG.&#10;- Evidence from PharmGKB shows genotype AA is associated with increased concentrations of methotrexate in people with Burkitt Lymphoma, Lymphoma, T-Cell and Precursor Cell Lymphoblastic Leukemia-Lymphoma as compared to genotype GG."></textField-->
+</illustration>
+</story>
+
+</document>

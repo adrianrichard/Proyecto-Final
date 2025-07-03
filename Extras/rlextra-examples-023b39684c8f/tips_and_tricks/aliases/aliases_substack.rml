@@ -1,0 +1,28 @@
+<!DOCTYPE document SYSTEM 'rml.dtd'>
+<document filename='aliases_substack.pdf'>
+
+<docinit>
+</docinit>
+<template showBoundary="0">
+	<pageTemplate id="Page 1" pageSize="(595, 842)">
+		<pageGraphics></pageGraphics>
+		<frame id="Frame 1" x1="30" y1="30" width="535" height="782"/>
+	</pageTemplate>
+</template>
+<stylesheet>
+	<paraStyle name="Heading" fontName="Times" fontSize="50" leading="55"/>
+	<paraStyle name="Regular" fontSize="20" leading="25" parent="Heading"/>
+	<initialize>
+		<alias id="Paragraph1Header" value="Heading"/>
+		<alias id="h1.defaultStyle" value="Heading"/>
+		<alias id="para.defaultStyle" value="Regular"/>
+	</initialize>
+</stylesheet>
+<story>
+	<h1>Example Heading</h1>
+    <spacer length="20"/>
+	<para style="Paragraph1Header">Paragraph with the style of a heading through alias</para>
+    <spacer length="20"/>
+	<para>Example paragraph</para>
+</story>
+</document>

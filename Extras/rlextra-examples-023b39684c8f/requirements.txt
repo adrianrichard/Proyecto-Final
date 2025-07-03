@@ -1,0 +1,5 @@
+rlextra[pycairo]
+-i https://www.reportlab.com/pypi/
+Django>=4.2.11
+beautifulsoup4
+selenium

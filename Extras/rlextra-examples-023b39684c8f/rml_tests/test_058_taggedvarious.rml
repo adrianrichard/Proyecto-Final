@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="test_058_taggedvarious.pdf" compression="0" invariant="1" tagged="1">
+
+<docinit>
+	<registerTTFont faceName="Arial" fileName="Arial.ttf"/>
+	<registerTTFont faceName="Arial-Bold" fileName="Arial_Bold.ttf"/>
+	<registerTTFont faceName="Arial-Bold-Italic" fileName="Arial_Bold_Italic.ttf"/>
+	<registerTTFont faceName="Arial-Italic" fileName="Arial_Italic.ttf"/>
+	<registerFontFamily normal="Arial" bold="Arial-Bold" italic="Arial-Italic" boldItalic="Arial-Bold-Italic"/>
+</docinit>
+<template pageSize="(595, 842)" leftMargin="72" showBoundary="0" title="Tagged" lang="en-GB" displayDocTitle="1">
+	<pageTemplate id="main">
+		<pageGraphics>
+			<setFont name="Arial-Bold" size="18"/>
+	    	    <drawString x="35" y="783">RML Example 58: Tagged Various - Paragraphs,</drawString>
+	    	    <drawString x="35" y="763">Tables, Lists </drawString>
+	            <setFont name="Arial-Bold-Italic" size="12" />
+	    		<image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="749" width="72" height="72" required="no" alt_file=""/>
+	    		<image file="strapline.png" preserveAspectRatio="1" x="35" y="0" width="525" alt_file="" required="no"/>
+			<setFont name="Arial-Bold-Italic" size="18"/>
+
+			<setFont name="Arial" size="10"/>
+			<drawCenteredString x="297" y="36"><pageNumber countingFrom="2"/></drawCenteredString>
+		</pageGraphics>
+		<frame id="1" x1="35" y1="45" width="525" height="700"/>
+	</pageTemplate>
+</template>
+
+<stylesheet>
+
+	<paraStyle name="h1"
+	fontName="Arial-Bold"
+	fontSize="12"
+	leading="14.4"
+	spaceBefore = "0.5 cm"
+	/>
+
+	<paraStyle name="h2"
+	parent="h1"
+	fontSize="11"
+	leading="12.1"
+	spaceBefore = "0.5 cm"
+	/>
+
+	<paraStyle name="normal"
+	fontName="Arial"
+	fontSize="10"
+	leading="12"
+	spaceBefore="12"
+	/>
+	<paraStyle name="list-normal"
+	fontName="Arial"
+	fontSize="10"
+	leading="12"
+	spaceBefore="3"
+	/>
+
+	<blockTableStyle id="basic" spaceBefore="0" spaceAfter="0" >
+		<blockFont name="Arial" size="10" leading="12"/>
+		<lineStyle
+			colorName="black"
+			kind="GRID"
+			thickness="1"
+			space="12"
+			/>
+	</blockTableStyle>
+    <listStyle name="tagged_list" bulletFontSize="10" bulletFontName="Arial"/>
+</stylesheet>
+
+
+<story>
+
+	<para style="h1" tagType="H1">Test - Headings and Paras</para>
+
+	<para style="h2" tagType="H2">Heading 2</para>
+
+	<para style="normal" tagType="P">This is an ordinary paragraph</para>
+
+	<para style="normal"  tagType="Artifact">This is an artifact</para>
+
+	<spacer length="12"/>
+
+	<para style="normal" tagType="P">Another ordinary paragraph</para>
+
+	<para style="normal">Automatically tagged</para>
+
+	<spacer length="10"/>
+
+	<para style="h1" tagType="H1">Test - Table</para>
+	<para style="normal" tagType="H2">Table 1 Example</para>
+    <blockTable  style="basic" align="LEFT" altText="Table's AltText" summary="Table Summary Example">
+				<caption style="h1" tagType="H1">Robin's Table</caption>
+                <tr>
+                    <td tagType="TH scope=column">Col 1</td>
+                    <td tagType="TH scope=column">Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 1, Col 1</td>
+                    <td>Row 1, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 2, Col 1</td>
+                    <td>Row 2, Col 2</td>
+                </tr>
+	</blockTable>
+
+	<spacer length="5"/>
+	<ol style="tagged_list">
+		<para style="h1" tagType="H1">Test - Ordered Lists</para>
+		<li><para style="list-normal">Item 1</para></li>
+		<li><para style="list-normal">Item 2</para></li>
+		<li><para style="list-normal">Item 3</para></li>
+	</ol>
+
+	<spacer length="10"/>
+	<ul style="tagged_list">
+		<para style="h1" tagType="H1">Test - Unordered Lists</para>
+		<li><para style="list-normal">Item 1</para></li>
+		<li><para style="list-normal">Item 2</para></li>
+		<li><para style="list-normal">Item 3</para></li>
+	</ul>
+
+	<spacer length="10"/>
+	<para style="h1" tagType="H1">Test - Definition Lists</para>
+	<dl>
+		<h1 style="h1" alignment="center" textColor="red">Definition List</h1>
+		<dt><h1 style="h1">Coffee</h1></dt>
+		<dd><para style="list-normal">Black hot drink</para></dd>
+		<dd><para style="list-normal">Wakes you</para></dd>
+		<dt><h1 style="h1">Milk</h1></dt>
+		<dt><h1 style="h1">Drink</h1></dt>
+		<dd><para style="list-normal">White cold drink</para></dd>
+	</dl>
+
+<nextPage/>
+	<markedContent tagType="Artifact" kind="start"/>
+	<spacer length="10"/>
+	<para style="h1" tagType="H1">Test - Image</para>
+	<imageAndFlowables imageWidth="70" imageHeight="200"
+		preserveAspectRatio="1" imageRightPadding="450" imageBottomPadding="0" imageTopPadding="10"
+		imageName="logo_no_bar.png">
+	</imageAndFlowables>
+	<markedContent tagType="Artifact" kind="end"/>
+
+    <drawing module="test_014_scatterplot" function="ScatterPlotDrawing" altText="Scatterplot" tagType="Figure">
+		<param name="ScatterPlot.data">[((0.03, 50), (0.07, 54), (0.09, 43)), ((0.03, 27), (0.07, 32), (0.08, 15))]</param>
+		<param name="ScatterPlot.xValueAxis.labels.fontName">Arial</param>
+		<param name="ScatterPlot.yValueAxis.labels.fontName">Arial</param>
+		<param name="ScatterPlot.lineLabels.fontName">Arial</param>
+    </drawing>
+	<illustration width="525" height="72">
+		<setFont name="Arial" size="10" leading="12"/>
+		<fill color="red"/>
+		<drawString x="0" y="60">Left</drawString>
+		<fill color="green"/>
+		<drawRightString x="525" y="48">Right</drawRightString>
+		<fill color="blue"/>
+		<drawCenteredString x="262.5" y="36">Centered</drawCenteredString>
+		<fill color="magenta"/>
+		<drawCentredString x="262.5" y="24">Centred</drawCentredString>
+		<stroke color="black" width="2"/>
+		<fill color="pink"/>
+		<rect x="10" y="12" width="515" height="10" fill="1" stroke="1" href="https://www.reportlab.com/"/>
+		<markedContent tagType="Artifact" kind="start"/>
+			<rect x="10" y="0" width="515" height="10" fill="1" stroke="1" href="https://www.reportlab.com/"/>
+		<markedContent tagType="Artifact" kind="end"/>
+	</illustration>
+	    <blockTable  style="basic" align="LEFT" altText="Test Table Tagging" summary="Table Summary Example" repeatRows="1" spaceBefore="10">
+                <tr>
+                    <td tagType="TH scope=column" background="grey">Col 1</td>
+                    <td tagType="TH scope=column" background="grey">Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 1, Col 1</td>
+                    <td>Row 1, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 2, Col 1</td>
+                    <td>Row 2, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 3, Col 1</td>
+                    <td>Row 3, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 4, Col 1</td>
+                    <td>Row 4, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 5, Col 1</td>
+                    <td>Row 5, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 6, Col 1</td>
+                    <td>Row 6, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 7, Col 1</td>
+                    <td>Row 7, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 8, Col 1</td>
+                    <td>Row 8, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 9, Col 1</td>
+                    <td>Row 9, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 10, Col 1</td>
+                    <td>Row 10, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 11, Col 1</td>
+                    <td>Row 11, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 12, Col 1</td>
+                    <td>Row 12, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 13, Col 1</td>
+                    <td>Row 13, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 14, Col 1</td>
+                    <td>Row 14, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 14, Col 1</td>
+                    <td>Row 14, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 15, Col 1</td>
+                    <td>Row 15, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 16, Col 1</td>
+                    <td>Row 16, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 17, Col 1</td>
+                    <td>Row 17, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 19, Col 1</td>
+                    <td>Row 19, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 20, Col 1</td>
+                    <td>Row 20, Col 2</td>
+                </tr>                
+                <tr>
+                    <td>Row 21, Col 1</td>
+                    <td>Row 21, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 22, Col 1</td>
+                    <td>Row 22, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 23, Col 1</td>
+                    <td>Row 23, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 24, Col 1</td>
+                    <td>Row 24, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 25, Col 1</td>
+                    <td>Row 25, Col 2</td>
+                </tr>
+                <tr>
+                    <td>Row 26, Col 1</td>
+                    <td>Row 26, Col 2</td>
+                </tr>                
+	</blockTable>
+</story>
+
+</document>

@@ -11,7 +11,8 @@ from reportlab.lib.pagesizes import letter, A4
 from reportlab.pdfgen import canvas as pdf_canvas
 from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
-
+import platform
+import subprocess
 import os
 pacientes=[]
 buttons = []
@@ -282,12 +283,32 @@ class Odontograma:
         pdf.drawCentredString(ancho_pagina/2, alto_pagina - 150, "FICHA ODONTOLÓGICA")
        
         pdf.line(50, alto_pagina - 130, ancho_pagina - 50, alto_pagina - 130)
-        pdf.drawString(50, alto_pagina - 150, f"Apellido/s y Nombre/s: {apellido}, {nombre}")
-        pdf.drawString(50, alto_pagina - 170, f"DNI: {dni} ")
-        pdf.drawString(50, alto_pagina - 190, f"Obra Social: {obra_social}")
-        pdf.drawString(ancho_pagina - 300, alto_pagina - 190, f"N° de Socio: {nrosocio}")
+        datos_paciente = [
+            ["APELLIDO/S Y NOMBRE/S", apellido+", "+nombre],
+            ["DNI", dni],
+            ["OBRA SOCIAL", obra_social],
+            ["N° SOCIO", nrosocio],
+            ["FECHA INFORME", datetime.now().strftime("%d/%m/%Y")]
+        ]
+
+        tabla_paciente = Table(datos_paciente, colWidths=[160, 330])
+        tabla_paciente.setStyle(TableStyle([
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+            ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+        ]))
+        tabla_paciente.wrapOn(pdf, ancho_pagina, alto_pagina)
+        tabla_paciente.drawOn(pdf, 50, alto_pagina - 250)
+        # pdf.drawString(50, alto_pagina - 150, f"Apellido/s y Nombre/s: {apellido}, {nombre}")
+        # pdf.drawString(50, alto_pagina - 170, f"DNI: {dni} ")
+        # pdf.drawString(50, alto_pagina - 190, f"Obra Social: {obra_social}")
+        # pdf.drawString(ancho_pagina - 300, alto_pagina - 190, f"N° de Socio: {nrosocio}")
         # Línea divisoria antes de la imagen
-        pdf.line(50, alto_pagina - 370, ancho_pagina - 50, alto_pagina - 370)
+        pdf.line(50, alto_pagina - 270, ancho_pagina - 50, alto_pagina - 270)
         captura_path = "canvas_image.png"
         if os.path.exists(captura_path):
             with Image.open(captura_path) as img:
@@ -307,8 +328,39 @@ class Odontograma:
                 width=img_width,
                 height=img_height
             )
-        pdf.save()
+                
+        try:
+            pdf.save()
+            messagebox.showinfo("Odontograma", "Informe creado exitosamente")
+            self.abrir_carpeta_contenedora(nombre_archivo)
+        except:
+            messagebox.showwarning("Odontograma", "No se pudo crear el informe")
     
+    def abrir_carpeta_contenedora(self, filepath):
+        try:
+            sistema = platform.system()
+            path_absoluto = os.path.abspath(filepath)
+            
+            if sistema == "Windows":
+                # La mejor manera en Windows
+                subprocess.run(f'explorer /select,"{path_absoluto}"', shell=True)
+            elif sistema == "Darwin":  # macOS
+                # Comando para macOS
+                subprocess.run(['open', '-R', path_absoluto])
+            else:  # Linux
+                # Intentamos con los gestores de archivos más comunes
+                try:
+                    subprocess.run(['nautilus', '--select', path_absoluto])
+                except FileNotFoundError:
+                    try:
+                        subprocess.run(['dolphin', '--select', path_absoluto])
+                    except FileNotFoundError:
+                        # Fallback: abrir solo la carpeta
+                        subprocess.run(['xdg-open', os.path.dirname(path_absoluto)])
+            
+        except Exception as e:
+            messagebox.showwarning("Odontograma", f"No se pudo abrir la carpeta: {e}")
+        
     def editar_diente(self, numero):
         #print('prueba', numero)
         self.numero_actual = numero

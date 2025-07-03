@@ -1,0 +1,281 @@
+{{script}}
+#from reportlab import ascii
+from reportlab.lib.utils import isStr
+import re
+from reportlab.lib.utils import annotateException
+from preppy import SafeString, xmlEscape
+import datetime
+center_top = ourbook.scalar(prname,'A1')
+product_title = ourbook.scalar(prname,'A5')
+pdname = 'Data for each Product Graph'
+try:
+	try:
+		pdoffs = ourbook.colfind(pdname,'a1',product_title, autoStrip=True)
+	except ValueError:
+		pdoffs = ourbook.colfind(pdname,'a1',prname, autoStrip=True)
+except:
+	
+	annotateException('\nfailed whilst looking for %s / %s\n%s' % (ascii(product_title), ascii(prname),
+			'\n'.join(('%s==%s = %s %s==%s = %s'  % (ascii(v),ascii(product_title),ascii(v==product_title),ascii(v),ascii(prname),ascii(v==prname)) for v in ourbook.colNonEmpties(pdname,'a1')))))
+pdi = pdoffs[0]+1
+j = ourbook.c2letter(ourbook.rowfind(pdname, 'c%d' % pdi, None)[1] - 1)
+_data = ourbook.rowmatrix(pdname,'c%d:%s%d' % (pdi+1,j,pdi+3))
+have_product_chart = max([len(list(filter(None,d))) for d in _data])>0
+_dates = ourbook.rowvec(pdname,'c%d:%s%d' % (pdi,j,pdi))
+_expectations = ourbook.rowvec(pdname,'c%d:%s%d'%(pdi+4,j,pdi+4))
+def rowformat(row,cols,fmt):
+	for col in cols:
+		row[col]=fmt(row[col])
+def pc2(x):
+	if isStr(x):
+		return x
+	elif x is None:
+		return ''
+	try:
+		return '%.2f%%' %(100*x)
+	except:
+		annotateException("\npc2 failed with argument %s\n" % ascii(x))
+def pound4(x):
+	if isStr(x):
+		return x
+	try:
+		return u'\xa3%.4f' % x
+	except:
+		annotateException("\npc2 failed with argument %s\n" % ascii(x))
+def dmy(d,fmt="%d/%m/%Y"):
+	if isStr(d):
+		return d
+	elif d is None:
+		return ''
+	try:
+		return d.strftime(fmt)
+	except:
+		annotateException("\ndmy failed with argument %s\n" % ascii(d))
+def isempty(x):
+	if isStr(x):
+		x = x.strip()
+		return not x
+	return x is None
+
+summary = ourbook.rowfind(prname,'a2','Summary:')
+summary = ourbook.scalar(prname,'a2',(0,summary[1]+1)) if summary else ''
+summary = SafeString(xmlEscape(summary).replace('\n','<br/>'))
+
+if True:
+	#pie data
+	for secRow in (3,7):
+		origin = 'j%d' % secRow
+		try:
+			pie_offs = ourbook.rowfind(prname,origin,'Sector')
+			i,j = ourbook.addr2rc(origin)
+			break
+		except:
+			pass
+	else:
+		pie_offs = None
+	pie_labels = []
+	pie_values = []
+	if pie_offs:
+		pie_offs = 0,pie_offs[1]-j
+		if pie_offs:
+			origin = 'j%d' % (secRow+1)
+			for i in range(30):
+				pie_offs = i,pie_offs[1]
+				try:
+					labelv = ourbook.scalar(prname,origin,offset=pie_offs)
+					if isempty(labelv):
+						break
+				except:
+					break
+				allocv = ourbook.scalar(prname,origin,offset=(i,pie_offs[1]+1))
+				if not isempty(allocv):
+					pie_values.append(allocv)
+					pie_labels.append(labelv)
+
+ROFFS = []
+for v in ('Product', 'Investee Companies', 'Fees taken at Product or Security Level'):
+	pat = re.compile(r'^\s*'+v+r'\s*(?::\s*|)$')
+	try:
+		ROFFS.append(ourbook.colfind(prname,'a1',pat)[0]+1)
+	except:
+		annotateException('\ncannot find %r in column A of sheet %r\n' % (v,prname))
+{{endscript}}<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document colorSpace="CMYK" filename="Performance.pdf" invariant="1">
+<docinit>
+	<color id="grey" CMYK="0, 0, 0, 0.50"/>
+	<color id="orange" CMYK="0, 0.71, 0.79, 0"/>
+	<color id="table_bg" CMYK="0.01, 0.12, 0.14, 0"/>
+	<color id="blue" CMYK="1, 0.75, 0.02, 0.18"/>
+	<color id="title_blue" CMYK="1, 0.25, 0.02, 0.18"/>
+	<color id="tb_bg" CMYK="0.10, 0.07, 0, 0.02"/>
+</docinit>
+
+<template pageSize="1280, 720" leftMargin="0" showBoundary="0">
+
+
+	<pageTemplate id="main" pageSize="(1280,720)">
+		<pageGraphics>
+			<image file="{{RML_DIR}}/logo.png" preserveAspectRatio="1" x="30" y="650" width="202" height="62" />
+			<fill color="(0,0,0,0.8)"/>
+			<setFont name="MuseoSans_500" size="6.75"/>
+			<drawCenteredString x="{{35+0.55*1113}}" y="{{720 - 50.725}}">{{center_top}}</drawCenteredString>
+		</pageGraphics>
+	<frame id="first" x1="35" y1="25" width="1113" height="630"/>
+	</pageTemplate>
+
+</template>
+
+<stylesheet>
+	<paraStyle name="h1-50" fontName="MuseoSans_700" fontSize="20" leading="20" alignment="centre" spaceAfter="50" textColor="title_blue"/>
+	<paraStyle name="normal" fontName="MuseoSans_100" fontSize="10" leading="12" spaceBefore="6"/>
+	<paraStyle name="normal_right" parent="normal" fontSize="8" leading="9.6" fontName="MuseoSans_500" alignment="right" textColor="black"/>
+	<paraStyle name="normal_left" parent="normal_right" alignment="left"/>
+	<paraStyle name="normal_left_100" parent="normal_left" fontName="MuseoSans_100"/>
+
+	<paraStyle name="intro"  fontName="MuseoSans_100" fontSize="12" leading="12" spaceAfter="12"/>
+	<paraStyle name="tax-block"  fontName="MuseoSans_500" fontSize="8.4" leading="{{1.2*8.4}}" spaceAfter="0" spaceBefore="0" textColor="(0.7494,0.6516,0.538,0.5516)"/>
+
+	<blockTableStyle id="first" spaceAfter="10">
+		<blockFont name="MuseoSans_500" size="14" leading="16.8"/>
+		<blockAlignment value="center" start="0,0" stop="-1,-1"/>
+		<blockValign value="MIDDLE"/>
+		<blockTextColor colorName="title_blue" start="0,0" stop="-1,0"/>
+		<lineStyle kind="None" colorName="grey"/>
+		<blockTopPadding length="5" start="0,0" stop="-1,0" />
+		<blockBottomPadding length="20" start="0,0" stop="-1,0" />
+	</blockTableStyle>
+
+	<blockTableStyle id="simple" spaceAfter="10">
+		<blockAlignment value="left" start="0,0" stop="-1,-1"/>
+		<blockValign value="TOP"/>
+		<blockFont name="MuseoSans_500" size="8" leading="9.6"/>
+		<blockBackground colorName="tb_bg" start="0,0" stop="-1,0"/>
+		<blockBackground colorName="white" start="0,1" stop="-1,-1"/>
+		<lineStyle kind="LINEABOVE" colorName="black" thickness="0.2" start="0,0" stop="-1,-1"/>
+		<lineStyle kind="LINEBELOW" colorName="black" thickness="0.2" start="0,0" stop="-1,-1"/>
+		<blockTopPadding length="5" start="0,0" stop="-1,0" />
+		<blockBottomPadding length="5" start="0,0" stop="-1,0" />
+		<blockTopPadding length="2" start="0,1" stop="-1,-1" />
+		<blockBottomPadding length="2" start="0,1" stop="-1,-1" />
+		<blockLeftPadding length="3" start="0,0" stop="-1,-1" />
+		<blockRightPadding length="3" start="0,0" stop="-1,-1" />
+	</blockTableStyle>
+</stylesheet>
+
+<story>
+<placePara x="{{35+1113*0.55}}" y="635" width="1280" style="h1-50" textTransform="uppercase" anchor="s">{{product_title}}</placePara>
+<placePara x="35" y="35" width="1000" style="tax-block">Company PLC
+Services do not offer
+financial or tax advice
+of any kind and any
+person considering tax
+efficient investments of
+this nature is encouraged
+to seek advice from a
+Financial Adviser.</placePara>
+<blockTable style="first" colWidths="45%,20%,35%">
+	<tr>
+		<td>PERFORMANCE CHART</td>
+		<td>INVESTEE  SECTORS</td>
+		<td>MANAGER SUMMARY</td>
+	</tr>
+	<tr>
+		<td leftPadding="15">
+			{{if have_product_chart}}
+			<drawing baseDir="{{here}}" module="product_chart" function="ProductChart">
+				<param name="_dates">{{ascii([d.strftime('%d/%m/%Y') if isinstance(d,datetime.datetime) else '' for d in _dates])}}</param>
+				<param name="_data">{{ascii(_data)}}</param>
+				<param name="_expectations">{{ascii(_expectations)}}</param>
+				<param name="_bottom_middle">{{try}}{{ascii(dmy(ourbook.scalar(pdname,'c%d' %(pdi+11)),fmt="%b %Y"))}}{{except}}{{ascii('')}}{{endtry}}</param>
+				<!--param name="_bottom_left"></param-->
+			</drawing>
+			{{endif}}
+		</td>
+		<td>
+			{{if pie_labels and pie_values}}
+			<drawing baseDir="{{here}}" module="investor_company_sectors_pie" function="InvestorCompanySectorsPie">
+				<param name="_data">{{pie_values}}</param>
+				<param name="_labels">{{pie_labels}}</param>
+			</drawing>
+			{{endif}}
+		</td>
+		<td leftPadding="10"><para style="normal">{{summary}}</para></td>
+	</tr>
+</blockTable>
+<illustration height="37" width="1113">
+	<fill color="title_blue"/>
+	<setFont name="MuseoSans_500" size="14"/>
+	<drawCenteredString x="{{0.55*1113}}" y="5">SUMMARY</drawCenteredString>
+</illustration>
+<spacer length="30"/>
+<blockTable style="simple" colWidths="18%,10%,10%,10%,16%,12%,12%,12%">
+
+	<tr>
+		<td><para style="normal_left">Product</para></td>
+		<td><para  style="normal_left">Manager</para></td>
+		<td><para  style="normal_left">Custodian/ Registrar</para></td>
+		<td><para style="normal_left">Portfolio Structure</para></td>
+		<td><para style="normal_left">Qualifying Subscription</para></td>
+		<td><para style="normal_left">Target</para></td>
+		<td><para style="normal_left">Current Price/Value</para></td>
+		<td><para style="normal_left">Current Price/Value inc Returns</para></td>
+	</tr>
+	<tr>
+		{{script}}
+		row = ourbook.rowvec(prname,'a1:h1',offset=(ROFFS[0],0))
+		rowformat(row,[4,6,7],pc2)
+		#row[5] += 'per annum'
+		{{endscript}}
+		{{for i, c in enumerate(row)}}<td><para style="{{if i in (0,6,7)}}normal_left{{else}}normal_left_100{{endif}}">{{if i==7}}<u>{{c}}</u>{{else}}{{c}}{{endif}}</para></td>{{endfor}}
+
+	</tr>
+</blockTable>
+
+<blockTable style="simple" colWidths="18%,10%,10%,10%,16%,12%,12%,12%" repeatRows="1" rowSplitRange="(2,-2)">
+	<tr>
+		<td><para style="normal_left">Investee Companies</para></td>
+		<td><para style="normal_left">Sector</para></td>
+		<td><para style="normal_left">Allocation</para></td>
+		<td><para style="normal_left">Allotment Date</para></td>
+		<td><para style="normal_left">2yr Business Relief Consideration Date</para></td>
+		<td><para style="normal_left">Purchase Price</para></td>
+		<td><para style="normal_left">Current Price/NAV per share</para></td>
+		<td><para style="normal_left">Cash Returned per share (inc Divs)</para></td>
+	</tr>
+	{{for i in range(ROFFS[1],ROFFS[2]-1)}}
+	{{if isempty(ourbook.scalar(prname,'A1',offset=(i,0)))}}{{break}}{{endif}}
+	<tr>
+		{{script}}
+		row = ourbook.rowvec(prname,'a1:h1',offset=(i,0))
+		rowformat(row,[2],pc2)
+		rowformat(row,[3,4],dmy)
+		rowformat(row,[5,6,7],pound4)
+		{{endscript}}
+		{{for i, c in enumerate(row)}}<td><para style="normal_left_100">{{c}}</para></td>{{endfor}}
+	</tr>
+	{{endfor}}
+</blockTable>
+
+<blockTable style="simple" colWidths="18%,10%,10%,10%,16%,12%,12%,12%" rowSplitRange="(2,-2)">
+	<tr>
+		<td><para style="normal_left">Fees taken at Product or Security Level</para></td>
+		<td><para style="normal_left">Initial Fees (inc dealing fees)</para></td>
+		<td><para style="normal_left">Annual Fees (inc admin fees)</para></td>
+		<td><para style="normal_left">Exit Fees</para></td>
+		<td><para style="normal_left">Performance Fees/ Rebates</para></td>
+		<td><para style="normal_left">Additional Fees</para></td>
+		<td><para style="normal_left">Final Certs Exp'd/ Rec'd</para></td>
+		<td><para style="normal_left">Exit Expectation</para></td>
+	</tr>
+	<tr>
+		{{script}}
+		row = ourbook.rowvec(prname,'a1:h1',offset=(ROFFS[2],0))
+		rowformat(row,[1,2,3],pc2)
+		rowformat(row,[6,7],dmy)
+		{{endscript}}
+		{{for i, c in enumerate(row)}}<td><para style="normal_left_100">{{c}}</para></td>{{endfor}}
+	</tr>
+</blockTable>
+</story>
+</document>

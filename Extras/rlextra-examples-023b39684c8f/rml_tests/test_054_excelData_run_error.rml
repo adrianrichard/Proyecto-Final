@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?> 
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<!--expect:sheetName='Sheet1'> @ 13:13 - 13:83-->
+<document filename="test_054_excelData_run_error.pdf">
+    <template pageSize="(595, 842)" leftMargin="72" showBoundary="1">
+        <pageTemplate id="main">
+            <frame id="second" x1="35" y1="45" width="525" height="590"/>
+        </pageTemplate>
+    </template>
+    <stylesheet/>
+    <story>
+        <blockTable>
+            <excelData fileName="exceldatz.xls" sheetName="Sheet1" range="A1:B7" />
+        </blockTable>
+    </story>
+</document>

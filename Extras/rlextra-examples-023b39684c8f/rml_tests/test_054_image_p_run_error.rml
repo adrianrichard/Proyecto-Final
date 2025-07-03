@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?> 
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<!--expect:y='749'> (imageOp) @ 10:13 - 11:12-->
+<document filename="test_054_image_p_run_error.pdf">
+    <template pageSize="(595, 842)" leftMargin="72" showBoundary="1">
+        <pageTemplate id="main">
+            <pageGraphics>
+            <image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="749" width="2" height="2"
+   />
+            <image file="logo_no_bar.png1" preserveAspectRatio="1" x="488" y="749" width="72" height="72">
+   </image >
+            </pageGraphics>
+            <frame id="first" x1="35" y1="45" width="525" height="590"/>    
+        </pageTemplate>
+    </template>
+    <stylesheet/>
+    <story>
+        <p></p>
+    </story>
+</document>

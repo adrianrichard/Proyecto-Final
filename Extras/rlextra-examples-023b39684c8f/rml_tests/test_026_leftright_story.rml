@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?> 
+<!DOCTYPE document SYSTEM "../dynamic_rml.dtd"> 
+<document filename="test_026_leftright_story.pdf"> 
+
+<template pageSize="(595, 842)" showBoundary="0">
+	<pageTemplate id="cover">
+		<pageGraphics>
+			<setFont name="Helvetica-Bold" size="18"/>
+			<fill color="red"/>
+		    <drawCenteredString x="297" y="820">Cover Template</drawCenteredString>
+		</pageGraphics>
+		<frame id="F1" x1="36" y1="36" width="523" height="770" showBoundary="border(color='red',width=2)"/>
+	</pageTemplate>
+	<pageTemplate id="left">
+		<pageGraphics>
+			<setFont name="Helvetica-Bold" size="18"/>
+			<fill color="blue"/>
+		    <drawString x="36" y="820">Left Template</drawString>
+		</pageGraphics>
+		<frame id="F1" x1="36" y1="36" width="523" height="770" showBoundary="border(color='blue',width=2)"/>
+	</pageTemplate>
+	<pageTemplate id="right">
+		<pageGraphics>
+			<setFont name="Helvetica-Bold" size="18"/>
+			<fill color="green"/>
+		    <drawRightString x="559" y="820">Right Template</drawRightString>
+		</pageGraphics>
+		<frame id="F1" x1="36" y1="36" width="523" height="770" showBoundary="border(color='green',width=2)"/>
+	</pageTemplate>
+</template>
+
+<stylesheet>
+</stylesheet>
+
+
+<story firstPageTemplate="cover,*,left,right">
+	<para>Cover 0</para>
+	<nextPage/>
+	<para>Left 1</para>
+	<nextPage/>
+	<para>Right 2</para>
+	<nextPage/>
+	<para>Left 3</para>
+	<nextPage/>
+	<para>Right 4</para>
+</story>
+
+</document>

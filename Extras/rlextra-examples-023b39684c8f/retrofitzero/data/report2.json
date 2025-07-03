@@ -1,0 +1,52 @@
+{
+    "id": "12345",
+    "customer_name": "Sample Customer",
+    "address": "6789 Queens Street, Downtown",
+    "ibs_of_carbondioxide": "12386",
+    "miles_driven_car": "45676",
+    "estimated_net_cost": "$89779",
+    "estimated_total_cost": "$161718",
+    "mass_save_state": "$101112",
+    "pilot_incentives": "$131415",
+    "incomplete":true,
+    "tables": [
+				["YEARS 1"], 
+				[
+					"CATEGORY MEASURE",
+					"EFFORT",
+					"LEVEL",
+					"PROJECTS TO CONSIDER",
+					"COMPLETING BEFORE OR WITH",
+					"THIS PROJECT","ESTIMATED",
+					"SAVINGS",
+					"EST. CO2",
+					"REDUCTION",
+					"ESTIMATED COST",
+					"BEFORE INCENTIVES*",
+					"AVAILABLE","INCENTIVES*",
+					"ESTIMATED",
+					"OUT OF POCKET MASS CEC 75% INCENTIVE",
+					"TOTAL COST",
+					"AFTER INCENTIVES"
+				],
+				[
+					"Roadblocks/CustomerRequired Actions",
+					"Recessed lights electrician’s sign-off",
+					"LOW",
+					"none", 
+					"n/a",
+					"n/a",
+					"$8,200 - $0,000",
+					"$6,150", 
+					"$2,050",
+					"$1,353",
+					"—",
+					"$697",
+					"—"
+				]
+			],
+	"incentives_text":"<b>INSERT TEXTS</b>",
+	"avoided_cost_text": "With no investment in decarbonization, <b>over the next 10 years you will spend roughly $53,000</b> on replacing existing equipment, appliances, and vehicles as they fail.",
+	"operational_savings_text":"<b>INSERT TEXTS</b>",
+	"thermometer": {"Customer Emissions": 14.7, "State Average Emissions": 12.1,"Group One": 42, "Group Two": 23, "Group Three":17}
+}

@@ -1,0 +1,5 @@
+Django==2.2.10
+reportlab==4.1.0
+Pillow==9.2.0
+pyRXP==3.0.1
+preppy==4.0.1

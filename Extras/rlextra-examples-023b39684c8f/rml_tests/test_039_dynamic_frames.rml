@@ -1,0 +1,51 @@
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+
+<document filename="test_039_dynamic_frames.pdf">
+
+<template pageSize="(595, 842)" leftMargin="0" rightMargin="0" showBoundary="1">
+	<pageTemplate id="first">
+		<pageGraphics>
+			<setFont name="Helvetica-Bold" size="18"/>
+		    <drawString x="35" y="760">RML Example 039: Dynamic Frames</drawString>
+			<image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="730" width="72" height="72"/>
+    		<image file="strapline.png" preserveAspectRatio="1" x="35" y="0" width="525" alt_file="" required="no"/>
+		</pageGraphics>
+		<frame id ="full" x1="57" y1="260" width="481" height="490" showBoundary="border(color='red')"/>
+		<frame id ="left" x1="57" y1="260" width="239" height="490" showBoundary="border(color='blue')"/>
+		<frame id ="right" x1="299" y1="260" width="239" height="490" showBoundary="border(color='green')"/>
+    </pageTemplate>
+</template>
+
+<stylesheet>
+</stylesheet>
+
+<story firstPageTemplate="first">
+	<para><b>This is line 1</b></para>
+	<para>This is line 2</para>
+	<docAssign var='_y' expr='doc.frame._y'/>
+	<docAssign var='doc.pageTemplate.frames[1]._y2' expr='_y-2'/>
+	<docExec stmt='doc.pageTemplate.frames[1]._reset()'/>
+	<docAssign var='doc.pageTemplate.frames[2]._y2' expr='_y-2'/>
+	<docExec stmt='doc.pageTemplate.frames[2]._reset()'/>
+	<nextFrame/>
+	<!--docAssign var='doc.pageTemplate.frames[1]._y' expr='_y-2'/>
+	<docAssign var='doc.pageTemplate.frames[2]._y' expr='_y-2'/>
+	<nextFrame/-->
+	<para textColor='blue'><i>this should be in the left frame</i></para>
+	<nextFrame/>
+	<para textColor='green'><i>this should be in the right frame</i></para>
+	<nextPage/>
+	<para><b>This is line 1 Page2</b></para>
+	<para>This is line 2 Page2</para>
+	<para>This is line 3 Page2</para>
+	<docAssign var='_y' expr='doc.frame._y'/>
+	<docAssign var='doc.pageTemplate.frames[1]._y' expr='_y-2'/>
+	<docAssign var='doc.pageTemplate.frames[1]._y2' expr='_y-2'/>
+	<docAssign var='doc.pageTemplate.frames[2]._y' expr='_y-2'/>
+	<docAssign var='doc.pageTemplate.frames[2]._y2' expr='_y-2'/>
+	<nextFrame/>
+	<para textColor='blue'><i>this should be in the left frame Page 2</i></para>
+	<nextFrame/>
+	<para textColor='green'><i>this should be in the right frame Page 2</i></para>
+</story>
+</document>

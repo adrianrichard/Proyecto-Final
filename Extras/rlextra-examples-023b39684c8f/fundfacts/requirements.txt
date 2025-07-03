@@ -1,0 +1,3 @@
+rlextra>=4.1.0
+-i https://www.reportlab.com/pypi
+Django>=4.2.11

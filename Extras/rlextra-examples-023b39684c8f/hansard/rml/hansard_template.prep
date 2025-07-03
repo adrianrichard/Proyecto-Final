@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?> 
+<!DOCTYPE document SYSTEM "rml.dtd"> 
+
+<document filename="hansard_debate.pdf" tagged="1">
+
+{{script}}
+
+#nice short name for our formatting function.
+from rlextra.radxml.html_cleaner import cleanInline as i
+from rlextra.radxml.html_cleaner import cleanBlocks as b
+from rlextra.radxml.xmlutils import TagWrapper
+from collections import Counter
+
+#we want the current date
+import datetime
+today = datetime.date.today()
+
+background_colour = "#373151"
+logo = "UK_Parliament_logo_textless.svg"
+if debate["house"] == "Commons":
+    background_colour = "#006548"
+    logo = "UK_House_of_Commons_logo.svg"
+if debate["house"] == "Lords":
+    background_colour = "#9D0830"
+    logo = "UK_House_of_Lords_logo_white.svg"
+
+{{endscript}}
+<docinit>
+    <registerTTFont faceName="Poppins-ExtraLight" fileName="{{RML_DIR}}/fonts/Poppins/Poppins-ExtraLight.ttf"/>
+    <registerTTFont faceName="Poppins-Light" fileName="{{RML_DIR}}/fonts/Poppins/Poppins-Light.ttf"/>
+    <registerTTFont faceName="Poppins-Regular" fileName="{{RML_DIR}}/fonts/Poppins/Poppins-Regular.ttf"/>
+    <registerTTFont faceName="Poppins-Italic" fileName="{{RML_DIR}}/fonts/Poppins/Poppins-Italic.ttf"/>
+    <registerTTFont faceName="Poppins-Medium" fileName="{{RML_DIR}}/fonts/Poppins/Poppins-Medium.ttf"/>
+    <registerTTFont faceName="Poppins-SemiBold" fileName="{{RML_DIR}}/fonts/Poppins/Poppins-SemiBold.ttf"/>
+    <registerTTFont faceName="Poppins-Bold" fileName="{{RML_DIR}}/fonts/Poppins/Poppins-Bold.ttf"/>
+    <registerFontFamily
+            normal="Poppins-Regular"
+            bold="Poppins-SemiBold"
+            italic="Poppins-Italic"
+    />
+</docinit>
+
+<template title="{{debate['title']}}" lang="en-GB" pageSize="(595, 842)" leftMargin="72" showBoundary="0">
+    <pageTemplate id="cover">
+        <pageGraphics>
+            <setFont name="Poppins-Regular" size="9"/>
+            <drawRightString x="555" y="20">Page <pageNumber/> of <getName id="pagex" default="0"/></drawRightString>
+
+            <fill color="#ebeaed"/>
+            <rect x="30" y="30" width="535" height="205" round="10" fill="1" stroke="0"/>
+
+            <fill color="#373151"/>
+            <rect x="0" y="692" height="150" width="595" fill="1" stroke="0"></rect>
+            <fill color="{{background_colour}}"/>
+            <rect x="0" y="542" height="150" width="595" fill="1" stroke="0"></rect>
+
+            <image file="{{RML_DIR}}/UK_Parliament_logo_white.svg" width="159" height="40" x="1in" y="782" preserveAspectRatio="1"/>
+            <fill color="white"/>
+            <stroke color="white"/>
+            <setFont name="Poppins-SemiBold" size="25" leading="26.5"/>
+            <drawString x="1in" y="722">Hansard</drawString>
+            <stroke color="white"/>
+            <lineMode width="0.1"/>
+            <lines>0 767 595 767</lines>
+            <lineMode dash="1"/>
+            <lines>0 667 595 667</lines>
+            {{ if debate["house"] == "Lords" or debate["house"] == "Commons" }}
+                <image file="{{RML_DIR}}/{{logo}}" width="159" height="40" x="1in" y="544.5" preserveAspectRatio="1"/>
+            {{ endif }}
+            <image file="{{RML_DIR}}/logo_no_bar.svg" width="125" height="40" x="15" y="190" preserveAspectRatio="1"/>
+        </pageGraphics>
+        <frame id="breadcrumbs" x1="1in" y1="667" width="6.27in" height="25"/>
+        <frame id="title" x1="1in" y1="622" width="6.27in" height="30"/>
+        <frame id="subtitle" x1="1in" y1="580" width="6.27in" height="25"/>
+        <frame id="speakers" x1="1in" y1="5in" width="6.27in" height="2.29in"/>
+        <frame id="general" x1="1in" y1="3.5in" width="6.27in" height="1.25in"/>
+        <frame id="footer" x1="60" y1="55" width="475" height="125"/>
+    </pageTemplate>
+    <pageTemplate id="body">
+        <pageGraphics>
+            <setFont name="Poppins-Regular" size="9"/>
+            <drawRightString x="555" y="20">Page <pageNumber/> of <getName id="pagex" default="0"/></drawRightString>
+            <fill color="#373151"/>
+            <rect x="0" y="790" height="52" width="595" fill="1" stroke="0"></rect>
+            <fill color="{{background_colour}}"/>
+            <rect x="0" y="738" height="52" width="595" fill="1" stroke="0"></rect>
+
+            {{ if debate["house"] == "Lords" or debate["house"] == "Commons" }}
+                <image file="{{RML_DIR}}/{{logo}}" width="159" height="40" x="1in" y="796" preserveAspectRatio="1"/>
+            {{ endif }}
+            <image file="{{RML_DIR}}/logo_no_bar.svg" width="100" height="40" x="240" y="10" preserveAspectRatio="1"/>
+
+            <fill color="white"/>
+            <setFont name="Poppins-SemiBold" size="20" leading="21.5"/>
+            <drawString x="1in" y="756.5">{{debate["title"]}}</drawString>
+            <setFontSize size="20"/>
+            <drawRightString x="518" y="808">Hansard</drawRightString>
+        </pageGraphics>
+        <frame id="first" x1="1in" y1="1in" width="6.27in" height="652"/>
+    </pageTemplate>
+</template>
+
+<stylesheet>
+    <paraStyle name="heading-big" fontName="Poppins-SemiBold" fontSize="25" leading="26.5" textColor="white"/>
+    <paraStyle name="heading-medium" parent="heading-big" fontSize="20" leading="21.5"/>
+    <paraStyle name="heading-small" parent="heading-big" fontSize="25" leading="26.5"/>
+    <paraStyle name="breadcrumbs" fontName="Poppins-Regular" fontSize="8" leading="9.5" textColor="white"/>
+    <paraStyle name="text" fontName="Poppins-Regular" fontSize="10" leading="11.5" textColor="black"/>
+    <paraStyle name="speakers" parent="text" fontSize="15" leading="16.5" textColor="black"/>
+    <paraStyle name="small" parent="text" fontSize="10" leading="9.5"/>
+    <paraStyle name="time-marker" parent="text" fontSize="15" leading="16.5" textColor="#625a75"/>
+    <paraStyle name="speaker-header" parent="text" textColor="#373151"/>
+    <paraStyle name="speaker-text" parent="text" textColor="#4d4d4d"/>
+</stylesheet>
+
+<story firstPageTemplate="cover">
+    <setNextTemplate name="body"/>
+
+    <setNextFrame name="breadcrumbs"/>
+    <nextFrame/>
+    <keepInFrame onOverflow="shrink">
+        <spacer length="5"/>
+        <para style="breadcrumbs">
+            {{for crumb in debate["breadcrumbs"]}}
+                <a href="{{crumb['href']}}"><u>{{crumb["title"]}}</u></a> &gt;
+            {{endfor}}
+            {{debate["title"]}}
+        </para>
+    </keepInFrame>
+
+    <setNextFrame name="title"/>
+    <nextFrame/>
+    <keepInFrame onOverflow="shrink">
+        <para style="heading-big">{{debate["title"]}}</para>
+    </keepInFrame>
+
+    <setNextFrame name="subtitle"/>
+    <nextFrame/>
+    <keepInFrame onOverflow="shrink">
+        <para style="heading-medium">{{debate["subtitle"]}}</para>
+    </keepInFrame>
+
+    <setNextFrame name="speakers"/>
+    <nextFrame/>
+    <keepInFrame onOverflow="shrink">
+        <para style="speakers" alignment="center"><b>Speakers</b></para>
+        <spacer length="15"/>
+        {{script}}
+        frequent_speakers = Counter([contrib['speaker'] for contrib in debate["contributions"] if 'speaker' in contrib])
+        {{endscript}}
+        <para alignment="center" style="speakers" fontSize="12">{{"; ".join(list(frequent_speakers))}}</para>
+    </keepInFrame>
+
+    <setNextFrame name="general"/>
+    <nextFrame/>
+    <keepInFrame onOverflow="shrink">
+        <para style="text" leading="13.5" spaceAfter="15">Hansard is the official report of all Parliamentary debates. Find Members, their contributions, debates, petitions and divisions from published Hansard reports dating back over 200 years. Daily debates from Hansard are published on this website the next working day.</para>
+    </keepInFrame>
+
+    <setNextFrame name="footer"/>
+    <nextFrame/>
+    <keepInFrame onOverflow="shrink">
+        <placePara style="text" fontName="Poppins-Bold" x="200" y="205" width="350" alignment="right">
+            THIS IS NOT AN OFFICIAL GOVERNMENT DOCUMENT
+        </placePara>
+        <para style="text" leading="13.5">
+            ReportLab provides a programming library that can convert content into good-looking pdfs quickly.
+            <br/><br/>
+            This is created dynamically as a demonstration using publicly available records from the Parliamentary
+            report database Hansard and the original source can be found
+            <a href="{{debate['source']}}"><span color="blue"><u>here</u></span></a>.
+            <br/><br/>
+            If you would like to see any other debates, or if any other government content would be ideal for use with
+            our services, please get in contact.
+        </para>
+    </keepInFrame>
+
+    <placePara style="small" x="45" y="45" width="300">
+        <a href="https://www.reportlab.com">Powered by <span color="blue">Reportlab</span></a>
+        <a href="https://www.reportlab.com">Content to PDF Solutions</a>
+    </placePara>
+
+
+
+    <nextPage/>
+    {{ for contrib in debate["contributions"]}}
+        {{if "time" in contrib}}
+            <para style="time-marker"><b>{{contrib['time']}}</b></para>
+            <docIf cond="availableHeight &gt; 10">
+                <spacer length="10"/>
+            </docIf>
+        {{endif}}
+        {{if "speaker" in contrib}}
+            <spacer length="9"/>
+            <condPageBreak height="47.5"/> <!-- should be leading * lines + hr but needs a bit extra -->
+            <para style="speaker-header"><b>{{contrib['speaker']}}</b></para>
+            <hr thickness="0.1" width="595" color="lightgrey"/>
+        {{endif}}
+        {{if "content" in contrib}}
+            {{for text in contrib["content"]}}
+                <para style="speaker-text">
+                    {{if text["italics"]}}
+                        <i>{{text['text']}}</i>
+                    {{else}}
+                        {{text['text']}}
+                    {{endif}}
+                </para>
+                <docIf cond="availableHeight &gt; 15">
+                    <spacer length="15"/>
+                </docIf>
+            {{endfor}}
+        {{endif}}
+    {{ endfor }}
+
+    <namedString id="pagex"><pageNumber/></namedString>
+</story>
+</document>

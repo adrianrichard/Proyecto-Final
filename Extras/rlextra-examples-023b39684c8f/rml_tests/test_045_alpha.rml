@@ -1,0 +1,99 @@
+<!DOCTYPE document SYSTEM "rml_1_0.dtd"> 
+<document filename="test_045_alpha.pdf" invariant="1">
+<template pageSize="A4" leftMargin="72" showBoundary="0">
+	<pageTemplate id="main" pageSize="A4">
+		<pageGraphics>
+			<setFont name="Helvetica-Bold" size="18"/>
+				<drawString x="35" y="783">RML Example 46: Alpha</drawString>
+				<image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="749" width="72" height="72" required="0" alt_file=""/>
+				<image file="strapline.png" preserveAspectRatio="1" x="35" y="0" width="525" required="0" alt_file=""/>
+		</pageGraphics>
+		<frame id="second" x1="35" y1="45" width="525" height="590"/>
+	</pageTemplate>
+</template>
+
+<stylesheet>
+    <initialize>
+    <alias id="style.normal" value="style.Normal"/>
+    <alias id="style.h1" value="style.H1"/>
+    <alias id="style.h2" value="style.H2"/>
+    </initialize>
+	<paraStyle name="normal" fontName="Helvetica" fontSize="10" leading="12" spaceBefore="5" textColor="black"/>
+	<paraStyle name="h1" parent="normal" fontName="Helvetica-BoldOblique" fontSize="24" leading="28"/>
+	<paraStyle name="h2" parent="h1" fontSize="11" leading="12.1" spaceBefore="0.5 cm" />
+	<paraStyle name="spaced" parent="normal" spaceBefore="12" spaceAfter="12"/>
+	<paraStyle name="intro"  fontName="Helvetica" fontSize="12" leading="12" spaceAfter="12"/>
+</stylesheet>
+
+<story>
+	<h1>Tests of colour alpha overlaps...</h1>
+
+	<para>RGB colours top has color="Color(r,g,b,alpha=0.5)"</para>
+	<illustration height="50" width="300">
+		<fill color="red"/>
+		<rect x="0" y="10" width="30" height="30" fill="yes" stroke="no"/>
+		<fill color="Color(0,0,0,alpha=0.5)"/>
+		<rect x="5" y="5" width="30" height="30" fill="yes" stroke="no"/>
+
+		<fill color="red"/>
+		<rect x="50" y="10" width="30" height="30" fill="yes" stroke="no"/>
+		<fill color="Color(0,0,1,alpha=0.5)"/>
+		<rect x="55" y="5" width="30" height="30" fill="yes" stroke="no"/>
+
+		<fill color="green"/>
+		<rect x="100" y="10" width="30" height="30" fill="yes" stroke="no"/>
+		<fill color="Color(0,0,1,alpha=0.5)"/>
+		<rect x="105" y="5" width="30" height="30" fill="yes" stroke="no"/>
+
+		<fill color="green"/>
+		<rect x="150" y="10" width="30" height="30" fill="yes" stroke="no"/>
+		<fill color="Color(1,0,0,alpha=0.5)"/>
+		<rect x="155" y="5" width="30" height="30" fill="yes" stroke="no"/>
+
+		<fill color="blue"/>
+		<rect x="200" y="10" width="30" height="30" fill="yes" stroke="no"/>
+		<fill color="Color(1,0,0,alpha=0.5)"/>
+		<rect x="205" y="5" width="30" height="30" fill="yes" stroke="no"/>
+
+		<fill color="blue"/>
+		<rect x="250" y="10" width="30" height="30" fill="yes" stroke="no"/>
+		<fill color="Color(0,0,0,alpha=0.5)"/>
+		<rect x="255" y="5" width="30" height="30" fill="yes" stroke="no"/>
+	</illustration>
+
+	<para spaceBefore="10">CMYK colours top has color="CMYKColor(c,m,y,k,alpha=0.5)"</para>
+	<illustration height="50" width="300">
+		<fill color="CMYKColor(0,1,1,0)"/>
+		<rect x="0" y="10" width="30" height="30" fill="yes" stroke="no"/>
+		<fill color="CMYKColor(1,0,1,0,alpha=0.5)"/>
+		<rect x="5" y="5" width="30" height="30" fill="yes" stroke="no"/>
+
+		<fill color="CMYKColor(0,1,1,0)"/>
+		<rect x="50" y="10" width="30" height="30" fill="yes" stroke="no"/>
+		<fill color="CMYKColor(1,1,0,0,alpha=0.5)"/>
+		<rect x="55" y="5" width="30" height="30" fill="yes" stroke="no"/>
+
+		<fill color="CMYKColor(1,0,1,0)"/>
+		<rect x="100" y="10" width="30" height="30" fill="yes" stroke="no"/>
+		<fill color="CMYKColor(1,1,0,0,alpha=0.5)"/>
+		<rect x="105" y="5" width="30" height="30" fill="yes" stroke="no"/>
+
+		<fill color="CMYKColor(1,0,1,0)"/>
+		<rect x="150" y="10" width="30" height="30" fill="yes" stroke="no"/>
+		<fill color="CMYKColor(0,1,1,0,alpha=0.5)"/>
+		<rect x="155" y="5" width="30" height="30" fill="yes" stroke="no"/>
+
+		<fill color="CMYKColor(1,1,0,0)"/>
+		<rect x="200" y="10" width="30" height="30" fill="yes" stroke="no"/>
+		<fill color="CMYKColor(0,1,1,0,alpha=0.5)"/>
+		<rect x="205" y="5" width="30" height="30" fill="yes" stroke="no"/>
+
+
+		<fill color="CMYKColor(1,1,0,0)"/>
+		<rect x="250" y="10" width="30" height="30" fill="yes" stroke="no"/>
+		<fill color="CMYKColor(1,0,1,0,alpha=0.5)"/>
+		<rect x="255" y="5" width="30" height="30" fill="yes" stroke="no"/>
+
+	</illustration>
+</story>
+</document>

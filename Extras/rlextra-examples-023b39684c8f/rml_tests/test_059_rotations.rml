@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?>
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<document filename="test_059_rotations.pdf" compression="1" invariant="1">
+<template pageSize="(595, 842)" leftMargin="72" showBoundary="0" title="Tagged" lang="en-GB" displayDocTitle="1">
+	<pageTemplate id="main">
+		<pageGraphics>
+			<setFont name="Helvetica-Bold" size="18"/>
+	        <drawString x="35" y="783">RML Example 59: Rotations</drawString>
+	        <setFont name="Helvetica-BoldOblique" size="12" />
+	    	<image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="749" width="72" height="72" alt_file="" required="no"/>
+	    	<image file="strapline.png" preserveAspectRatio="1" x="35" y="0" width="525"  alt_file="" required="no"/>
+			<setFont name="Helvetica-BoldOblique" size="18"/>
+			<setFont name="Helvetica" size="10"/>
+			<drawCenteredString x="297" y="36"><pageNumber countingFrom="1"/></drawCenteredString>
+		</pageGraphics>
+		<frame id="1" x1="35" y1="45" width="525" height="700"/>
+	</pageTemplate>
+</template>
+<stylesheet>
+    <initialize>
+    	<alias id="style.normal" value="style.Normal"/>
+    	<alias id="style.h1" value="style.H1"/>
+    	<alias id="style.h2" value="style.H2"/>
+    	<alias id="style.XPreNormal" value="style.Normal"/>
+    </initialize>
+	<paraStyle name="h1" fontName="Helvetica-Bold" fontSize="12" leading="14.4" spaceBefore="0.5 cm" />
+	<paraStyle name="h2" parent="h1" fontSize="11" leading="12.1" spaceBefore="0.5 cm" />
+	<paraStyle name="normal" fontName="Helvetica" fontSize="10" leading="12" spaceBefore="12" />
+</stylesheet>
+<story>
+	<h1>Rotations</h1>
+	<para>
+PDF rotations are always about the current origin. This is most counter intuitive.<br/>
+To get around this we normally need to do a translation to the point around which the rotation is to occur.<br/>
+All translations and rotations occur in graphics mode.<br/>
+We will mark the graphics origin with a small green cross.<br/>
+<b>NB</b> all the drawing operations are done in &lt;illustration&gt;s which define a local coordinate system.<br/>
+We can include this in a &lt;story&gt;.<br/>
+If the drawings should be done page relative then it's best to use &lt;graphicsMode&gt;...&lt;/graphicsMode&gt;.
+	</para>
+	<para spaceBefore="15">This is a cross hair at x=500 y=12 the illustration is 24 high</para>
+	<illustration height="24" width="525" borderStrokeColor="red" borderStrokeWidth="0.5">
+		<crossMark x="0" y="0" size="5" gap="1" color="green" width="1.5"/>
+		<crossMark x="500" y="12" size="10" gap="1" color="blue" width="1"/>
+	</illustration>
+	<para spaceBefore="15">The same crossMark, but after &lt;translate dx="-10" dy="0"/&gt;<br/>
+Notice that the origin shifts as well; we shifted the whole graphics context.</para>
+	<illustration height="24" width="525" borderStrokeColor="red" borderStrokeWidth="0.5">
+		<translate dx="-10" dy="0"/>
+		<crossMark x="0" y="0" size="5" gap="1" color="green" width="1.5"/>
+		<crossMark x="500" y="12" size="10" gap="1" color="blue" width="1"/>
+	</illustration>
+	<para spaceBefore="15">We draw a blue 15 x 5 rectangle at the blue cross using<br/>
+&lt;rect fill="0" stroke="1" x="500" y="12" width="15" height="5"/&gt; ie at <i>x="500"</i> &amp; <i>y="12"</i>.<br/>
+</para>
+	<illustration height="24" width="525" borderStrokeColor="red" borderStrokeWidth="0.5">
+		<crossMark x="0" y="0" size="5" gap="1" color="green" width="1.5"/>
+		<crossMark x="500" y="12" size="10" gap="1" color="blue" width="1"/>
+		<stroke color="blue" width="0.8"/>
+		<rect fill="0" stroke="1" x="500" y="12" width="15" height="5"/>
+	</illustration>
+	<para spaceBefore="15">Say we want to rotate the box 90 degrees.</para>
+	<illustration height="24" width="525" borderStrokeColor="red" borderStrokeWidth="0.5">
+		<crossMark x="0" y="0" size="5" gap="1" color="green" width="1.5"/>
+		<crossMark x="500" y="12" size="10" gap="1" color="blue" width="1"/>
+		<translate dx="500" dy="12"/>
+		<rotate degrees="90"/>
+		<stroke color="blue" width="0.8"/>
+		<rect fill="0" stroke="1" x="0" y="0" width="15" height="5"/>
+	</illustration>
+	<para spaceBefore="10">We first used &lt;translate dx="500" dy="12"/&gt; to move the graphics origin to where the blue cross is.<br/>
+Then we &lt;rotate degrees="90"/&gt; and finally draw the rectangle with<br/>
+&lt;rect fill="0" stroke="1" x="0" y="0" width="15" height="5"/&gt; ie at the origin <i>x="0"</i> &amp; <i>y="0"</i>.<br/>
+Note that we used the same width and height though.
+</para>
+<para spaceBefore="15">We can place paragraphs on the page; this is at 1in from the page bottom and 15 points in.<br/>
+		We mark that position with a small blue cross before any translation &amp; rotation.</para>
+<graphicsMode>
+	<crossMark x="580" y="1in" size="5" gap="1" color="blue" width="1"/>
+	<translate dx="580" dy="1in"/>
+	<rotate degrees="90"/>
+	<placeXPre borderWidth="0.5" borderColor="blue" x="0" y="0" anchor="sw" width="1in" origin="local">Serial <span color="red">0012345</span></placeXPre>
+</graphicsMode>
+<para spaceBefore="15">
+	We draw a multi-line para at 2.2in from the page bottom and 15 points in.<br/>
+	We mark that position with a small green cross before any translation &amp; rotation.<br/>
+	Note that the cross is at the SW corner of the paragraph if we disregard the rotation<br/>
+	and that the paragraph grows upward.
+</para>
+<graphicsMode>
+	<crossMark x="580" y="2.2in" size="5" gap="1" color="green" width="1"/>
+	<translate dx="580" dy="2.2in"/>
+	<rotate degrees="90"/>
+	<placePara borderWidth="0.5" borderColor="green" x="0" y="0" anchor="sw" width="1in" origin="local">Serial <span color="red">0012345</span><br/>2023/12/14</placePara>
+</graphicsMode>
+</story>
+</document>

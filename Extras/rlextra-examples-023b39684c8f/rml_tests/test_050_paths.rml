@@ -1,0 +1,216 @@
+<!DOCTYPE document SYSTEM "rml_1_0.dtd"> 
+<document filename="test_050_paths.pdf" invariant="1">
+
+<template pageSize="a4" leftMargin="72" showBoundary="1">
+	<pageTemplate id="main" pageSize="a4 portrait">
+	<pageGraphics>
+	<setFont name="Helvetica-Bold" size="18"/>
+		    <drawString x="35" y="783">RML Example 42: Masking</drawString>
+			<image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="749" width="72" height="72" required="no" alt_file=""/>
+    		<image file="strapline.png" preserveAspectRatio="1" x="35" y="0" width="525" alt_file="" required="no"/>
+		<saveState/>
+		<translate dy="500" dx="200"/>
+		<saveState/>
+		<stroke color="red" width="1"/>
+		<translate dy="133" dx="40"/>
+		<scale sy="-1"/>
+		<path x="0" y="89.93" close="yes" stroke="yes" clip="yes">
+			<moveto>128.755 15.979</moveto>
+			<curvesto>43.5303 37.2158 10.1621 71.8726 0 78.8896</curvesto>
+			0 164.063
+			<curvesto>40.6992 167.07 105.996 158.279 174.089 141.313</curvesto>
+			<curvesto>237.792 125.438 281.841 105.292 319.089 83.2666</curvesto>
+			319.089 3.646
+			<curvesto>274.999 -2.29736 203.875 -2.73926 128.755 15.9795</curvesto>
+		</path>
+		<scale sy="-1"/>
+		<translate dy="-183" dx="-40"/>
+		<image file="400x200.gif" x="0" y="0" width="400" height="200"/>
+		<restoreState/>
+		<restoreState/>
+	</pageGraphics>
+	<frame id="second" x1="35" y1="45" width="525" height="420"/>
+	</pageTemplate>
+	<pageTemplate id="example-7a">
+		<pageGraphics>
+		<fill color="red"/>
+		<stroke color="black"/>
+		<path x="247" y="72" fill="yes" stroke="yes" close="yes" autoclose="none">
+		247 172
+		147 172
+		147 272
+		247 272
+		247 372
+		347 372
+		347 372
+		347 272
+		447 272
+		447 172
+		347 172
+		347 72
+		<!-- This completes the first shape: a red cross.-->
+		<moveto>267 572</moveto>
+		<!-- This moves the "pen position"-->
+
+		<!-- Notice that because we have used a "moveto", the -->
+		<!-- final line at the base of the cross is not completed, even -->
+		<!-- though the "close" attribute of the "path" tag is set to -->
+		<!-- "yes" -->
+		277 612
+		<!-- this acts as the start point for the Bezier curves below -->
+		<curvesto>
+		147 585
+		147 687
+		297 792
+		447 687 447 585 317 612
+		</curvesto>
+		327 572
+		<!-- We don't need to give the last point because close is -->
+		<!-- set to "yes" -->
+		</path>
+		</pageGraphics>
+		<frame id="first" x1="72" y1="72" width="451" height="698"/>
+	</pageTemplate>
+	<pageTemplate id="normal" pageSize="a4 portrait">
+	<frame id="only" x1="35" y1="45" width="525" height="731"/>
+	</pageTemplate>
+</template>
+
+<stylesheet>
+	<initialize>
+	<alias id="style.normal" value="style.Normal"/>
+	</initialize>
+	<paraStyle name="h1" fontName="Helvetica-BoldOblique" fontSize="32" leading="36"/>
+	<paraStyle name="normal" fontName="Helvetica" fontSize="10" leading="12"/>
+	<paraStyle name="spaced" fontName="Helvetica" fontSize="10" leading="12" 
+		spaceBefore="12" spaceAfter="12"/>
+		<paraStyle name="intro"  fontName="Helvetica" fontSize="12" leading="12" spaceAfter="12"/>
+	<blockTableStyle id="plain">
+		<blockAlignment value="left"/>
+		<blockFont name="Helvetica"/>
+		<lineStyle kind="GRID" colorName="black"/>
+		<lineStyle kind="OUTLINE" colorName="black" thickness="2"/>
+		<blockBottomPadding length="0"/>
+		<blockTopPadding length="0"/>
+		<blockLeftPadding length="0"/>
+		<blockRightPadding length="0"/>
+	</blockTableStyle>
+</stylesheet>
+
+<story>
+<storyPlace x="35" y="660" width="525" height="73" origin="page">
+<para style="intro">RML (Report Markup Language) is ReportLab's own language for specifying the appearance of a printed page, which is converted into PDF by the utility rml2pdf.</para>
+<hr color="white" thickness="8pt"/>
+<para style="intro">These RML samples showcase techniques and features for generating various types of ouput and are distributed within our commercial package as test cases. Each should be self explanatory and stand alone.</para>
+<illustration height="3" width="525" align="center">
+<fill color= "(0,0.99,0.97,0.0)" />
+<rect x="0" y = "-12" width="525" height="3" round="1" fill="1" stroke = "Yes" />
+</illustration>
+</storyPlace>
+
+	<para style="normal">Hello World.  This is a normal paragraph. Blah <font color="red">IPO</font> blah blah blah blah growth forecast blah
+blah blah forecast blah.Blah blah blah blah blah blah blah blah blah blah blah profit blah blah blah blah blah
+blah blah blah blah blah IPO.Blah blah blah blah blah blah blah reengineering blah growth blah blah blah
+proactive direction strategic blah blah blah forward-thinking blah.Blah blah doubletalk blah blah blah blah
+blah profit blah blah growth blah blah blah blah blah profit.Blah blah blah blah venture capital blah blah blah
+blah blah forward-thinking blah. 
+	</para>
+<nextPage name="example-7a"/>
+<nextPage name="normal"/>
+<blockTable>
+<tr>
+<td><para>autoclose="none"</para></td>
+<td><para>autoclose="pdf"</para></td>
+<td><para>autoclose="svg"</para></td>
+</tr>
+<tr>
+	<td>
+		<illustration width="100" height="100">
+			<stroke color="red" width="2"/>
+			<fill color="blue"/>
+			<path x="10" y="10" close="no" autoclose="none" clip="no" fillrule="even-odd" stroke="1" fill="1">
+				10 90 20 90 20 10 <closePath/>
+				<moveto>30 10</moveto>30 90 40 90 40 10
+				<moveto>50 10</moveto>50 90 60 90 60 10
+			</path>
+		</illustration>
+	</td>
+	<td>
+		<illustration width="100" height="100">
+			<stroke color="red" width="2"/>
+			<fill color="blue"/>
+			<path x="10" y="10" close="no" autoclose="pdf" clip="no" fillrule="even-odd" stroke="1" fill="1">
+				10 90 20 90 20 10 <closePath/>
+				<moveto>30 10</moveto>30 90 40 90 40 10
+				<moveto>50 10</moveto>50 90 60 90 60 10
+			</path>
+		</illustration>
+	</td>
+	<td>
+		<illustration width="100" height="100">
+			<stroke color="red" width="2"/>
+			<fill color="blue"/>
+			<path x="10" y="10" close="no" autoclose="svg" clip="no" fillrule="even-odd" stroke="1" fill="1">
+				10 90 20 90 20 10 <closePath/>
+				<moveto>30 10</moveto>30 90 40 90 40 10
+				<moveto>50 10</moveto>50 90 60 90 60 10
+			</path>
+		</illustration>
+	</td>
+</tr>
+</blockTable>
+<blockTable>
+<tr>
+<td><para>fillrule="even-odd"</para></td>
+<td><para>fillrule="non-zero"</para></td>
+</tr>
+<tr>
+	<td>
+		<illustration width="240" height="229">
+			<stroke color="red" width="2"/>
+			<scale sx="1" sy="-1"/>
+			<translate dx="0" dy="-229"/>
+			<fill color="blue"/>
+			<path x="120" y="1" close="no" autoclose="none" clip="no" fillrule="even-odd" stroke="1" fill="1">
+				193 227 1 87 239 87 47 227<closePath/>
+			</path>
+		</illustration>
+	</td>
+	<td>
+		<illustration width="240" height="229">
+			<stroke color="red" width="2"/>
+			<scale sx="1" sy="-1"/>
+			<translate dx="0" dy="-229"/>
+			<fill color="blue"/>
+			<path x="120" y="1" close="no" autoclose="none" clip="no" fillrule="non-zero" stroke="1" fill="1">
+				193 227 1 87 239 87 47 227<closePath/>
+			</path>
+		</illustration>
+	</td>
+</tr>
+<tr>
+	<td>
+		<illustration width="240" height="250">
+			<stroke color="red" width="2"/>
+			<fill color="blue"/>
+			<path x="231.55" y="236.645" close="no" autoclose="none" clip="no" fillrule="even-odd" stroke="1" fill="1">
+				8.355 236.645 8.355 13.355 231.55 13.355 231.55 236.645<closePath/>
+                <moveto>197.914 202.914</moveto>42.086 202.914 42.086 47.086 197.914 47.086 197.914 202.914<closePath/>
+			</path>
+		</illustration>
+	</td>
+	<td>
+		<illustration width="240" height="229">
+			<stroke color="red" width="2"/>
+			<fill color="blue"/>
+			<path x="231.55" y="236.645" close="no" autoclose="none" clip="no" fillrule="non-zero" stroke="1" fill="1">
+				8.355 236.645 8.355 13.355 231.55 13.355 231.55 236.645<closePath/>
+                <moveto>197.914 202.914</moveto>42.086 202.914 42.086 47.086 197.914 47.086 197.914 202.914<closePath/>
+			</path>
+		</illustration>
+	</td>
+</tr>
+</blockTable>
+</story>
+
+</document>

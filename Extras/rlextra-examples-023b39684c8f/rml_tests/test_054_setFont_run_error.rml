@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?> 
+<!DOCTYPE document SYSTEM "rml_1_0.dtd">
+<!--expect:size=''> @ 8:17 - 8:57-->
+<document filename="test_054_setFont_run_error.pdf">
+    <template pageSize="(595, 842)" leftMargin="72" showBoundary="1">
+        <pageTemplate id="main">
+            <pageGraphics>
+                <setFont name="Helvetica-Bold" size="" />
+            </pageGraphics>
+            <frame id="first" x1="35" y1="45" width="525" height="590"/>
+        </pageTemplate>
+    </template>
+    <stylesheet/>
+    <story>
+        <para></para>
+    </story>
+</document>

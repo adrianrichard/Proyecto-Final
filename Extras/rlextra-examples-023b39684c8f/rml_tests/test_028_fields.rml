@@ -1,0 +1,1975 @@
+<!DOCTYPE document SYSTEM "rml_1_0.dtd"> 
+<document filename="test_028_fields.pdf" invariant="1">
+
+<template pageSize="A4" leftMargin="72" showBoundary="1">
+	<pageTemplate id="main" pageSize="A4 portrait">
+	<pageGraphics>
+		<setFont name="Helvetica-Bold" size="18"/>
+		    <drawString x="35" y="760">RML Example 29: Fields</drawString>
+			<image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="730" width="72" height="72"/>
+    		<image file="strapline.png" preserveAspectRatio="1" x="35" y="0" width="525" alt_file="" required="no"/>
+		<setFont name="Helvetica-BoldOblique" size="10"/>
+		<textField x="72" y="600" width="72" height="12" name="tf0" value="inittf0"/>
+		<textField width="72" height="12" name="tf1">
+			<param name="x">72</param>
+			<param name="y">580</param>
+			<param name="value">ivalue2</param>
+		</textField>
+	</pageGraphics>
+	<frame id="second" x1="35" y1="45" width="525" height="590"/>
+	</pageTemplate>
+	<pageTemplate id="plain" pageSize="A4 portrait">
+		<frame id="first" x1="0" y1="0" width="595.3" height="841.9"/>
+	</pageTemplate>
+</template>
+
+<stylesheet>
+	<initialize>
+	<alias id="style.normal" value="style.Normal"/>
+	</initialize>
+	<paraStyle name="h1" fontName="Helvetica-BoldOblique" fontSize="32" leading="36"/>
+	<paraStyle name="normal" fontName="Helvetica" fontSize="10" leading="12"/>
+	<paraStyle name="spaced" fontName="Helvetica" fontSize="10" leading="12" 
+		spaceBefore="12" spaceAfter="12"/>
+		<paraStyle name="intro"  fontName="Helvetica" fontSize="12" leading="12" spaceAfter="12"/>
+</stylesheet>
+
+<story>
+<setNextTemplate name="plain"/>
+<storyPlace x="35" y="660" width="525" height="73" origin="page">
+<para style="intro">RML (Report Markup Language) is ReportLab's own language for specifying the appearance of a printed page, which is converted into PDF by the utility rml2pdf.</para>
+<hr color="white" thickness="8pt"/>
+<para style="intro">These RML samples showcase techniques and features for generating various types of ouput and are distributed within our commercial package as test cases. Each should be self explanatory and stand alone.</para>
+<illustration height="3" width="525" align="center">
+<fill color= "(0,0.99,0.97,0.0)" />
+<rect x="0" y = "-12" width="525" height="3" round="1" fill="1" stroke = "Yes" />
+</illustration>
+</storyPlace>
+	<para style="normal">Hello World. Left click on the items to demonstrate.  </para>
+<nextPage/>
+	<illustration width="594" height="841">
+		<checkboxField name='cb1A' tooltip='Field cb1A' checked='1' x='72' y='72' buttonStyle='circle' borderWidth='1'  borderColor='red'  fillColor='green'  textColor='blue' forceBorder='true'/>
+		<checkboxField name='cb1B' tooltip='Field cb1B' checked='1' x='72' y='108' buttonStyle='check' borderWidth='2'  borderColor='green'  fillColor='blue'  textColor='red' forceBorder='true'/>
+		<checkboxField name='cb1C' tooltip='Field cb1C' checked='1' x='72' y='144' buttonStyle='cross' borderWidth='2'  borderColor='red'  fillColor='green'  textColor='blue' forceBorder='true'/>
+		<checkboxField name='cb1D' tooltip='Field cb1D' checked='1' x='72' y='180' buttonStyle='star' borderWidth='2'  borderColor='red'  fillColor='green'  textColor='blue' forceBorder='true'/>
+		<checkboxField name='cb1E' tooltip='Field cb1E' checked='1' x='72' y='216' buttonStyle='diamond' borderStyle='bevelled'  borderWidth='2'  borderColor='red'  fillColor='green'  textColor='blue' forceBorder='true'/>
+		<checkboxField name='cb1F' tooltip='Field cb1F' checked='1' x='72' y='252' buttonStyle='check'  borderWidth='2'  borderColor='red'  fillColor='None'  textColor='None' forceBorder='true'/>
+		<checkboxField name='cb1H' tooltip='Field cb1H' checked='1' x='72' y='288' buttonStyle='check'  borderStyle='underlined' borderWidth='2'  borderColor='red'  fillColor='None'  textColor='None' forceBorder='true'/>
+		<checkboxField name='cb1G' tooltip='Field cb1G' checked='1' x='72' y='324' buttonStyle='check'  borderStyle='dashed' borderWidth='2'  borderColor='red'  fillColor='None'  textColor='None' forceBorder='true'/>
+		<checkboxField name='cb1I' tooltip='Field cb1I' checked='1' x='72' y='360' buttonStyle='check'  borderStyle='inset' borderWidth='2'  borderColor='red'  fillColor='None'  textColor='None' forceBorder='true'/>
+		<checkboxField name='cb1J' tooltip='Field cb1J' checked='1' x='72' y='396' buttonStyle='check'  borderStyle='solid' shape='circle'  borderWidth='2'  borderColor='red'  fillColor='green'  textColor='blue' forceBorder='true'/>
+		<checkboxField name='cb1K' tooltip='Field cb1K' checked='1' x='72' y='432' buttonStyle='check'  borderWidth='1'  borderColor='None'  fillColor='None'  textColor='None' forceBorder='true'/>
+		<checkboxField name='cb1L' tooltip='Field cb1L' checked='0' x='72' y='800' buttonStyle='check' borderColor='None'  fillColor='None'  textColor='None' forceBorder='true'/>
+		<checkboxField name='cb1M' tooltip='Field cb1M' checked='0' x='72' y='600' buttonStyle='check' borderWidth='2'  borderColor='blue'  fillColor='None'  textColor='None' forceBorder='true'/>
+		<radioField name='rb1A' tooltip='Field rb1A' value='V1'  selected='0' x='144' y='72' buttonStyle='circle'  borderStyle='solid' shape='circle'  borderWidth='2'  borderColor='red'  fillColor='green'  textColor='blue' forceBorder='true'/>
+		<radioField name='rb1A' tooltip='Field rb1A' value='V2'  selected='1' x='144' y='108' buttonStyle='circle'  borderStyle='solid' shape='circle'  borderWidth='2'  borderColor='red'  fillColor='green'  textColor='blue' forceBorder='true'/>
+		<radioField name='rb1B' tooltip='Field rb1B' value='V1'  selected='0' x='180' y='72' buttonStyle='check'  borderStyle='solid' shape='square'  borderWidth='2'  borderColor='green'  fillColor='red'  textColor='blue' forceBorder='true'/>
+		<radioField name='rb1B' tooltip='Field rb1B' value='V2'  selected='0' x='180' y='108' buttonStyle='check'  borderStyle='solid' shape='square'  borderWidth='2'  borderColor='green'  fillColor='red'  textColor='blue' forceBorder='true'/>
+		<radioField name='rb1C' tooltip='Field rb1C' value='V1'  selected='0' x='288' y='72' buttonStyle='circle'  borderStyle='bevelled' shape='circle'  borderWidth='2'  borderColor='green'  fillColor='yellow'  textColor='blue' forceBorder='true'/>
+		<radioField name='rb1C' tooltip='Field rb1C' value='V2'  selected='1' x='288' y='108' buttonStyle='circle'  borderStyle='inset' shape='circle'  borderWidth='2'  borderColor='magenta'  fillColor='pink'  textColor='blue' forceBorder='true'/>
+		<textField name='tf1A' tooltip='Field tf1A' value='Hello World' x='324' y='72'  borderStyle='inset'  borderWidth='2'  borderColor='magenta'  fillColor='pink'  textColor='blue' forceBorder='true'/>
+		<textField name='tf1B' tooltip='Field tf1B' value='Hello World' x='324' y='144'  borderStyle='inset'  borderWidth='2'  fontName='Courier-Bold'  borderColor='magenta'  fillColor='pink'  textColor='blue' forceBorder='true'/>
+	</illustration>
+<nextPage/>
+	<illustration width="594" height="841">
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH0'
+				value='Av'
+				fieldFlags=''
+				width='73'
+				tooltip='CH0 value=Av'
+				borderWidth='1'
+				y='800'
+				x='72'
+				borderStyle='solid'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH1'
+				value='B'
+				fieldFlags=''
+				width='74'
+				tooltip='CH1 value=B'
+				borderWidth='2'
+				y='800'
+				x='252'
+				borderStyle='bevelled'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH2'
+				value='Cv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH2 value=Cv'
+				borderWidth='3'
+				y='800'
+				x='432'
+				borderStyle='inset'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH3'
+				value='D'
+				fieldFlags=''
+				width='73'
+				tooltip='CH3 value=D'
+				borderWidth='1'
+				y='764'
+				x='72'
+				borderStyle='dashed'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH4'
+				value='Dv'
+				fieldFlags=''
+				width='74'
+				tooltip='CH4 value=Dv'
+				borderWidth='2'
+				y='764'
+				x='252'
+				borderStyle='underlined'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH5'
+				value='E'
+				fieldFlags=''
+				width='75'
+				tooltip='CH5 value=E'
+				borderWidth='3'
+				y='764'
+				x='432'
+				borderStyle='solid'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH6'
+				value='F'
+				fieldFlags=''
+				width='73'
+				tooltip='CH6 value=F'
+				borderWidth='1'
+				y='728'
+				x='72'
+				borderStyle='bevelled'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH7'
+				value='G'
+				fieldFlags=''
+				width='74'
+				tooltip='CH7 value=G'
+				borderWidth='2'
+				y='728'
+				x='252'
+				borderStyle='inset'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH8'
+				value='Gv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH8 value=Gv'
+				borderWidth='3'
+				y='728'
+				x='432'
+				borderStyle='dashed'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH9'
+				value='Av'
+				fieldFlags='edit'
+				width='73'
+				tooltip='CH9 value=Av'
+				borderWidth='1'
+				y='692'
+				x='72'
+				borderStyle='underlined'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH10'
+				value='B'
+				fieldFlags=''
+				width='74'
+				tooltip='CH10 value=B'
+				borderWidth='2'
+				y='692'
+				x='252'
+				borderStyle='solid'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH11'
+				value='Cv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH11 value=Cv'
+				borderWidth='3'
+				y='692'
+				x='432'
+				borderStyle='bevelled'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH12'
+				value='D'
+				fieldFlags=''
+				width='73'
+				tooltip='CH12 value=D'
+				borderWidth='1'
+				y='656'
+				x='72'
+				borderStyle='inset'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH13'
+				value='Dv'
+				fieldFlags=''
+				width='74'
+				tooltip='CH13 value=Dv'
+				borderWidth='2'
+				y='656'
+				x='252'
+				borderStyle='dashed'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH14'
+				value='E'
+				fieldFlags=''
+				width='75'
+				tooltip='CH14 value=E'
+				borderWidth='3'
+				y='656'
+				x='432'
+				borderStyle='underlined'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH15'
+				value='F'
+				fieldFlags=''
+				width='73'
+				tooltip='CH15 value=F'
+				borderWidth='1'
+				y='620'
+				x='72'
+				borderStyle='solid'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH16'
+				value='G'
+				fieldFlags=''
+				width='74'
+				tooltip='CH16 value=G'
+				borderWidth='2'
+				y='620'
+				x='252'
+				borderStyle='bevelled'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH17'
+				value='Gv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH17 value=Gv'
+				borderWidth='3'
+				y='620'
+				x='432'
+				borderStyle='inset'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH18'
+				value='Av'
+				fieldFlags='edit'
+				width='73'
+				tooltip='CH18 value=Av'
+				borderWidth='1'
+				y='584'
+				x='72'
+				borderStyle='dashed'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH19'
+				value='B'
+				fieldFlags=''
+				width='74'
+				tooltip='CH19 value=B'
+				borderWidth='2'
+				y='584'
+				x='252'
+				borderStyle='underlined'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH20'
+				value='Cv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH20 value=Cv'
+				borderWidth='3'
+				y='584'
+				x='432'
+				borderStyle='solid'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH21'
+				value='D'
+				fieldFlags=''
+				width='73'
+				tooltip='CH21 value=D'
+				borderWidth='1'
+				y='548'
+				x='72'
+				borderStyle='bevelled'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH22'
+				value='Dv'
+				fieldFlags=''
+				width='74'
+				tooltip='CH22 value=Dv'
+				borderWidth='2'
+				y='548'
+				x='252'
+				borderStyle='inset'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH23'
+				value='E'
+				fieldFlags=''
+				width='75'
+				tooltip='CH23 value=E'
+				borderWidth='3'
+				y='548'
+				x='432'
+				borderStyle='dashed'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH24'
+				value='F'
+				fieldFlags=''
+				width='73'
+				tooltip='CH24 value=F'
+				borderWidth='1'
+				y='512'
+				x='72'
+				borderStyle='underlined'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH25'
+				value='G'
+				fieldFlags=''
+				width='74'
+				tooltip='CH25 value=G'
+				borderWidth='2'
+				y='512'
+				x='252'
+				borderStyle='solid'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH26'
+				value='Gv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH26 value=Gv'
+				borderWidth='3'
+				y='512'
+				x='432'
+				borderStyle='bevelled'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH27'
+				value='Av'
+				fieldFlags='edit'
+				width='73'
+				tooltip='CH27 value=Av'
+				borderWidth='1'
+				y='476'
+				x='72'
+				borderStyle='inset'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH28'
+				value='B'
+				fieldFlags=''
+				width='74'
+				tooltip='CH28 value=B'
+				borderWidth='2'
+				y='476'
+				x='252'
+				borderStyle='dashed'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH29'
+				value='Cv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH29 value=Cv'
+				borderWidth='3'
+				y='476'
+				x='432'
+				borderStyle='underlined'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH30'
+				value='D'
+				fieldFlags=''
+				width='73'
+				tooltip='CH30 value=D'
+				borderWidth='1'
+				y='440'
+				x='72'
+				borderStyle='solid'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH31'
+				value='Dv'
+				fieldFlags=''
+				width='74'
+				tooltip='CH31 value=Dv'
+				borderWidth='2'
+				y='440'
+				x='252'
+				borderStyle='bevelled'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH32'
+				value='E'
+				fieldFlags=''
+				width='75'
+				tooltip='CH32 value=E'
+				borderWidth='3'
+				y='440'
+				x='432'
+				borderStyle='inset'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH33'
+				value='F'
+				fieldFlags=''
+				width='73'
+				tooltip='CH33 value=F'
+				borderWidth='1'
+				y='404'
+				x='72'
+				borderStyle='dashed'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH34'
+				value='G'
+				fieldFlags=''
+				width='74'
+				tooltip='CH34 value=G'
+				borderWidth='2'
+				y='404'
+				x='252'
+				borderStyle='underlined'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH35'
+				value='Gv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH35 value=Gv'
+				borderWidth='3'
+				y='404'
+				x='432'
+				borderStyle='solid'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH36'
+				value='Av'
+				fieldFlags='edit'
+				width='73'
+				tooltip='CH36 value=Av'
+				borderWidth='1'
+				y='368'
+				x='72'
+				borderStyle='bevelled'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH37'
+				value='B'
+				fieldFlags=''
+				width='74'
+				tooltip='CH37 value=B'
+				borderWidth='2'
+				y='368'
+				x='252'
+				borderStyle='inset'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH38'
+				value='Cv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH38 value=Cv'
+				borderWidth='3'
+				y='368'
+				x='432'
+				borderStyle='dashed'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH39'
+				value='D'
+				fieldFlags=''
+				width='73'
+				tooltip='CH39 value=D'
+				borderWidth='1'
+				y='332'
+				x='72'
+				borderStyle='underlined'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH40'
+				value='Dv'
+				fieldFlags=''
+				width='74'
+				tooltip='CH40 value=Dv'
+				borderWidth='2'
+				y='332'
+				x='252'
+				borderStyle='solid'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH41'
+				value='E'
+				fieldFlags=''
+				width='75'
+				tooltip='CH41 value=E'
+				borderWidth='3'
+				y='332'
+				x='432'
+				borderStyle='bevelled'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH42'
+				value='F'
+				fieldFlags=''
+				width='73'
+				tooltip='CH42 value=F'
+				borderWidth='1'
+				y='296'
+				x='72'
+				borderStyle='inset'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH43'
+				value='G'
+				fieldFlags=''
+				width='74'
+				tooltip='CH43 value=G'
+				borderWidth='2'
+				y='296'
+				x='252'
+				borderStyle='dashed'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH44'
+				value='Gv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH44 value=Gv'
+				borderWidth='3'
+				y='296'
+				x='432'
+				borderStyle='underlined'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH45'
+				value='Av'
+				fieldFlags='edit'
+				width='73'
+				tooltip='CH45 value=Av'
+				borderWidth='1'
+				y='260'
+				x='72'
+				borderStyle='solid'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH46'
+				value='B'
+				fieldFlags=''
+				width='74'
+				tooltip='CH46 value=B'
+				borderWidth='2'
+				y='260'
+				x='252'
+				borderStyle='bevelled'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH47'
+				value='Cv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH47 value=Cv'
+				borderWidth='3'
+				y='260'
+				x='432'
+				borderStyle='inset'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH48'
+				value='D'
+				fieldFlags=''
+				width='73'
+				tooltip='CH48 value=D'
+				borderWidth='1'
+				y='224'
+				x='72'
+				borderStyle='dashed'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH49'
+				value='Dv'
+				fieldFlags=''
+				width='74'
+				tooltip='CH49 value=Dv'
+				borderWidth='2'
+				y='224'
+				x='252'
+				borderStyle='underlined'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH50'
+				value='E'
+				fieldFlags=''
+				width='75'
+				tooltip='CH50 value=E'
+				borderWidth='3'
+				y='224'
+				x='432'
+				borderStyle='solid'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH51'
+				value='F'
+				fieldFlags=''
+				width='73'
+				tooltip='CH51 value=F'
+				borderWidth='1'
+				y='188'
+				x='72'
+				borderStyle='bevelled'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH52'
+				value='G'
+				fieldFlags=''
+				width='74'
+				tooltip='CH52 value=G'
+				borderWidth='2'
+				y='188'
+				x='252'
+				borderStyle='inset'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH53'
+				value='Gv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH53 value=Gv'
+				borderWidth='3'
+				y='188'
+				x='432'
+				borderStyle='dashed'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH54'
+				value='Av'
+				fieldFlags='edit'
+				width='73'
+				tooltip='CH54 value=Av'
+				borderWidth='1'
+				y='152'
+				x='72'
+				borderStyle='underlined'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH55'
+				value='B'
+				fieldFlags=''
+				width='74'
+				tooltip='CH55 value=B'
+				borderWidth='2'
+				y='152'
+				x='252'
+				borderStyle='solid'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH56'
+				value='Cv'
+				fieldFlags=''
+				width='75'
+				tooltip='CH56 value=Cv'
+				borderWidth='3'
+				y='152'
+				x='432'
+				borderStyle='bevelled'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH57'
+				value='D'
+				fieldFlags=''
+				width='73'
+				tooltip='CH57 value=D'
+				borderWidth='1'
+				y='116'
+				x='72'
+				borderStyle='inset'
+				height='21'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH58'
+				value='Dv'
+				fieldFlags=''
+				width='74'
+				tooltip='CH58 value=Dv'
+				borderWidth='2'
+				y='116'
+				x='252'
+				borderStyle='dashed'
+				height='22'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+		<choiceField
+				borderColor='red'
+				textColor='blue'
+				name='CH59'
+				value='E'
+				fieldFlags=''
+				width='75'
+				tooltip='CH59 value=E'
+				borderWidth='3'
+				y='116'
+				x='432'
+				borderStyle='underlined'
+				height='23'
+				forceBorder='0'
+				fillColor='green'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+		</choiceField>
+	</illustration>
+<nextPage/>
+	<illustration width="594" height="841">
+		<listboxField
+				borderColor='red'
+				value='Av'
+				textColor='blue'
+				name='LB0'
+				tooltip="LB0 value=['Av']"
+				fieldFlags=''
+				width='73'
+				fillColor='green'
+				y='748'
+				x='72'
+				borderStyle='solid'
+				height='73'
+				forceBorder='0'
+				borderWidth='1'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				value='B'
+				textColor='blue'
+				name='LB1'
+				tooltip="LB1 value=['B']"
+				fieldFlags=''
+				width='74'
+				fillColor='green'
+				y='748'
+				x='252'
+				borderStyle='bevelled'
+				height='74'
+				forceBorder='0'
+				borderWidth='2'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				value='Cv'
+				textColor='blue'
+				name='LB2'
+				tooltip="LB2 value=['Cv']"
+				fieldFlags=''
+				width='75'
+				fillColor='green'
+				y='748'
+				x='432'
+				borderStyle='inset'
+				height='75'
+				forceBorder='0'
+				borderWidth='3'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				value='D'
+				textColor='blue'
+				name='LB3'
+				tooltip="LB3 value=['D']"
+				fieldFlags=''
+				width='73'
+				fillColor='green'
+				y='640'
+				x='72'
+				borderStyle='dashed'
+				height='73'
+				forceBorder='0'
+				borderWidth='1'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				value='Dv'
+				textColor='blue'
+				name='LB4'
+				tooltip="LB4 value=['Dv']"
+				fieldFlags=''
+				width='74'
+				fillColor='green'
+				y='640'
+				x='252'
+				borderStyle='underlined'
+				height='74'
+				forceBorder='0'
+				borderWidth='2'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				textColor='blue'
+				name='LB5'
+				tooltip="LB5 value=['E', 'D']"
+				fieldFlags='multiSelect'
+				width='75'
+				fillColor='green'
+				y='640'
+				x='432'
+				borderStyle='solid'
+				height='75'
+				forceBorder='0'
+				borderWidth='3'>
+			<param name="value">'E'</param>
+			<param name="value">'D'</param>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				textColor='blue'
+				name='LB6'
+				tooltip="LB6 value=['F', 'Dv']"
+				fieldFlags='multiSelect'
+				width='73'
+				fillColor='green'
+				y='532'
+				x='72'
+				borderStyle='bevelled'
+				height='73'
+				forceBorder='0'
+				borderWidth='1'>
+			<param name="value">'F'</param>
+			<param name="value">'Dv'</param>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				textColor='blue'
+				name='LB7'
+				tooltip="LB7 value=['G', 'E']"
+				fieldFlags='multiSelect'
+				width='74'
+				fillColor='green'
+				y='532'
+				x='252'
+				borderStyle='inset'
+				height='74'
+				forceBorder='0'
+				borderWidth='2'>
+			<param name="value">'G'</param>
+			<param name="value">'E'</param>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				textColor='blue'
+				name='LB8'
+				tooltip="LB8 value=['Gv', 'F']"
+				fieldFlags='multiSelect'
+				width='75'
+				fillColor='green'
+				y='532'
+				x='432'
+				borderStyle='dashed'
+				height='75'
+				forceBorder='0'
+				borderWidth='3'>
+			<param name="value">'Gv'</param>
+			<param name="value">'F'</param>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				textColor='blue'
+				name='LB9'
+				tooltip="LB9 value=['H', 'G']"
+				fieldFlags='multiSelect'
+				width='73'
+				fillColor='green'
+				y='424'
+				x='72'
+				borderStyle='underlined'
+				height='73'
+				forceBorder='0'
+				borderWidth='1'>
+			<param name="value">'H'</param>
+			<param name="value">'G'</param>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				value='Av'
+				textColor='blue'
+				name='LB10'
+				tooltip="LB10 value=['Av']"
+				fieldFlags=''
+				width='74'
+				fillColor='green'
+				y='424'
+				x='252'
+				borderStyle='solid'
+				height='74'
+				forceBorder='0'
+				borderWidth='2'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				value='B'
+				textColor='blue'
+				name='LB11'
+				tooltip="LB11 value=['B']"
+				fieldFlags=''
+				width='75'
+				fillColor='green'
+				y='424'
+				x='432'
+				borderStyle='bevelled'
+				height='75'
+				forceBorder='0'
+				borderWidth='3'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				value='Cv'
+				textColor='blue'
+				name='LB12'
+				tooltip="LB12 value=['Cv']"
+				fieldFlags=''
+				width='73'
+				fillColor='green'
+				y='316'
+				x='72'
+				borderStyle='inset'
+				height='73'
+				forceBorder='0'
+				borderWidth='1'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				value='D'
+				textColor='blue'
+				name='LB13'
+				tooltip="LB13 value=['D']"
+				fieldFlags=''
+				width='74'
+				fillColor='green'
+				y='316'
+				x='252'
+				borderStyle='dashed'
+				height='74'
+				forceBorder='0'
+				borderWidth='2'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				value='Dv'
+				textColor='blue'
+				name='LB14'
+				tooltip="LB14 value=['Dv']"
+				fieldFlags=''
+				width='75'
+				fillColor='green'
+				y='316'
+				x='432'
+				borderStyle='underlined'
+				height='75'
+				forceBorder='0'
+				borderWidth='3'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				textColor='blue'
+				name='LB15'
+				tooltip="LB15 value=['E', 'D']"
+				fieldFlags='multiSelect'
+				width='73'
+				fillColor='green'
+				y='208'
+				x='72'
+				borderStyle='solid'
+				height='73'
+				forceBorder='0'
+				borderWidth='1'>
+			<param name="value">'E'</param>
+			<param name="value">'D'</param>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				textColor='blue'
+				name='LB16'
+				tooltip="LB16 value=['F', 'Dv']"
+				fieldFlags='multiSelect'
+				width='74'
+				fillColor='green'
+				y='208'
+				x='252'
+				borderStyle='bevelled'
+				height='74'
+				forceBorder='0'
+				borderWidth='2'>
+			<param name="value">'F'</param>
+			<param name="value">'Dv'</param>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				textColor='blue'
+				name='LB17'
+				tooltip="LB17 value=['G', 'E']"
+				fieldFlags='multiSelect'
+				width='75'
+				fillColor='green'
+				y='208'
+				x='432'
+				borderStyle='inset'
+				height='75'
+				forceBorder='0'
+				borderWidth='3'>
+			<param name="value">'G'</param>
+			<param name="value">'E'</param>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				textColor='blue'
+				name='LB18'
+				tooltip="LB18 value=['Gv', 'F']"
+				fieldFlags='multiSelect'
+				width='73'
+				fillColor='green'
+				y='100'
+				x='72'
+				borderStyle='dashed'
+				height='73'
+				forceBorder='0'
+				borderWidth='1'>
+			<param name="value">'Gv'</param>
+			<param name="value">'F'</param>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				textColor='blue'
+				name='LB19'
+				tooltip="LB19 value=['H', 'G']"
+				fieldFlags='multiSelect'
+				width='74'
+				fillColor='green'
+				y='100'
+				x='252'
+				borderStyle='underlined'
+				height='74'
+				forceBorder='0'
+				borderWidth='2'>
+			<param name="value">'H'</param>
+			<param name="value">'G'</param>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+		<listboxField
+				borderColor='red'
+				value='Av'
+				textColor='blue'
+				name='LB20'
+				tooltip="LB20 value=['Av']"
+				fieldFlags=''
+				width='75'
+				fillColor='green'
+				y='100'
+				x='432'
+				borderStyle='solid'
+				height='75'
+				forceBorder='0'
+				borderWidth='3'>
+			<choice label='A' value='Av'/>
+			<choice label='B'/>
+			<choice label='C' value='Cv'/>
+			<choice label='D' value='Dv'/>
+			<choice label='E'/>
+			<choice label='F'/>
+			<choice label='G' value='Gv'/>
+			<choice label='H'/>
+		</listboxField>
+	</illustration>
+</story>
+
+</document>

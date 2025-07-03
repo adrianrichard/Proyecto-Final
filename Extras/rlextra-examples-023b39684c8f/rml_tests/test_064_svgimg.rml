@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?> 
+<!DOCTYPE document SYSTEM "rml_1_0.dtd"> 
+<document filename="test_064_svgimg.pdf"> 
+<template pageSize="(595, 842)" leftMargin="72" showBoundary="1">
+<pageTemplate id="main">
+	<pageGraphics>
+	<setFont name="Helvetica-Bold" size="18"/>
+    	    <drawString x="35" y="783">RML Example &lt;para&gt; with svg &lt;img&gt;</drawString>
+            <setFont name="Helvetica-Oblique" size="12" />
+    		<image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="749" width="72" height="72" required="no" alt_file=""/>
+    		<image file="strapline.png" preserveAspectRatio="1" x="35" y="0" width="525" alt_file="" required="no"/>
+		<setFont name="Helvetica-BoldOblique" size="18"/>
+		
+		<setFont name="Helvetica" size="10"/>
+		<drawCenteredString x="297" y="36"><pageNumber countingFrom="2"/></drawCenteredString>
+	</pageGraphics>
+	<frame id="1" x1="35" y1="45" width="525" height="575"/>
+	</pageTemplate>
+</template>
+
+<stylesheet>
+</stylesheet>
+<story>
+	<para>This paragraph should have a tiger <img src="tiger.svg" width="10" height="10"/> in it!</para>
+</story>
+</document>

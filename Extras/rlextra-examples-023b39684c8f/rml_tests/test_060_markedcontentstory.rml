@@ -1,0 +1,90 @@
+<!DOCTYPE document SYSTEM "rml_1_0.dtd"> 
+<document filename="test_060_markedcontentstory.pdf" invariant="1" tagged="1">
+
+<docinit>
+	<registerTTFont faceName="Arial" fileName="Arial.ttf"/>
+	<registerTTFont faceName="Arial-Bold" fileName="Arial_Bold.ttf"/>
+	<registerTTFont faceName="Arial-Bold-Italic" fileName="Arial_Bold_Italic.ttf"/>
+</docinit>
+<template pageSize="a4" leftMargin="72" showBoundary="1"
+    author="A.N. Author"
+    subject="My subject"
+    title="My title"
+    creator="My creator"
+	displayDocTitle="1"
+	duplex="Simplex"
+	lang="en-GB"
+    >
+	<pageTemplate id="main" pageSize="a4">
+		<pageGraphics>
+			<setFont name="Arial-Bold" size="18"/>
+			<markedContent tagType="Forced Sect" text="template section" kind="startGroup"/>
+			<drawString x="35" y="783" tagType="P" altText="TITLE">RML Example 3: Hello</drawString>
+			<image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="749" width="72" height="72" required="no" altText="ReportLab Logo" alt_file=""/>
+			<markedContent tagType="Sect" kind="endGroup"/>
+			<image file="strapline.png" preserveAspectRatio="1" x="35" y="0" width="525" alt_file="" required="no"/>
+		</pageGraphics>
+		<frame id="1" x1="35" y1="45" width="525" height="590"/>
+	</pageTemplate>
+</template>
+<stylesheet>
+	<initialize>
+		<alias id="normal" value="style.Normal"/>
+		<alias id="h1" value="style.Heading1"/>
+		<alias id="h2" value="style.Heading2"/>
+	</initialize>
+
+	<paraStyle name="style.Heading1"
+	fontName="Arial-Bold"
+	fontSize="12"
+	leading="14.4"
+	spaceBefore = "0.5 cm"
+	/>
+
+	<paraStyle name="style.Heading2"
+	parent="style.Heading1"
+	fontSize="11"
+	leading="12.1"
+	spaceBefore = "0.5 cm"
+	/>
+
+	<paraStyle name="style.Normal"
+	fontName="Arial"
+	fontSize="10"
+	leading="12"
+	spaceBefore="12"
+	/>
+</stylesheet>
+
+<story>
+	<markedContent tagType="Sect" text="section 1" kind="startGroup"/>
+	<markedContent tagType="H1" text="header 1" kind="start"/>
+	<h1>Header number 1</h1>
+	<markedContent tagType="H1" kind="end"/>
+	<markedContent tagType="P" text="para 1" kind="start"/>
+	<para>para 1 content</para>
+	<markedContent tagType="P" kind="end"/>
+	<markedContent tagType="H1" text="header 2" kind="start"/>
+	<h1>Header number 1</h1>
+	<markedContent tagType="H1" kind="end"/>
+	<markedContent tagType="P" text="para 2" kind="start"/>
+	<para>para 2 content</para>
+	<markedContent tagType="P" kind="end"/>
+	<markedContent tagType="Sect" kind="endGroup"/>
+	<graphicsMode>
+	<markedContent tagType="H1" text="header 2.1" kind="start"/>
+	<placePara width="200" style="h1" x="10" y="300" origin="frame">Header number 2.1</placePara>
+	<markedContent tagType="H1" kind="end"/>
+	<markedContent tagType="P" text="para 2.1" kind="start"/>
+	<placePara width="200" x="10" y="280" origin="frame">para 2.1 content</placePara>
+	<markedContent tagType="P" kind="end"/>
+	<markedContent tagType="H1" text="header 2" kind="start"/>
+	<placePara width="200" style="h1" x="10" y="200" origin="frame">Header number 2.1</placePara>
+	<markedContent tagType="H1" kind="end"/>
+	<markedContent tagType="P" text="para 2.2" kind="start"/>
+	<placePara width="200" x="10" y="180" origin="frame">para 2.2 content</placePara>
+	<markedContent tagType="P" kind="end"/>
+	</graphicsMode>
+</story>
+
+</document>

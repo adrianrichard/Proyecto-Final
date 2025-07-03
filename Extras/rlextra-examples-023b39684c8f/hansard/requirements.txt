@@ -1,0 +1,4 @@
+beautifulsoup4
+rlextra[pycairo]==4.2.2
+-i https://www.reportlab.com/pypi
+selenium

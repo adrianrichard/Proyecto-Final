@@ -493,7 +493,7 @@ class MasterPanel:
             except:
                 return
         else:
-                    messagebox.showwarning("Advertencia", "Debe seleccionar un profesional")
+            messagebox.showwarning("Advertencia", "Debe seleccionar un profesional")
 
     def eliminar_odontologo(self):
         try:

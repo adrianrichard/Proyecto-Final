@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no" ?> 
+<!DOCTYPE document SYSTEM "rml_1_0.dtd"> 
+<document filename="test_055_accessibility.pdf"> 
+
+
+<template pageSize="(595, 842)" leftMargin="72" showBoundary="1"
+    title="My Accessible Title" lang="en-GB">
+<pageTemplate id="main">
+    <pageGraphics>
+        <setFont name="Helvetica-Bold" size="18"/>
+            <drawString x="35" y="783">RML Example 55: PDF Accessibility</drawString>
+            <image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="749" width="72" height="72" required="no" alt_file=""/>
+            <image file="strapline.png" preserveAspectRatio="1" x="35" y="0" width="525" alt_file="" required="no"/>
+        <setFont name="Helvetica" size="10"/>
+        <drawCenteredString x="297" y="36"><pageNumber countingFrom="1"/></drawCenteredString>
+    </pageGraphics>
+    <frame id="second" x1="35" y1="45" width="525" height="590"/>
+    </pageTemplate>
+    <pageTemplate id="main2">
+    <pageGraphics>
+        <setFont name="Helvetica-Bold" size="18"/>
+            <drawString x="35" y="783">RML Example 55: PDF Accessibility</drawString>
+            <image file="logo_no_bar.png" preserveAspectRatio="1" x="488" y="749" width="72" height="72" required="no" alt_file=""/>
+            <image file="strapline.png" preserveAspectRatio="1" x="35" y="0" width="525" alt_file="" required="no"/>
+        <setFont name="Helvetica" size="10"/>
+        <drawCenteredString x="297" y="36"><pageNumber countingFrom="1"/></drawCenteredString>
+    </pageGraphics>
+    <frame id="second" x1="35" y1="45" width="525" height="685"/>
+    </pageTemplate>
+</template>
+
+<stylesheet>
+	<initialize>
+		<alias id="ul.defaultStyle" value="my.ul.defaultStyle"/>
+		<alias id="ol.defaultStyle" value="my.ol.defaultStyle"/>
+	</initialize>
+    <paraStyle name="normal" fontName="Helvetica" fontSize="10" leading="12" spaceAfter="5"/>
+    <paraStyle name="bodytext" parent="normal" spaceBefore="6" />
+    <paraStyle name="lpsty" parent="bodytext" spaceAfter="18" />
+    <paraStyle name="intro"  fontName="Helvetica" fontSize="12" leading="12" spaceAfter="12"/>
+    <paraStyle name="h1" fontName="Helvetica-Bold" fontSize="12" spaceBefore="10" spaceAfter="10" />
+    <paraStyle name="bullet" parent="normal" bulletFontName = "Helvetica" bulletFontSize="5"/>
+    <blockTableStyle id="redgreen" spaceBefore="20">
+        <!--blockAlignment value="left"/>
+        <blockValign value="top"/>
+        <blockBottomPadding length="0" start="0,0" stop="-1,-1"/>
+        <blockLeftPadding length="0" start="0,0" stop="-1,-1"/>
+        <blockTopPadding length="0" start="0,0" stop="-1,-1"/>
+        <blockRightPadding length="0" start="0,0" stop="-1,-1"/-->
+        <lineStyle start="0,0" stop="-1,-1" kind="GRID" colorName="green"/>
+        <lineStyle start="0,0" stop="-1,-1" kind="BOX" colorName="red" thickness="2"/>
+        <!--blockBackground colorName="pink" start="0,0" stop="-1,-1"/>
+        <blockBackground colorName="yellow" start="0,0" stop="-1,-1"/-->
+    </blockTableStyle>
+    <listStyle name="blah" spaceAfter="10" bulletType="A" spaceBefore="23" />
+    <listStyle name="square" spaceAfter="10" bulletType="bullet" spaceBefore="23" bulletColor="red" start="square"/>
+    <listStyle name="list_normal" bulletFontSize="10" bulletFontName="Helvetica"/>
+	<listStyle name="my.ul.defaultStyle" parent="style.UnorderedList" bulletFontSize="8" bulletOffsetY="0" 
+		start='circle &#x274d; blackstar sparkle disc diamond'/>
+	<listStyle name="my.ol.defaultStyle" parent="style.OrderedList" bulletFontSize="8"
+		start='1 i a A I'/>
+</stylesheet>
+<story>
+<storyPlace x="35" y="660" width="525" height="73" origin="page">
+	<para style="intro">
+		RML (Report Markup Language) is ReportLab's own language for specifying the appearance of a printed page, which is converted into PDF by the utility rml2pdf.
+	</para>
+<hr color="white" thickness="8pt"/>
+<para style="intro">
+	These RML samples showcase techniques and features for generating various types of ouput and are distributed within our commercial package as test cases. Each should be self explanatory and stand alone.
+	</para>
+<illustration height="3" width="525" align="center">
+<fill color= "(0,0.99,0.97,0.0)" />
+<rect x="0" y = "-12" width="525" height="3" round="1" fill="1" stroke = "Yes" />
+</illustration>
+</storyPlace>
+
+<setNextTemplate name="main2"/>
+	<para style="h1">Background</para>
+	<para style="normal"> In recent years, the accessibility of PDFs for disabled users has become a big topic. Governments in particular may mandate compliance with accessibility standards. The key point is that screen readers, which read electronic documents aloud, should be able to make sense of a PDF document.</para>
+
+    <para style="normal">The guidelines on accessibility the W3C PDF Techniques for WCAG 2.0. Practically, there are many tools to check a file for compliance such as this PDF checker, used by the European Union.</para>
+	
+	<para style="normal">A number of governments and organisations state that they "require" perfect compliance (it basically costs nothing to decree that), but to our knowledge there are no report generators that achieve it, and certainly not automatically. We believe ReportLab do very well on accessibility, and have dealt with the main things accessibility checkers reported many years ago (like adding metadata to describe the language the output is in).</para>
+	
+	<para style="normal">ReportLab PLUS is a fairly low-level way of constructing PDF files, so achieving good accessibility is up to the developer using it. Here are some guidelines on testing and improving accessibility.</para>
+	
+	<para style="normal"><b>A perfect accessibility score, while often mandated in software requirements, is not always possible nor economic,</b> especially with a complex graphical representation of data which is hard to explain in spoken words. We've often found in practice that disabled readers are much happier with an alternative form of the same information - for example a web page - which might allow you to agree an exemption for a PDF file, if this is always available.</para>
+
+
+	<para style="h1"> Steps</para>
+    <para style="normal">Here are steps to follow.</para>
+
+
+</story>
+</document>
