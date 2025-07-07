@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk, messagebox
+from PIL import Image, ImageDraw, ImageTk
 ##self.numero_actual = numero
 ventana_secundaria = tk.Tk()
 ventana_secundaria.title("Editar diente")
@@ -8,14 +9,48 @@ ventana_secundaria.geometry('300x350')
 ##        utl.centrar_ventana(self.ventana_secundaria, 300, 350)
 ##        self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
 ##        self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
+def create_circle_image(color, radius=15, outline_width=3):
+    size = radius * 2 + outline_width
+    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))  # Fondo transparente
+    draw = ImageDraw.Draw(img)
+    draw.ellipse(
+        (outline_width, outline_width, size-outline_width, size-outline_width),
+        outline=color,
+        width=outline_width
+    )
+    return ImageTk.PhotoImage(img)
+def crear_imagen_x(color):
+    img = Image.new("RGBA", (30, 30), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+    draw.line((5, 5, 25, 25), fill=color, width=3)
+    draw.line((25, 5, 5, 25), fill=color, width=3)
+    return ImageTk.PhotoImage(img)
+
+img = create_circle_image("red")
+
 Label(ventana_secundaria, text= "EDITAR DIENTE", font= ("Arial", 15, 'bold'), fg= 'white', bg= "gray", width= 60).pack(pady= 10)
 Label(ventana_secundaria, text= "DIENTE "+str(10000), font= ("Arial", 12, 'bold'), fg= 'white', bg= "gray", width= 60).pack()
 diente_frame = Frame(ventana_secundaria)
 diente_frame.pack(pady= (10, 10))
 botones_frame = Frame(ventana_secundaria)
 botones_frame.pack(pady= (10, 10))
-boton_extraccion=Button(botones_frame, text= 'Extracción', bg= "white", width= 8)
+boton_extraccion=Button(botones_frame, image=img, text= 'Extracción', bg= "gray90")
 boton_extraccion.grid(row= 0, column= 0, padx= 10)
+corona_azul = create_circle_image("blue")
+boton_extraccion=Button(botones_frame, image=corona_azul, text= 'Extracción', bg= "gray90")
+boton_extraccion.grid(row= 0, column= 1, padx= 10)
+corona_verde = create_circle_image("green")
+boton_extraccion=Button(botones_frame, image=corona_verde, text= 'Extracción', bg= "gray90")
+boton_extraccion.grid(row= 0, column= 2, padx= 10)
+extraccion_azul = crear_imagen_x("blue")
+boton_extraccion=Button(botones_frame, image=extraccion_azul, text= 'Extracción', bg= "gray90")
+boton_extraccion.grid(row= 1, column= 0, padx= 10)
+##corona_azul = create_circle_image("blue")
+##boton_extraccion=Button(botones_frame, image=corona_azul, text= 'Extracción', bg= "gray90")
+##boton_extraccion.grid(row= 1, column= 1, padx= 10)
+##corona_verde = create_circle_image("green")
+##boton_extraccion=Button(botones_frame, image=corona_verde, text= 'Extracción', bg= "gray90")
+##boton_extraccion.grid(row= 1, column= 2, padx= 10)
 ##        #Button(botones_frame, text= 'X Azul', command= partial(self.extraccion, numero), bg= "blue", width= 5).grid(row= 0, column= 1, padx= 10)
 ##        self.boton_corona=Button(botones_frame, text= 'Corona', command= self.corona, bg= "white", width= 8)
 ##        self.boton_corona.grid(row= 0, column= 1, padx= 10)
