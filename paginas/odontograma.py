@@ -107,10 +107,10 @@ class Odontograma:
         # self.frame_botones.grid(column= 0, row= 5, pady= (10,0))
         self.boton_guardar_odonto=Button(self.frame_dientes, text= 'Guardar', command= self.guardar_odontograma, font= self.fuenteb, bg= '#1F704B', fg= 'white', width= 8)
         self.boton_guardar_odonto.grid(row= 1, column= 0, padx= 10, pady= 10)
-        self.boton_salir_odonto=Button(self.frame_dientes, text= 'Crear PDF', command= self.crear_pdf, font= self.fuenteb, bg= "gray", width= 8)
-        self.boton_salir_odonto.grid(row= 1, column= 1, padx= 10)
-        self.boton_PDF=Button(self.frame_dientes, text= 'Salir', command= self.salir, font= self.fuenteb, bg= "orange", width= 8)
-        self.boton_PDF.grid(row= 1, column= 2, padx= 10)
+        self.boton_PDF=Button(self.frame_dientes, text= 'Crear PDF', command= self.crear_pdf, font= self.fuenteb, bg= "gray", width= 8)
+        self.boton_PDF.grid(row= 1, column= 1, padx= 0)
+        self.boton_salir_odonto=Button(self.frame_dientes, text= 'Salir', command= self.salir, font= self.fuenteb, bg= "orange", width= 8)
+        self.boton_salir_odonto.grid(row= 1, column= 2, padx= (0, 10))
         self.ventana_odontograma.mainloop()
 
     def salir(self):
@@ -285,13 +285,13 @@ class Odontograma:
         pdf.line(50, alto_pagina - 130, ancho_pagina - 50, alto_pagina - 130)
         datos_paciente = [
             ["APELLIDO/S Y NOMBRE/S", apellido+", "+nombre],
-            ["DNI", dni],
+            ["D.N.I.", dni],
             ["OBRA SOCIAL", obra_social],
             ["N° SOCIO", nrosocio],
-            ["FECHA INFORME", datetime.now().strftime("%d/%m/%Y")]
+            ["FECHA INFORME", self.fecha_actual]
         ]
 
-        tabla_paciente = Table(datos_paciente, colWidths=[160, 330])
+        tabla_paciente = Table(datos_paciente, colWidths=[160, 335])
         tabla_paciente.setStyle(TableStyle([
             ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
             ('FONTSIZE', (0, 0), (-1, -1), 10),
@@ -328,7 +328,9 @@ class Odontograma:
                 width=img_width,
                 height=img_height
             )
-                
+        pdf.line(50, 50, ancho_pagina - 50, 50)
+        pdf.setFont("Helvetica-Bold", 10)
+        pdf.drawCentredString(ancho_pagina/2, 30, f"MyM Odontología | {self.fecha_actual}")
         try:
             pdf.save()
             messagebox.showinfo("Odontograma", "Informe creado exitosamente")
@@ -800,7 +802,7 @@ class Odontograma:
         height = 30
         padding = 10
         num_buttons = 8
-        x1 = 0
+        x1 = 10
 
         #primera hilera de dientes
         hilera1 = 18
@@ -852,7 +854,7 @@ class Odontograma:
             hilera1-=1
 
         #linea horizontal
-        self.canvas.create_line(0, y2+padding, self.ancho-40, y2+padding, width= 2)
+        self.canvas.create_line(10, y2+padding, self.ancho-30, y2+padding, width= 2)
         x1 = x1+10
         #linea vertical
         self.canvas.create_line(x1, 0, x1, 270, width= 2)
@@ -903,7 +905,7 @@ class Odontograma:
             self.canvas.tag_bind(tag_diente, '<Button-1>', lambda event, numero= hilera2: self.editar_diente(numero))
             hilera2+=1
         y1 = y2+20
-        x1 = 0
+        x1 = 10
 
         #4ta hilera
         hilera4 = 48
@@ -993,7 +995,7 @@ class Odontograma:
             self.canvas.tag_bind(tag_diente, '<Leave>', self.change_cursor_leave)
             self.canvas.tag_bind(tag_diente, '<Button-1>', lambda event, numero= hilera3: self.editar_diente(numero))
             hilera3+=1
-        x1 = 120
+        x1 = 130
         y1 = y2 + 60
         hilera5 = 55
         for i in range(num_buttons-3):
@@ -1082,9 +1084,9 @@ class Odontograma:
             self.canvas.tag_bind(tag_diente, '<Leave>', self.change_cursor_leave)
             self.canvas.tag_bind(tag_diente, '<Button-1>', lambda event, numero= hilera6: self.editar_diente(numero))
             hilera6+=1
-        x1 = 120
+        x1 = 130
         y1 = y2 + 10
-        self.canvas.create_text(50, y2, text= 'DERECHA', fill= "black", font= ('Helvetica 10 bold'))
+        self.canvas.create_text(60, y2, text= 'DERECHA', fill= "black", font= ('Helvetica 10 bold'))
         self.canvas.create_text(x2+75, y2, text= 'IZQUIERDA', fill= "black", font= ('Helvetica 10 bold'))
 
         hilera8 = 85
