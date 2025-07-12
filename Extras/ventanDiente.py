@@ -19,8 +19,9 @@ def create_circle_image(color, radius=15, outline_width=3):
         width=outline_width
     )
     return ImageTk.PhotoImage(img)
+
 def crear_imagen_x(color):
-    img = Image.new("RGBA", (30, 30), (0, 0, 0, 0))
+    img = Image.new("RGBA", (33, 33), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     draw.line((5, 5, 25, 25), fill=color, width=3)
     draw.line((25, 5, 5, 25), fill=color, width=3)
@@ -45,6 +46,9 @@ boton_extraccion.grid(row= 0, column= 2, padx= 10)
 extraccion_azul = crear_imagen_x("blue")
 boton_extraccion=Button(botones_frame, image=extraccion_azul, text= 'Extracción', bg= "gray90")
 boton_extraccion.grid(row= 1, column= 0, padx= 10)
+extraccion_roja = crear_imagen_x("red")
+boton_extraccion=Button(botones_frame, image=extraccion_roja, text= 'Extracción', bg= "gray90")
+boton_extraccion.grid(row= 1, column= 1, padx= 10)
 ##corona_azul = create_circle_image("blue")
 ##boton_extraccion=Button(botones_frame, image=corona_azul, text= 'Extracción', bg= "gray90")
 ##boton_extraccion.grid(row= 1, column= 1, padx= 10)

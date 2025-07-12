@@ -6,7 +6,7 @@ from datetime import datetime
 #from functools import partial
 import util.config as utl
 from bd.conexion import Conexion
-from PIL import Image, ImageGrab
+from PIL import Image, ImageGrab, ImageDraw, ImageTk
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.pdfgen import canvas as pdf_canvas
 from reportlab.platypus import Table, TableStyle
@@ -362,14 +362,34 @@ class Odontograma:
             
         except Exception as e:
             messagebox.showwarning("Odontograma", f"No se pudo abrir la carpeta: {e}")
-        
+
+    def crear_imagen_x(self, color):
+        img = Image.new("RGBA", (33, 33), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(img)
+        draw.line((5, 5, 25, 25), fill=color, width=3)
+        draw.line((25, 5, 5, 25), fill=color, width=3)
+        return ImageTk.PhotoImage(img)
+    
+    def crear_imagen_circulo(self, color):
+        radius= 15
+        outline_width= 3
+        size = radius * 2 + outline_width
+        img = Image.new("RGBA", (size, size), (0, 0, 0, 0))  # Fondo transparente
+        draw = ImageDraw.Draw(img)
+        draw.ellipse(
+            (outline_width, outline_width, size-outline_width, size-outline_width),
+            outline=color,
+            width=outline_width
+        )
+        return ImageTk.PhotoImage(img)
+
     def editar_diente(self, numero):
         #print('prueba', numero)
         self.numero_actual = numero
         self.ventana_secundaria = tk.Toplevel()
         self.ventana_secundaria.title("Editar diente")
         self.ventana_secundaria.geometry('300x350')
-        utl.centrar_ventana(self.ventana_secundaria, 300, 350)
+        utl.centrar_ventana(self.ventana_secundaria, 350, 400)
         self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
         Label(self.ventana_secundaria, text= "EDITAR DIENTE", font= ("Arial", 15, 'bold'), fg= 'white', bg= "gray", width= 60).pack(pady= 10)
@@ -378,16 +398,33 @@ class Odontograma:
         diente_frame.pack(pady= (10, 10))
         botones_frame = Frame(self.ventana_secundaria)
         botones_frame.pack(pady= (10, 10))
-        self.boton_extraccion_azul=Button(botones_frame, text= 'Extracción', command= self.extraccion, bg= "white", width= 8)
-        self.boton_extraccion_azul.grid(row= 0, column= 0, padx= 10)
-        self.boton_extraccion_verde=Button(botones_frame, text= 'Extracción', command= self.extraccion, bg= "white", width= 8)
-        self.boton_extraccion_verde.grid(row= 0, column= 1, padx= 10)
-        #Button(botones_frame, text= 'X Azul', command= partial(self.extraccion, numero), bg= "blue", width= 5).grid(row= 0, column= 1, padx= 10)
-        self.boton_corona=Button(botones_frame, text= 'Corona', command= self.corona, bg= "white", width= 8)
-        self.boton_corona.grid(row= 0, column= 1, padx= 10)
+        colores = ["blue", "green", "red"]
+        for i, color in enumerate(colores):
+            img = self.crear_imagen_x(color)
+            btn = tk.Button(
+                botones_frame, 
+                image=img, 
+                compound=tk.TOP,
+                command=lambda c=color: self.extraccion(c),
+                bg="gray90"
+            )
+            btn.image = img
+            btn.grid(row=0, column=i, padx=10)
+        for i, color in enumerate(colores):
+            img = self.crear_imagen_circulo(color)
+            btn = tk.Button(
+                botones_frame, 
+                image=img, 
+                compound=tk.TOP,
+                command=lambda c=color: self.corona(c),
+                bg="gray90"
+            )
+            btn.image = img
+            btn.grid(row=1, column=i, padx=10)
+
         #Button(botones_frame, text= 'O Azul', command= partial(self.corona, numero), bg= "blue", width= 5).grid(row= 0, column= 3, padx= 10)
-        Button(botones_frame, text= 'CANCELAR', command= self.cancelar, width= 8).grid(row= 1, column= 1, padx= 10, pady=(10, 0))
-        Button(botones_frame, text= 'GUARDAR', command= self.guardar_diente, font= self.fuenteb, bg= '#1F704B', fg= 'white', width= 8).grid(row= 1, column= 0, padx= 10, pady=(10, 0))
+        Button(botones_frame, text= 'CANCELAR', command= self.cancelar, width= 8).grid(row= 2, column= 2, padx= 10, pady=(10, 0))
+        Button(botones_frame, text= 'GUARDAR', command= self.guardar_diente, font= self.fuenteb, bg= '#1F704B', fg= 'white', width= 8).grid(row= 2, column= 0, padx= 10, pady=(10, 0))
 
         self.canvas2 = tk.Canvas(diente_frame, width= 400, height= 150)
         self.canvas2.pack()
@@ -431,7 +468,7 @@ class Odontograma:
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                 self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.diente_actual[8], width= 5)
                 self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.diente_actual[8], width= 5)
-                self.boton_extraccion.config(bg=self.determinar_color(self.diente_actual[8]))
+                #self.boton_extraccion.config(bg=self.determinar_color(self.diente_actual[8]))
             else:
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.diente_actual[3], outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.diente_actual[4], outline = "black", tags= 'C2')
@@ -465,7 +502,7 @@ class Odontograma:
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                 self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.diente_actual[8], width= 5)
                 self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.diente_actual[8], width= 5)
-                self.boton_extraccion.config(bg= self.determinar_color(self.diente_actual[8]))
+                #self.boton_extraccion.config(bg= self.determinar_color(self.diente_actual[8]))
             else:
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.diente_actual[5], outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.diente_actual[4], outline = "black", tags= 'C2')
@@ -500,7 +537,7 @@ class Odontograma:
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                 self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.diente_actual[8], width= 5)
                 self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.diente_actual[8], width= 5)
-                self.boton_extraccion.config(bg= self.determinar_color(self.diente_actual[8]))
+                #self.boton_extraccion.config(bg= self.determinar_color(self.diente_actual[8]))
             else:
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.diente_actual[5], outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.diente_actual[4], outline = "black", tags= 'C2')
@@ -535,7 +572,7 @@ class Odontograma:
                 self.canvas2.create_rectangle(x1 + width/3.0, y1 + height/3.0, x2 - width/3.0, y2 - height/3.0, fill= 'white', tags= 'CO')
                 self.canvas2.create_line(x1+5, y1+5, x2-5, y2-5, fill= self.diente_actual[8], width= 5)
                 self.canvas2.create_line(x1+5, y2-5, x2-5, y1+5, fill= self.diente_actual[8], width= 5)
-                self.boton_extraccion.config(bg= self.determinar_color(self.diente_actual[8]))
+                #self.boton_extraccion.config(bg= self.determinar_color(self.diente_actual[8]))
             else:
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= self.diente_actual[3], outline = "black", tags= 'C1')
                 self.canvas2.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= self.diente_actual[6], outline = "black", tags= 'C2')
@@ -562,21 +599,15 @@ class Odontograma:
             self.canvas2.tag_bind('C4', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'C4'))
             self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
 
-    def corona(self):
+    def corona(self, color):
         #print(color)
 
-        if self.diente_actual[9] == "red":
-            self.diente_actual[9] = "white"
-            self.boton_corona.config(bg='blue')
-        elif self.diente_actual[9] == "white":
-            self.diente_actual[9] = "blue"
-            self.boton_corona.config(bg='green')
-        elif self.diente_actual[9] == "blue":
-            self.diente_actual[9] = "green"
-            self.boton_corona.config(bg='red')
-        else:
+        if color == "red":
             self.diente_actual[9] = "red"
-            self.boton_corona.config(bg='white')
+        elif color == "blue":
+            self.diente_actual[9] = "blue"
+        elif color == "green":
+            self.diente_actual[9] = "green"
 
         width = 100
         height = 100
@@ -606,19 +637,13 @@ class Odontograma:
             bg='white'
         return bg
     
-    def extraccion(self):
-        if self.diente_actual[8] == "red":
-            self.diente_actual[8] = "white"
-            self.boton_extraccion.config(bg='blue')
-        elif self.diente_actual[8] == "white":
-            self.diente_actual[8] = "blue"
-            self.boton_extraccion.config(bg='green')
-        elif self.diente_actual[8] == "blue":
-            self.diente_actual[8] = "green"
-            self.boton_extraccion.config(bg='red')
-        elif self.diente_actual[8] == "green":
+    def extraccion(self, color):
+        if color == "red":
             self.diente_actual[8] = "red"
-            self.boton_extraccion.config(bg='white')
+        elif color == "blue":
+            self.diente_actual[8] = "blue"
+        elif color == "green":
+            self.diente_actual[8] = "green"
 
         width = 100
         height = 100
