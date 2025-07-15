@@ -411,7 +411,7 @@ class Odontograma:
                 bg="gray90"
             )
             btn.image = img
-            btn.grid(row= 0, column= i+1, pady= 5, padx= 5)
+            btn.grid(row= 0, column= i+1, pady= 5, padx= 15)
         
         for i, color in enumerate(colores):
             img = self.crear_imagen_circulo(color)
@@ -423,15 +423,15 @@ class Odontograma:
                 bg="gray90"
             )
             btn.image = img
-            btn.grid(row= 1, column= i+1, pady= 5, padx= 5)
-        Label(corona_extraccion_frame, text= "Extracción ", font= ("Arial", 12)).grid(row= 0, column= 0, pady= 5)
-        Label(corona_extraccion_frame, text= "Corona ", font= ("Arial", 12)).grid(row= 1, column= 0, pady= 5)
+            btn.grid(row= 1, column= i+1, pady= 5, padx= 15)
+        Label(corona_extraccion_frame, text= "Extracción", font= ("Arial", 12)).grid(row= 0, column= 0, pady= 5, padx= (10, 20))
+        Label(corona_extraccion_frame, text= "Corona", font= ("Arial", 12)).grid(row= 1, column= 0, pady= 5, padx= (10, 20))
         #Button(botones_frame, text= 'O Azul', command= partial(self.corona, numero), bg= "blue", width= 5).grid(row= 0, column= 3, padx= 10)
         botones_frame = Frame(self.ventana_secundaria)
         botones_frame.pack()
-        Button(botones_frame, text= 'Guardar', command= self.guardar_diente, font= self.fuenteb, bg= '#1F704B', fg= 'white', width= 8).grid(row= 2, column= 0, padx= 10)
-        Button(botones_frame, text= 'Recargar', command= lambda n=numero:self.restablecer_diente(n), font= self.fuenteb, bg= "blue", fg= 'white', width= 8).grid(row= 2, column= 1, padx= 10)
-        Button(botones_frame, text= 'Cancelar', command= self.cancelar, font= self.fuenteb, bg= "red", fg= 'white', width= 8).grid(row= 2, column= 2)
+        Button(botones_frame, text= 'Guardar', command= self.guardar_diente, font= self.fuenteb, bg= '#1F704B', fg= 'white', width= 8).grid(row= 2, column= 0, padx= 5)
+        Button(botones_frame, text= 'Recargar', command= lambda n=numero: self.restablecer_diente(n), font= self.fuenteb, bg= "blue", fg= 'white', width= 8).grid(row= 2, column= 1, padx= 5)
+        Button(botones_frame, text= 'Cancelar', command= self.cancelar, font= self.fuenteb, bg= "red", fg= 'white', width= 8).grid(row= 2, column= 2, padx= 5)
         self.canvas2 = tk.Canvas(diente_frame, width= 400, height= 150)
         self.canvas2.pack()
         self.cargar_diente(numero)
