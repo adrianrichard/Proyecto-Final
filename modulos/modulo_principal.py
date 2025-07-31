@@ -139,14 +139,12 @@ class MasterPanel:
         backup.listar_bases_datos()
         informes = Informes()
         informes.configurar_interfaz(self.frame_herramientas)
-        # Gallery=ImageGalleryApp(self.frame_galeria)
-        # Gallery.configurar_filas_columnas(self.frame_galeria)
         pass
 
     def pantalla_galeria(self):
         self.paginas.select([self.frame_galeria])
-        Gallery=ImageGalleryApp(self.frame_galeria)
-        Gallery.configurar_filas_columnas(self.frame_galeria)
+        #Gallery=ImageGalleryApp(self.frame_galeria)
+        #Gallery.configurar_filas_columnas(self.frame_galeria)
 
     def salir(self):
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea salir?', icon= 'warning')
@@ -330,6 +328,29 @@ class MasterPanel:
         except Exception as e:
             messagebox.showerror("ERROR", f"Error en la búsqueda: {e}")
 
+    def buscar_galeria(self, event=None):
+        """Busca historia clínica por apellido, nombre o DNI y muestra mensaje si no hay resultados."""
+        buscar = self.dato_paciente2.get()
+        try:
+            cursor = self.miConexion.cursor()
+            cursor.execute(
+                "SELECT Apellido, Nombre, ID, ObraSocial FROM Pacientes WHERE Apellido LIKE ? OR Nombre LIKE ? OR ID LIKE ? ORDER BY Apellido",
+                (f'%{buscar}%', f'%{buscar}%', f'{buscar}%')
+            )
+            datos = cursor.fetchall()
+
+            # Limpiar tabla antes de insertar nuevos datos
+            self.tabla_galeria.delete(*self.tabla_galeria.get_children())
+
+            if datos:  # Si encuentra resultados
+                for i, dato in enumerate(datos):
+                    self.tabla_galeria.insert('', 'end', values=dato)
+            else:  # Si no encuentra resultados
+                messagebox.showinfo("BUSCAR", "No se encontraron coincidencias")
+
+        except Exception as e:
+            messagebox.showerror("ERROR", f"Error en la búsqueda: {e}")
+            
     def seleccionar_paciente(self, event):
         item = self.tabla_paciente.focus()
         self.data = self.tabla_paciente.item(item)
@@ -608,9 +629,9 @@ class MasterPanel:
         ladoy.grid(column = 4, row = 3, sticky='ns')
         self.tabla_usuario.configure(yscrollcommand = ladoy.set)
         #self.tabla_usuario['columns'] = ( 'Clave', 'Tipo_usuario')
-        self.tabla_usuario.column('Usuario', minwidth= 100, width= 120, anchor= 'w')
-        self.tabla_usuario.column('Clave', minwidth= 100, width= 120, anchor= 'center')
-        self.tabla_usuario.column('Tipo_usuario', minwidth= 100, width= 120, anchor= 'e')
+        # self.tabla_usuario.column('Usuario', minwidth= 100, width= 120, anchor= 'w')
+        # self.tabla_usuario.column('Clave', minwidth= 100, width= 120, anchor= 'center')
+        # self.tabla_usuario.column('Tipo_usuario', minwidth= 100, width= 120, anchor= 'e')
 
         self.tabla_usuario.heading('Usuario', text= 'Usuario', anchor= 'center', command=lambda: None)
         self.tabla_usuario.heading('Clave', text= 'Clave', anchor= 'center', command=lambda: None)
@@ -636,9 +657,9 @@ class MasterPanel:
         ladoyy = ttk.Scrollbar(self.frame_tabla_odontologos, orient ='vertical', command = self.tabla_odontologos.yview)
         ladoyy.grid(column = 4, row = 7, sticky='ns')
         self.tabla_odontologos.configure(yscrollcommand = ladoyy.set)
-        self.tabla_odontologos.column('Apellido', minwidth= 100, width= 120, anchor= 'w')
-        self.tabla_odontologos.column('Nombre', minwidth= 100, width= 120, anchor= 'center')
-        self.tabla_odontologos.column('Matricula', minwidth= 100, width= 120, anchor= 'e')
+        # self.tabla_odontologos.column('Apellido', minwidth= 100, width= 120, anchor= 'w')
+        # self.tabla_odontologos.column('Nombre', minwidth= 100, width= 120, anchor= 'center')
+        # self.tabla_odontologos.column('Matricula', minwidth= 100, width= 120, anchor= 'e')
 
         self.tabla_odontologos.heading('Apellido', text= 'Apellido', anchor= 'center', command=lambda: None)
         self.tabla_odontologos.heading('Nombre', text= 'Nombre', anchor= 'center', command=lambda: None)
@@ -668,8 +689,10 @@ class MasterPanel:
 		#TABLA PACIENTE
         self.frame_tabla_paciente = Frame(self.frame_pacientes, bg= 'gray90')
         self.frame_tabla_paciente.grid(columnspan= 4, row= 4, sticky= 'nsew')
-        self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, columns= ('Apellido', 'Nombre', 'D.N.I.', 'Teléfono', 'Obra Social'), show= "headings", selectmode= 'browse', style= "TablaUsuario.Treeview")
-        self.tabla_paciente.grid(column= 0, row= 4, columnspan= 5, sticky= 'nsew')
+        self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, columns= ('Apellido', 'Nombre', 'D.N.I.', 'Teléfono', 'Obra Social'), show= "headings", height= 20, selectmode= 'browse', style= "TablaUsuario.Treeview")
+        self.tabla_paciente.grid(column= 0, row= 4, sticky= 'nsew')
+        self.frame_tabla_paciente.grid_rowconfigure(0, weight=1)
+        self.frame_tabla_paciente.grid_columnconfigure(0, weight=1)
         ladoy = ttk.Scrollbar(self.frame_tabla_paciente, orient= 'vertical', command= self.tabla_paciente.yview)
         ladoy.grid(column = 5, row = 4, sticky= 'ns')
         self.tabla_paciente.configure(yscrollcommand = ladoy.set)
@@ -698,9 +721,9 @@ class MasterPanel:
         self.busqueda2.bind('<Return>', (lambda event: self.buscar_historia()))#es para apretar Intro y se ejecute, una opción a el botón
         
         self.frame_tabla_historia= Frame(self.historia, bg= 'gray90')
-        self.frame_tabla_historia.grid(columnspan= 4, row= 4, sticky= 'nsew')
+        self.frame_tabla_historia.grid(columnspan= 5, row= 4, sticky= 'nsew')
         self.tabla_historia = ttk.Treeview(self.historia, columns= ("Apellido", "Nombre", "D.N.I.", "Obra social"), show= 'headings', height= 25, selectmode ='browse', style="TablaUsuario.Treeview")
-        self.tabla_historia.grid(column= 0, row= 4, columnspan= 4, sticky= 'nsew')
+        self.tabla_historia.grid(column= 0, row= 4, columnspan= 5, sticky= 'nsew')
         ladoy = ttk.Scrollbar(self.frame_tabla_historia, orient= 'vertical', command= self.tabla_historia.yview)
         ladoy.grid(column = 5, row = 4, sticky= 'ns')
         self.tabla_historia.configure(yscrollcommand = ladoy.set)
@@ -708,12 +731,31 @@ class MasterPanel:
         self.tabla_historia.heading("Nombre", text= "Nombre")
         self.tabla_historia.heading("D.N.I.", text= "D.N.I.")
         self.tabla_historia.heading("Obra social", text= "Obra social")
-        # # Ajustar el ancho de las columnas
+        # Ajustar el ancho de las columnas
         self.tabla_historia.bind("<Double-1>", self.editar_odontograma)
 
 		######################## GALERIA #################
         Label(self.frame_galeria, text= 'GALERIA', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, sticky= 'W')
-
+        self.busqueda_galeria_entry = ttk.Entry(self.frame_galeria, textvariable= self.dato_paciente2, width= 20, font= self.fuenten)
+        self.busqueda_galeria_entry.grid(column= 2, row= 1, pady= 5, sticky="e")
+        self.busqueda_galeria_entry.bind('<Return>', (lambda event: self.buscar_galeria()))#es para apretar Intro y se ejecute, una opción a el botón
+        self.busqueda_galeria_boton = Button(self.frame_galeria, text= 'Buscar', bg= self.color_fondo1, fg= 'white', font= self.fuenteb, command= self.buscar_galeria)
+        self.busqueda_galeria_boton.grid(column= 3, row= 1, padx= (10, 5), pady= 5)
+        
+        self.frame_tabla_galeria= Frame(self.frame_galeria, bg= 'gray90')
+        self.frame_tabla_galeria.grid(columnspan= 4, row= 4, sticky= 'nsew')
+        self.tabla_galeria = ttk.Treeview(self.frame_galeria, columns= ("Apellido", "Nombre", "D.N.I.", "Obra social"), show= 'headings', height= 25, selectmode ='browse', style="TablaUsuario.Treeview")
+        self.tabla_galeria.grid(column= 0, row= 4, columnspan= 4, sticky= 'nsew')
+        ladoy = ttk.Scrollbar(self.frame_tabla_galeria, orient= 'vertical', command= self.tabla_galeria.yview)
+        ladoy.grid(column = 4, row = 4, sticky= 'ns')
+        self.tabla_galeria.configure(yscrollcommand = ladoy.set)
+        self.tabla_galeria.heading("Apellido", text= "Apellido")
+        self.tabla_galeria.heading("Nombre", text= "Nombre")
+        self.tabla_galeria.heading("D.N.I.", text= "D.N.I.")
+        self.tabla_galeria.heading("Obra social", text= "Obra social")
+        # Ajustar el ancho de las columnas
+        self.tabla_galeria.bind("<Double-1>", self.editar_odontograma)
+        
         ######################## herramientas #################
         Label(self.frame_herramientas, text= 'HERRAMIENTAS', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 3, row= 0, sticky= 'W')
 
