@@ -119,7 +119,7 @@ class DayTopWindow(Toplevel):
             messagebox.showwarning("Advertencia", "Debe seleccionar un horario")
             return
         self.ventana_secundaria = tk.Toplevel(self, background= 'gray')
-        self.ventana_secundaria.title("Ventana Secundaria")
+        self.ventana_secundaria.title("Turno")
         self.ventana_secundaria.geometry('400x300')
         utl.centrar_ventana(self.ventana_secundaria, 400, 300)
         self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
