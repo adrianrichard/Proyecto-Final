@@ -195,12 +195,11 @@ class MasterPanel:
             self.data = self.tabla_galeria.item(item)
             try:
                 self.dni_paciente = self.data['values'][2]
-                gal = Galeria()
-                messagebox.showerror("GALERIA", f"Galeria abierta")
-                # gal.cargar_paciente(self.dni_paciente)
-                # gal.ventana_odonto()
+                gal = Galeria(self.dni_paciente)                
+                gal.cargar_paciente(self.dni_paciente)
+                #gal.ventana_gal()
             except Exception as e:
-                messagebox.showerror("ERROR", f"No se pudo cargar el odontograma: {e}")
+                messagebox.showerror("ERROR", f"No se pudo cargar la galeria: {e}")
 
     def editar_odontograma(self, event):
         item = self.tabla_historia.focus()
@@ -763,10 +762,10 @@ class MasterPanel:
         self.busqueda_galeria_entry.bind('<Return>', (lambda event: self.buscar_galeria()))#es para apretar Intro y se ejecute, una opción a el botón
         self.busqueda_galeria_boton = Button(self.frame_galeria, text= 'Buscar', bg= self.color_fondo1, fg= 'white', font= self.fuenteb, command= self.buscar_galeria)
         self.busqueda_galeria_boton.grid(column= 3, row= 1, padx= (10, 5), pady= 5)
-        
+
         self.frame_tabla_galeria= Frame(self.frame_galeria, bg= 'gray90')
         self.frame_tabla_galeria.grid(columnspan= 4, row= 4, sticky= 'nsew')
-        self.tabla_galeria = ttk.Treeview(self.frame_tabla_galeria, columns= ("Apellido", "Nombre", "D.N.I.", "Obra social"), show= 'headings', height= 25, selectmode= 'browse', style= "TablaUsuario.Treeview")
+        self.tabla_galeria = ttk.Treeview(self.frame_tabla_galeria, columns= ("Apellido", "Nombre", "D.N.I.", "Obra social"), show= 'headings', height= 20, selectmode= 'browse', style= "TablaUsuario.Treeview")
         self.tabla_galeria.grid(column= 0, row= 4, columnspan= 4, sticky= 'nsew')
         ladoy = ttk.Scrollbar(self.frame_tabla_galeria, orient= 'vertical', command= self.tabla_galeria.yview)
         ladoy.grid(column = 4, row = 4, sticky= 'ns')
@@ -775,9 +774,9 @@ class MasterPanel:
         self.tabla_galeria.heading("Nombre", text= "Nombre")
         self.tabla_galeria.heading("D.N.I.", text= "D.N.I.")
         self.tabla_galeria.heading("Obra social", text= "Obra social")
-        # # Ajustar el ancho de las columnas
+
         self.tabla_galeria.bind("<Double-1>", self.abrir_galeria)
-        
+
         ######################## herramientas #################
         Label(self.frame_herramientas, text= 'HERRAMIENTAS', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 3, row= 0, sticky= 'W')
 
