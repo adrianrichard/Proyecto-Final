@@ -1,13 +1,14 @@
 from datetime import datetime
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import filedialog, messagebox
 import util.config as utl
 from bd.conexion import Conexion
 from tkinter import *
+from PIL import Image, ImageTk, ExifTags
 import os
 
 class Galeria:
-    def __init__(self, dni):
+    def __init__(self):
         super().__init__()
         self.bd_seleccionada = ''  # Variable para almacenar la base de datos seleccionada
         self.fuenteb = utl.definir_fuente_bold()
@@ -16,19 +17,6 @@ class Galeria:
         self.dni_paciente = StringVar()
         self.db = Conexion()
         self.miConexion = self.db.conectar()
-        self.folder_path = "imagenes/"+str(dni)
-        print(self.folder_path)
-        try:
-            if not os.path.exists(self.folder_path):
-                answer = messagebox.askokcancel(title= 'Crear carpeta', message= '¿Desea crear la galeria?', icon= 'warning')
-                if answer:
-                    os.makedirs(self.folder_path)
-                else:
-                    return
-            else:
-                print("carpeta abierta")
-        except:
-            print("error")
         self.lista_imagenes = []
         self.indice_actual = 0
         self.miniaturas_botones = []
@@ -37,6 +25,23 @@ class Galeria:
         #self.zoom_factors = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0, 4.0]
         self.posicion_imagen = [0, 0]  # Para el desplazamiento de imagen con zoom
 
+    def crear_carpeta(self, dni):
+        self.folder_name = "imagenes/"+str(dni)
+        self.folder_path = os.path.abspath(self.folder_name)
+        try:
+            if not os.path.exists(self.folder_name):
+                answer = messagebox.askokcancel(title= 'Crear carpeta', message= '¿Desea crear la galeria?', icon= 'warning')
+                if answer:
+                    os.makedirs(self.folder_name)
+                    messagebox.showinfo("Galeria", "Carpeta creada exitosamente")
+                    return True
+                else:
+                    return False
+            else:
+                return True
+        except:
+            print("error")
+
     def ventana_gal(self):
         self.ventana_galeria= tk.Toplevel()
         self.ventana_galeria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
@@ -44,7 +49,8 @@ class Galeria:
         self.ventana_galeria.geometry('750x500')
         self.ventana_galeria.grid_columnconfigure(0, weight= 1)
         self.ventana_galeria.configure(bg= "gray")
-        utl.centrar_ventana(self.ventana_galeria, 900, 500)
+        self.ancho= 900
+        utl.centrar_ventana(self.ventana_galeria, self.ancho, 600)
         self.fecha_actual = datetime.now().date()
         self.fecha_actual = self.fecha_actual.strftime("%d-%m-%Y")
         Label(self.ventana_galeria, text= 'GALERIA', font= 'Arial 20 bold', bg= "gray", fg= 'white').grid(column= 0, row= 0)
@@ -52,133 +58,127 @@ class Galeria:
         apellido= self.paciente[0]
         nombre= self.paciente[1]
         dni= self.paciente[2]
-        fechanac= self.convertir_fecha(self.paciente[3])
-        obra_social= self.paciente[4]
-        nrosocio= self.paciente[5]
+        # fechanac= self.convertir_fecha(self.paciente[3])
+        # obra_social= self.paciente[4]
+        # nrosocio= self.paciente[5]
         #print(nombre, apellido, obra_social, dni)
         self.frame_datos_paciente=Frame(self.ventana_galeria, border= 1, borderwidth= 2, bg= "gray90")
         self.frame_datos_paciente.grid(column= 0, row= 1, sticky= "nsew")
         Label(self.frame_datos_paciente, text= 'Nombre Completo:', font= self.fuenteb, bg= "gray90").grid(column= 0, row= 0, sticky= 'e', padx= (5, 0))
-        Label(self.frame_datos_paciente, text= apellido+', '+nombre, font= self.fuenten, bg= "gray90").grid(column= 1, row= 0, sticky= 'w', padx= (0, 10))
+        Label(self.frame_datos_paciente, text= apellido+', '+nombre, font= self.fuenten, bg= "gray90").grid(column= 1, row= 0, sticky= 'w', padx= (0, 20))
         Label(self.frame_datos_paciente, text= 'D.N.I.:', font= self.fuenteb, bg= "gray90").grid(column= 2, row= 0, sticky= 'e', padx= (5, 0))
-        Label(self.frame_datos_paciente, text= dni, font= self.fuenten, bg= "gray90").grid(column= 3, row= 0, sticky= 'w', padx= (0, 10))
-        Label(self.frame_datos_paciente, text= 'Fecha de nacimiento:', font= self.fuenteb, bg= "gray90").grid(column= 4, row= 0, sticky= 'e', padx= (5, 0))
-        Label(self.frame_datos_paciente, text= fechanac, font= self.fuenten, bg= "gray90").grid(column= 5, row= 0, sticky= 'w', padx= (0, 10))
-        Label(self.frame_datos_paciente, text= 'Obra Social: ',  font= self.fuenteb, bg= "gray90").grid(column= 0, row= 1, sticky= 'e', padx= (5, 0))
-        Label(self.frame_datos_paciente, text= obra_social, font= self.fuenten, bg= "gray90").grid(column= 1, row= 1, sticky= 'w', padx= (0, 10))
-        Label(self.frame_datos_paciente, text= 'Nº socio: ',  font= self.fuenteb, bg= "gray90").grid(column= 2, row= 1, sticky= 'e', padx= (5, 0))
-        Label(self.frame_datos_paciente, text= nrosocio, font= self.fuenten, bg= "gray90").grid(column= 3, row= 1, sticky= 'w', padx= (0, 10))
-        self.ancho = 700
+        Label(self.frame_datos_paciente, text= dni, font= self.fuenten, bg= "gray90").grid(column= 3, row= 0, sticky= 'w', padx= (0, 20))
+        # Label(self.frame_datos_paciente, text= 'Fecha de nacimiento:', font= self.fuenteb, bg= "gray90").grid(column= 4, row= 0, sticky= 'e', padx= (5, 0))
+        # Label(self.frame_datos_paciente, text= fechanac, font= self.fuenten, bg= "gray90").grid(column= 5, row= 0, sticky= 'w', padx= (0, 20))
+        # Label(self.frame_datos_paciente, text= 'Obra Social: ',  font= self.fuenteb, bg= "gray90").grid(column= 0, row= 1, sticky= 'e', padx= (5, 0))
+        # Label(self.frame_datos_paciente, text= obra_social, font= self.fuenten, bg= "gray90").grid(column= 1, row= 1, sticky= 'w', padx= (0, 20))
+        # Label(self.frame_datos_paciente, text= 'Nº socio: ',  font= self.fuenteb, bg= "gray90").grid(column= 2, row= 1, sticky= 'e', padx= (5, 0))
+        # Label(self.frame_datos_paciente, text= nrosocio, font= self.fuenten, bg= "gray90").grid(column= 3, row= 1, sticky= 'w', padx= (0, 20))
+
+        self.frame_visor=Frame(self.ventana_galeria, border= 1, borderwidth= 2, bg= "gray90")
+        self.frame_visor.grid(column= 0, row= 2)
+        self.boton_salir_odonto= Button(self.frame_datos_paciente, text= 'Salir', command= self.salir, font= self.fuenteb, bg= "orange", width= 8)
+        self.boton_salir_odonto.grid(row= 0, column= 5, padx= (0, 10), sticky= "nsew")
+
         self.create_widgets()
-        self.frame_dientes = Frame(self.ventana_galeria)
-        self.frame_dientes.grid(column= 0, row= 3, pady= (10, 10))
-        self.canvas = tk.Canvas(self.frame_dientes, width= self.ancho-20, height= 300)
-        self.canvas.grid(row= 0, column= 0,columnspan=3, padx= 10)
-       
-        # self.boton_guardar_odonto=Button(self.frame_dientes, text= 'Guardar', command= self.guardar_odontograma, font= self.fuenteb, bg= '#1F704B', fg= 'white', width= 8)
-        # self.boton_guardar_odonto.grid(row= 1, column= 0, padx= 10, pady= 10)
-        # self.boton_PDF=Button(self.frame_dientes, text= 'Crear PDF', command= self.crear_pdf, font= self.fuenteb, bg= "gray", width= 8)
-        # self.boton_PDF.grid(row= 1, column= 1, padx= 0)
-        self.boton_salir_odonto=Button(self.frame_dientes, text= 'Salir', command= self.salir, font= self.fuenteb, bg= "orange", width= 8)
-        self.boton_salir_odonto.grid(row= 1, column= 2, padx= (0, 10))
+        self.cargar_imagenes()
+        # Mostrar la primera imagen si existe
+        if self.lista_imagenes:
+            self.mostrar_imagen(0)
+            self.cargar_miniaturas()
+
         self.ventana_galeria.mainloop()
-        
+
     def cargar_paciente(self, dni):
         self.dni_paciente = dni
         try:
-            #self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
-            self.miCursor.execute("SELECT apellido, nombre, ID, fechanacimiento, obrasocial, nrosocio FROM Pacientes WHERE ID=?", (dni,))
+            self.miCursor.execute("SELECT apellido, nombre, ID, fechanacimiento, obrasocial, nrosocio FROM Pacientes WHERE ID=?", (self.dni_paciente,))
             self.paciente = self.miCursor.fetchone()
             self.miConexion.commit()
             #print(self.paciente)
         except:
-            messagebox.showinfo("Paciente", "No se cargo el paciente")
+            messagebox.showinfo("Galeria", "No se cargo el paciente")
 
     def convertir_fecha(self, fecha):
         fecha_obj = datetime.strptime(fecha, "%Y-%m-%d")
         fecha_date = fecha_obj.date()
         return fecha_date.strftime("%d-%m-%Y")
-    
+
     def salir(self):
         answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea salir sin guardar?', icon= 'warning')
-        if answer:            
+        if answer:
             self.ventana_galeria.destroy()
-    
-    def create_widgets(self):
-        # Frame principal
-        self.frame_visor = tk.Frame(self.ventana_galeria)
-        self.frame_visor.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
+    def create_widgets(self):
         # Frame superior para la imagen principal
         self.frame_imagen = tk.Frame(self.frame_visor)
-        self.frame_imagen.pack(fill=tk.BOTH, expand=True)
+        self.frame_imagen.grid(column= 0, row= 0)
 
         # Canvas para mostrar la imagen principal con scrollbars
-        self.canvas = tk.Canvas(self.frame_imagen, bg='gray', width=600, height=400)
-        self.h_scroll = tk.Scrollbar(self.frame_imagen, orient=tk.HORIZONTAL, command=self.canvas.xview)
-        self.v_scroll = tk.Scrollbar(self.frame_imagen, orient=tk.VERTICAL, command=self.canvas.yview)
-        self.canvas.configure(xscrollcommand=self.h_scroll.set, yscrollcommand=self.v_scroll.set)
+        self.canvas = tk.Canvas(self.frame_imagen, bg= 'black', width= self.ancho*0.95, height= 350)
+        self.h_scroll = tk.Scrollbar(self.frame_imagen, orient= tk.HORIZONTAL, command= self.canvas.xview)
+        self.v_scroll = tk.Scrollbar(self.frame_imagen, orient= tk.VERTICAL, command= self.canvas.yview)
+        self.canvas.configure(xscrollcommand= self.h_scroll.set, yscrollcommand= self.v_scroll.set)
 
         # Grid layout para canvas y scrollbars
-        self.canvas.grid(row=0, column=0, sticky="nsew")
-        self.v_scroll.grid(row=0, column=1, sticky="ns")
-        self.h_scroll.grid(row=1, column=0, sticky="ew")
-        self.frame_imagen.grid_rowconfigure(0, weight=1)
-        self.frame_imagen.grid_columnconfigure(0, weight=1)
+        self.canvas.grid(row= 0, column= 0, sticky= "nsew")
+        self.v_scroll.grid(row= 0, column= 1, sticky= "ns")
+        self.h_scroll.grid(row= 1, column= 0, sticky= "ew")
+        self.frame_imagen.grid_rowconfigure(0, weight= 1)
+        self.frame_imagen.grid_columnconfigure(0, weight= 1)
 
-        # # Configurar eventos para zoom con rueda del mouse
-        # self.canvas.bind("<MouseWheel>", self.zoom_rueda_mouse)
-        # self.canvas.bind("<ButtonPress-1>", self.start_pan)
-        # self.canvas.bind("<B1-Motion>", self.mover_imagen)
-        # self.canvas.bind("<Configure>", self.reset_image_position)
+        # Configurar eventos para zoom con rueda del mouse
+        self.canvas.bind("<MouseWheel>", self.zoom_rueda_mouse)
+        self.canvas.bind("<ButtonPress-1>", self.start_pan)
+        self.canvas.bind("<B1-Motion>", self.mover_imagen)
+        self.canvas.bind("<Configure>", self.reset_image_position)
         
-        # Etiqueta para información de la imagen y zoom
-        self.info_label = tk.Label(self.frame_visor, text="", anchor=tk.W)
-        self.info_label.pack(fill=tk.X)
-        
+        # # Etiqueta para información de la imagen y zoom
+        # self.info_label = tk.Label(self.frame_imagen, text="", anchor=tk.W)
+        # self.info_label.pack(fill=tk.X)
+
         # Frame para controles
-        self.control_frame = tk.Frame(self.frame_visor)
-        self.control_frame.pack(fill=tk.X, pady=5)
+        self.control_frame = tk.Frame(self.frame_imagen)
+        self.control_frame.grid(column= 0, row= 2, sticky= "nsew")
 
-        # # Botones de navegación
-        # self.prev_btn = tk.Button(self.control_frame, text="Anterior", command=self.imagen_anterior)
-        # self.prev_btn.pack(side=tk.LEFT, padx=5)
+        # Botones de navegación
+        self.prev_btn = tk.Button(self.control_frame, text="Anterior", command=self.imagen_anterior)
+        self.prev_btn.grid(column= 0, row= 0, sticky= "nsew", padx= (0, 20))
 
-        # self.next_btn = tk.Button(self.control_frame, text="Siguiente", command=self.next_image)
-        # self.next_btn.pack(side=tk.LEFT, padx=5)
+        self.next_btn = tk.Button(self.control_frame, text="Siguiente", command=self.next_image)
+        self.next_btn.grid(column= 1, row= 0, sticky= "nsew", padx= (0, 20))
 
-        # # Controles de zoom
-        # self.zoom_out_btn = tk.Button(self.control_frame, text="Zoom -", command=lambda: self.ajustar_zoom(-0.25))
-        # self.zoom_out_btn.pack(side=tk.LEFT, padx=5)
+        # Controles de zoom
+        self.zoom_out_btn = tk.Button(self.control_frame, text="Zoom -", command= lambda: self.ajustar_zoom(-0.25))
+        self.zoom_out_btn.grid(column= 2, row= 0, sticky= "nsew", padx= (0, 20))
 
-        # self.zoom_in_btn = tk.Button(self.control_frame, text="Zoom +", command=lambda: self.ajustar_zoom(0.25))
-        # self.zoom_in_btn.pack(side=tk.LEFT, padx=5)
+        self.zoom_in_btn = tk.Button(self.control_frame, text="Zoom +", command= lambda: self.ajustar_zoom(0.25))
+        self.zoom_in_btn.grid(column= 3, row= 0, sticky= "nsew", padx= (0, 20))
 
-        # self.zoom_reset_btn = tk.Button(self.control_frame, text="Zoom 100%", command=self.resetear_zoom)
-        # self.zoom_reset_btn.pack(side=tk.LEFT, padx=5)
+        self.zoom_reset_btn = tk.Button(self.control_frame, text="Zoom 100%", command= self.resetear_zoom)
+        self.zoom_reset_btn.grid(column= 4, row= 0, sticky= "nsew", padx= (0, 20))
 
-        # # Botón para agregar imagen
-        # self.add_btn = tk.Button(self.control_frame, text="Agregar Imagen", command=self.add_image)
-        # self.add_btn.pack(side=tk.LEFT, padx=5)
+        # Botón para agregar imagen
+        self.add_btn = tk.Button(self.control_frame, text="Agregar Imagen", command=self.add_image)
+        self.add_btn.grid(column= 5, row= 0, sticky= "nsew", padx= (0, 20))
 
-        # # Botón para eliminar imagen
-        # self.del_btn = tk.Button(self.control_frame, text="Eliminar Imagen", command=self.delete_image)
-        # self.del_btn.pack(side=tk.LEFT, padx=5)
+        # Botón para eliminar imagen
+        self.del_btn = tk.Button(self.control_frame, text="Eliminar Imagen", command=self.delete_image)
+        self.del_btn.grid(column= 6, row= 0, sticky= "nsew", padx= (0, 20))
 
-        # # Botón para ver metadatos
-        # self.meta_btn = tk.Button(self.control_frame, text="Ver Metadatos", command=self.show_metadata)
-        # self.meta_btn.pack(side=tk.LEFT, padx=5)
+        # # # Botón para ver metadatos
+        # # self.meta_btn = tk.Button(self.control_frame, text="Ver Metadatos", command=self.show_metadata)
+        # # self.meta_btn.pack(side=tk.LEFT, padx=5)
 
         # Frame para miniaturas con scrollbar
-        self.thumbnail_frame = tk.Frame(self.frame_visor)
-        self.thumbnail_frame.pack(fill=tk.X, pady=(5, 15))
+        self.thumbnail_frame = tk.Frame(self.frame_imagen)
+        self.thumbnail_frame.grid(column= 0, row= 3, sticky= "nsew")
 
         # Canvas para miniaturas con scrollbar horizontal
-        self.thumbnail_canvas = tk.Canvas(self.thumbnail_frame, height=90)
-        self.thumbnail_scroll = tk.Scrollbar(self.thumbnail_frame, orient=tk.HORIZONTAL,
-                                           command=self.thumbnail_canvas.xview)
-        self.thumbnail_canvas.configure(xscrollcommand=self.thumbnail_scroll.set)
+        self.thumbnail_canvas = tk.Canvas(self.thumbnail_frame, height= 60)
+        self.thumbnail_scroll = tk.Scrollbar(self.thumbnail_frame, orient= tk.HORIZONTAL, command= self.thumbnail_canvas.xview)
+        self.thumbnail_canvas.configure(xscrollcommand= self.thumbnail_scroll.set)
 
         self.thumbnail_scroll.pack(side=tk.BOTTOM, fill=tk.X)
         self.thumbnail_canvas.pack(side=tk.TOP, fill=tk.X)
@@ -188,5 +188,334 @@ class Galeria:
         self.thumbnail_canvas.create_window((0, 0), window=self.thumbnails_inner_frame, anchor='nw')
 
         # Configurar el evento de redimensionamiento
-        #self.thumbnails_inner_frame.bind("<Configure>", self.on_thumbnail_frame_configure)    
-    
+        self.thumbnails_inner_frame.bind("<Configure>", self.on_thumbnail_frame_configure)
+            
+    def on_thumbnail_frame_configure(self, event):
+        """Actualizar scrollregion cuando cambia el tamaño del frame de miniaturas"""
+        self.thumbnail_canvas.configure(scrollregion= self.thumbnail_canvas.bbox("all"))
+
+    def cargar_imagenes(self):
+        self.lista_imagenes = []
+        valid_extensions = ('.jpg', '.jpeg', '.png', '.JPG', '.JPEG', '.PNG')
+        #print(self.folder_path)
+
+        for filename in os.listdir(self.folder_path):
+            if filename.lower().endswith(valid_extensions):
+                self.lista_imagenes.append(os.path.join(self.folder_path, filename))
+        #print( "LISTA", self.lista_imagenes)
+        self.lista_imagenes.sort()
+
+    def mostrar_imagen(self, index):
+        if 0 <= index < len(self.lista_imagenes):
+            self.canvas.update()
+            self.indice_actual = index
+            image_path = self.lista_imagenes[index]
+
+            try:
+                # Cargar la imagen original
+                self.original_image = Image.open(image_path)
+
+                # Obtener dimensiones del canvas (asegurando mínimo 1)
+                canvas_width = max(1, self.canvas.winfo_width())
+                canvas_height = max(1, self.canvas.winfo_height())
+
+                # Calcular relación de aspecto para ajuste automático
+                img_width, img_height = self.original_image.size
+                width_ratio = canvas_width / max(1, img_width)
+                height_ratio = canvas_height / max(1, img_height)
+                self.nivel_zoom = min(width_ratio, height_ratio, 1.0)  # No hacer zoom in inicial
+
+                # Resetear posición de la imagen
+                self.posicion_imagen = [0, 0]
+
+                # Aplicar el zoom calculado
+                self.apply_zoom()
+
+                # # Actualizar información
+                # self.info_label.config(
+                #     text=f"Imagen {index + 1} de {len(self.lista_imagenes)}: {os.path.basename(image_path)} | Zoom: {int(self.nivel_zoom*100)}%")
+
+                # Resaltar miniatura seleccionada
+                self.highlight_selected_thumbnail()
+            except Exception as e:
+                messagebox.showerror("Error", f"No se pudo abrir la imagen: {e}")
+            
+    def apply_zoom(self):
+        if hasattr(self, 'original_image'):
+            # Calcular nuevo tamaño asegurando que sea > 0
+            width = max(1, int(self.original_image.width * self.nivel_zoom*0.98))
+            height = max(1, int(self.original_image.height * self.nivel_zoom*0.98))
+            
+            # Redimensionar la imagen
+            self.imagen_actual = self.original_image.resize((width, height), Image.LANCZOS)
+            
+            # Mostrar en canvas
+            self.tk_img = ImageTk.PhotoImage(self.imagen_actual)
+            self.canvas.delete("all")
+            
+            # Verificar que las posiciones no sean negativas
+            x_pos = max(0, self.posicion_imagen[0])
+            y_pos = max(0, self.posicion_imagen[1])
+            
+            self.image_on_canvas = self.canvas.create_image(
+                x_pos, 
+                y_pos, 
+                anchor=tk.NW, 
+                image=self.tk_img
+            )
+            
+            # Actualizar scrollregion
+            self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+    def ajustar_zoom(self, factor_change):
+        new_zoom = self.nivel_zoom + factor_change
+        # Limitar el zoom entre 10% y 400%
+        new_zoom = max(0.1, min(4.0, new_zoom))
+
+        if new_zoom != self.nivel_zoom:
+            self.nivel_zoom = new_zoom
+            self.apply_zoom()
+            #self.update_info_label()
+
+    def zoom_rueda_mouse(self, event):
+        # Zoom in/out con la rueda del mouse
+        if event.delta > 0:
+            self.ajustar_zoom(0.25)
+        else:
+            self.ajustar_zoom(-0.25)
+
+    def resetear_zoom(self):
+        self.nivel_zoom = 1.0
+        self.posicion_imagen = [0, 0]
+        self.apply_zoom()
+        #self.update_info_label()
+
+    def reset_image_position(self, event=None):
+        """Centrar la imagen cuando se redimensiona el canvas"""
+        if hasattr(self, 'original_image'):
+            # Obtener dimensiones actuales del canvas (asegurando mínimo 1)
+            canvas_width = max(1, self.canvas.winfo_width())
+            canvas_height = max(1, self.canvas.winfo_height())
+            
+            img_width = max(1, int(self.original_image.width * self.nivel_zoom))
+            img_height = max(1, int(self.original_image.height * self.nivel_zoom))
+            
+            # Centrar la imagen si es más pequeña que el canvas
+            if img_width < canvas_width and img_height < canvas_height:
+                self.posicion_imagen = [
+                    max(0, (canvas_width - img_width) // 2),
+                    max(0, (canvas_height - img_height) // 2)
+                ]
+            # Si la imagen es más grande, mantenerla en la esquina superior izquierda
+            else:
+                self.posicion_imagen = [0, 0]
+            
+            self.apply_zoom()
+
+    def start_pan(self, event):
+        """Iniciar el desplazamiento de la imagen"""
+        self.pan_start_x = event.x
+        self.pan_start_y = event.y
+
+    def mover_imagen(self, event):
+        """Mover la imagen con el mouse"""
+        if hasattr(self, 'pan_start_x'):
+            dx = event.x - self.pan_start_x
+            dy = event.y - self.pan_start_y
+
+            self.posicion_imagen[0] += dx
+            self.posicion_imagen[1] += dy
+
+            self.canvas.move(self.image_on_canvas, dx, dy)
+            self.pan_start_x = event.x
+            self.pan_start_y = event.y
+
+    def update_info_label(self):
+        if 0 <= self.indice_actual < len(self.lista_imagenes):
+            image_path = self.lista_imagenes[self.indice_actual]
+            # self.info_label.config(
+            #     text=f"Imagen {self.indice_actual + 1} de {len(self.lista_imagenes)}: {os.path.basename(image_path)} | Zoom: {int(self.nivel_zoom*100)}%"
+            # )
+
+    def cargar_miniaturas(self):
+        # Limpiar miniaturas anteriores
+        for widget in self.thumbnails_inner_frame.winfo_children():
+            widget.destroy()
+
+        self.miniaturas_botones = []
+        self.miniaturas_imagenes = []
+
+        # Crear miniaturas para cada imagen
+        for idx, image_path in enumerate(self.lista_imagenes):
+            try:
+                # Crear miniatura
+                imagen = Image.open(image_path)
+                imagen.thumbnail((80, 80))
+
+                # Convertir a PhotoImage
+                thumb_img = ImageTk.PhotoImage(imagen)
+                self.miniaturas_imagenes.append(thumb_img)
+
+                # Crear botón con la miniatura
+                btn = tk.Button(
+                    self.thumbnails_inner_frame,
+                    image=thumb_img,
+                    command=lambda i=idx: self.mostrar_imagen(i)
+                )
+                btn.config(width= 60, height= 60)
+                btn.pack(side=tk.LEFT, padx=2, pady=2)
+                self.miniaturas_botones.append(btn)
+
+            except Exception as e:
+                print(f"Error al crear miniatura para {image_path}: {e}")
+
+        # Resaltar miniatura seleccionada
+        self.highlight_selected_thumbnail()
+
+    def highlight_selected_thumbnail(self):
+        for i, btn in enumerate(self.miniaturas_botones):
+            if i == self.indice_actual:
+                btn.config(relief= tk.FLAT, bg='light blue')
+            else:
+                btn.config(relief= tk.FLAT, bg='SystemButtonFace')
+
+    def imagen_anterior(self):
+        if len(self.lista_imagenes) > 0:
+            new_index = (self.indice_actual - 1) % len(self.lista_imagenes)
+            self.mostrar_imagen(new_index)
+
+    def next_image(self):
+        if len(self.lista_imagenes) > 0:
+            new_index = (self.indice_actual + 1) % len(self.lista_imagenes)
+            self.mostrar_imagen(new_index)
+
+    def add_image(self):
+        filetypes = (
+            ("Imágenes", "*.jpg *.jpeg *.png"),
+            ("Todos los archivos", "*.*")
+        )
+
+        file_path = filedialog.askopenfilename(
+            title="Seleccionar imagen",
+            filetypes=filetypes
+        )
+
+        if file_path:
+            try:
+                # Verificar que sea una imagen válida
+                with Image.open(file_path) as imagen:
+                    pass
+
+                # Copiar a la carpeta de imágenes
+                filename = os.path.basename(file_path)
+                dest_path = os.path.join(self.folder_path, filename)
+
+                # Si el archivo ya existe, agregar timestamp
+                if os.path.exists(dest_path):
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    name, ext = os.path.splitext(filename)
+                    filename = f"{name}_{timestamp}{ext}"
+                    dest_path = os.path.join(self.folder_path, filename)
+
+                # Copiar el archivo
+                with open(file_path, 'rb') as src, open(dest_path, 'wb') as dst:
+                    dst.write(src.read())
+
+                # Recargar imágenes y mostrar la nueva
+                self.cargar_imagenes()
+                self.mostrar_imagen(len(self.lista_imagenes) - 1)
+                self.cargar_miniaturas()
+
+                messagebox.showinfo("Éxito", "Imagen agregada correctamente")
+            except Exception as e:
+                messagebox.showerror("Error", f"No se pudo agregar la imagen: {e}")
+
+    def delete_image(self):
+        if len(self.lista_imagenes) == 0:
+            return
+
+        imagen_actual = self.lista_imagenes[self.indice_actual]
+        confirm = messagebox.askyesno(
+            "Confirmar",
+            f"¿Estás seguro de eliminar {os.path.basename(imagen_actual)}?"
+        )
+
+        if confirm:
+            try:
+                os.remove(imagen_actual)
+                self.cargar_imagenes()
+
+                if len(self.lista_imagenes) > 0:
+                    new_index = min(self.indice_actual, len(self.lista_imagenes) - 1)
+                    self.mostrar_imagen(new_index)
+                else:
+                    self.canvas.delete("all")
+                    # self.info_label.config(text="No hay imágenes en la carpeta")
+                    self.indice_actual = 0
+
+                self.cargar_miniaturas()
+                messagebox.showinfo("Éxito", "Imagen eliminada correctamente")
+            except Exception as e:
+                messagebox.showerror("Error", f"No se pudo eliminar la imagen: {e}")
+
+    def show_metadata(self):
+        if len(self.lista_imagenes) == 0:
+            return
+
+        imagen_actual = self.lista_imagenes[self.indice_actual]
+
+        try:
+            with Image.open(imagen_actual) as imagen:
+                # Obtener metadatos EXIF
+                exif_data = imagen._getexif()
+                metadata = {}
+
+                if exif_data:
+                    for tag, value in exif_data.items():
+                        tag_name = ExifTags.TAGS.get(tag, tag)
+                        metadata[tag_name] = value
+
+                # Obtener fecha de creación del archivo
+                file_time = os.path.getmtime(imagen_actual)
+                file_date = datetime.fromtimestamp(file_time).strftime("%Y-%m-%d %H:%M:%S")
+
+                # Crear ventana de metadatos
+                meta_window = tk.Toplevel(self.visor)
+                meta_window.title("Metadatos de la imagen")
+
+                # Mostrar información básica
+                tk.Label(meta_window, text=f"Archivo: {os.path.basename(imagen_actual)}",
+                         font=('Arial', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=5)
+
+                tk.Label(meta_window, text=f"Fecha del sistema: {file_date}").pack(anchor=tk.W, padx=10)
+
+                # Mostrar fecha EXIF si existe
+                if 'DateTime' in metadata:
+                    exif_date = metadata['DateTime']
+                    tk.Label(meta_window, text=f"Fecha EXIF: {exif_date}").pack(anchor=tk.W, padx=10)
+                elif 'DateTimeOriginal' in metadata:
+                    exif_date = metadata['DateTimeOriginal']
+                    tk.Label(meta_window, text=f"Fecha EXIF (Original): {exif_date}").pack(anchor=tk.W, padx=10)
+                else:
+                    tk.Label(meta_window, text="No se encontró fecha en los metadatos EXIF").pack(anchor=tk.W, padx=10)
+
+                # Mostrar más metadatos si existen
+                if metadata:
+                    tk.Label(meta_window, text="\nOtros metadatos:", font=('Arial', 9, 'bold')).pack(anchor=tk.W, padx=10, pady=(10,0))
+
+                    meta_text = tk.Text(meta_window, height=10, width=50)
+                    scroll = tk.Scrollbar(meta_window, command=meta_text.yview)
+                    meta_text.configure(yscrollcommand=scroll.set)
+
+                    scroll.pack(side=tk.RIGHT, fill=tk.Y)
+                    meta_text.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+
+                    for key, value in metadata.items():
+                        meta_text.insert(tk.END, f"{key}: {value}\n")
+                    meta_text.config(state=tk.DISABLED)
+
+                # Botón para cerrar
+                tk.Button(meta_window, text="Cerrar", command=meta_window.destroy).pack(pady=10)
+
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudieron leer los metadatos: {e}")    

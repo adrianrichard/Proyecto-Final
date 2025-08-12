@@ -195,9 +195,10 @@ class MasterPanel:
             self.data = self.tabla_galeria.item(item)
             try:
                 self.dni_paciente = self.data['values'][2]
-                gal = Galeria(self.dni_paciente)                
-                gal.cargar_paciente(self.dni_paciente)
-                #gal.ventana_gal()
+                gal = Galeria()
+                if gal.crear_carpeta(self.dni_paciente):
+                    gal.cargar_paciente(self.dni_paciente)
+                    gal.ventana_gal()
             except Exception as e:
                 messagebox.showerror("ERROR", f"No se pudo cargar la galeria: {e}")
 

@@ -8,7 +8,7 @@ class ImageViewer:
     def __init__(self, root, folder_path):
         self.visor = root
         self.visor.title("Visualizador de Imágenes con Zoom")
-        
+
         # Configurar la carpeta de imágenes
         self.folder_path = folder_path
         if not os.path.exists(self.folder_path):
@@ -35,16 +35,23 @@ class ImageViewer:
             self.cargar_miniaturas()
 
     def create_widgets(self):
-        # Frame principal
         self.frame_visor = tk.Frame(self.visor)
-        self.frame_visor.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        self.frame_visor.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)  # Grid principal
+
+        # Configurar peso para expansión
+        self.visor.grid_rowconfigure(0, weight=1)
+        self.visor.grid_columnconfigure(0, weight=1)
 
         # Frame superior para la imagen principal
         self.frame_imagen = tk.Frame(self.frame_visor)
-        self.frame_imagen.pack(fill=tk.BOTH, expand=True)
+        self.frame_imagen.grid(row=0, column=0)  # Grid secundario
+
+        # Configurar expansión en el frame contenedor
+        self.frame_visor.grid_rowconfigure(0, weight=1)
+        self.frame_visor.grid_columnconfigure(0, weight=1)
 
         # Canvas para mostrar la imagen principal con scrollbars
-        self.canvas = tk.Canvas(self.frame_imagen, bg='gray', width=600, height=400)
+        self.canvas = tk.Canvas(self.frame_imagen, bg='gray', width= 700, height= 400)
         self.h_scroll = tk.Scrollbar(self.frame_imagen, orient=tk.HORIZONTAL, command=self.canvas.xview)
         self.v_scroll = tk.Scrollbar(self.frame_imagen, orient=tk.VERTICAL, command=self.canvas.yview)
         self.canvas.configure(xscrollcommand=self.h_scroll.set, yscrollcommand=self.v_scroll.set)
@@ -105,8 +112,7 @@ class ImageViewer:
 
         # Canvas para miniaturas con scrollbar horizontal
         self.thumbnail_canvas = tk.Canvas(self.thumbnail_frame, height=90)
-        self.thumbnail_scroll = tk.Scrollbar(self.thumbnail_frame, orient=tk.HORIZONTAL,
-                                           command=self.thumbnail_canvas.xview)
+        self.thumbnail_scroll = tk.Scrollbar(self.thumbnail_frame, orient=tk.HORIZONTAL, command=self.thumbnail_canvas.xview)
         self.thumbnail_canvas.configure(xscrollcommand=self.thumbnail_scroll.set)
 
         self.thumbnail_scroll.pack(side=tk.BOTTOM, fill=tk.X)
@@ -130,14 +136,15 @@ class ImageViewer:
         for filename in os.listdir(self.folder_path):
             if filename.lower().endswith(valid_extensions):
                 self.lista_imagenes.append(os.path.join(self.folder_path, filename))
-
+        print(self.lista_imagenes)
         self.lista_imagenes.sort()
 
     def mostrar_imagen(self, index):
         if 0 <= index < len(self.lista_imagenes):
             self.indice_actual = index
             image_path = self.lista_imagenes[index]
-            
+            print("imagenws", image_path)
+
             try:
                 # Cargar la imagen original
                 self.original_image = Image.open(image_path)
