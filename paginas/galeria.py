@@ -26,7 +26,7 @@ class Galeria:
         self.posicion_imagen = [0, 0]  # Para el desplazamiento de imagen con zoom
 
     def crear_carpeta(self, dni):
-        self.folder_name = "imagenes/"+str(dni)
+        self.folder_name = "galeria/"+str(dni)
         self.folder_path = os.path.abspath(self.folder_name)
         try:
             if not os.path.exists(self.folder_name):

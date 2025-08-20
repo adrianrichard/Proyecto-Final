@@ -308,8 +308,8 @@ class MasterPanel:
         try:
             cursor = self.miConexion.cursor()
             cursor.execute(
-                "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes WHERE Apellido LIKE ? OR Nombre LIKE ? ORDER BY Apellido",
-                (f'%{buscar}%', f'%{buscar}%')
+                "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes WHERE Apellido LIKE ? OR Nombre LIKE ? OR ID LIKE ? ORDER BY Apellido",
+                (f'%{buscar}%', f'%{buscar}%', f'{buscar}%')
             )
             datos = cursor.fetchall()
             self.tabla_paciente.delete(*self.tabla_paciente.get_children())
@@ -382,7 +382,7 @@ class MasterPanel:
         try:            
             CONSULTA_USUARIOS = """
                 SELECT nombre_usuario, pass_usuario, tipo_usuario 
-                FROM usuarios
+                FROM usuarios where nombre_usuario NOT LIKE "admin"
                 ORDER BY nombre_usuario
             """
             MASCARA_CONTRASENA = "********"
@@ -396,11 +396,7 @@ class MasterPanel:
 
             # Insertar nuevos datos
             for nombre, _, tipo in datos:
-                self.tabla_usuario.insert(
-                    '', 
-                    'end', 
-                    values=(nombre, MASCARA_CONTRASENA, tipo)
-                )
+                self.tabla_usuario.insert('', 'end', values=(nombre, MASCARA_CONTRASENA, tipo))
 
         except Exception as e:
             # Mostrar error al usuario
@@ -477,11 +473,7 @@ class MasterPanel:
 
             # Insertar nuevos datos
             for matricula, apellido_odontologo, nombre_odontologo in datos:
-                self.tabla_odontologos.insert(
-                    '', 
-                    'end', 
-                    values=(apellido_odontologo, nombre_odontologo, matricula)
-                )
+                self.tabla_odontologos.insert('', 'end', values=(apellido_odontologo, nombre_odontologo, matricula))
 
         except Exception as e:
             # Mostrar error al usuario
@@ -543,13 +535,13 @@ class MasterPanel:
         self.mostrar_odontologos()
 
     def widgets(self):
-        self.imagen_usuario = utl.leer_imagen('dentist-icon2-removebg-preview.png', (38, 38))
-        #tself.imagen_menu = PhotoImage(file ='./imagenes/menu4-removebg-preview.png')
+        self.imagen_usuario = utl.leer_imagen('usuario_icono.png', (38, 38))
+        self.imagen_paciente = utl.leer_imagen('agregar3.png', (38, 38))
         self.imagen_paciente = PhotoImage(file= './imagenes/agregar3.png')
         self.imagen_calendario = PhotoImage(file= './imagenes/calendario-removebg-preview.png')
         self.imagen_historia_clinica = PhotoImage(file= './imagenes/historial3.png')
         self.imagen_galeria = PhotoImage(file= './imagenes/foto-removebg-preview.png')
-        self.imagen_herramientas = utl.leer_imagen('statistics-removebg.png', (38, 38)) #  PhotoImage(file= './imagenes/statistics.png')
+        self.imagen_herramientas = utl.leer_imagen('statistics-removebg.png', (38, 38))
         self.imagen_agregar_paciente = PhotoImage(file= './imagenes/agregar_paciente.png')
         self.imagen_editar_paciente = PhotoImage(file= './imagenes/editar_paciente.png')
         self.imagen_editar = utl.leer_imagen('editar22.png', (38, 38))
@@ -596,13 +588,13 @@ class MasterPanel:
         self.paginas = ttk.Notebook(self.frame_raiz, style= 'TNotebook')
 
         self.paginas.grid(column= 0, row= 0, sticky= 'nsew')
-        self.frame_principal = Frame(self.paginas, bg= 'gray90') #color de fondo
-        self.frame_usuarios = Frame(self.paginas, bg= 'gray90') #color de fondo
-        self.frame_pacientes = Frame(self.paginas, bg= 'gray90') #color de fondo
-        self.frame_calendario = Frame(self.paginas, bg= 'gray90')
-        self.frame_historia = Frame(self.paginas, bg= 'gray90')
-        self.frame_herramientas = Frame(self.paginas, bg= 'gray90')
-        self.frame_galeria = Frame(self.paginas, bg= 'gray90')
+        self.frame_principal = Frame(self.paginas, bg= self.color_fondo2) #color de fondo
+        self.frame_usuarios = Frame(self.paginas, bg= self.color_fondo2) #color de fondo
+        self.frame_pacientes = Frame(self.paginas, bg= self.color_fondo2) #color de fondo
+        self.frame_calendario = Frame(self.paginas, bg= self.color_fondo2)
+        self.frame_historia = Frame(self.paginas, bg= self.color_fondo2)
+        self.frame_herramientas = Frame(self.paginas, bg= self.color_fondo2)
+        self.frame_galeria = Frame(self.paginas, bg= self.color_fondo2)
         self.paginas.add(self.frame_principal)
         self.paginas.add(self.frame_usuarios)
         self.paginas.add(self.frame_pacientes)
@@ -617,7 +609,7 @@ class MasterPanel:
         self.titulo.pack(expand= 1)
 
 		######################## VENTANA PRINCIPAL #################
-        Label(self.frame_principal, image= self.logo, bg= 'gray90').pack(expand= 1)
+        Label(self.frame_principal, image= self.logo, bg= self.color_fondo2).pack(expand= 1)
 
         #ESTILO DE LAS TABLAS DE DATOS TREEVIEW
         self.estilo_tabla = ttk.Style(self.frame_usuarios)
@@ -630,16 +622,16 @@ class MasterPanel:
 ##        estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
 
         ######################## USUARIOS #################
-        Label(self.frame_usuarios, text= 'USUARIOS', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 3, padx= 5, sticky="W")       
+        Label(self.frame_usuarios, text= 'USUARIOS', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 3, padx= 5, sticky="W")       
         Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 1, pady= 5)
-        Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 2)
+        Label(self.frame_usuarios, text= 'Agregar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 2)
         Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 1, pady= 5)
-        Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 2)
+        Label(self.frame_usuarios, text= 'Eliminar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 1, row= 2)
         Button(self.frame_usuarios, image= self.imagen_editar, text= 'Editar', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.editar_user).grid(column= 2, row= 1, pady= 5)
-        Label(self.frame_usuarios, text= 'Editar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
+        Label(self.frame_usuarios, text= 'Editar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
 
         #TABLA USUARIO
-        self.frame_tabla_usuario = Frame(self.frame_usuarios, bg= 'gray90')
+        self.frame_tabla_usuario = Frame(self.frame_usuarios, bg= self.color_fondo2)
         self.frame_tabla_usuario.grid(columnspan= 3, row= 3, sticky= 'nsew')
         self.tabla_usuario = ttk.Treeview(self.frame_tabla_usuario, columns= ("Usuario", "Clave", 'Tipo_usuario'), show= "headings", selectmode= 'browse', height= 6, style= "TablaUsuario.Treeview")
         self.tabla_usuario.grid(column= 0, row= 3, columnspan= 3, sticky='nsew')
@@ -659,16 +651,16 @@ class MasterPanel:
         self.tabla_usuario.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
 
         ######################## ODONTÓLOGOS #################
-        Label(self.frame_usuarios, text= 'ODONTÓLOGOS', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 4, columnspan= 3, padx= 5, sticky= "W")       
+        Label(self.frame_usuarios, text= 'ODONTÓLOGOS', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 4, columnspan= 3, padx= 5, sticky= "W")       
         Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_odontologo).grid(column= 0, row= 5, pady= 5)
-        Label(self.frame_usuarios, text= 'Agregar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 6)
+        Label(self.frame_usuarios, text= 'Agregar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 6)
         Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_odontologo).grid(column= 1, row= 5, pady= 5)
-        Label(self.frame_usuarios, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 6)
+        Label(self.frame_usuarios, text= 'Eliminar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 1, row= 6)
         Button(self.frame_usuarios, image= self.imagen_editar, text= 'Editar', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.editar_profesional).grid(column= 2, row= 5, pady= 5)
-        Label(self.frame_usuarios, text= 'Editar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 6)
+        Label(self.frame_usuarios, text= 'Editar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 2, row= 6)
 
         #TABLA ODONTÓLOGOS
-        self.frame_tabla_odontologos = Frame(self.frame_usuarios, bg= 'gray90')
+        self.frame_tabla_odontologos = Frame(self.frame_usuarios, bg= self.color_fondo2)
         self.frame_tabla_odontologos.grid(columnspan= 3, row= 7, sticky= 'nsew')
         self.tabla_odontologos = ttk.Treeview(self.frame_tabla_odontologos, columns=("Apellido", "Nombre", 'Matricula'), show="headings", selectmode ='browse', height= 6, style="TablaUsuario.Treeview")
         self.tabla_odontologos.grid(column= 0, row= 7, columnspan= 3, sticky='nsew')
@@ -687,13 +679,13 @@ class MasterPanel:
         self.tabla_odontologos.bind("<<TreeviewSelect>>", self.seleccionar_odontologo)
 
 		######################## PACIENTES #################
-        Label(self.frame_pacientes, text= 'PACIENTES', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 4, padx= 5, sticky= "W")       
+        Label(self.frame_pacientes, text= 'PACIENTES', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 4, padx= 5, sticky= "W")       
         Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 0, row= 1, pady= 5)
-        Label(self.frame_pacientes, text= 'Agregar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 2)
+        Label(self.frame_pacientes, text= 'Agregar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 2)
         Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 1, row= 1, pady= 5)
-        Label(self.frame_pacientes, text= 'Eliminar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 1, row= 2)
+        Label(self.frame_pacientes, text= 'Eliminar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 1, row= 2)
         Button(self.frame_pacientes, image= self.imagen_editar, text= 'Editar', fg= 'black', font = self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.editar_paciente2).grid(column= 2, row= 1, pady= 5)
-        Label(self.frame_pacientes, text= 'Editar', bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
+        Label(self.frame_pacientes, text= 'Editar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
         self.busqueda = ttk.Entry(self.frame_pacientes, textvariable= self.dato_paciente, width= 20, font= self.fuenten)
         self.busqueda.grid(column= 3, row= 1, pady= 5)
         Button(self.frame_pacientes, text= 'Buscar', bg= self.color_fondo1, fg= 'white', font= self.fuenteb, command= self.buscar_paciente).grid(column= 3, row= 2, pady= (0, 5))
@@ -705,7 +697,7 @@ class MasterPanel:
         self.boton_pos.grid(column= 3, row= 3, padx= (0, 10), pady= (0, 5), sticky= "E")
 
 		#TABLA PACIENTE
-        self.frame_tabla_paciente = Frame(self.frame_pacientes, bg= 'gray90')
+        self.frame_tabla_paciente = Frame(self.frame_pacientes, bg= self.color_fondo2)
         self.frame_tabla_paciente.grid(columnspan= 4, row= 4, sticky= 'nsew')
         self.tabla_paciente = ttk.Treeview(self.frame_tabla_paciente, columns= ('Apellido', 'Nombre', 'D.N.I.', 'Teléfono', 'Obra Social'), show= "headings", height= 16, selectmode= 'browse', style= "TablaUsuario.Treeview")
         self.tabla_paciente.grid(column= 0, row= 4, columnspan= 5, sticky= 'nsew')
@@ -728,7 +720,7 @@ class MasterPanel:
         self.tabla_paciente.bind("<Double-1>", self.editar_paciente)
 
 		######################## HISTORIA CLINICA #################
-        Label(self.frame_historia, text= 'HISTORIA CLINICA', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 4, row= 0, sticky= 'W')
+        Label(self.frame_historia, text= 'HISTORIA CLINICA', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 4, row= 0, sticky= 'W')
         #Button(self.frame_historia, text= 'Nuevo odontograma', bg= self.color_fondo1, fg= 'white', font= self.fuenteb, command= self.editar_nuevo_odontograma).grid(column= 0, row= 1, padx=(10,5), pady= 5)
         self.busqueda2 = ttk.Entry(self.frame_historia, textvariable= self.dato_paciente2, width= 20, font= self.fuenten)
         self.busqueda2.grid(column= 2, row= 1, pady= 5, sticky= "e")
@@ -736,7 +728,7 @@ class MasterPanel:
         self.busqueda3.grid(column= 3, row= 1, padx= (10, 5), pady= 5, sticky= "e")
         self.busqueda2.bind('<Return>', (lambda event: self.buscar_historia()))#es para apretar Intro y se ejecute, una opción a el botón
 
-        self.frame_tabla_historia= Frame(self.frame_historia, bg= 'gray90')
+        self.frame_tabla_historia= Frame(self.frame_historia, bg= self.color_fondo2)
         self.frame_tabla_historia.grid(columnspan= 4, row= 4, sticky= 'nsew')
         self.tabla_historia = ttk.Treeview(self.frame_tabla_historia, columns= ("Apellido", "Nombre", "D.N.I.", "ObraSocial"), show= 'headings', height= 18, selectmode= 'browse', style= "TablaUsuario.Treeview")
         self.tabla_historia.grid(column= 0, row= 4, columnspan= 4, sticky= 'nsew')
@@ -757,14 +749,14 @@ class MasterPanel:
         self.tabla_historia.bind("<Double-1>", self.editar_odontograma)
 
 		######################## GALERIA #################
-        Label(self.frame_galeria, text= 'GALERIA', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, sticky= 'W')
+        Label(self.frame_galeria, text= 'GALERIA', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, sticky= 'W')
         self.busqueda_galeria_entry = ttk.Entry(self.frame_galeria, textvariable= self.dato_paciente2, width= 20, font= self.fuenten)
         self.busqueda_galeria_entry.grid(column= 2, row= 1, pady= 5, sticky="e")
         self.busqueda_galeria_entry.bind('<Return>', (lambda event: self.buscar_galeria()))#es para apretar Intro y se ejecute, una opción a el botón
         self.busqueda_galeria_boton = Button(self.frame_galeria, text= 'Buscar', bg= self.color_fondo1, fg= 'white', font= self.fuenteb, command= self.buscar_galeria)
         self.busqueda_galeria_boton.grid(column= 3, row= 1, padx= (10, 5), pady= 5)
 
-        self.frame_tabla_galeria= Frame(self.frame_galeria, bg= 'gray90')
+        self.frame_tabla_galeria= Frame(self.frame_galeria, bg= self.color_fondo2)
         self.frame_tabla_galeria.grid(columnspan= 4, row= 4, sticky= 'nsew')
         self.tabla_galeria = ttk.Treeview(self.frame_tabla_galeria, columns= ("Apellido", "Nombre", "D.N.I.", "Obra social"), show= 'headings', height= 20, selectmode= 'browse', style= "TablaUsuario.Treeview")
         self.tabla_galeria.grid(column= 0, row= 4, columnspan= 4, sticky= 'nsew')
@@ -779,10 +771,10 @@ class MasterPanel:
         self.tabla_galeria.bind("<Double-1>", self.abrir_galeria)
 
         ######################## herramientas #################
-        Label(self.frame_herramientas, text= 'HERRAMIENTAS', bg= 'gray90', fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 3, row= 0, sticky= 'W')
+        Label(self.frame_herramientas, text= 'HERRAMIENTAS', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 3, row= 0, sticky= 'W')
 
-        Label(self.frame_herramientas, text= 'Copia de seguridad (Backup)', bg= 'gray90', font= self.fuenteb, relief= "groove", width= 125).grid(column= 0, row= 1, padx= (10, 0), pady= (0, 5), sticky= 'W')
+        Label(self.frame_herramientas, text= 'Copia de seguridad (Backup)', bg= self.color_fondo2, font= self.fuenteb, relief= "groove", width= 125).grid(column= 0, row= 1, padx= (10, 0), pady= (0, 5), sticky= 'W')
 
-        Label(self.frame_herramientas, text= 'Informes', bg= 'gray90', font= self.fuenteb, relief= "groove", width= 125).grid(column= 0, row= 4, padx= (10, 0), pady= (0, 5), sticky= 'W')
+        Label(self.frame_herramientas, text= 'Informes', bg= self.color_fondo2, font= self.fuenteb, relief= "groove", width= 125).grid(column= 0, row= 4, padx= (10, 0), pady= (0, 5), sticky= 'W')
 
         self.ventana.mainloop()

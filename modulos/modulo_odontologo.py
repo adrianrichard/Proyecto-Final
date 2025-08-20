@@ -29,52 +29,51 @@ class Odontologo:
         self.frame_odontologo.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.frame_odontologo.focus_set() # Mantiene el foco cuando se abre la ventana.
         self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
-        self.frame_odontologo.iconphoto(False, self.imagen_ventana)        
+        self.frame_odontologo.iconphoto(False, self.imagen_ventana)
         self.frame_odontologo.title('DentalMatic')
-        self.frame_odontologo.geometry('700x500')
+        self.frame_odontologo.geometry('500x300')
         self.frame_odontologo.config(bg= self.color_fondo2)
         self.frame_odontologo.resizable(width= 0, height= 0)
         self.frame_odontologo.columnconfigure(0, weight= 1)
-        utl.centrar_ventana(self.frame_odontologo, 550, 300)
+        utl.centrar_ventana(self.frame_odontologo, 550, 280)
         self.menu = True
         self.color = True
         self.frame_top = Frame(self.frame_odontologo, bg= self.color_fondo1)
-        self.frame_top.grid(column= 1, row= 0, sticky= "nsew")
+        self.frame_top.grid(column= 0, row= 0, columnspan= 3, sticky= "nsew")
         self.frame_principal = Frame(self.frame_odontologo)
         self.frame_principal.config(bg= self.color_fondo2)
         self.frame_principal.grid(column= 1, row= 1, sticky= 'nsew')
 
         #Entradas Y ETIQUETAS DATOS DEL ODONTOLOGO
-        Label(self.frame_principal, text= 'Apellido', anchor= "e", width= 15, bg= 'gray90', fg= 'black', font= self.fuenteb).grid(column= 0, row= 1, pady= 5)
+        Label(self.frame_principal, text= 'Apellido', anchor= "e", width= 15, bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 1, pady= 5)
         self.entry_apellido = Entry(self.frame_principal, textvariable= self.apellido_odontologo, width= 25, font= self.fuenten)
         self.entry_apellido.grid(column= 1, row= 1, pady= 5, padx= 5)
-        self.apellido_odontologo_valido = Label(self.frame_principal, text= '*', anchor= 'w', width= 15, bg= 'gray90', fg= 'red', font= self.fuenten)
+        self.apellido_odontologo_valido = Label(self.frame_principal, text= '*', anchor= 'w', width= 15, bg= self.color_fondo2, fg= 'red', font= self.fuenten)
         self.apellido_odontologo_valido.grid(column= 2, row= 1, pady= 5, padx= 2)
 
         Label(self.frame_principal, text= 'Nombre', anchor= "e", width= 15, bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 2, pady= 5)
         self.entry_nombre = Entry(self.frame_principal, textvariable= self.nombre_odontologo, width= 25, font= self.fuenten)
         self.entry_nombre.grid(column= 1, row= 2, pady= 5, padx= 5)
-        self.nombre_odontologo_valido = Label(self.frame_principal, text= '*', anchor= 'w', width= 15, bg= 'gray90', fg= 'red', font= self.fuenten)
+        self.nombre_odontologo_valido = Label(self.frame_principal, text= '*', anchor= 'w', width= 15, bg= self.color_fondo2, fg= 'red', font= self.fuenten)
         self.nombre_odontologo_valido.grid(column= 2, row= 2, pady= 5, padx= 2)
 
         Label(self.frame_principal, text= 'Matricula', anchor= "e", width= 15, bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 3, pady= 5)
         self.entry_matricula = Entry(self.frame_principal, textvariable= self.matricula, width= 25, font= self.fuenten)
         self.entry_matricula.grid(column= 1, row= 3, pady= 5, padx= 5)
-        self.matricula_valida = Label(self.frame_principal, text= '*', anchor= 'w', width= 15, bg= 'gray90', fg= 'red', font= self.fuenten)
+        self.matricula_valida = Label(self.frame_principal, text= '*', anchor= 'w', width= 15, bg= self.color_fondo2, fg= 'red', font= self.fuenten)
         self.matricula_valida.grid(column= 2, row= 3, pady= 5, padx= 2)
 
         if(self.matricula.get()==''):
             self.titulo = Label(self.frame_top, text= 'Crear odontólogo', bg= self.color_fondo1, fg= 'white', font= self.fuenteb)
             self.titulo.grid(column= 0, row= 0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Guardar', font= self.fuenteb, fg= 'white', bg= '#1F704B', activebackground= 'gray', bd= 2, width= 10, command= self.guardar_odontologo).grid(column= 0, row= 5, pady= 5)
+            Button(self.frame_principal, text= 'Guardar', font= self.fuenteb, fg= 'white', bg= self.color_fondo1, activebackground= 'gray', bd= 2, width= 10, command= self.guardar_odontologo).grid(column= 0, row= 5, pady= 5)
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar odontólogo', bg= self.color_fondo1, fg= 'white', font= self.fuenteb)
             self.titulo.grid(column= 0, row= 0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Actualizar',  font= self.fuenteb, fg= 'white', bg= self.color_fondo1, activebackground= 'gray', bd= 2, width= 10, command= self.actualizar_odontologo).grid(column= 0, row= 5, pady= 5)
 
-        Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 25, bg= 'gray90', fg= 'red', font= self.fuenten).grid(column= 1, row= 4, pady= 5, padx= 2)
+        Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 25, bg= self.color_fondo2, fg= 'red', font= self.fuenten).grid(column= 1, row= 4, pady= 5, padx= 2)
 
-        #Label(self.frame_principal, text= 'Contraseña: debe poseer un mínimo de 8 caracteres\n al menos una minuscula\n al menos una mayuscula\n al menos un digito', width= 50, borderwidth= 2, relief= "solid", bg= 'gray90', fg= 'black', font= self.fuenten).grid( column= 0, columnspan= 3, row= 5, pady= 5)
         Button(self.frame_principal, text= 'Cerrar',  font= self.fuenteb, bg= "orange", width= 10, command= self.Salir).grid(column= 2, row= 5, pady= 5, padx= (0, 10))
         self.frame_odontologo.protocol("WM_DELETE_WINDOW", self.Salir)
 
@@ -144,7 +143,16 @@ class Odontologo:
             self.matricula_anterior = matricula
         except:
             messagebox.showinfo("Odontólogo", "No se ha podido cargar el odontólogo")
-
+    
+    def cargar_datos_odontologo(self, matricula):        
+        try:
+            self.miCursor.execute("SELECT * FROM Odontologos WHERE matricula=?", (matricula,))
+            campos=self.miCursor.fetchone()        
+            self.apellido_odontologo = campos[1]
+            self.nombre_odontologo= campos[2]
+        except:
+            messagebox.showinfo("Odontólogo", "No se ha podido cargar el odontólogo")
+            
     def actualizar_odontologo(self):
         apellido_valido = False
         nombre_valido = False        
@@ -190,12 +198,12 @@ class Odontologo:
 
     def eliminar_odontologo(self, matricula):
         try:
-            datos= self.obtener_datos_odontologo(matricula)
+            self.cargar_datos_odontologo(matricula)
         except:
             messagebox.showinfo("AVISO", "No se ha podido encontrar el odontólogo")
 
-        msg_box = messagebox.askquestion('Eliminar odontólogo', f'¿Desea eliminar a {datos[0]}, {datos[1]}?', icon='warning')
-        if msg_box == 'yes'and matricula != 'admin':
+        msg_box = messagebox.askquestion('Eliminar odontólogo', f'¿Desea eliminar a {self.apellido_odontologo}, {self.nombre_odontologo}?', icon='warning')
+        if msg_box == 'yes':
             try:
                 self.miCursor.execute("DELETE FROM odontologos WHERE matricula = ?", (matricula,))
                 self.miConexion.commit()
@@ -212,10 +220,6 @@ class Odontologo:
     def validar_alfa(self, cadena):
         patron = r'^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$'  # Permite caracteres
         return bool(re.match(patron, cadena))
-
-    # def validar_apellido(self, cadena):
-    #     patron = r'^[a-zA-Z]*$'  # Permite caracteres
-    #     return bool(re.match(patron, cadena))
 
     def validar_matricula(self, cadena):
         return bool(re.fullmatch(r'\d+', cadena))
