@@ -83,7 +83,7 @@ class Usuario:
     def guardar(self):
         # Validar Formato del nombre de usuario
         if not self.validar_nombre(self.nombre_usuario.get()):
-            messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
+            messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)", parent=self.frame_usuario)
             self.entry_nombre.config(bg= "orange red")
             return  # Sale si el formato no es válido
 
@@ -187,7 +187,9 @@ class Usuario:
                 messagebox.showinfo("ELIMINAR", "No se ha podido eliminar el usuario")
 
     def Salir(self):
-        answer = messagebox.askokcancel(title= 'Salir', message='¿Desea salir sin guardar?', icon= 'warning')
+        self.frame_usuario.grab_release()
+        answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon= 'warning', parent= self.frame_usuario)
+        self.frame_usuario.grab_set() #FUNCIONA
         if answer:
             self.miConexion.close()
             self.frame_usuario.destroy()
