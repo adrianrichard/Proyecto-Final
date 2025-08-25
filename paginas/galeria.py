@@ -13,7 +13,6 @@ class Galeria:
         self.bd_seleccionada = ''  # Variable para almacenar la base de datos seleccionada
         self.fuenteb = utl.definir_fuente_bold()
         self.fuenten = utl.definir_fuente()
-        #print("Galeria")
         self.dni_paciente = StringVar()
         self.db = Conexion()
         self.miConexion = self.db.conectar()
@@ -58,27 +57,18 @@ class Galeria:
         apellido= self.paciente[0]
         nombre= self.paciente[1]
         dni= self.paciente[2]
-        # fechanac= self.convertir_fecha(self.paciente[3])
-        # obra_social= self.paciente[4]
-        # nrosocio= self.paciente[5]
-        #print(nombre, apellido, obra_social, dni)
-        self.frame_datos_paciente=Frame(self.ventana_galeria, border= 1, borderwidth= 2, bg= "gray90")
-        self.frame_datos_paciente.grid(column= 0, row= 1, sticky= "nsew")
-        Label(self.frame_datos_paciente, text= 'Nombre Completo:', font= self.fuenteb, bg= "gray90").grid(column= 0, row= 0, sticky= 'e', padx= (5, 0))
-        Label(self.frame_datos_paciente, text= apellido+', '+nombre, font= self.fuenten, bg= "gray90").grid(column= 1, row= 0, sticky= 'w', padx= (0, 20))
-        Label(self.frame_datos_paciente, text= 'D.N.I.:', font= self.fuenteb, bg= "gray90").grid(column= 2, row= 0, sticky= 'e', padx= (5, 0))
-        Label(self.frame_datos_paciente, text= dni, font= self.fuenten, bg= "gray90").grid(column= 3, row= 0, sticky= 'w', padx= (0, 20))
-        # Label(self.frame_datos_paciente, text= 'Fecha de nacimiento:', font= self.fuenteb, bg= "gray90").grid(column= 4, row= 0, sticky= 'e', padx= (5, 0))
-        # Label(self.frame_datos_paciente, text= fechanac, font= self.fuenten, bg= "gray90").grid(column= 5, row= 0, sticky= 'w', padx= (0, 20))
-        # Label(self.frame_datos_paciente, text= 'Obra Social: ',  font= self.fuenteb, bg= "gray90").grid(column= 0, row= 1, sticky= 'e', padx= (5, 0))
-        # Label(self.frame_datos_paciente, text= obra_social, font= self.fuenten, bg= "gray90").grid(column= 1, row= 1, sticky= 'w', padx= (0, 20))
-        # Label(self.frame_datos_paciente, text= 'Nº socio: ',  font= self.fuenteb, bg= "gray90").grid(column= 2, row= 1, sticky= 'e', padx= (5, 0))
-        # Label(self.frame_datos_paciente, text= nrosocio, font= self.fuenten, bg= "gray90").grid(column= 3, row= 1, sticky= 'w', padx= (0, 20))
 
-        self.frame_visor=Frame(self.ventana_galeria, border= 1, borderwidth= 2, bg= "gray90")
+        self.frame_datos_paciente= Frame(self.ventana_galeria, border= 1, borderwidth= 2, bg= "gray90")
+        self.frame_datos_paciente.grid(column= 0, row= 1, sticky= "nsew", columnspan= 5)
+        Label(self.frame_datos_paciente, text= 'Nombre Completo: ', font= self.fuenteb, bg= "gray90").grid(column= 0, row= 0, sticky= 'e', padx= (15, 0))
+        Label(self.frame_datos_paciente, text= apellido+', '+ nombre, font= self.fuenten, bg= "gray90").grid(column= 1, row= 0, sticky= 'w', padx= (0, 20))
+        Label(self.frame_datos_paciente, text= 'D.N.I.: ', font= self.fuenteb, bg= "gray90").grid(column= 2, row= 0, sticky= 'e', padx= (5, 0))
+        Label(self.frame_datos_paciente, text= dni, font= self.fuenten, bg= "gray90").grid(column= 3, row= 0, sticky= 'w', padx= (0, 20))
+
+        self.frame_visor= Frame(self.ventana_galeria, border= 1, borderwidth= 2, bg= "gray")
         self.frame_visor.grid(column= 0, row= 2)
         self.boton_salir_odonto= Button(self.frame_datos_paciente, text= 'Salir', command= self.salir, font= self.fuenteb, bg= "orange", width= 8)
-        self.boton_salir_odonto.grid(row= 0, column= 5, padx= (0, 10), sticky= "nsew")
+        self.boton_salir_odonto.grid(row= 0, column= 4, padx= (130, 10), sticky= "e")
 
         self.create_widgets()
         self.cargar_imagenes()
@@ -112,9 +102,10 @@ class Galeria:
 
     def create_widgets(self):
         # Frame superior para la imagen principal
-        self.frame_imagen = tk.Frame(self.frame_visor)
+        self.frame_imagen = tk.Frame(self.frame_visor, bg= "gray90")
         self.frame_imagen.grid(column= 0, row= 0)
-
+        self.frame_imagen.grid_columnconfigure(0, weight= 1)
+        self.frame_imagen.grid_rowconfigure(0, weight= 1)
         # Canvas para mostrar la imagen principal con scrollbars
         self.canvas = tk.Canvas(self.frame_imagen, bg= 'black', width= self.ancho*0.95, height= 350)
         self.h_scroll = tk.Scrollbar(self.frame_imagen, orient= tk.HORIZONTAL, command= self.canvas.xview)
@@ -133,20 +124,20 @@ class Galeria:
         self.canvas.bind("<ButtonPress-1>", self.start_pan)
         self.canvas.bind("<B1-Motion>", self.mover_imagen)
         self.canvas.bind("<Configure>", self.reset_image_position)
-        
+
         # # Etiqueta para información de la imagen y zoom
         # self.info_label = tk.Label(self.frame_imagen, text="", anchor=tk.W)
         # self.info_label.pack(fill=tk.X)
 
         # Frame para controles
         self.control_frame = tk.Frame(self.frame_imagen)
-        self.control_frame.grid(column= 0, row= 2, sticky= "nsew")
+        self.control_frame.grid(column= 0, row= 2)
 
         # Botones de navegación
-        self.prev_btn = tk.Button(self.control_frame, text="Anterior", command=self.imagen_anterior)
+        self.prev_btn = tk.Button(self.control_frame, text="Anterior", command= self.imagen_anterior)
         self.prev_btn.grid(column= 0, row= 0, sticky= "nsew", padx= (0, 20))
 
-        self.next_btn = tk.Button(self.control_frame, text="Siguiente", command=self.next_image)
+        self.next_btn = tk.Button(self.control_frame, text="Siguiente", command= self.next_image)
         self.next_btn.grid(column= 1, row= 0, sticky= "nsew", padx= (0, 20))
 
         # Controles de zoom
@@ -160,11 +151,11 @@ class Galeria:
         self.zoom_reset_btn.grid(column= 4, row= 0, sticky= "nsew", padx= (0, 20))
 
         # Botón para agregar imagen
-        self.add_btn = tk.Button(self.control_frame, text="Agregar Imagen", command=self.add_image)
+        self.add_btn = tk.Button(self.control_frame, text="Agregar Imagen", command= self.add_image)
         self.add_btn.grid(column= 5, row= 0, sticky= "nsew", padx= (0, 20))
 
         # Botón para eliminar imagen
-        self.del_btn = tk.Button(self.control_frame, text="Eliminar Imagen", command=self.delete_image)
+        self.del_btn = tk.Button(self.control_frame, text="Eliminar Imagen", command= self.delete_image)
         self.del_btn.grid(column= 6, row= 0, sticky= "nsew", padx= (0, 20))
 
         # # # Botón para ver metadatos
@@ -173,19 +164,19 @@ class Galeria:
 
         # Frame para miniaturas con scrollbar
         self.thumbnail_frame = tk.Frame(self.frame_imagen)
-        self.thumbnail_frame.grid(column= 0, row= 3, sticky= "nsew")
+        self.thumbnail_frame.grid(column= 0, row= 3, sticky= "nsew", pady= 10)
 
         # Canvas para miniaturas con scrollbar horizontal
         self.thumbnail_canvas = tk.Canvas(self.thumbnail_frame, height= 60)
         self.thumbnail_scroll = tk.Scrollbar(self.thumbnail_frame, orient= tk.HORIZONTAL, command= self.thumbnail_canvas.xview)
         self.thumbnail_canvas.configure(xscrollcommand= self.thumbnail_scroll.set)
 
-        self.thumbnail_scroll.pack(side=tk.BOTTOM, fill=tk.X)
-        self.thumbnail_canvas.pack(side=tk.TOP, fill=tk.X)
+        self.thumbnail_scroll.pack(side= tk.BOTTOM, fill= tk.X)
+        self.thumbnail_canvas.pack(side= tk.TOP, fill= tk.X)
 
         # Frame interno para las miniaturas
         self.thumbnails_inner_frame = tk.Frame(self.thumbnail_canvas)
-        self.thumbnail_canvas.create_window((0, 0), window=self.thumbnails_inner_frame, anchor='nw')
+        self.thumbnail_canvas.create_window((0, 0), window= self.thumbnails_inner_frame, anchor= 'nw')
 
         # Configurar el evento de redimensionamiento
         self.thumbnails_inner_frame.bind("<Configure>", self.on_thumbnail_frame_configure)

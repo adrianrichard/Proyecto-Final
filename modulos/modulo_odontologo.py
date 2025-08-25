@@ -70,11 +70,11 @@ class Odontologo:
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar odontólogo', bg= self.color_fondo1, fg= 'white', font= self.fuenteb)
             self.titulo.grid(column= 0, row= 0, pady= 20, padx= 10)
-            Button(self.frame_principal, text= 'Actualizar',  font= self.fuenteb, fg= 'white', bg= self.color_fondo1, activebackground= 'gray', bd= 2, width= 10, command= self.actualizar_odontologo).grid(column= 0, row= 5, pady= 5)
+            Button(self.frame_principal, text= 'Actualizar', font= self.fuenteb, fg= 'white', bg= self.color_fondo1, activebackground= 'gray', bd= 2, width= 10, command= self.actualizar_odontologo).grid(column= 0, row= 5, pady= 5)
 
         Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 25, bg= self.color_fondo2, fg= 'red', font= self.fuenten).grid(column= 1, row= 4, pady= 5, padx= 2)
 
-        Button(self.frame_principal, text= 'Cerrar',  font= self.fuenteb, bg= "orange", width= 10, command= self.Salir).grid(column= 2, row= 5, pady= 5, padx= (0, 10))
+        Button(self.frame_principal, text= 'Cerrar', font= self.fuenteb, bg= "orange", width= 10, command= self.Salir).grid(column= 2, row= 5, pady= 5, padx= (0, 10))
         self.frame_odontologo.protocol("WM_DELETE_WINDOW", self.Salir)
 
         self.frame_odontologo.mainloop()
@@ -143,11 +143,11 @@ class Odontologo:
             self.matricula_anterior = matricula
         except:
             messagebox.showinfo("Odontólogo", "No se ha podido cargar el odontólogo")
-    
-    def cargar_datos_odontologo(self, matricula):        
+
+    def cargar_datos_odontologo(self, matricula):
         try:
             self.miCursor.execute("SELECT * FROM Odontologos WHERE matricula=?", (matricula,))
-            campos=self.miCursor.fetchone()        
+            campos=self.miCursor.fetchone()
             self.apellido_odontologo = campos[1]
             self.nombre_odontologo= campos[2]
         except:
@@ -155,7 +155,7 @@ class Odontologo:
             
     def actualizar_odontologo(self):
         apellido_valido = False
-        nombre_valido = False        
+        nombre_valido = False
 
         if not self.validar_alfa(self.apellido_odontologo.get()):
             self.apellido_odontologo_valido.config(fg="red", text="Sólo letras")
