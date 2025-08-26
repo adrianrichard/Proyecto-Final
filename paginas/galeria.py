@@ -13,6 +13,9 @@ class Galeria:
         self.bd_seleccionada = ''  # Variable para almacenar la base de datos seleccionada
         self.fuenteb = utl.definir_fuente_bold()
         self.fuenten = utl.definir_fuente()
+        self.imagen_zoom_mas = utl.leer_imagen('zoom-in.jpg', (38, 38))
+        self.imagen_zoom_menos = utl.leer_imagen('zoom-out.png', (38, 38))
+        self.imagen_zoom_100 = utl.leer_imagen('zoom-real.png', (38, 38))
         self.dni_paciente = StringVar()
         self.db = Conexion()
         self.miConexion = self.db.conectar()
@@ -107,7 +110,7 @@ class Galeria:
         self.frame_imagen.grid_columnconfigure(0, weight= 1)
         self.frame_imagen.grid_rowconfigure(0, weight= 1)
         # Canvas para mostrar la imagen principal con scrollbars
-        self.canvas = tk.Canvas(self.frame_imagen, bg= 'black', width= self.ancho*0.95, height= 350)
+        self.canvas = tk.Canvas(self.frame_imagen, bg= 'black', width= self.ancho*0.97, height= 350)
         self.h_scroll = tk.Scrollbar(self.frame_imagen, orient= tk.HORIZONTAL, command= self.canvas.xview)
         self.v_scroll = tk.Scrollbar(self.frame_imagen, orient= tk.VERTICAL, command= self.canvas.yview)
         self.canvas.configure(xscrollcommand= self.h_scroll.set, yscrollcommand= self.v_scroll.set)
@@ -116,8 +119,6 @@ class Galeria:
         self.canvas.grid(row= 0, column= 0, sticky= "nsew")
         self.v_scroll.grid(row= 0, column= 1, sticky= "ns")
         self.h_scroll.grid(row= 1, column= 0, sticky= "ew")
-        self.frame_imagen.grid_rowconfigure(0, weight= 1)
-        self.frame_imagen.grid_columnconfigure(0, weight= 1)
 
         # Configurar eventos para zoom con rueda del mouse
         self.canvas.bind("<MouseWheel>", self.zoom_rueda_mouse)
@@ -132,22 +133,24 @@ class Galeria:
         # Frame para controles
         self.control_frame = tk.Frame(self.frame_imagen)
         self.control_frame.grid(column= 0, row= 2)
+        self.control_frame.grid_rowconfigure(0, weight= 1)
+        self.control_frame.grid_columnconfigure(0, weight= 1)
 
         # Botones de navegación
-        self.prev_btn = tk.Button(self.control_frame, text="Anterior", command= self.imagen_anterior)
+        self.prev_btn = tk.Button(self.control_frame, text= "Anterior", command= self.imagen_anterior)
         self.prev_btn.grid(column= 0, row= 0, sticky= "nsew", padx= (0, 20))
 
-        self.next_btn = tk.Button(self.control_frame, text="Siguiente", command= self.next_image)
+        self.next_btn = tk.Button(self.control_frame, text= "Siguiente", command= self.next_image)
         self.next_btn.grid(column= 1, row= 0, sticky= "nsew", padx= (0, 20))
 
         # Controles de zoom
-        self.zoom_out_btn = tk.Button(self.control_frame, text="Zoom -", command= lambda: self.ajustar_zoom(-0.25))
+        self.zoom_out_btn = tk.Button(self.control_frame, image= self.imagen_zoom_menos, text= "Zoom -", command= lambda: self.ajustar_zoom(-0.25))
         self.zoom_out_btn.grid(column= 2, row= 0, sticky= "nsew", padx= (0, 20))
 
-        self.zoom_in_btn = tk.Button(self.control_frame, text="Zoom +", command= lambda: self.ajustar_zoom(0.25))
+        self.zoom_in_btn = tk.Button(self.control_frame, image= self.imagen_zoom_mas, text= "Zoom +", command= lambda: self.ajustar_zoom(0.25))
         self.zoom_in_btn.grid(column= 3, row= 0, sticky= "nsew", padx= (0, 20))
 
-        self.zoom_reset_btn = tk.Button(self.control_frame, text="Zoom 100%", command= self.resetear_zoom)
+        self.zoom_reset_btn = tk.Button(self.control_frame, image= self.imagen_zoom_100, text="Zoom 100%", command= self.resetear_zoom)
         self.zoom_reset_btn.grid(column= 4, row= 0, sticky= "nsew", padx= (0, 20))
 
         # Botón para agregar imagen

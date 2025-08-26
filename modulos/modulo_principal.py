@@ -50,7 +50,6 @@ class MasterPanel:
         self.nombre_usuario = StringVar()
         self.matricula = StringVar()
         self.tipo_usuario = tipousuario
-        #print(self.tipo_usuario)
 
         self.frame_inicio = Frame(self.ventana, bg= self.color_fondo1, width= 50, height= 45)
         self.frame_inicio.grid_propagate(0)
@@ -114,9 +113,6 @@ class MasterPanel:
         [self.frame_tabla_paciente.columnconfigure(i, weight= 1) for i in range(self.frame_pacientes.grid_size()[0])]
         [self.frame_pacientes.columnconfigure(i, weight= 1) for i in range(self.frame_pacientes.grid_size()[0])]
         [self.frame_tabla_paciente.rowconfigure(i, weight= 1) for i in range(self.frame_pacientes.grid_size()[1])]
-        
-        # self.estilo_tabla.configure('Treeview.Heading', background= 'green', fg= 'black', padding= 3, font= fuenteb)        
-        # self.estilo_tabla.configure("Treeview", font= fuenten, foreground= 'black', rowheight= 35)
 
     def pantalla_calendario(self):
         self.paginas.select([self.frame_calendario])
@@ -147,12 +143,9 @@ class MasterPanel:
         [self.frame_tabla_galeria.columnconfigure(i, weight= 1) for i in range(self.frame_galeria.grid_size()[0])]
         [self.frame_galeria.columnconfigure(i, weight= 1) for i in range(self.frame_galeria.grid_size()[0])]
         [self.frame_tabla_galeria.rowconfigure(i, weight= 1) for i in range(self.frame_galeria.grid_size()[1])]
-        # gallery= Galeria()
-        # gallery.configurar_interfaz(self.frame_galeria)
-        # #Gallery.configurar_filas_columnas(self.frame_galeria)
 
     def salir(self):
-        answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea salir?', icon= 'warning')
+        answer = messagebox.askokcancel('Salir', '¿Desea salir?', icon= 'warning')
         if answer:
             self.db.cerrar_bd()
             self.ventana.destroy()
@@ -167,7 +160,6 @@ class MasterPanel:
         item = self.tabla_paciente.focus()
         if item:
             self.data = self.tabla_paciente.item(item)
-            #print(self.data)
             try:
                 self.dni_paciente = self.data['values'][2]
                 paciente = Paciente()
@@ -180,7 +172,6 @@ class MasterPanel:
         item = self.tabla_paciente.focus()
         if item:
             self.data = self.tabla_paciente.item(item)
-            #print(self.data)
             try:
                 self.dni_paciente = self.data['values'][2]
                 paciente = Paciente()
@@ -244,7 +235,7 @@ class MasterPanel:
         pacientes = self.cargar_tabla_pacientes()
         total = len(pacientes)
         inicio = self.indice_paciente
-        fin = min(inicio + self.incremento, total)  # Control de índice final
+        fin = min(inicio + self.incremento, total) # Control de índice final
 
         # Limpiar la tabla antes de insertar nuevos datos
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
@@ -256,19 +247,19 @@ class MasterPanel:
         # --- Control de botones ---
         # Botón previo
         if self.indice_paciente == 0:
-            self.boton_previo.config(state='disabled', bg='gray')  # Desactivado y gris
+            self.boton_previo.config(state='disabled', bg='gray') # Desactivado y gris
         else:
-            self.boton_previo.config(state='normal', bg= self.color_fondo1)    # Activado y verde
+            self.boton_previo.config(state='normal', bg= self.color_fondo1) # Activado y verde
 
         # Botón siguiente
         if fin >= total:
-            self.boton_pos.config(state='disabled', bg='gray')    # Desactivado y gris
+            self.boton_pos.config(state='disabled', bg='gray') # Desactivado y gris
         else:
-            self.boton_pos.config(state='normal', bg= self.color_fondo1)      # Activado y verde
+            self.boton_pos.config(state='normal', bg= self.color_fondo1) # Activado y verde
 
     def cargar_pacientes_previos(self):
         """Carga la página anterior de pacientes."""
-        self.indice_paciente = max(0, self.indice_paciente - self.incremento)  # No permite índice negativo
+        self.indice_paciente = max(0, self.indice_paciente - self.incremento) # No permite índice negativo
         self.cargar_pacientes_paginados()
 
     def cargar_pacientes_posteriores(self):
@@ -276,7 +267,7 @@ class MasterPanel:
         pacientes = self.cargar_tabla_pacientes()
         total = len(pacientes)
         if self.indice_paciente + self.incremento < total:
-            self.indice_paciente += self.incremento  # Avanza a la siguiente página
+            self.indice_paciente += self.incremento # Avanza a la siguiente página
         self.cargar_pacientes_paginados()
 
     def mostrar_pacientes(self):
@@ -289,18 +280,15 @@ class MasterPanel:
         bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido"
         self.miCursor.execute(bd)
         datos = self.miCursor.fetchall()
-        #print(datos)
-        #print(len(datos))
-        #if  len(datos)<self.incremento:
 
         self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-        if (len(datos)>self.incremento):
+        if (len(datos) > self.incremento):
             for i in range(0, self.incremento):
-                    self.tabla_paciente.insert('', i, text= datos[i][0], values=datos[i][0:])
+                    self.tabla_paciente.insert('', i, text= datos[i][0], values= datos[i][0:])
         else:
             self.boton_pos.config(state= 'disabled', bg= self.color_fondo1)
             for i in range(0, len(datos)):
-                    self.tabla_paciente.insert('', i, text= datos[i][0], values=datos[i][0:])
+                    self.tabla_paciente.insert('', i, text= datos[i][0], values= datos[i][0:])
 
     def buscar_paciente(self, event=None):
         """Busca pacientes por nombre o apellido y muestra mensaje si no hay resultados."""
@@ -313,10 +301,10 @@ class MasterPanel:
             )
             datos = cursor.fetchall()
             self.tabla_paciente.delete(*self.tabla_paciente.get_children())
-            
+
             if datos:  # Si encuentra resultados
                 for i, dato in enumerate(datos):
-                    self.tabla_paciente.insert('', 'end', text=dato[0], values=dato[0:])
+                    self.tabla_paciente.insert('', 'end', text= dato[0], values= dato[0:])
             else:  # Si no encuentra resultados
                 messagebox.showinfo("BUSCAR", "No se encontraron coincidencias")
 
@@ -339,7 +327,7 @@ class MasterPanel:
 
             if datos:  # Si encuentra resultados
                 for i, dato in enumerate(datos):
-                    self.tabla_historia.insert('', 'end', values=dato)
+                    self.tabla_historia.insert('', 'end', values= dato)
             else:  # Si no encuentra resultados
                 messagebox.showinfo("BUSCAR", "No se encontraron coincidencias")
 
@@ -362,7 +350,7 @@ class MasterPanel:
 
             if datos:  # Si encuentra resultados
                 for i, dato in enumerate(datos):
-                    self.tabla_galeria.insert('', 'end', values=dato)
+                    self.tabla_galeria.insert('', 'end', values= dato)
             else:  # Si no encuentra resultados
                 messagebox.showinfo("BUSCAR", "No se encontraron coincidencias")
 
@@ -396,7 +384,7 @@ class MasterPanel:
 
             # Insertar nuevos datos
             for nombre, _, tipo in datos:
-                self.tabla_usuario.insert('', 'end', values=(nombre, MASCARA_CONTRASENA, tipo))
+                self.tabla_usuario.insert('', 'end', values= (nombre, MASCARA_CONTRASENA, tipo))
 
         except Exception as e:
             # Mostrar error al usuario
@@ -425,7 +413,7 @@ class MasterPanel:
                 self.nombre_usuario = self.data['values'][0]
                 user = Usuario()
                 user.cargar_datos(self.nombre_usuario)
-                user.ventana(master_panel_ref=self)
+                user.ventana(master_panel_ref = self)
             except Exception as e:
                 messagebox.showerror("ERROR", f"No se pudo cargar el usuario: {e}")
 
@@ -437,7 +425,7 @@ class MasterPanel:
             try:
                 selected_item = self.tabla_usuario.selection()
                 item = self.tabla_usuario.item(selected_item)
-                self.usuario=item['values'][0]
+                self.usuario= item['values'][0]
                 #self.usuario = self.tabla_usuario.item(sel, "text")
                 if self.usuario != 'Usuario':
                     user = Usuario()
@@ -473,7 +461,7 @@ class MasterPanel:
 
             # Insertar nuevos datos
             for matricula, apellido_odontologo, nombre_odontologo in datos:
-                self.tabla_odontologos.insert('', 'end', values=(apellido_odontologo, nombre_odontologo, matricula))
+                self.tabla_odontologos.insert('', 'end', values= (apellido_odontologo, nombre_odontologo, matricula))
 
         except Exception as e:
             # Mostrar error al usuario
@@ -491,7 +479,7 @@ class MasterPanel:
 
     def agregar_odontologo(self):
         profesional = Odontologo()
-        profesional.ventana(master_panel_ref=self)
+        profesional.ventana(master_panel_ref = self)
 
     def editar_odontologo(self, event):
         region = self.tabla_odontologos.identify("region", event.x, event.y)
@@ -505,7 +493,7 @@ class MasterPanel:
                 if matricula != '':
                     profesional = Odontologo()
                     profesional.cargar_datos(matricula)
-                    profesional.ventana(master_panel_ref=self)
+                    profesional.ventana(master_panel_ref = self)
                 else:
                     messagebox.showwarning("Advertencia", "Debe seleccionar un profesional")
             except:
@@ -618,8 +606,6 @@ class MasterPanel:
         self.estilo_tabla.map('Treeview.Heading', background= [("active", self.color_fondo1)], foreground= [("active", "white")])
         self.estilo_tabla.configure('TablaUsuario.Treeview.Heading', background= self.color_fondo1, foreground= 'white', padding= 3, font= self.fuenteb)
         self.estilo_paginas.layout('TNotebook.Tab', [])
-##        estilo_tabla.configure('Item', foreground = 'red', focuscolor ='green')
-##        estilo_tabla.configure('TScrollbar', arrowcolor = 'white', bordercolor  ='black', troughcolor= 'white', background ='white')
 
         ######################## USUARIOS #################
         Label(self.frame_usuarios, text= 'USUARIOS', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 3, padx= 5, sticky="W")       
@@ -635,13 +621,9 @@ class MasterPanel:
         self.frame_tabla_usuario.grid(columnspan= 3, row= 3, sticky= 'nsew')
         self.tabla_usuario = ttk.Treeview(self.frame_tabla_usuario, columns= ("Usuario", "Clave", 'Tipo_usuario'), show= "headings", selectmode= 'browse', height= 6, style= "TablaUsuario.Treeview")
         self.tabla_usuario.grid(column= 0, row= 3, columnspan= 3, sticky='nsew')
-        ladoy = ttk.Scrollbar(self.frame_tabla_usuario, orient='vertical', command= self.tabla_usuario.yview)
+        ladoy = ttk.Scrollbar(self.frame_tabla_usuario, orient= 'vertical', command= self.tabla_usuario.yview)
         ladoy.grid(column= 4, row= 3, sticky= 'ns')
         self.tabla_usuario.configure(yscrollcommand = ladoy.set)
-        #self.tabla_usuario['columns'] = ( 'Clave', 'Tipo_usuario')
-        # self.tabla_usuario.column('Usuario', minwidth= 100, width= 120, anchor= 'w')
-        # self.tabla_usuario.column('Clave', minwidth= 100, width= 120, anchor= 'center')
-        # self.tabla_usuario.column('Tipo_usuario', minwidth= 100, width= 120, anchor= 'e')
 
         self.tabla_usuario.heading('Usuario', text= 'Usuario', anchor= 'center', command= lambda: None)
         self.tabla_usuario.heading('Clave', text= 'Clave', anchor= 'center', command= lambda: None)
@@ -662,15 +644,11 @@ class MasterPanel:
         #TABLA ODONTÓLOGOS
         self.frame_tabla_odontologos = Frame(self.frame_usuarios, bg= self.color_fondo2)
         self.frame_tabla_odontologos.grid(columnspan= 3, row= 7, sticky= 'nsew')
-        self.tabla_odontologos = ttk.Treeview(self.frame_tabla_odontologos, columns=("Apellido", "Nombre", 'Matricula'), show="headings", selectmode ='browse', height= 6, style="TablaUsuario.Treeview")
+        self.tabla_odontologos = ttk.Treeview(self.frame_tabla_odontologos, columns= ("Apellido", "Nombre", 'Matricula'), show= "headings", selectmode ='browse', height= 6, style="TablaUsuario.Treeview")
         self.tabla_odontologos.grid(column= 0, row= 7, columnspan= 3, sticky='nsew')
         ladoyy = ttk.Scrollbar(self.frame_tabla_odontologos, orient ='vertical', command = self.tabla_odontologos.yview)
         ladoyy.grid(column = 4, row = 7, sticky= 'ns')
         self.tabla_odontologos.configure(yscrollcommand = ladoyy.set)
-        # self.tabla_odontologos.column('Apellido', minwidth= 100, width= 120, anchor= 'w')
-        # self.tabla_odontologos.column('Nombre', minwidth= 100, width= 120, anchor= 'center')
-        # self.tabla_odontologos.column('Matricula', minwidth= 100, width= 120, anchor= 'e')
-
         self.tabla_odontologos.heading('Apellido', text= 'Apellido', anchor= 'center', command= lambda: None)
         self.tabla_odontologos.heading('Nombre', text= 'Nombre', anchor= 'center', command= lambda: None)
         self.tabla_odontologos.heading('Matricula', text= 'Matricula', anchor= 'center', command= lambda: None)
