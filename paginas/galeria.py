@@ -1,6 +1,6 @@
 from datetime import datetime
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, Frame
 import util.config as utl
 from bd.conexion import Conexion
 from tkinter import *
@@ -13,9 +13,13 @@ class Galeria:
         self.bd_seleccionada = ''  # Variable para almacenar la base de datos seleccionada
         self.fuenteb = utl.definir_fuente_bold()
         self.fuenten = utl.definir_fuente()
-        self.imagen_zoom_mas = utl.leer_imagen('zoom-in.jpg', (38, 38))
+        self.imagen_zoom_mas = utl.leer_imagen('zoom-in.png', (38, 38))
         self.imagen_zoom_menos = utl.leer_imagen('zoom-out.png', (38, 38))
         self.imagen_zoom_100 = utl.leer_imagen('zoom-real.png', (38, 38))
+        self.imagen_anterior_icono = utl.leer_imagen('imagen-anterior.png', (38, 38))
+        self.imagen_siguiente_icono = utl.leer_imagen('imagen-siguiente.png', (38, 38))
+        self.agregar_imagen_icono = utl.leer_imagen('agregar-imagen.png', (38, 38))
+        self.eliminar_imagen_icono = utl.leer_imagen('eliminar-imagen.png', (38, 38))
         self.dni_paciente = StringVar()
         self.db = Conexion()
         self.miConexion = self.db.conectar()
@@ -23,6 +27,7 @@ class Galeria:
         self.indice_actual = 0
         self.miniaturas_botones = []
         self.miniaturas_imagenes = []
+        self.color_fondo1, self.color_fondo2= utl.definir_color_fondo()
         self.nivel_zoom = 1.0  # 1.0 = 100%
         #self.zoom_factors = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 3.0, 4.0]
         self.posicion_imagen = [0, 0]  # Para el desplazamiento de imagen con zoom
@@ -32,7 +37,7 @@ class Galeria:
         self.folder_path = os.path.abspath(self.folder_name)
         try:
             if not os.path.exists(self.folder_name):
-                answer = messagebox.askokcancel(title= 'Crear carpeta', message= '¿Desea crear la galeria?', icon= 'warning')
+                answer = messagebox.askokcancel('Crear carpeta', '¿Desea crear la galeria?', icon= 'warning')
                 if answer:
                     os.makedirs(self.folder_name)
                     messagebox.showinfo("Galeria", "Carpeta creada exitosamente")
@@ -71,7 +76,7 @@ class Galeria:
         self.frame_visor= Frame(self.ventana_galeria, border= 1, borderwidth= 2, bg= "gray")
         self.frame_visor.grid(column= 0, row= 2)
         self.boton_salir_odonto= Button(self.frame_datos_paciente, text= 'Salir', command= self.salir, font= self.fuenteb, bg= "orange", width= 8)
-        self.boton_salir_odonto.grid(row= 0, column= 4, padx= (130, 10), sticky= "e")
+        self.boton_salir_odonto.grid(row= 0, column= 4, padx= (250, 10), sticky= "e")
 
         self.create_widgets()
         self.cargar_imagenes()
@@ -99,9 +104,14 @@ class Galeria:
         return fecha_date.strftime("%d-%m-%Y")
 
     def salir(self):
-        answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea salir sin guardar?', icon= 'warning')
+        self.ventana_galeria.grab_release()
+        answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon= 'warning')
+        
         if answer:
             self.ventana_galeria.destroy()
+        else: 
+            self.ventana_galeria.focus_set()
+            self.ventana_galeria.grab_set()
 
     def create_widgets(self):
         # Frame superior para la imagen principal
@@ -131,35 +141,35 @@ class Galeria:
         # self.info_label.pack(fill=tk.X)
 
         # Frame para controles
-        self.control_frame = tk.Frame(self.frame_imagen)
-        self.control_frame.grid(column= 0, row= 2)
-        self.control_frame.grid_rowconfigure(0, weight= 1)
-        self.control_frame.grid_columnconfigure(0, weight= 1)
+        self.control_frame = Frame(self.frame_imagen, bg= "gray")
+        self.control_frame.grid(column= 0, row= 2, pady = 5, sticky= "nsew", columnspan= 8)
+        # self.control_frame.grid_rowconfigure(0, weight= 1)
+        # self.control_frame.grid_columnconfigure(0, weight= 1)
 
         # Botones de navegación
-        self.prev_btn = tk.Button(self.control_frame, text= "Anterior", command= self.imagen_anterior)
-        self.prev_btn.grid(column= 0, row= 0, sticky= "nsew", padx= (0, 20))
+        self.prev_btn = tk.Button(self.control_frame, image= self.imagen_anterior_icono, text= "Anterior", command= self.imagen_anterior, bg= self.color_fondo1)
+        self.prev_btn.grid(column= 0, row= 0, padx= (150, 50))
 
-        self.next_btn = tk.Button(self.control_frame, text= "Siguiente", command= self.next_image)
-        self.next_btn.grid(column= 1, row= 0, sticky= "nsew", padx= (0, 20))
+        self.next_btn = tk.Button(self.control_frame, image= self.imagen_siguiente_icono, text= "Siguiente", command= self.imagen_siguiente, bg= self.color_fondo1)
+        self.next_btn.grid(column= 4, row= 0,  padx= (0, 50))
 
         # Controles de zoom
-        self.zoom_out_btn = tk.Button(self.control_frame, image= self.imagen_zoom_menos, text= "Zoom -", command= lambda: self.ajustar_zoom(-0.25))
-        self.zoom_out_btn.grid(column= 2, row= 0, sticky= "nsew", padx= (0, 20))
+        self.zoom_out_btn = tk.Button(self.control_frame, image= self.imagen_zoom_menos, text= "Zoom -", command= lambda: self.ajustar_zoom(-0.25), bg= self.color_fondo1)
+        self.zoom_out_btn.grid(column= 1, row= 0, padx= (0, 25))
 
-        self.zoom_in_btn = tk.Button(self.control_frame, image= self.imagen_zoom_mas, text= "Zoom +", command= lambda: self.ajustar_zoom(0.25))
-        self.zoom_in_btn.grid(column= 3, row= 0, sticky= "nsew", padx= (0, 20))
+        self.zoom_in_btn = tk.Button(self.control_frame, image= self.imagen_zoom_mas, text= "Zoom +", command= lambda: self.ajustar_zoom(0.25), bg= self.color_fondo1)
+        self.zoom_in_btn.grid(column= 2, row= 0, padx= (0, 25))
 
-        self.zoom_reset_btn = tk.Button(self.control_frame, image= self.imagen_zoom_100, text="Zoom 100%", command= self.resetear_zoom)
-        self.zoom_reset_btn.grid(column= 4, row= 0, sticky= "nsew", padx= (0, 20))
+        self.zoom_reset_btn = tk.Button(self.control_frame, image= self.imagen_zoom_100, text= "Zoom 100%", command= self.resetear_zoom, bg= self.color_fondo1)
+        self.zoom_reset_btn.grid(column= 3, row= 0, padx= (0, 50))
 
         # Botón para agregar imagen
-        self.add_btn = tk.Button(self.control_frame, text="Agregar Imagen", command= self.add_image)
-        self.add_btn.grid(column= 5, row= 0, sticky= "nsew", padx= (0, 20))
+        self.add_btn = tk.Button(self.control_frame, image= self.agregar_imagen_icono, text= "Agregar Imagen", command= self.add_image)
+        self.add_btn.grid(column= 5, row= 0,  padx= (0, 25))
 
         # Botón para eliminar imagen
-        self.del_btn = tk.Button(self.control_frame, text="Eliminar Imagen", command= self.delete_image)
-        self.del_btn.grid(column= 6, row= 0, sticky= "nsew", padx= (0, 20))
+        self.del_btn = tk.Button(self.control_frame, image= self.eliminar_imagen_icono, text= "Eliminar Imagen", command= self.delete_image)
+        self.del_btn.grid(column= 6, row= 0)
 
         # # # Botón para ver metadatos
         # # self.meta_btn = tk.Button(self.control_frame, text="Ver Metadatos", command=self.show_metadata)
@@ -167,7 +177,7 @@ class Galeria:
 
         # Frame para miniaturas con scrollbar
         self.thumbnail_frame = tk.Frame(self.frame_imagen)
-        self.thumbnail_frame.grid(column= 0, row= 3, sticky= "nsew", pady= 10)
+        self.thumbnail_frame.grid(column= 0, row= 3, sticky= "nsew", pady= 5)
 
         # Canvas para miniaturas con scrollbar horizontal
         self.thumbnail_canvas = tk.Canvas(self.thumbnail_frame, height= 60)
@@ -296,10 +306,7 @@ class Galeria:
             
             # Centrar la imagen si es más pequeña que el canvas
             if img_width < canvas_width and img_height < canvas_height:
-                self.posicion_imagen = [
-                    max(0, (canvas_width - img_width) // 2),
-                    max(0, (canvas_height - img_height) // 2)
-                ]
+                self.posicion_imagen = [max(0, (canvas_width - img_width) // 2), max(0, (canvas_height - img_height) // 2)]
             # Si la imagen es más grande, mantenerla en la esquina superior izquierda
             else:
                 self.posicion_imagen = [0, 0]
@@ -369,16 +376,16 @@ class Galeria:
     def highlight_selected_thumbnail(self):
         for i, btn in enumerate(self.miniaturas_botones):
             if i == self.indice_actual:
-                btn.config(relief= tk.FLAT, bg='light blue')
+                btn.config(relief= tk.FLAT, bg= 'light blue')
             else:
-                btn.config(relief= tk.FLAT, bg='SystemButtonFace')
+                btn.config(relief= tk.FLAT, bg= 'SystemButtonFace')
 
     def imagen_anterior(self):
         if len(self.lista_imagenes) > 0:
             new_index = (self.indice_actual - 1) % len(self.lista_imagenes)
             self.mostrar_imagen(new_index)
 
-    def next_image(self):
+    def imagen_siguiente(self):
         if len(self.lista_imagenes) > 0:
             new_index = (self.indice_actual + 1) % len(self.lista_imagenes)
             self.mostrar_imagen(new_index)
@@ -429,10 +436,7 @@ class Galeria:
             return
 
         imagen_actual = self.lista_imagenes[self.indice_actual]
-        confirm = messagebox.askyesno(
-            "Confirmar",
-            f"¿Estás seguro de eliminar {os.path.basename(imagen_actual)}?"
-        )
+        confirm = messagebox.askyesno("Confirmar", f"¿Estás seguro de eliminar {os.path.basename(imagen_actual)}?")
 
         if confirm:
             try:

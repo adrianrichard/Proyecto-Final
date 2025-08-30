@@ -60,7 +60,7 @@ class Usuario:
 
         Label(self.frame_principal, text= 'Tipo de usuario', anchor= "e", width= 20, bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 3, pady= 5, padx= 2)
         if(self.nombre_usuario.get()==''):
-            self.titulo = Label(self.frame_top, text= 'Crear usuario', bg=self.color_fondo1, fg= 'white', font= self.fuenteb).grid(column= 0, row= 0, pady= 20, padx= 10)
+            self.titulo = Label(self.frame_top, text= 'Crear usuario', bg= self.color_fondo1, fg= 'white', font= self.fuenteb).grid(column= 0, row= 0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Guardar', font= self.fuenteb, fg= 'white', bg= self.color_fondo1, activebackground= 'gray', bd= 2, width= 10, command= self.guardar).grid(column= 0, row= 6, pady= 5, padx= 5)
             self.combo=ttk.Combobox(self.frame_principal, textvariable= self.tipo_usuario, width= 23, font= self.fuenten, state= "readonly", values=["administrador", "odontologo", "secretario"])
             self.combo.grid(column= 1, row= 3, pady= 5, padx= 5)
