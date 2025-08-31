@@ -176,9 +176,7 @@ class Odontologo:
             nombre_valido = True
 
         if apellido_valido and nombre_valido:
-            print(self.matricula_anterior,type(self.matricula_anterior),  self.matricula.get(),type(self.matricula))
             if int(self.matricula.get()) != self.matricula_anterior:
-                print("ingresa")
                 if self.verificar_matricula_existente(self.matricula.get()):
                     messagebox.showerror("Error", "La matrícula ya existe")
                     self.matricula_valida.config(fg= "red", text= "Ya existe")

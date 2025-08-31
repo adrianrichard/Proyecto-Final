@@ -16,7 +16,7 @@ ancho=20
 class Paciente:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+        self.master_panel_ref = kwargs.get('master_panel_ref', None)
         self.nombre_paciente = StringVar()
         self.apellido_paciente = StringVar()
         self.dni_paciente_anterior =  StringVar()
@@ -33,7 +33,9 @@ class Paciente:
         self.miConexion=self.db.conectar()
         self.miCursor=self.miConexion.cursor()
 
-    def ventana_paciente(self):
+    def ventana_paciente(self, master_panel_ref=None):
+        if master_panel_ref:
+            self.master_panel_ref = master_panel_ref
         self.frame_paciente= tk.Toplevel()
         self.frame_paciente.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.frame_paciente.focus_set() # Mantiene el foco cuando se abre la ventana.
@@ -337,6 +339,8 @@ class Paciente:
                 sql="UPDATE Pacientes SET ID=?, nombre =?, apellido=?,  domicilio=?, telefono=?, email=?, obrasocial=?, nrosocio=?, edad=?, fechanacimiento=? where ID=?"
                 self.miCursor.execute(sql, datos)
                 self.miConexion.commit()
+                if self.master_panel_ref:  # Si tenemos referencia al panel principal
+                        self.master_panel_ref.mostrar_pacientes()
                 messagebox.showinfo("GUARDAR","Paciente actualizado exitosamente")
                 self.frame_paciente.destroy()
             except:

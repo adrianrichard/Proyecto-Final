@@ -37,17 +37,26 @@ class Galeria:
         self.folder_path = os.path.abspath(self.folder_name)
         try:
             if not os.path.exists(self.folder_name):
+                self.ventana_galeria.grab_release()
                 answer = messagebox.askokcancel('Crear carpeta', '¿Desea crear la galeria?', icon= 'warning')
+                
                 if answer:
                     os.makedirs(self.folder_name)
                     messagebox.showinfo("Galeria", "Carpeta creada exitosamente")
+                    self.ventana_galeria.focus_set()
+                    self.ventana_galeria.grab_set()
                     return True
                 else:
+                    self.ventana_galeria.focus_set()
+                    self.ventana_galeria.grab_set()
                     return False
             else:
                 return True
-        except:
-            print("error")
+        except Exception as e:
+                self.ventana_galeria.grab_release()
+                messagebox.showerror("Error", f"No se pudo abrir la imagen: {e}")
+                self.ventana_galeria.focus_set()
+                self.ventana_galeria.grab_set()
 
     def ventana_gal(self):
         self.ventana_galeria= tk.Toplevel()
@@ -76,7 +85,7 @@ class Galeria:
         self.frame_visor= Frame(self.ventana_galeria, border= 1, borderwidth= 2, bg= "gray")
         self.frame_visor.grid(column= 0, row= 2)
         self.boton_salir_odonto= Button(self.frame_datos_paciente, text= 'Salir', command= self.salir, font= self.fuenteb, bg= "orange", width= 8)
-        self.boton_salir_odonto.grid(row= 0, column= 4, padx= (250, 10), sticky= "e")
+        self.boton_salir_odonto.grid(row= 0, column= 4, padx= (300, 10), sticky= "e")
 
         self.create_widgets()
         self.cargar_imagenes()
@@ -96,7 +105,10 @@ class Galeria:
             self.miConexion.commit()
             #print(self.paciente)
         except:
+            self.ventana_galeria.grab_release()
             messagebox.showinfo("Galeria", "No se cargo el paciente")
+            self.ventana_galeria.focus_set()
+            self.ventana_galeria.grab_set()
 
     def convertir_fecha(self, fecha):
         fecha_obj = datetime.strptime(fecha, "%Y-%m-%d")
@@ -142,13 +154,13 @@ class Galeria:
 
         # Frame para controles
         self.control_frame = Frame(self.frame_imagen, bg= "gray")
-        self.control_frame.grid(column= 0, row= 2, pady = 5, sticky= "nsew", columnspan= 8)
+        self.control_frame.grid(column= 0, row= 2, pady = (5, 5), sticky= "nsew", columnspan= 8)
         # self.control_frame.grid_rowconfigure(0, weight= 1)
         # self.control_frame.grid_columnconfigure(0, weight= 1)
 
         # Botones de navegación
         self.prev_btn = tk.Button(self.control_frame, image= self.imagen_anterior_icono, text= "Anterior", command= self.imagen_anterior, bg= self.color_fondo1)
-        self.prev_btn.grid(column= 0, row= 0, padx= (150, 50))
+        self.prev_btn.grid(column= 0, row= 0, padx= (150, 50), pady = (5, 5))
 
         self.next_btn = tk.Button(self.control_frame, image= self.imagen_siguiente_icono, text= "Siguiente", command= self.imagen_siguiente, bg= self.color_fondo1)
         self.next_btn.grid(column= 4, row= 0,  padx= (0, 50))
@@ -164,11 +176,11 @@ class Galeria:
         self.zoom_reset_btn.grid(column= 3, row= 0, padx= (0, 50))
 
         # Botón para agregar imagen
-        self.add_btn = tk.Button(self.control_frame, image= self.agregar_imagen_icono, text= "Agregar Imagen", command= self.add_image)
+        self.add_btn = tk.Button(self.control_frame, image= self.agregar_imagen_icono, text= "Agregar Imagen", command= self.add_image, bg= self.color_fondo1)
         self.add_btn.grid(column= 5, row= 0,  padx= (0, 25))
 
         # Botón para eliminar imagen
-        self.del_btn = tk.Button(self.control_frame, image= self.eliminar_imagen_icono, text= "Eliminar Imagen", command= self.delete_image)
+        self.del_btn = tk.Button(self.control_frame, image= self.eliminar_imagen_icono, text= "Eliminar Imagen", command= self.delete_image, bg= self.color_fondo1)
         self.del_btn.grid(column= 6, row= 0)
 
         # # # Botón para ver metadatos
@@ -261,15 +273,10 @@ class Galeria:
             x_pos = max(0, self.posicion_imagen[0])
             y_pos = max(0, self.posicion_imagen[1])
             
-            self.image_on_canvas = self.canvas.create_image(
-                x_pos, 
-                y_pos, 
-                anchor=tk.NW, 
-                image=self.tk_img
-            )
+            self.image_on_canvas = self.canvas.create_image(x_pos, y_pos, anchor= tk.NW, image= self.tk_img)
             
             # Actualizar scrollregion
-            self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+            self.canvas.configure(scrollregion= self.canvas.bbox("all"))
 
     def ajustar_zoom(self, factor_change):
         new_zoom = self.nivel_zoom + factor_change
@@ -300,17 +307,17 @@ class Galeria:
             # Obtener dimensiones actuales del canvas (asegurando mínimo 1)
             canvas_width = max(1, self.canvas.winfo_width())
             canvas_height = max(1, self.canvas.winfo_height())
-            
+
             img_width = max(1, int(self.original_image.width * self.nivel_zoom))
             img_height = max(1, int(self.original_image.height * self.nivel_zoom))
-            
+
             # Centrar la imagen si es más pequeña que el canvas
             if img_width < canvas_width and img_height < canvas_height:
                 self.posicion_imagen = [max(0, (canvas_width - img_width) // 2), max(0, (canvas_height - img_height) // 2)]
             # Si la imagen es más grande, mantenerla en la esquina superior izquierda
             else:
                 self.posicion_imagen = [0, 0]
-            
+
             self.apply_zoom()
 
     def start_pan(self, event):
@@ -358,17 +365,16 @@ class Galeria:
                 self.miniaturas_imagenes.append(thumb_img)
 
                 # Crear botón con la miniatura
-                btn = tk.Button(
-                    self.thumbnails_inner_frame,
-                    image=thumb_img,
-                    command=lambda i=idx: self.mostrar_imagen(i)
-                )
+                btn = tk.Button(self.thumbnails_inner_frame, image= thumb_img, command= lambda i=idx: self.mostrar_imagen(i))
                 btn.config(width= 60, height= 60)
-                btn.pack(side=tk.LEFT, padx=2, pady=2)
+                btn.pack(side=tk.LEFT, padx= 2, pady= 2)
                 self.miniaturas_botones.append(btn)
 
             except Exception as e:
-                print(f"Error al crear miniatura para {image_path}: {e}")
+                self.ventana_galeria.grab_release()
+                messagebox.showerror("Error", f"No se cargaron las miniaturas: {e}")
+                self.ventana_galeria.focus_set()
+                self.ventana_galeria.grab_set()
 
         # Resaltar miniatura seleccionada
         self.highlight_selected_thumbnail()
@@ -391,15 +397,10 @@ class Galeria:
             self.mostrar_imagen(new_index)
 
     def add_image(self):
-        filetypes = (
-            ("Imágenes", "*.jpg *.jpeg *.png"),
-            ("Todos los archivos", "*.*")
-        )
+        filetypes = (("Imágenes", "*.jpg *.jpeg *.png"), ("Todos los archivos", "*.*"))
+        self.ventana_galeria.grab_release()
 
-        file_path = filedialog.askopenfilename(
-            title="Seleccionar imagen",
-            filetypes=filetypes
-        )
+        file_path = filedialog.askopenfilename(title="Seleccionar imagen", filetypes= filetypes)
 
         if file_path:
             try:
@@ -428,14 +429,21 @@ class Galeria:
                 self.cargar_miniaturas()
 
                 messagebox.showinfo("Éxito", "Imagen agregada correctamente")
+                self.ventana_galeria.focus_set()
+                self.ventana_galeria.grab_set()
             except Exception as e:
                 messagebox.showerror("Error", f"No se pudo agregar la imagen: {e}")
+                self.ventana_galeria.focus_set()
+                self.ventana_galeria.grab_set()
+        self.ventana_galeria.focus_set()
+        self.ventana_galeria.grab_set()
 
     def delete_image(self):
         if len(self.lista_imagenes) == 0:
             return
 
         imagen_actual = self.lista_imagenes[self.indice_actual]
+        self.ventana_galeria.grab_release()
         confirm = messagebox.askyesno("Confirmar", f"¿Estás seguro de eliminar {os.path.basename(imagen_actual)}?")
 
         if confirm:
@@ -453,8 +461,14 @@ class Galeria:
 
                 self.cargar_miniaturas()
                 messagebox.showinfo("Éxito", "Imagen eliminada correctamente")
+                self.ventana_galeria.focus_set()
+                self.ventana_galeria.grab_set()
             except Exception as e:
                 messagebox.showerror("Error", f"No se pudo eliminar la imagen: {e}")
+                self.ventana_galeria.focus_set()
+                self.ventana_galeria.grab_set()
+        self.ventana_galeria.focus_set()
+        self.ventana_galeria.grab_set()
 
     def show_metadata(self):
         if len(self.lista_imagenes) == 0:
@@ -482,38 +496,36 @@ class Galeria:
                 meta_window.title("Metadatos de la imagen")
 
                 # Mostrar información básica
-                tk.Label(meta_window, text=f"Archivo: {os.path.basename(imagen_actual)}",
-                         font=('Arial', 10, 'bold')).pack(anchor=tk.W, padx=10, pady=5)
-
-                tk.Label(meta_window, text=f"Fecha del sistema: {file_date}").pack(anchor=tk.W, padx=10)
+                tk.Label(meta_window, text= f"Archivo: {os.path.basename(imagen_actual)}", font=('Arial', 10, 'bold')).pack(anchor= tk.W, padx= 10, pady= 5)
+                tk.Label(meta_window, text= f"Fecha del sistema: {file_date}").pack(anchor= tk.W, padx= 10)
 
                 # Mostrar fecha EXIF si existe
                 if 'DateTime' in metadata:
                     exif_date = metadata['DateTime']
-                    tk.Label(meta_window, text=f"Fecha EXIF: {exif_date}").pack(anchor=tk.W, padx=10)
+                    tk.Label(meta_window, text= f"Fecha EXIF: {exif_date}").pack(anchor= tk.W, padx= 10)
                 elif 'DateTimeOriginal' in metadata:
                     exif_date = metadata['DateTimeOriginal']
-                    tk.Label(meta_window, text=f"Fecha EXIF (Original): {exif_date}").pack(anchor=tk.W, padx=10)
+                    tk.Label(meta_window, text= f"Fecha EXIF (Original): {exif_date}").pack(anchor= tk.W, padx= 10)
                 else:
-                    tk.Label(meta_window, text="No se encontró fecha en los metadatos EXIF").pack(anchor=tk.W, padx=10)
+                    tk.Label(meta_window, text= "No se encontró fecha en los metadatos EXIF").pack(anchor= tk.W, padx= 10)
 
                 # Mostrar más metadatos si existen
                 if metadata:
                     tk.Label(meta_window, text="\nOtros metadatos:", font=('Arial', 9, 'bold')).pack(anchor=tk.W, padx=10, pady=(10,0))
 
-                    meta_text = tk.Text(meta_window, height=10, width=50)
-                    scroll = tk.Scrollbar(meta_window, command=meta_text.yview)
-                    meta_text.configure(yscrollcommand=scroll.set)
+                    meta_text = tk.Text(meta_window, height= 10, width= 50)
+                    scroll = tk.Scrollbar(meta_window, command= meta_text.yview)
+                    meta_text.configure(yscrollcommand= scroll.set)
 
-                    scroll.pack(side=tk.RIGHT, fill=tk.Y)
-                    meta_text.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+                    scroll.pack(side= tk.RIGHT, fill= tk.Y)
+                    meta_text.pack(fill= tk.BOTH, expand= True, padx= 10, pady= 5)
 
                     for key, value in metadata.items():
                         meta_text.insert(tk.END, f"{key}: {value}\n")
-                    meta_text.config(state=tk.DISABLED)
+                    meta_text.config(state= tk.DISABLED)
 
                 # Botón para cerrar
-                tk.Button(meta_window, text="Cerrar", command=meta_window.destroy).pack(pady=10)
+                tk.Button(meta_window, text= "Cerrar", command= meta_window.destroy).pack(pady= 10)
 
         except Exception as e:
             messagebox.showerror("Error", f"No se pudieron leer los metadatos: {e}")    

@@ -164,7 +164,7 @@ class MasterPanel:
                 self.dni_paciente = self.data['values'][2]
                 paciente = Paciente()
                 paciente.cargar_datos(self.dni_paciente)
-                paciente.ventana_paciente()
+                paciente.ventana_paciente(master_panel_ref=self)
             except Exception as e:
                 messagebox.showerror("ERROR", f"No se pudo cargar el paciente: {e}")
 
@@ -176,7 +176,7 @@ class MasterPanel:
                 self.dni_paciente = self.data['values'][2]
                 paciente = Paciente()
                 paciente.cargar_datos(self.dni_paciente)
-                paciente.ventana_paciente()
+                paciente.ventana_paciente(master_panel_ref=self)
             except Exception as e:
                 messagebox.showerror("ERROR", f"No se pudo cargar el paciente: {e}")
     
