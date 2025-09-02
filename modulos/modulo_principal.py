@@ -697,8 +697,8 @@ class MasterPanel:
         self.tabla_paciente.bind("<<TreeviewSelect>>", self.seleccionar_paciente)
         self.tabla_paciente.bind("<Double-1>", self.editar_paciente)
 
-		######################## HISTORIA CLINICA #################
-        Label(self.frame_historia, text= 'HISTORIA CLINICA', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 4, row= 0, sticky= 'W')
+		######################## Odontograma #################
+        Label(self.frame_historia, text= 'ODONTOGRAMA', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 4, row= 0, sticky= 'W')
         #Button(self.frame_historia, text= 'Nuevo odontograma', bg= self.color_fondo1, fg= 'white', font= self.fuenteb, command= self.editar_nuevo_odontograma).grid(column= 0, row= 1, padx=(10,5), pady= 5)
         self.busqueda2 = ttk.Entry(self.frame_historia, textvariable= self.dato_paciente2, width= 20, font= self.fuenten)
         self.busqueda2.grid(column= 2, row= 1, pady= 5, sticky= "e")
