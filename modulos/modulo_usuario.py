@@ -4,7 +4,6 @@ import util.config as utl
 from bd.conexion import Conexion
 import re
 from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
-#import sqlite3
 
 class Usuario:
 
@@ -47,7 +46,7 @@ class Usuario:
         self.frame_principal.grid(column= 1, row= 1, sticky= 'nsew')
 
         #Entradas Y ETIQUETAS DATOS DEL USUARIO
-        Label(self.frame_principal, text= 'Nombre del usuario', anchor= "e", width= 20, bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 1, pady= 5)
+        Label(self.frame_principal, text= 'Nombre del usuario', anchor= "e", width= 20, bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 1, pady= (20, 5))
         self.entry_nombre = Entry(self.frame_principal, textvariable= self.nombre_usuario, width= 25, font= self.fuenten)
         self.entry_nombre.grid(column= 1, row= 1, pady= 5, padx= 5)
         self.nombre_usuario_valido = Label(self.frame_principal, text= '*', anchor= 'w', width= 25, bg= self.color_fondo2, fg= 'red', font= self.fuenten)
@@ -80,12 +79,13 @@ class Usuario:
 
         self.frame_usuario.mainloop()
 
-    def guardar(self):
-        
+    def guardar(self):        
         # Validar Formato del nombre de usuario
         if not self.validar_nombre(self.nombre_usuario.get()):
-            messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)", parent=self.frame_usuario)
+            self.frame_usuario.grab_release()   
+            messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)", parent= self.frame_usuario)
             self.entry_nombre.config(bg= "orange red")
+            self.frame_usuario.grab_set()
             return  # Sale si el formato no es válido
 
         # 2° Validación: Usuario único (que no exista previamente)
@@ -101,21 +101,25 @@ class Usuario:
 
         # 4° Validación: Tipo de usuario seleccionado
         if self.tipo_usuario.get() == "Elegir tipo usuario":
-            messagebox.showinfo("Tipo de usuario inválido", "Elija un tipo de usuario")
+            self.frame_usuario.grab_release()            
+            messagebox.showinfo("Tipo de usuario inválido", "Elija un tipo de usuario", parent= self.frame_usuario)
+            self.frame_usuario.grab_set()
             return  # Sale si no se seleccionó tipo
 
         # Si todo es correcto, guarda en la base de datos
-        datos = (self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get())       
+        datos = (self.nombre_usuario.get(), self.clave.get(), self.tipo_usuario.get())
         try:
             self.miCursor.execute("INSERT INTO Usuarios VALUES(NULL,?,?,?)", datos)
             self.miConexion.commit()
             if self.master_panel_ref:  # Si tenemos referencia al panel principal
                     self.master_panel_ref.mostrar_usuarios()
             self.frame_usuario.destroy()
-            messagebox.showinfo("Éxito", "Usuario guardado correctamente")
+            messagebox.showinfo("Éxito", "Usuario guardado correctamente", parent= self.frame_usuario)
 
         except Exception as e:
-            messagebox.showerror("Error", f"No se pudo guardar. Error: {str(e)}")
+            self.frame_usuario.grab_release()
+            messagebox.showerror("Error", f"No se pudo guardar. Error: {str(e)}", parent= self.frame_usuario)
+            self.frame_usuario.grab_set()
 
     def cargar_datos(self, usuario):
         self.nombre_usuario.set(usuario)
@@ -125,26 +129,31 @@ class Usuario:
             campos=self.miCursor.fetchone()
             self.clave.set(campos[2])
             self.tipo_usuario.set(campos[3])
-        except:            
-            messagebox.showinfo("Buscar usuario", "No se ha podido cargar el usuario")
+        except:
+            self.frame_usuario.grab_release()
+            messagebox.showinfo("Buscar usuario", "No se ha podido cargar el usuario", parent= self.frame_usuario)
+            self.frame_usuario.grab_set()
 
     def validar_usuario(self, nombre_usuario):
         try:
             self.miCursor.execute('SELECT COUNT(nombre_usuario) FROM usuarios WHERE nombre_usuario=?', (nombre_usuario,))
             existe = self.miCursor.fetchone()[0]
             self.usuario_existente = bool(existe)
-        except:            
-            messagebox.showinfo("Usuario existente", "USUARIO EXISTENTE")
+        except:
+            self.frame_usuario.grab_release()
+            messagebox.showinfo("Usuario existente", "USUARIO EXISTENTE", parent= self.frame_usuario)
+            self.frame_usuario.grab_set()
         return self.usuario_existente
 
     def actualizar(self):
         datos= self.clave.get(), self.nombre_usuario_anterior
         usuario_valido= False
-        
+
         if not self.validar_nombre(self.nombre_usuario.get()):            
-            messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)")
+            self.frame_usuario.grab_release()   
+            messagebox.showinfo("Usuario inválido", "Sólo letras o _ (Guión bajo)\nNo puede comenzar con _ (Guión bajo)", parent= self.frame_usuario)
             self.entry_nombre.config(bg= "orange red")
-            
+            self.frame_usuario.grab_set()
         elif self.validar_nombre(self.nombre_usuario.get()):
             self.entry_nombre.config(bg= "pale green")
             usuario_valido = True
@@ -152,17 +161,21 @@ class Usuario:
 
             if self.nombre_usuario.get() == self.nombre_usuario_anterior:
                 try:
-                    sql="UPDATE usuarios SET pass_usuario=? where nombre_usuario=?"                    
+                    sql="UPDATE usuarios SET pass_usuario=? where nombre_usuario=?"
                     self.miCursor.execute(sql, datos)
                     self.miConexion.commit()
                     if self.master_panel_ref:  # Si tenemos referencia al panel principal
                         self.master_panel_ref.mostrar_usuarios()
-                    messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente")
-                    self.db.cerrar_bd()                 
+                    self.frame_usuario.grab_release() 
+                    messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente", parent= self.frame_usuario)
+                    self.frame_usuario.grab_set()
+                    self.db.cerrar_bd()
                     self.frame_usuario.destroy()
                 except:
-                    messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")                    
-                    
+                    self.frame_usuario.grab_release()
+                    messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario", parent= self.frame_usuario)
+                    self.frame_usuario.grab_set()                 
+
             elif self.validar_usuario(self.nombre_usuario.get()):
                 self.nombre_usuario_valido.config(text= "* Ya existe este usuario", fg= 'red')
                 self.entry_nombre.config(bg= "orange red")
@@ -175,36 +188,33 @@ class Usuario:
                     self.miConexion.commit()
                     if self.master_panel_ref:  # Si tenemos referencia al panel principal
                         self.master_panel_ref.mostrar_usuarios()
-                    messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente")
-                    self.frame_usuario.destroy()                    
+                    self.frame_usuario.grab_release()
+                    messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente", parent= self.frame_usuario)
+                    self.frame_usuario.grab_set()
+                    self.frame_usuario.destroy()
                 except:
-                    messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario")
-
+                    self.frame_usuario.grab_release()
+                    messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario", parent= self.frame_usuario)
+                    self.frame_usuario.grab_set()
                     return
         else:
-            
-            
             return
 
     def eliminar_usuario(self, nombre):
-        
         msg_box = messagebox.askquestion('Eliminar usuario', '¿Desea elminar al usuario?', icon= 'warning')
         if msg_box == 'yes'and nombre != 'admin':
             try:
                 self.miCursor.execute("DELETE FROM usuarios WHERE nombre_usuario = ?", (nombre,))
                 self.miConexion.commit()
                 messagebox.showinfo("ELIMINAR","Usuario eliminado exitosamente")
-                
-                
             except:
                 messagebox.showinfo("ELIMINAR", "No se ha podido eliminar el usuario")
-                
-                
 
     def Salir(self):
-        
+        self.frame_usuario.grab_release()
         answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon= 'warning', parent= self.frame_usuario)
-         #FUNCIONA
+        self.frame_usuario.grab_set()
+        #FUNCIONA
         if answer:
             self.miConexion.close()
             self.frame_usuario.destroy()
@@ -222,16 +232,14 @@ class Usuario:
             (any(c.isupper() for c in password), "Agregar al menos una mayúscula"),
             (any(c.islower() for c in password), "Agregar al menos una minúscula")
         ]
-        
+
         errores = [msg for (cumple, msg) in requisitos if not cumple]
         if errores:
-            messagebox.showwarning("CONTRASEÑA INVÁLIDA", "\n".join(errores))
-            
-            
+            self.frame_usuario.grab_release()
+            messagebox.showwarning("CONTRASEÑA INVÁLIDA", "\n".join(errores), parent= self.frame_usuario)
+            self.frame_usuario.grab_set()
             self.entry_clave.config(bg="orange red")
             return False
-        
-        
         return True
 
 if __name__ == "__main__":

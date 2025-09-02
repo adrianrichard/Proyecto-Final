@@ -35,6 +35,7 @@ class Galeria:
     def crear_carpeta(self, dni):
         self.folder_name = "galeria/"+str(dni)
         self.folder_path = os.path.abspath(self.folder_name)
+        print(self.folder_path, "anda")
         try:
             if not os.path.exists(self.folder_name):
                 self.ventana_galeria.grab_release()

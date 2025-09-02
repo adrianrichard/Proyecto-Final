@@ -45,7 +45,7 @@ class Odontologo:
         self.frame_principal.grid(column= 1, row= 1, sticky= 'nsew')
 
         #Entradas Y ETIQUETAS DATOS DEL ODONTOLOGO
-        Label(self.frame_principal, text= 'Apellido', anchor= "e", width= 15, bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 1, pady= 5)
+        Label(self.frame_principal, text= 'Apellido', anchor= "e", width= 15, bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 1, pady= (20, 5))
         self.entry_apellido = Entry(self.frame_principal, textvariable= self.apellido_odontologo, width= 25, font= self.fuenten)
         self.entry_apellido.grid(column= 1, row= 1, pady= 5, padx= 5)
         self.apellido_odontologo_valido = Label(self.frame_principal, text= '*', anchor= 'w', width= 15, bg= self.color_fondo2, fg= 'red', font= self.fuenten)
@@ -119,30 +119,38 @@ class Odontologo:
         if apellido and nombre and matricula:
             datos = self.matricula.get(), self.apellido_odontologo.get().upper(), self.nombre_odontologo.get().upper()
             if self.verificar_matricula_existente(self.matricula.get()):
-                messagebox.showerror("Error", "La matrícula ya existe")
+                self.frame_odontologo.grab_release()
+                messagebox.showerror("Error", "La matrícula ya existe", parent= self.frame_odontologo)
                 self.matricula_valida.config(fg= "red", text= "Ya existe")
                 self.entry_matricula.config(bg= "red")
+                self.frame_odontologo.grab_set()
                 return
             try:
                 self.miCursor.execute("INSERT INTO Odontologos VALUES(?,?,?)", (datos))
                 self.miConexion.commit()
                 if self.master_panel_ref:  # Si tenemos referencia al panel principal
                     self.master_panel_ref.mostrar_odontologos()
-                self.frame_odontologo.destroy()                
-                messagebox.showinfo("GUARDAR", "Guardado exitosamente")
+                self.frame_odontologo.destroy()
+                self.frame_odontologo.grab_release()
+                messagebox.showinfo("GUARDAR", "Guardado exitosamente", parent= self.frame_odontologo)
+                self.frame_odontologo.grab_set()
             except:
-                messagebox.showinfo("GUARDAR", "No se ha podido guardar el odontólogo")        
+                self.frame_odontologo.grab_release()
+                messagebox.showinfo("GUARDAR", "No se ha podido guardar el odontólogo", parent= self.frame_odontologo)
+                self.frame_odontologo.grab_set()
 
-    def cargar_datos(self, matricula):        
+    def cargar_datos(self, matricula):
         try:
             self.miCursor.execute("SELECT * FROM Odontologos WHERE matricula=?", (matricula,))
-            campos=self.miCursor.fetchone()        
+            campos=self.miCursor.fetchone()
             self.apellido_odontologo.set(campos[1])
             self.nombre_odontologo.set(campos[2])
             self.matricula.set(matricula)
             self.matricula_anterior = matricula
         except:
-            messagebox.showinfo("Odontólogo", "No se ha podido cargar el odontólogo")
+            self.frame_odontologo.grab_release()
+            messagebox.showinfo("Odontólogo", "No se ha podido cargar el odontólogo", parent= self.frame_odontologo)
+            self.frame_odontologo.grab_set()
 
     def cargar_datos_odontologo(self, matricula):
         try:
@@ -151,28 +159,30 @@ class Odontologo:
             self.apellido_odontologo = campos[1]
             self.nombre_odontologo= campos[2]
         except:
-            messagebox.showinfo("Odontólogo", "No se ha podido cargar el odontólogo")
+            self.frame_odontologo.grab_release()
+            messagebox.showinfo("Odontólogo", "No se ha podido cargar el odontólogo", parent= self.frame_odontologo)
+            self.frame_odontologo.grab_set()
             
     def actualizar_odontologo(self):
         apellido_valido = False
         nombre_valido = False
 
         if not self.validar_alfa(self.apellido_odontologo.get()):
-            self.apellido_odontologo_valido.config(fg="red", text="Sólo letras")
-            self.entry_apellido.config(bg="red")
+            self.apellido_odontologo_valido.config(fg= "red", text= "Sólo letras")
+            self.entry_apellido.config(bg= "red")
             apellido_valido = False
         else:
-            self.apellido_odontologo_valido.config(fg="green", text="Válido")
-            self.entry_apellido.config(bg="green")
+            self.apellido_odontologo_valido.config(fg= "green", text= "Válido")
+            self.entry_apellido.config(bg= "green")
             apellido_valido = True
 
         if not self.validar_alfa(self.nombre_odontologo.get()):
-            self.nombre_odontologo_valido.config(fg="red", text="Sólo letras")
-            self.entry_nombre.config(bg="red")
+            self.nombre_odontologo_valido.config(fg= "red", text= "Sólo letras")
+            self.entry_nombre.config(bg= "red")
             nombre_valido = False
         else:
-            self.nombre_odontologo_valido.config(fg="green", text="Válido")
-            self.entry_nombre.config(bg="green")
+            self.nombre_odontologo_valido.config(fg= "green", text= "Válido")
+            self.entry_nombre.config(bg= "green")
             nombre_valido = True
 
         if apellido_valido and nombre_valido:
@@ -189,7 +199,9 @@ class Odontologo:
                 self.miConexion.commit()
                 if self.master_panel_ref:
                     self.master_panel_ref.mostrar_odontologos()
-                messagebox.showinfo("ACTUALIZAR", "Odontólogo actualizado exitosamente")
+                self.frame_odontologo.grab_release()
+                messagebox.showinfo("ACTUALIZAR", "Odontólogo actualizado exitosamente", parent= self.frame_odontologo)
+                self.frame_odontologo.grab_set()
                 self.frame_odontologo.destroy()
             except:
                 messagebox.showinfo("ERROR", "No se pudo actualizar el odontólogo")
@@ -198,22 +210,31 @@ class Odontologo:
         try:
             self.cargar_datos_odontologo(matricula)
         except:
-            messagebox.showinfo("AVISO", "No se ha podido encontrar el odontólogo")
-
-        msg_box = messagebox.askquestion('Eliminar odontólogo', f'¿Desea eliminar a {self.apellido_odontologo}, {self.nombre_odontologo}?', icon='warning')
+            self.frame_odontologo.grab_release()
+            messagebox.showinfo("AVISO", "No se ha podido encontrar el odontólogo", parent= self.frame_odontologo)
+            self.frame_odontologo.grab_set()
+        
+        self.frame_odontologo.grab_release()
+        msg_box = messagebox.askquestion('Eliminar odontólogo', f'¿Desea eliminar a {self.apellido_odontologo}, {self.nombre_odontologo}?', icon='warning', parent= self.frame_odontologo)
         if msg_box == 'yes':
             try:
                 self.miCursor.execute("DELETE FROM odontologos WHERE matricula = ?", (matricula,))
                 self.miConexion.commit()
-                messagebox.showinfo("ELIMINAR","Odontólogo eliminado exitosamente")
+                
+                messagebox.showinfo("ELIMINAR","Odontólogo eliminado exitosamente", parent= self.frame_odontologo)
+                self.frame_odontologo.grab_set()
             except:
-                messagebox.showinfo("ELIMINAR", "No se ha podido eliminar el odontólogo")
+                messagebox.showinfo("ELIMINAR", "No se ha podido eliminar el odontólogo", parent= self.frame_odontologo)
+                self.frame_odontologo.grab_set()
 
     def Salir(self):
-        answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
+        self.frame_odontologo.grab_release()
+        answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon='warning')
         if answer:
             self.miConexion.close()
             self.frame_odontologo.destroy()
+        else:
+            self.frame_odontologo.grab_set()
 
     def validar_alfa(self, cadena):
         patron = r'^[a-zA-ZáéíóúÁÉÍÓÚ\s]+$'  # Permite caracteres
