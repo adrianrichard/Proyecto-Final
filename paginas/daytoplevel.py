@@ -8,8 +8,7 @@ from datetime import *
 from tkinter import Button
 from paginas.datehandler.datehandler import DateHandler
 from bd.conexion import Conexion
-
-
+import re
 fuenteb= utl.definir_fuente_bold()
 fuenten= utl.definir_fuente()
 class DayTopWindow(Toplevel):
@@ -84,14 +83,16 @@ class DayTopWindow(Toplevel):
         self.tabla_turnos.bind("<Double-1>", self.editar_turno)
 
     def cargar_turnos(self):
-        start_date = date(self.anio, self.mes, self.dia)        
+        start_date = date(self.anio, self.mes, self.dia)
         self.cur= self.conn.cursor()
         try:
             self.cur.execute("SELECT Turnos.Hora, Turnos.Paciente, Odontologos.Apellido_odontologo, Turnos.Prestacion FROM Odontologos JOIN Turnos ON Odontologos.Matricula = Turnos.Odontologo WHERE Turnos.Fecha=? ORDER BY Turnos.Hora", (start_date,))
             self.turnos_dados = self.cur.fetchall()
             self.conn.commit()
         except:
-            messagebox.showinfo("Turnos", "No hay turnos")
+            self.grab_release()
+            messagebox.showinfo("Turnos", "No hay turnos", parent= self)
+            self.grab_set()
 
         start_time = datetime.strptime("08:00", "%H:%M")
         # Intervalo de 30 minutos
@@ -106,12 +107,12 @@ class DayTopWindow(Toplevel):
                 if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][0] and self.j < len(self.turnos_dados)):
                     
                     self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][1], self.turnos_dados[self.j][3], self.turnos_dados[self.j][2]), tags=('anotado',))
-                    self.tabla_turnos.tag_configure('anotado', font=fuenteb, background="green")
+                    self.tabla_turnos.tag_configure('anotado', font= fuenteb, background="green")
                     if(self.j+1 < len(self.turnos_dados)):
                         self.j=self.j+1
                 else:
-                    self.tabla_turnos.insert(parent='', index='end', values=(current_time.strftime("%H:%M"), '', '', ''))
-            self.tabla_turnos.tag_configure('anotado', font=fuenteb, background="green")
+                    self.tabla_turnos.insert(parent= '', index= 'end', values=(current_time.strftime("%H:%M"), '', '', ''))
+            self.tabla_turnos.tag_configure('anotado', font= fuenteb, background= "green")
 
     def editar_turno(self, event):
         region = self.tabla_turnos.identify("region", event.x, event.y)
@@ -149,8 +150,7 @@ class DayTopWindow(Toplevel):
         if (self.prestacion != ''):
             self.selector_prestacion.set(self.prestacion)
         self.selector_prestacion.bind("<<ComboboxSelected>>", lambda e: self.ventana_secundaria.focus())
-        #odontologos = ["MILITELLO", "MACUA", "RAMIREZ"]
-        self.selector_odontologo= ttk.Combobox(self.ventana_secundaria, state= "readonly", values= self.odontologos, width= 25, justify= CENTER, background= "white")
+        self.selector_odontologo= ttk.Combobox(self.ventana_secundaria, values= self.valores_combobox, state= "readonly", width= 25, justify= CENTER, background= "white")
         self.selector_odontologo.pack(pady= 8)
         self.selector_odontologo.set("Odontólogo")
         if (self.odontologo != ''):
@@ -165,88 +165,115 @@ class DayTopWindow(Toplevel):
         Button(self.button_frame, text= 'Salir', command= self.cancelar_turno, font= self.fuenteb, bg= "orange", width= 8).grid(row= 0, column= 2, padx= 10)
 
     def cancelar_turno(self):
-        answer = messagebox.askokcancel(title='Salir', message='¿Desea salir sin guardar?', icon='warning')
+        self.ventana_secundaria.grab_release()
+        answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon='warning', parent= self.ventana_secundaria)
         if answer:
             self.grab_set_global()
             self.focus_set()            
             self.ventana_secundaria.destroy()
+        else:
+            self.ventana_secundaria.grab_set()
 
     def eliminar_turno(self):
         start_date = date(self.anio, self.mes, self.dia)
         #self.conn=  self.db.conectar()
-        self.cur= self.conn.cursor()        
+        self.cur= self.conn.cursor()
         hora= self.horario
-        answer = messagebox.askokcancel(title='Eliminar', message='¿Desea eliminar el turno?', icon='warning')
+        self.ventana_secundaria.grab_release()
+        answer = messagebox.askokcancel('Eliminar', '¿Desea eliminar el turno?', icon='warning', parent= self.ventana_secundaria)
         if answer:
             try:
                 self.cur.execute("DELETE FROM turnos WHERE fecha= ? AND hora= ?", (start_date, hora,))
                 self.conn.commit()
                 #self.conn.close()
                 self.grab_set_global()
-                self.focus_set()                
+                self.focus_set()
                 self.ventana_secundaria.destroy()
             except:
-                messagebox.showerror("Eliminar", "No se pudo eliminar.")
-        self.cargar_turnos()
+                messagebox.showerror("Eliminar", "No se pudo eliminar", parent= self.ventana_secundaria)
+                self.ventana_secundaria.grab_set()
+        else:
+            self.ventana_secundaria.grab_set()
+        self.cargar_turnos()        
 
     def guardar_turno(self):
         """El día se carga en formato YYYY/MM/DD para luego poder usar los métodos de SQLite"""
-        start_date = date(self.anio, self.mes, self.dia)
+        start_date= date(self.anio, self.mes, self.dia)
         self.conn=  self.db.conectar()
         self.cur= self.conn.cursor()
         odontologo= self.selector_odontologo.get()
-        self.matricula=""
+        self.matricula= ""
         #print(odontologo)
-        try:
-            sql = "SELECT Matricula FROM Odontologos WHERE Apellido_odontologo LIKE ?"
-            self.cur.execute(sql, (odontologo,))
-            self.matricula = self.cur.fetchone()[0]
-            
-        except:
-            messagebox.showerror("Guardar", "No existe el odontólogo")
-        #print(matricula[0])
-        print(start_date)
-        print(self.horario)
-        print(self.nombre_entry.get().upper())
-        print(self.matricula)
-        datos = start_date, self.horario, self.nombre_entry.get().upper(), self.matricula, self.selector_prestacion.get().upper()
-        print (datos)
-        if self.nombre_entry.get().upper() != "PACIENTE" and self.selector_prestacion.get().upper() != "PRESTACIÓN" and self.selector_odontologo.get().upper() != "ODONTÓLOGO":
-            answer = messagebox.askokcancel(title='Guardar', message='¿Desea guardar el turno?', icon='warning')
+        # try:
+        #     self.matricula = int(re.search(r'Mat\.?\s*(\d+)', odontologo).group(1))
+        # except:
+        #     self.ventana_secundaria.grab_release()
+        #     messagebox.showerror("Odontólogo", "Elija odontólogo", parent= self.ventana_secundaria)
+        #     self.ventana_secundaria.grab_set()
+
+        self.ventana_secundaria.grab_release()
+        if self.nombre_entry.get().upper() == "PACIENTE":
+            messagebox.showerror("Paciente", "Ingrese nombre paciente", parent= self.ventana_secundaria)
+            self.ventana_secundaria.grab_set()
+        elif self.selector_prestacion.get().upper() == "PRESTACIÓN":
+            messagebox.showerror("Prestación", "Elija la prestación", parent= self.ventana_secundaria)
+            self.ventana_secundaria.grab_set()
+        elif self.selector_odontologo.get().upper() == "ODONTÓLOGO":
+            messagebox.showerror("Odontólogo", "Elija odontólogo", parent= self.ventana_secundaria)
+            self.matricula = self.obtener_matricula_odontologo()
+            self.ventana_secundaria.grab_set()
+        else:
+            print(self.matricula)
+            datos = start_date, self.horario, self.nombre_entry.get().upper(), self.matricula, self.selector_prestacion.get().upper()
+            print(datos)
+            answer = messagebox.askokcancel('Guardar', '¿Desea guardar el turno?', icon='warning', parent= self.ventana_secundaria)
             if answer:
                 try:
                     sql="REPLACE INTO turnos VALUES(?, ?, ?, ?, ?)"
                     self.cur.execute(sql, datos)
                     self.conn.commit()
-                    #self.conn.close()
                     self.grab_set_global()
-                    self.focus_set()                
+                    self.focus_set()
                     self.ventana_secundaria.destroy()
                     self.cargar_turnos()
-                except:                    
-                    messagebox.showerror("Guardar", "No se pudo guardar.")                            
-        else: 
-            """"Si no se coloca el nombre del paciente o se elije prestación u odontólogo"""
-            if self.nombre_entry.get().upper() == "PACIENTE":
-                messagebox.showerror("Paciente", "Ingrese nombre paciente")
-            elif self.selector_prestacion.get().upper() == "PRESTACIÓN":
-                messagebox.showerror("Prestación", "Elija la prestación")
-            elif self.selector_odontologo.get().upper() == "ODONTÓLOGO":
-                messagebox.showerror("Odontólogo", "Elija odontólogo")
+                except:
+                    messagebox.showerror("Guardar", "No se pudo guardar", parent= self.ventana_secundaria)
+                    self.ventana_secundaria.grab_set()
+    
+    def obtener_matricula_odontologo(self):
+        """Extrae la matrícula del odontólogo seleccionado"""
+        odontologo = self.selector_odontologo.get()
+        print(odontologo)
+        match = re.search(r'Mat\.?\s*(\d+)', odontologo)
+        print(match)
+        try:
+            odontologo = self.selector_odontologo.get()
+            match = re.search(r'Mat\.?\s*(\d+)', odontologo)
+            print(match)
+            if match:
+                return int(match.group(1))
+            return None
+        except (AttributeError, ValueError):
+            return None
 
     def cargar_odontologos(self):
         self.cur= self.conn.cursor()
         self.lista_odontologos = []
         self.odontologos = []
+        self.valores_combobox = []
         try:
-            self.cur.execute("SELECT Apellido_odontologo FROM odontologos")
+            self.cur.execute("SELECT Matricula, Apellido_odontologo, Nombre_odontologo FROM odontologos ORDER BY Matricula")
             self.lista_odontologos = self.cur.fetchall()
-            self.odontologos = [odontologo[0] for odontologo in self.lista_odontologos]
-            #print(apellidos)
-            self.conn.commit()
+            for matricula, nombre, apellido in self.lista_odontologos:
+                texto = f"Mat. {matricula} - {apellido}, {nombre}"
+                self.valores_combobox.append(texto)
+            # Cargar el combobox
+            self.valores_combobox
         except:
-            messagebox.showinfo("Odontologos", "No hay odontologos cargados")
-            
+            self.ventana_secundaria.grab_release()
+            messagebox.showinfo("Odontologos", "No hay odontologos cargados", parent= self.ventana_secundaria)
+            self.ventana_secundaria.grab_set()
+
     def avanzar_dia(self):
         """ AVANZAR 1 DIA """
         cant_dias = DateHandler().days_in_month(self.mes, self.anio)

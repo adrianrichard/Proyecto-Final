@@ -644,9 +644,9 @@ class MasterPanel:
         #TABLA ODONTÓLOGOS
         self.frame_tabla_odontologos = Frame(self.frame_usuarios, bg= self.color_fondo2)
         self.frame_tabla_odontologos.grid(columnspan= 3, row= 7, sticky= 'nsew')
-        self.tabla_odontologos = ttk.Treeview(self.frame_tabla_odontologos, columns= ("Apellido", "Nombre", 'Matricula'), show= "headings", selectmode ='browse', height= 6, style="TablaUsuario.Treeview")
+        self.tabla_odontologos = ttk.Treeview(self.frame_tabla_odontologos, columns= ("Apellido", "Nombre", 'Matricula'), show= "headings", selectmode = 'browse', height= 6, style= "TablaUsuario.Treeview")
         self.tabla_odontologos.grid(column= 0, row= 7, columnspan= 3, sticky='nsew')
-        ladoyy = ttk.Scrollbar(self.frame_tabla_odontologos, orient ='vertical', command = self.tabla_odontologos.yview)
+        ladoyy = ttk.Scrollbar(self.frame_tabla_odontologos, orient= 'vertical', command = self.tabla_odontologos.yview)
         ladoyy.grid(column = 4, row = 7, sticky= 'ns')
         self.tabla_odontologos.configure(yscrollcommand = ladoyy.set)
         self.tabla_odontologos.heading('Apellido', text= 'Apellido', anchor= 'center', command= lambda: None)
