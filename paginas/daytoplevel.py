@@ -17,7 +17,7 @@ class DayTopWindow(Toplevel):
         super().__init__()
 
         self.attributes = ("-topmost", True)
-        utl.centrar_ventana(self, 700, 580)
+        utl.centrar_ventana(self, 710, 600)
         self.title("Agenda de turnos")
         self.resizable(width= True, height= False)
         self.turnos_box = None
@@ -201,31 +201,24 @@ class DayTopWindow(Toplevel):
         start_date= date(self.anio, self.mes, self.dia)
         self.conn=  self.db.conectar()
         self.cur= self.conn.cursor()
-        odontologo= self.selector_odontologo.get()
         self.matricula= ""
-        #print(odontologo)
-        # try:
-        #     self.matricula = int(re.search(r'Mat\.?\s*(\d+)', odontologo).group(1))
-        # except:
-        #     self.ventana_secundaria.grab_release()
-        #     messagebox.showerror("Odontólogo", "Elija odontólogo", parent= self.ventana_secundaria)
-        #     self.ventana_secundaria.grab_set()
-
+        
         self.ventana_secundaria.grab_release()
         if self.nombre_entry.get().upper() == "PACIENTE":
             messagebox.showerror("Paciente", "Ingrese nombre paciente", parent= self.ventana_secundaria)
             self.ventana_secundaria.grab_set()
+            return
         elif self.selector_prestacion.get().upper() == "PRESTACIÓN":
             messagebox.showerror("Prestación", "Elija la prestación", parent= self.ventana_secundaria)
             self.ventana_secundaria.grab_set()
+            return
         elif self.selector_odontologo.get().upper() == "ODONTÓLOGO":
             messagebox.showerror("Odontólogo", "Elija odontólogo", parent= self.ventana_secundaria)
-            self.matricula = self.obtener_matricula_odontologo()
             self.ventana_secundaria.grab_set()
+            return
         else:
-            print(self.matricula)
+            self.matricula = self.obtener_matricula_odontologo()
             datos = start_date, self.horario, self.nombre_entry.get().upper(), self.matricula, self.selector_prestacion.get().upper()
-            print(datos)
             answer = messagebox.askokcancel('Guardar', '¿Desea guardar el turno?', icon='warning', parent= self.ventana_secundaria)
             if answer:
                 try:
@@ -239,17 +232,14 @@ class DayTopWindow(Toplevel):
                 except:
                     messagebox.showerror("Guardar", "No se pudo guardar", parent= self.ventana_secundaria)
                     self.ventana_secundaria.grab_set()
-    
+
     def obtener_matricula_odontologo(self):
         """Extrae la matrícula del odontólogo seleccionado"""
         odontologo = self.selector_odontologo.get()
-        print(odontologo)
         match = re.search(r'Mat\.?\s*(\d+)', odontologo)
-        print(match)
         try:
             odontologo = self.selector_odontologo.get()
             match = re.search(r'Mat\.?\s*(\d+)', odontologo)
-            print(match)
             if match:
                 return int(match.group(1))
             return None
