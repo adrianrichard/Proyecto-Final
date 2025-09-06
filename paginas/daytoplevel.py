@@ -17,7 +17,7 @@ class DayTopWindow(Toplevel):
         super().__init__()
 
         self.attributes = ("-topmost", True)
-        utl.centrar_ventana(self, 710, 600)
+        utl.centrar_ventana(self, 725, 605)
         self.title("Agenda de turnos")
         self.resizable(width= True, height= False)
         self.turnos_box = None
@@ -67,7 +67,11 @@ class DayTopWindow(Toplevel):
         self.frame_tabla.grid(column= 0, columnspan= 4, row= 2, sticky= 'nsew')
         self.tabla_turnos = ttk.Treeview(self.frame_tabla, columns= ("Horario", "Paciente", "Prestacion", "Odontologo"), show= 'headings', height= 25, selectmode ='browse', style="TablaTurnos.Treeview")
         self.tabla_turnos.grid(column= 0, row= 2, columnspan= 4, sticky= 'nsew', padx= 5, pady= 5)
-
+        [self.frame_tabla.columnconfigure(i, weight= 1) for i in range(self.grid_size()[0])]
+        [self.columnconfigure(i, weight= 1) for i in range(self.grid_size()[0])]
+        [self.frame_tabla.rowconfigure(i, weight= 1) for i in range(self.grid_size()[1])]
+        [self.rowconfigure(i, weight= 1) for i in range(self.grid_size()[1])]
+        
         # Definir los encabezados de las columnas
         self.tabla_turnos.heading("Horario", text= "Horario")
         self.tabla_turnos.heading("Paciente", text= "Paciente")
