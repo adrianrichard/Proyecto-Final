@@ -161,18 +161,22 @@ class Odontograma:
     
     def iniciar_odontograma(self):
         self.miCursor=self.miConexion.cursor()
-        self.crear_odontograma=False
+        self.crear_odontograma= False
         try:
             self.miCursor.execute("SELECT id_odontograma from Odontogramas WHERE dni_paciente=? ORDER BY id_odontograma DESC", (self.dni_paciente,))
             self.miConexion.commit()
             #print("no hay odontograma")
             self.ID_odonto_actual= self.miCursor.fetchone()
             if not self.ID_odonto_actual:
-                self.crear_odontograma=True
-                messagebox.showinfo("Odontograma", "Crear odontograma")
+                self.crear_odontograma= True
+                self.ventana_odontograma.grab_release()
+                messagebox.showinfo("Odontograma", "Crear odontograma", parent= self.ventana_odontograma)
+                self.ventana_odontograma.grab_set()
         except:
-            messagebox.showinfo("Odontograma", "Problema con BD")    
-        
+            self.ventana_odontograma.grab_release()
+            messagebox.showinfo("Odontograma", "Problema con BD", parent= self.ventana_odontograma)
+            self.ventana_odontograma.grab_set()
+
     def cargar_odontograma(self):
         self.miCursor=self.miConexion.cursor()
         #print(self.dni_paciente)

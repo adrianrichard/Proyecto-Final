@@ -17,7 +17,7 @@ class DayTopWindow(Toplevel):
         super().__init__()
 
         self.attributes = ("-topmost", True)
-        utl.centrar_ventana(self, 725, 605)
+        utl.centrar_ventana(self, 800, 610)
         self.title("Agenda de turnos")
         self.resizable(width= True, height= False)
         self.turnos_box = None
@@ -90,7 +90,7 @@ class DayTopWindow(Toplevel):
         start_date = date(self.anio, self.mes, self.dia)
         self.cur= self.conn.cursor()
         try:
-            self.cur.execute("SELECT Turnos.Hora, Turnos.Paciente, Odontologos.Apellido_odontologo, Turnos.Prestacion FROM Odontologos JOIN Turnos ON Odontologos.Matricula = Turnos.Odontologo WHERE Turnos.Fecha=? ORDER BY Turnos.Hora", (start_date,))
+            self.cur.execute("SELECT Turnos.Hora, Turnos.Paciente, Odontologos.Apellido_odontologo, Odontologos.Nombre_odontologo, Turnos.Prestacion FROM Odontologos JOIN Turnos ON Odontologos.Matricula = Turnos.Odontologo WHERE Turnos.Fecha=? ORDER BY Turnos.Hora", (start_date,))
             self.turnos_dados = self.cur.fetchall()
             self.conn.commit()
         except:
@@ -110,7 +110,7 @@ class DayTopWindow(Toplevel):
             else:
                 if(current_time.strftime("%H:%M") == self.turnos_dados[self.j][0] and self.j < len(self.turnos_dados)):
                     
-                    self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][1], self.turnos_dados[self.j][3], self.turnos_dados[self.j][2]), tags=('anotado',))
+                    self.tabla_turnos.insert("", "end", values=(current_time.strftime("%H:%M"), self.turnos_dados[self.j][1], self.turnos_dados[self.j][4], self.turnos_dados[self.j][2]+", "+self.turnos_dados[self.j][3]), tags=('anotado',))
                     self.tabla_turnos.tag_configure('anotado', font= fuenteb, background="green")
                     if(self.j+1 < len(self.turnos_dados)):
                         self.j=self.j+1
@@ -126,47 +126,56 @@ class DayTopWindow(Toplevel):
         self.ventana_secundaria = tk.Toplevel(self, background= 'gray')
         self.ventana_secundaria.title("Turno")
         self.ventana_secundaria.geometry('400x300')
-        utl.centrar_ventana(self.ventana_secundaria, 400, 300)
+        utl.centrar_ventana(self.ventana_secundaria, 400, 290)
         self.ventana_secundaria.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.ventana_secundaria.focus_set() # Mantiene el foco cuando se abre la ventana.
-        
+        self.cur= self.conn.cursor()
         self.turno_seleccionado = self.tabla_turnos.selection()[0]
         self.data = self.tabla_turnos.item(self.turno_seleccionado)
         self.horario = self.data['values'][0]
         self.paciente = self.data['values'][1]
         self.prestacion = self.data['values'][2]
-        self.odontologo = self.data['values'][3]
+        odontologo = self.data['values'][3]
 
-        Label(self.ventana_secundaria, text= "EDITAR TURNO", font= ("Arial", 15, 'bold'), bg= "gray90", width= 60).pack(pady= 10)
-        Label(self.ventana_secundaria, text= f"FECHA: {self.dia}/{self.mes}/{self.anio} - HORARIO: "+self.horario, font= ("Arial", 13, 'bold'), bg= "gray90", width= 60).pack()
+        try:
+            fecha_turno = date(self.anio, self.mes, self.dia)
+            self.cur.execute("SELECT Odontologo FROM turnos WHERE fecha= ? AND hora= ?", (fecha_turno, self.horario,))
+            matricula = self.cur.fetchone()
+            self.cur.execute("SELECT Apellido_odontologo, Nombre_odontologo FROM Odontologos WHERE Matricula= ? ", (matricula))
+            odontologo = self.cur.fetchone()
+        except:
+            pass
+        Label(self.ventana_secundaria, text= "EDITAR TURNO", font= ("Arial", 15, 'bold'), bg= "gray90", width= 60).pack(pady= 5)
+        Label(self.ventana_secundaria, text= f"FECHA: {self.dia}/{self.mes}/{self.anio} - HORARIO: "+self.horario, font= ("Arial", 13, 'bold'), bg= "gray90", width= 60).pack(pady= 5)
 
-        self.nombre_entry = Entry(self.ventana_secundaria, justify= CENTER)
-        self.nombre_entry.pack(pady= (10,10))
+        self.nombre_entry = Entry(self.ventana_secundaria, width= 42, justify= CENTER)
+        self.nombre_entry.pack(pady= (20,10))
         self.nombre_entry.insert(0, "Paciente")
         if (self.paciente != ''):
             self.nombre_entry.delete(0, END)
             self.nombre_entry.insert(0, self.paciente)
         self.nombre_entry.focus_set()
         prestaciones = ["CONSULTA", "EXTRACCIÓN", "TRATAMIENTO DE CONDUCTO", "LIMPIEZA"]
-        self.selector_prestacion = ttk.Combobox(self.ventana_secundaria, state= "readonly", values= prestaciones, width= 25, justify= CENTER, background= "white")
+        self.selector_prestacion = ttk.Combobox(self.ventana_secundaria, state= "readonly", values= prestaciones, width= 40, justify= CENTER, background= "white")
         self.selector_prestacion.pack(pady= 8)
         self.selector_prestacion.set("Prestación")
         if (self.prestacion != ''):
             self.selector_prestacion.set(self.prestacion)
         self.selector_prestacion.bind("<<ComboboxSelected>>", lambda e: self.ventana_secundaria.focus())
-        self.selector_odontologo= ttk.Combobox(self.ventana_secundaria, values= self.valores_combobox, state= "readonly", width= 25, justify= CENTER, background= "white")
+        self.selector_odontologo= ttk.Combobox(self.ventana_secundaria, values= self.valores_combobox, state= "readonly", width= 40, justify= CENTER, background= "white")
         self.selector_odontologo.pack(pady= 8)
         self.selector_odontologo.set("Odontólogo")
-        if (self.odontologo != ''):
-            self.selector_odontologo.set(self.odontologo)
+        if (odontologo != ''):
+            profesional = f"Mat. {matricula[0]} - {odontologo[0]}, {odontologo[1]}"
+            self.selector_odontologo.set(profesional)
         self.selector_odontologo.bind("<<ComboboxSelected>>", lambda e: self.ventana_secundaria.focus())
 
         self.button_frame = Frame(self.ventana_secundaria, bg= "gray")
-        self.button_frame.pack(pady= 10)
+        self.button_frame.pack(pady= (30, 0))
 
-        Button(self.button_frame, text= 'Guardar', command= self.guardar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 0, padx= 10)
-        Button(self.button_frame, text= 'Eliminar', command= self.eliminar_turno, bg= "#BDC1BE", width= 10).grid(row= 0, column= 1, padx= 10)
-        Button(self.button_frame, text= 'Salir', command= self.cancelar_turno, font= self.fuenteb, bg= "orange", width= 8).grid(row= 0, column= 2, padx= 10)
+        Button(self.button_frame, text= 'Guardar', command= self.guardar_turno, font= self.fuenteb, bg= "green", width= 10).grid(row= 0, column= 0, padx= 10)
+        Button(self.button_frame, text= 'Eliminar', command= self.eliminar_turno, font= self.fuenteb, bg= "red", width= 10).grid(row= 0, column= 1, padx= 10)
+        Button(self.button_frame, text= 'Salir', command= self.cancelar_turno, font= self.fuenteb, bg= "orange", width= 10).grid(row= 0, column= 2, padx= 10)
 
     def cancelar_turno(self):
         self.ventana_secundaria.grab_release()
@@ -180,7 +189,6 @@ class DayTopWindow(Toplevel):
 
     def eliminar_turno(self):
         start_date = date(self.anio, self.mes, self.dia)
-        #self.conn=  self.db.conectar()
         self.cur= self.conn.cursor()
         hora= self.horario
         self.ventana_secundaria.grab_release()
@@ -189,7 +197,6 @@ class DayTopWindow(Toplevel):
             try:
                 self.cur.execute("DELETE FROM turnos WHERE fecha= ? AND hora= ?", (start_date, hora,))
                 self.conn.commit()
-                #self.conn.close()
                 self.grab_set_global()
                 self.focus_set()
                 self.ventana_secundaria.destroy()
@@ -198,7 +205,7 @@ class DayTopWindow(Toplevel):
                 self.ventana_secundaria.grab_set()
         else:
             self.ventana_secundaria.grab_set()
-        self.cargar_turnos()        
+        self.cargar_turnos()
 
     def guardar_turno(self):
         """El día se carga en formato YYYY/MM/DD para luego poder usar los métodos de SQLite"""
@@ -206,7 +213,7 @@ class DayTopWindow(Toplevel):
         self.conn=  self.db.conectar()
         self.cur= self.conn.cursor()
         self.matricula= ""
-        
+        self.matricula = self.obtener_matricula_odontologo()
         self.ventana_secundaria.grab_release()
         if self.nombre_entry.get().upper() == "PACIENTE":
             messagebox.showerror("Paciente", "Ingrese nombre paciente", parent= self.ventana_secundaria)
@@ -220,8 +227,7 @@ class DayTopWindow(Toplevel):
             messagebox.showerror("Odontólogo", "Elija odontólogo", parent= self.ventana_secundaria)
             self.ventana_secundaria.grab_set()
             return
-        else:
-            self.matricula = self.obtener_matricula_odontologo()
+        else:            
             datos = start_date, self.horario, self.nombre_entry.get().upper(), self.matricula, self.selector_prestacion.get().upper()
             answer = messagebox.askokcancel('Guardar', '¿Desea guardar el turno?', icon='warning', parent= self.ventana_secundaria)
             if answer:
@@ -229,13 +235,11 @@ class DayTopWindow(Toplevel):
                     sql="REPLACE INTO turnos VALUES(?, ?, ?, ?, ?)"
                     self.cur.execute(sql, datos)
                     self.conn.commit()
-                    self.grab_set_global()
-                    self.focus_set()
                     self.ventana_secundaria.destroy()
+                    self.grab_set()
                     self.cargar_turnos()
                 except:
                     messagebox.showerror("Guardar", "No se pudo guardar", parent= self.ventana_secundaria)
-                    self.ventana_secundaria.grab_set()
 
     def obtener_matricula_odontologo(self):
         """Extrae la matrícula del odontólogo seleccionado"""
