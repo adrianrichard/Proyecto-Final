@@ -76,7 +76,7 @@ class Odontograma:
         #print(self.ID_odonto)
         self.cargar_dientes(self.ID_odonto)
         self.canvas = tk.Canvas(self.frame_dientes, width= self.ancho-20, height= 300)
-        self.canvas.grid(row= 0, column= 0,columnspan=3, padx= 10)
+        self.canvas.grid(row= 0, column= 0, columnspan=3, padx= 10)
         # self.colores=["red", "green", "blue", "white"]
         self.crear_dientes()
         # self.frame_tabla = Frame(self.ventana_odontograma)
@@ -114,17 +114,20 @@ class Odontograma:
         self.ventana_odontograma.mainloop()
 
     def salir(self):
-        answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea salir sin guardar?', icon= 'warning')
+        self.ventana_odontograma.grab_release()
+        answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon= 'warning', parent= self.ventana_odontograma)
         if answer:
             #print(self.ID_odonto+1)
-            self.ID_odonto=self.ID_odonto+1
-            try:                
+            self.ID_odonto= self.ID_odonto+1
+            try:
                 self.miCursor.execute("DELETE FROM Dientes WHERE id_odonto=?", (self.ID_odonto,))
                 self.miConexion.commit()
             except:
-                self.ventana_odontograma.destroy()
-                #messagebox.showinfo("Diente", "No se pudo borrar")
+                self.ventana_odontograma.grab_set()
+                return
             self.ventana_odontograma.destroy()
+        else:
+            self.ventana_odontograma.grab_set()
 
     def cargar_odontologos(self):
         self.cur= self.miConexion.cursor()
@@ -137,7 +140,9 @@ class Odontograma:
             #print(apellidos)
             self.miConexion.commit()
         except:
-            messagebox.showinfo("Odontologos", "No hay odontologos cargados")
+            self.ventana_odontograma.grab_release()
+            messagebox.showinfo("Odontologos", "No hay odontologos cargados", parent= self.ventana_odontograma)
+            self.ventana_odontograma.grab_set()
 
     def cargar_paciente(self, dni):
         self.dni_paciente = dni
@@ -147,12 +152,10 @@ class Odontograma:
             self.miCursor.execute("SELECT apellido, nombre, ID, fechanacimiento, obrasocial, nrosocio FROM Pacientes WHERE ID=?", (dni,))
             self.paciente = self.miCursor.fetchone()
             self.miConexion.commit()
-            #print(self.paciente)
         except:
-            messagebox.showinfo("Paciente", "No se cargo el paciente")
-        #print(self.pacientes[0][2])
-        #datos= self.pacientes[0][2], self.fecha_actual, 'Militello'
-        #print(datos)
+            self.ventana_odontograma.grab_release()
+            messagebox.showinfo("Paciente", "No se cargo el paciente" parent= self.ventana_odontograma)
+            self.ventana_odontograma.grab_set()
 
     def convertir_fecha(self, fecha):
         fecha_obj = datetime.strptime(fecha, "%Y-%m-%d")
@@ -165,7 +168,6 @@ class Odontograma:
         try:
             self.miCursor.execute("SELECT id_odontograma from Odontogramas WHERE dni_paciente=? ORDER BY id_odontograma DESC", (self.dni_paciente,))
             self.miConexion.commit()
-            #print("no hay odontograma")
             self.ID_odonto_actual= self.miCursor.fetchone()
             if not self.ID_odonto_actual:
                 self.crear_odontograma= True
@@ -178,7 +180,7 @@ class Odontograma:
             self.ventana_odontograma.grab_set()
 
     def cargar_odontograma(self):
-        self.miCursor=self.miConexion.cursor()
+        self.miCursor= self.miConexion.cursor()
         #print(self.dni_paciente)
         self.agregar_prestacion= True
         if self.crear_odontograma or self.agregar_prestacion:
@@ -188,7 +190,9 @@ class Odontograma:
                 self.ID_odonto_actual= self.miCursor.fetchone()
                 self.ID_odonto = self.ID_odonto_actual[0]
             except:
-                messagebox.showinfo("Odontograma", "Crear odontograma")
+                self.ventana_odontograma.grab_release()
+                messagebox.showinfo("Odontograma", "Crear odontograma" parent= self.ventana_odontograma)
+                self.ventana_odontograma.grab_set()
         #UTIL PARA CUANDO PODAMOS ELEGIR UN ODONTOGRAMA ANTERIOR
         else:
             try:
@@ -197,15 +201,13 @@ class Odontograma:
                 self.ID_odonto_actual= self.miCursor.fetchone()
                 self.ID_odonto = self.ID_odonto_actual[0]
             except:
-                messagebox.showinfo("Odontograma", "Crear odontograma")
-                #print("ID odonto1")
+                self.ventana_odontograma.grab_release()
+                messagebox.showinfo("Odontograma", "Crear odontograma", parent= self.ventana_odontograma)
+                self.ventana_odontograma.grab_set()
                 self.miCursor.execute("SELECT id_odontograma from Odontogramas ORDER BY id_odontograma DESC LIMIT 1")
                 self.miConexion.commit()
-                #print("ID odonto2")
                 self.ID_odonto_actual= self.miCursor.fetchone()
-                #print(self.ID_odonto_actual)
                 self.ID_odonto = self.ID_odonto_actual[0]
-                #print(self.ID_odonto)
 
     def obtener_matricula(self, apellido):
         self.cur= self.miConexion.cursor()
@@ -215,37 +217,37 @@ class Odontograma:
             self.miConexion.commit()
             return matricula[0]
         except:
-            messagebox.showinfo("Odontologos", "No hay odontologos cargados")
+            self.ventana_odontograma.grab_release()
+            messagebox.showinfo("Odontologos", "No hay odontologos cargados", parent= self.ventana_odontograma)
+            self.ventana_odontograma.grab_set()
 
     def guardar_odontograma(self):
-        answer = messagebox.askokcancel(title= 'Guardar', message= '¿Desea guardar?', icon= 'warning')
+        self.ventana_odontograma.grab_release()
+        answer = messagebox.askokcancel('Guardar', '¿Desea guardar?', icon= 'warning', parent= self.ventana_odontograma)
         if answer:
             matricula=0
             if self.selector_odontologo.get() != 'Odontólogo':
                 matricula = self.obtener_matricula(self.selector_odontologo.get().upper())
                 f = datetime.today()
                 fecha = f.strftime("%Y")+"-"+f.strftime("%m")+"-"+f.strftime("%d")
-                #print(fecha)
                 datos= self.dni_paciente, fecha, matricula 
-                #print(datos)
                 try:
-                    #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
                     self.miCursor = self.miConexion.cursor()
-                    #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
                     sql = "INSERT INTO Odontogramas VALUES (NULL,?,?,?)"
-
                     self.miCursor.execute(sql, datos)
                     self.miConexion.commit()
-                    #self.ID_odonto_actual= self.miCursor.fetchone()
-                    #print(self.ID_odonto_actual[0])
-                    messagebox.showinfo("GUARDAR", "Odontograma guardado exitosamente")
+                    messagebox.showinfo("GUARDAR", "Odontograma guardado exitosamente", parent= self.ventana_odontograma)
+                    self.ventana_odontograma.grab_set()
                     self.ventana_odontograma.destroy()
                 except:
-                    messagebox.showinfo("Odontograma", "No se pudo guardar el odontograma")
+                    messagebox.showinfo("Odontograma", "No se pudo guardar el odontograma", parent= self.ventana_odontograma)
+                    self.ventana_odontograma.grab_set()
             else:
                 self.aviso_odontologo.config(text= "Escoja un odontólogo", fg= 'red')
-                messagebox.showinfo("Odontologo", "Escoja un odontólogo")
-            #print(matricula)
+                messagebox.showinfo("Odontologo", "Escoja un odontólogo", parent= self.ventana_odontograma)
+                self.ventana_odontograma.grab_set()
+        else:
+            self.ventana_odontograma.grab_set()
 
     def crear_pdf(self):
         # Captura la ventana y guarda el área del Canvas
@@ -267,7 +269,7 @@ class Odontograma:
         pdf = pdf_canvas.Canvas(nombre_archivo, pagesize=A4)
         ancho_pagina, alto_pagina = A4
         logo_path = "./imagenes/LOGO11.png"
-        alto_imagen=500
+        alto_imagen= 500
         if os.path.exists(logo_path):
             with Image.open(logo_path) as img:
                 logo_width, logo_height = img.size
@@ -324,23 +326,21 @@ class Odontograma:
                 img_height = int(img_height * escala_canvas)
                 captura_x = (ancho_pagina - img_width) / 2  # Centrar en X
                 captura_y = alto_pagina - 500  # Margen inferior de 50
-
-            pdf.drawImage(
-                captura_path,
-                captura_x,
-                captura_y,
-                width=img_width,
-                height=img_height
-            )
+            pdf.drawImage(captura_path, captura_x, captura_y, width=img_width, height=img_height)
+        
         pdf.line(50, 50, ancho_pagina - 50, 50)
         pdf.setFont("Helvetica-Bold", 10)
         pdf.drawCentredString(ancho_pagina/2, 30, f"MyM Odontología | {self.fecha_actual}")
         try:
             pdf.save()
-            messagebox.showinfo("Odontograma", "Informe creado exitosamente")
+            self.ventana_odontograma.grab_release()
+            messagebox.showinfo("Odontograma", "Informe creado exitosamente", parent= self.ventana_odontograma)
+            self.ventana_odontograma.grab_set()
             self.abrir_carpeta_contenedora(nombre_archivo)
         except:
-            messagebox.showwarning("Odontograma", "No se pudo crear el informe")
+            self.ventana_odontograma.grab_release()
+            messagebox.showwarning("Odontograma", "No se pudo crear el informe", parent= self.ventana_odontograma)
+            self.ventana_odontograma.grab_set()
     
     def abrir_carpeta_contenedora(self, filepath):
         try:
@@ -365,13 +365,15 @@ class Odontograma:
                         subprocess.run(['xdg-open', os.path.dirname(path_absoluto)])
             
         except Exception as e:
-            messagebox.showwarning("Odontograma", f"No se pudo abrir la carpeta: {e}")
+            self.ventana_odontograma.grab_release()
+            messagebox.showwarning("Odontograma", f"No se pudo abrir la carpeta: {e}", parent= self.ventana_odontograma)
+            self.ventana_odontograma.grab_set()
 
     def crear_imagen_x(self, color):
         img = Image.new("RGBA", (22, 22), (0, 0, 0, 0))
         draw = ImageDraw.Draw(img)
-        draw.line((3, 3, 18, 18), fill=color, width=3)
-        draw.line((18, 3, 3, 18), fill=color, width=3)
+        draw.line((3, 3, 18, 18), fill= color, width= 3)
+        draw.line((18, 3, 3, 18), fill= color, width= 3)
         return ImageTk.PhotoImage(img)
     
     def crear_imagen_circulo(self, color):
@@ -445,10 +447,10 @@ class Odontograma:
             self.diente_actual=[0, numero, self.ID_odonto, 'white','white','white','white','white','white','white']
         for diente in self.dientes:
             if diente[1] == numero:
-                self.diente_actual=list(diente)
+                self.diente_actual= list(diente)
                 break
             else:
-                self.diente_actual=[0, numero, self.ID_odonto, 'white','white','white','white','white','white','white']
+                self.diente_actual= [0, numero, self.ID_odonto, 'white','white','white','white','white','white','white']
 
         width = 100
         height = 100
@@ -666,32 +668,28 @@ class Odontograma:
             if i != 8:
                 self.diente_actual[i] = 'white'
         #self.diente_actual=[numero, 'white', 'white', 'white', 'white', 'white', self.diente_actual[6], 'white']
+
     def restablecer_diente(self, numero):
-        #print(numero)
         self.cargar_diente(numero)
-        #self.ventana_secundaria.destroy()
-        #self.editar_diente(numero)
         
     def cancelar(self):
-        answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea salir sin guardar?', icon= 'warning')
+        self.ventana_odontograma.grab_release()
+        answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon= 'warning', parent= self.ventana_odontograma)
         if answer:            
             self.ventana_odontograma.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
             self.ventana_odontograma.focus_set() # Mantiene el foco cuando se abre la ventana.
             self.ventana_secundaria.destroy()
             self.canvas.delete("all")
             self.crear_dientes()
+            self.ventana_odontograma.grab_set()
+        else:
+            self.ventana_odontograma.grab_set()
 
     def guardar_diente(self):
-        #print(self.ID_odonto)
-        #print(self.diente_actual)
-        #print(self.dni_paciente)
-        #print("Guardar diente")
-        #datos= self.diente_actual[1], self.ID_odonto+1, self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8], self.diente_actual[9]
-        #print(datos)
-        answer = messagebox.askokcancel(title= 'Salir', message= '¿Desea guardar?', icon= 'warning')
+        self.ventana_secundaria.grab_release()
+        answer = messagebox.askokcancel('Salir', '¿Desea guardar?', icon= 'warning', parent= self.ventana_odontograma)
         if answer:
             try:
-                #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
                 self.miCursor = self.miConexion.cursor()
                 #INSERT OR REPLACE INTO table(column_list) VALUES(value_list);
                 sql = "INSERT INTO Dientes VALUES (NULL,?,?,?,?,?,?,?,?,?)"
@@ -699,40 +697,34 @@ class Odontograma:
                 self.miCursor.execute(sql, datos)
                 self.miConexion.commit()
                 #self.ID_odonto_actual= self.miCursor.fetchone()
-                #print(self.ID_odonto_actual[0])
-                messagebox.showinfo("GUARDAR","Diente guardado exitosamente")
-                self.ventana_odontograma.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
-                self.ventana_odontograma.focus_set() # Mantiene el foco cuando se abre la ventana.
-                
+                messagebox.showinfo("GUARDAR","Diente guardado exitosamente", parent= self.ventana_secundaria)                
                 self.canvas.delete("all")
                 self.cargar_dientes_modificados(self.ID_odonto+1)
                 self.crear_dientes()
-                
+                self.ventana_secundaria.grab_set()
                 self.ventana_secundaria.destroy()
+                self.ventana_odontograma.grab_set()
             except:
-                messagebox.showinfo("Diente", "No se pudieron guardar los cambios")
-            
-            #print()
+                self.ventana_secundaria.grab_release()
+                messagebox.showinfo("Diente", "No se pudieron guardar los cambios", parent= self.ventana_secundaria)
+                self.ventana_odontograma.grab_set()
+        else:
+            self.ventana_secundaria.grab_set()
             
     def cargar_dientes_modificados(self, id_odonto):
-        #print('crear vector con los dientes')
-        #print(self.ID_odonto)
         try:
-            #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor = self.miConexion.cursor()
-            #sql = "SELECT * from Diente WHERE ID_odontograma = ? ORDER BY ID_odontograma"
             self.miCursor.execute("SELECT DISTINCT nro, nro_diente, id_odonto, d, v, m, i, o, extraccion, corona FROM dientes INNER JOIN Odontogramas ON dientes.id_odonto=Odontogramas.id_odontograma WHERE Odontogramas.dni_paciente=? AND dientes.id_odonto <=?\
                 UNION SELECT * FROM dientes WHERE dientes.id_odonto =? ORDER by nro DESC", (self.dni_paciente, id_odonto, id_odonto, ))
             self.miConexion.commit()
             self.dientes= self.miCursor.fetchall()
-            #print(self.dientes)
         except:
-            messagebox.showinfo("Dientes", "No se pudieron cargar dientes actuales")
+            self.ventana_odontograma.grab_release()
+            messagebox.showinfo("Dientes", "No se pudieron cargar dientes actuales", parent= self.ventana_odontograma)
+            self.ventana_odontograma.grab_set()
             self.dientes=[]
             
     def cargar_dientes(self, id_odonto):
-        #print('crear vector con los dientes')
-        #print(self.ID_odonto)
         if self.crear_odontograma:
             self.dientes=[]
         else:
@@ -745,7 +737,9 @@ class Odontograma:
                 self.dientes= self.miCursor.fetchall()
                 #print(self.dientes)
             except:
-                messagebox.showinfo("Dientes", "No se pudieron cargar prestaciones")
+                self.ventana_odontograma.grab_release()
+                messagebox.showinfo("Dientes", "No se pudieron cargar prestaciones", parent= self.ventana_odontograma)
+                self.ventana_odontograma.grab_set()
             
 
     def buscar_valor(self, valor):
