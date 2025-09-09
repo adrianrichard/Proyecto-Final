@@ -25,7 +25,7 @@ class Login:
             if usuario is not None:
                 """Si es administrador"""
                 if  usuario[2] == 'administrador':
-                    messagebox.showinfo("Ingreso", "Ingreso autorizado")
+                    messagebox.showinfo("Ingreso", "Ingreso autorizado", parent= self.frame_login)
                     #db.cerrar_bd()
                     self.usuario.delete(0, tk.END)
                     self.password.delete(0, tk.END)
@@ -33,7 +33,7 @@ class Login:
                     MasterPanel(usuario[2])
                 """Si es odontologo"""
                 if usuario[2] == 'odontologo':
-                    messagebox.showinfo("Ingreso", "Ingreso autorizado")
+                    messagebox.showinfo("Ingreso", "Ingreso autorizado", parent= self.frame_login)
                     #db.cerrar_bd()
                     self.usuario.delete(0, tk.END)
                     self.password.delete(0, tk.END)
@@ -41,22 +41,22 @@ class Login:
                     MasterPanel(usuario[2])
                 """Si es secretario"""
                 if usuario[2] == 'secretario':
-                    messagebox.showinfo("Ingreso", "Ingreso autorizado")
+                    messagebox.showinfo("Ingreso", "Ingreso autorizado", parent= self.frame_login)
                     self.usuario.delete(0, tk.END)
                     self.password.delete(0, tk.END)
                     self.frame_login.destroy()
                     MasterPanel(usuario[2])
             else:
                 """Si usuario y/o contraseña son incorrectos"""
-                messagebox.showerror("Advertencia", "Usuario o contraseña incorrectos")
+                messagebox.showerror("Advertencia", "Usuario o contraseña incorrectos", parent= self.frame_login)
         else:
-            messagebox.showerror("Advertencia", "Error de conexión a base de datos")
+            messagebox.showerror("Advertencia", "Error de conexión a base de datos", parent= self.frame_login)
 
     """Sólo acepta Letras"""
     def validar_nombre(self, value):
         pattern = r'^[A-Za-z_]+$'  #r'\b[A-Za-z_]\b'  cambiado por sugerencia de chatgpt
         if re.fullmatch(pattern, value) is None:
-            messagebox.showerror("Error", "El nombre de usuario solo puede contener letras y guiones bajos.")
+            messagebox.showerror("Error", "El nombre de usuario solo puede contener letras y guiones bajos.", parent= self.frame_login)
             return False 
         return True
 
@@ -64,7 +64,7 @@ class Login:
     def validar_pass(self, value):
         pattern = r'^[A-Za-z0-9_]+$' #r'\b[A-Za-z0-9_]\b'  cambiado por sugerencia de chatgpt
         if re.fullmatch(pattern, value) is None:
-            messagebox.showerror("Error", "La contraseña solo puede contener letras, números y guiones bajos.")
+            messagebox.showerror("Error", "La contraseña solo puede contener letras, números y guiones bajos.", parent= self.frame_login)
             return False
         return True
 

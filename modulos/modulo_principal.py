@@ -7,7 +7,7 @@ import re
 from modulos.modulo_paciente import Paciente
 from modulos.modulo_usuario import Usuario
 from modulos.modulo_odontologo import Odontologo
-from paginas.tkcalendar import TKCalendar
+from paginas.calendario import Calendario
 from paginas.odontograma import Odontograma
 from paginas.informes import Informes
 from paginas.galeria import Galeria
@@ -46,7 +46,6 @@ class MasterPanel:
         self.dni_paciente = StringVar()
         self.dato_paciente = StringVar()
         self.dato_paciente2 = StringVar()
-        #self.tipo_usuario = StringVar() #porque se declara nuevamente 2 líneas abajo
         self.nombre_usuario = StringVar()
         self.matricula = StringVar()
         self.tipo_usuario = tipousuario
@@ -99,8 +98,7 @@ class MasterPanel:
         self.paginas.select([self.frame_principal])
 
     def pantalla_usuarios(self):
-        self.paginas.select([self.frame_usuarios])
-        
+        self.paginas.select([self.frame_usuarios])        
         [self.frame_tabla_usuario.columnconfigure(i, weight= 1) for i in range(self.frame_usuarios.grid_size()[0])]
         [self.frame_usuarios.columnconfigure(i, weight= 1) for i in range(self.frame_usuarios.grid_size()[0])]
         [self.frame_tabla_usuario.rowconfigure(i, weight= 1) for i in range(self.frame_usuarios.grid_size()[1])]
@@ -116,12 +114,12 @@ class MasterPanel:
 
     def pantalla_calendario(self):
         self.paginas.select([self.frame_calendario])
-        Tcal = TKCalendar()
-        Tcal.crear_encabezado(self.frame_calendario)
-        Tcal.crear_botones_fechas(self.frame_calendario)
-        Tcal.marcar_dia_turno()
-        Tcal.actualizar_botones_fechas()
-        Tcal.configurar_filas_columnas(self.frame_calendario)
+        cal = Calendario()
+        cal.crear_encabezado(self.frame_calendario)
+        cal.crear_botones_fechas(self.frame_calendario)
+        cal.marcar_dia_turno()
+        cal.actualizar_botones_fechas()
+        cal.configurar_filas_columnas(self.frame_calendario)
 
     def pantalla_historia(self):
         self.paginas.select([self.frame_historia])
@@ -145,7 +143,7 @@ class MasterPanel:
         [self.frame_tabla_galeria.rowconfigure(i, weight= 1) for i in range(self.frame_galeria.grid_size()[1])]
 
     def salir(self):
-        answer = messagebox.askokcancel('Salir', '¿Desea salir?', icon= 'warning')
+        answer = messagebox.askokcancel('Salir', '¿Desea salir?', icon= 'warning', parent= self.ventana)
         if answer:
             self.db.cerrar_bd()
             self.ventana.destroy()
@@ -166,7 +164,7 @@ class MasterPanel:
                 paciente.cargar_datos(self.dni_paciente)
                 paciente.ventana_paciente(master_panel_ref=self)
             except Exception as e:
-                messagebox.showerror("ERROR", f"No se pudo cargar el paciente: {e}")
+                messagebox.showerror("ERROR", f"No se pudo cargar el paciente: {e}", parent= self.ventana)
 
     def editar_paciente2(self):
         item = self.tabla_paciente.focus()
@@ -178,7 +176,7 @@ class MasterPanel:
                 paciente.cargar_datos(self.dni_paciente)
                 paciente.ventana_paciente(master_panel_ref=self)
             except Exception as e:
-                messagebox.showerror("ERROR", f"No se pudo cargar el paciente: {e}")
+                messagebox.showerror("ERROR", f"No se pudo cargar el paciente: {e}", parent= self.ventana)
     
     def abrir_galeria(self, event):
         item = self.tabla_galeria.focus()
@@ -191,7 +189,7 @@ class MasterPanel:
                     gal.cargar_paciente(self.dni_paciente)
                     gal.ventana_gal()
             except Exception as e:
-                messagebox.showerror("ERROR", f"No se pudo cargar la galeria: {e}")
+                messagebox.showerror("ERROR", f"No se pudo cargar la galeria: {e}", parent= self.ventana)
 
     def editar_odontograma(self, event):
         item = self.tabla_historia.focus()
@@ -203,12 +201,12 @@ class MasterPanel:
                 odonto.cargar_paciente(self.dni_paciente)
                 odonto.ventana_odonto()
             except Exception as e:
-                messagebox.showerror("ERROR", f"No se pudo cargar el odontograma: {e}")
+                messagebox.showerror("ERROR", f"No se pudo cargar el odontograma: {e}", parent= self.ventana)
 
     def eliminar_paciente(self):
         try:
             self.miCursor = self.miConexion.cursor()
-            msg_box = messagebox.askquestion('Eliminar paciente', '¿Desea elminar al paciente?', icon='warning')
+            msg_box = messagebox.askquestion('Eliminar paciente', '¿Desea elminar al paciente?', icon='warning', parent= self.ventana)
             if msg_box == 'yes':
                 self.miCursor.execute("DELETE FROM Pacientes WHERE ID = ?", (self.dni_paciente,))
                 self.miConexion.commit()
@@ -216,18 +214,20 @@ class MasterPanel:
                 self.dni_paciente=[]
                 self.mostrar_pacientes()
         except sqlite3.Error as e:
-            messagebox.showerror("ERROR", f"No se pudo eliminar el paciente: {e}")
+            messagebox.showerror("ERROR", f"No se pudo eliminar el paciente: {e}", parent= self.ventana)
         except Exception as e:
-            messagebox.showerror("ERROR", f"Error inesperado: {e}")
+            messagebox.showerror("ERROR", f"Error inesperado: {e}", parent= self.ventana)
 
     def cargar_tabla_pacientes(self):
+        self.db.cerrar_bd()
+        self.miConexion = self.db.conectar()
         """Carga todos los pacientes desde la base de datos."""
         try:
             cursor = self.miConexion.cursor()
             cursor.execute("SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido")
             return cursor.fetchall()
         except Exception as e:
-            messagebox.showerror("Error", f"Error al cargar pacientes: {e}")
+            messagebox.showerror("Error", f"Error al cargar pacientes: {e}", parent= self.ventana)
             return []
 
     def cargar_pacientes_paginados(self):
@@ -242,20 +242,20 @@ class MasterPanel:
 
         # Insertar pacientes en la tabla
         for i in range(inicio, fin):
-            self.tabla_paciente.insert('', 'end', text=pacientes[i][0], values=pacientes[i][1:])
+            self.tabla_paciente.insert('', 'end', text= pacientes[i][0], values= pacientes[i][1:])
 
         # --- Control de botones ---
         # Botón previo
         if self.indice_paciente == 0:
-            self.boton_previo.config(state='disabled', bg='gray') # Desactivado y gris
+            self.boton_previo.config(state= 'disabled', bg= 'gray') # Desactivado y gris
         else:
-            self.boton_previo.config(state='normal', bg= self.color_fondo1) # Activado y verde
+            self.boton_previo.config(state= 'normal', bg= self.color_fondo1) # Activado y verde
 
         # Botón siguiente
         if fin >= total:
-            self.boton_pos.config(state='disabled', bg='gray') # Desactivado y gris
+            self.boton_pos.config(state= 'disabled', bg= 'gray') # Desactivado y gris
         else:
-            self.boton_pos.config(state='normal', bg= self.color_fondo1) # Activado y verde
+            self.boton_pos.config(state= 'normal', bg= self.color_fondo1) # Activado y verde
 
     def cargar_pacientes_previos(self):
         """Carga la página anterior de pacientes."""
@@ -271,11 +271,11 @@ class MasterPanel:
         self.cargar_pacientes_paginados()
 
     def mostrar_pacientes(self):
-        #global indice_paciente
         self.boton_pos.config(state= 'normal', bg= self.color_fondo1)
         self.boton_previo.config(state= 'disabled', bg= self.color_fondo1)
         self.indice_paciente= 0
-
+        self.db.cerrar_bd()
+        self.miConexion = self.db.conectar()
         self.miCursor = self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido"
         self.miCursor.execute(bd)
@@ -306,10 +306,10 @@ class MasterPanel:
                 for i, dato in enumerate(datos):
                     self.tabla_paciente.insert('', 'end', text= dato[0], values= dato[0:])
             else:  # Si no encuentra resultados
-                messagebox.showinfo("BUSCAR", "No se encontraron coincidencias")
+                messagebox.showinfo("BUSCAR", "No se encontraron coincidencias", parent= self.ventana)
 
         except Exception as e:
-            messagebox.showerror("Error", f"Error al buscar paciente: {e}")
+            messagebox.showerror("Error", f"Error al buscar paciente: {e}", parent= self.ventana)
 
     def buscar_historia(self, event=None):
         """Busca historia clínica por apellido, nombre o DNI y muestra mensaje si no hay resultados."""
@@ -329,10 +329,10 @@ class MasterPanel:
                 for i, dato in enumerate(datos):
                     self.tabla_historia.insert('', 'end', values= dato)
             else:  # Si no encuentra resultados
-                messagebox.showinfo("BUSCAR", "No se encontraron coincidencias")
+                messagebox.showinfo("BUSCAR", "No se encontraron coincidencias", parent= self.ventana)
 
         except Exception as e:
-            messagebox.showerror("ERROR", f"Error en la búsqueda: {e}")
+            messagebox.showerror("ERROR", f"Error en la búsqueda: {e}", parent= self.ventana)
 
     def buscar_galeria(self, event=None):
         """Busca historia clínica por apellido, nombre o DNI y muestra mensaje si no hay resultados."""
@@ -352,10 +352,10 @@ class MasterPanel:
                 for i, dato in enumerate(datos):
                     self.tabla_galeria.insert('', 'end', values= dato)
             else:  # Si no encuentra resultados
-                messagebox.showinfo("BUSCAR", "No se encontraron coincidencias")
+                messagebox.showinfo("BUSCAR", "No se encontraron coincidencias", parent= self.ventana)
 
         except Exception as e:
-            messagebox.showerror("ERROR", f"Error en la búsqueda: {e}")
+            messagebox.showerror("ERROR", f"Error en la búsqueda: {e}", parent= self.ventana)
             
     def seleccionar_paciente(self, event):
         item = self.tabla_paciente.focus()
@@ -364,10 +364,9 @@ class MasterPanel:
             self.dni_paciente = self.data['values'][1]
         except:
             pass
-            #messagebox.showinfo("Continuar", "Continuar")
 
     def mostrar_usuarios(self):
-        try:            
+        try:
             CONSULTA_USUARIOS = """
                 SELECT nombre_usuario, pass_usuario, tipo_usuario 
                 FROM usuarios where nombre_usuario NOT LIKE "admin"
@@ -392,6 +391,7 @@ class MasterPanel:
                 "Error al cargar usuarios",
                 f"No se pudieron cargar los usuarios:\n{str(e)}\n\n"
                 "Por favor verifique la conexión a la base de datos e intente nuevamente."
+                , parent= self.ventana
             )
 
     def seleccionar_usuario(self, event):
@@ -408,14 +408,13 @@ class MasterPanel:
         item = self.tabla_usuario.focus()
         if item:
             self.data = self.tabla_usuario.item(item)
-            #print(self.data)
             try:
                 self.nombre_usuario = self.data['values'][0]
                 user = Usuario()
                 user.cargar_datos(self.nombre_usuario)
                 user.ventana(master_panel_ref = self)
             except Exception as e:
-                messagebox.showerror("ERROR", f"No se pudo cargar el usuario: {e}")
+                messagebox.showerror("ERROR", f"No se pudo cargar el usuario: {e}", parent= self.ventana)
 
     def editar_usuario(self, event):
         region = self.tabla_usuario.identify("region", event.x, event.y)
@@ -432,9 +431,9 @@ class MasterPanel:
                     user.cargar_datos(self.usuario)
                     user.ventana(master_panel_ref=self)
                 else:
-                    messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
+                    messagebox.showwarning("Advertencia", "Debe seleccionar un usuario", parent= self.ventana)
             except:
-                messagebox.showwarning("Advertencia", "Debe seleccionar un usuario")
+                messagebox.showwarning("Advertencia", "Debe seleccionar un usuario", parent= self.ventana)
 
     def eliminar_usuario(self):
         try:
@@ -442,7 +441,7 @@ class MasterPanel:
             user.eliminar_usuario(self.nombre_usuario)
             self.mostrar_usuarios()
         except:
-            messagebox.showwarning("Usuario", "No se pudo eliminar el usuario")
+            messagebox.showwarning("Usuario", "No se pudo eliminar el usuario", parent= self.ventana)
 
     def mostrar_odontologos(self):
         try:
@@ -469,6 +468,7 @@ class MasterPanel:
                 "Error al cargar odontologos",
                 f"No se pudieron cargar los odontologos:\n{str(e)}\n\n"
                 "Por favor verifique la conexión a la base de datos e intente nuevamente."
+                , parent= self.ventana
             )
 
     def seleccionar_odontologo(self, event):
@@ -495,15 +495,14 @@ class MasterPanel:
                     profesional.cargar_datos(matricula)
                     profesional.ventana(master_panel_ref = self)
                 else:
-                    messagebox.showwarning("Advertencia", "Debe seleccionar un profesional")
+                    messagebox.showwarning("Advertencia", "Debe seleccionar un profesional", parent= self.ventana)
             except:
-                messagebox.showwarning("Advertencia", "Debe seleccionar un profesional")
+                messagebox.showwarning("Advertencia", "Debe seleccionar un profesional", parent= self.ventana)
 
     def editar_profesional(self):
         item = self.tabla_odontologos.focus()
         if item:
             self.data = self.tabla_odontologos.item(item)
-            #print(self.data)
             try:
                 matricula = self.data['values'][2]
                 profesional = Odontologo()
@@ -512,7 +511,7 @@ class MasterPanel:
             except:
                 return
         else:
-            messagebox.showwarning("Advertencia", "Debe seleccionar un profesional")
+            messagebox.showwarning("Advertencia", "Debe seleccionar un profesional", parent= self.ventana)
 
     def eliminar_odontologo(self):
         try:

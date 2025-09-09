@@ -20,6 +20,7 @@ class Usuario:
         self.fuenten= utl.definir_fuente()
         self.color_fondo1, self.color_fondo2= utl.definir_color_fondo()
         self.db= Conexion()
+        self.db.cerrar_bd()
         self.miConexion= self.db.conectar()
         self.miCursor= self.miConexion.cursor()
 
@@ -113,12 +114,14 @@ class Usuario:
             self.miConexion.commit()
             if self.master_panel_ref:  # Si tenemos referencia al panel principal
                     self.master_panel_ref.mostrar_usuarios()
+            self.db.cerrar_bd()
             self.frame_usuario.destroy()
             messagebox.showinfo("Éxito", "Usuario guardado correctamente", parent= self.frame_usuario)
 
         except Exception as e:
             self.frame_usuario.grab_release()
             messagebox.showerror("Error", f"No se pudo guardar. Error: {str(e)}", parent= self.frame_usuario)
+            self.db.cerrar_bd()
             self.frame_usuario.grab_set()
 
     def cargar_datos(self, usuario):
@@ -174,6 +177,7 @@ class Usuario:
                 except:
                     self.frame_usuario.grab_release()
                     messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario", parent= self.frame_usuario)
+                    self.db.cerrar_bd()
                     self.frame_usuario.grab_set()                 
 
             elif self.validar_usuario(self.nombre_usuario.get()):
@@ -191,10 +195,12 @@ class Usuario:
                     self.frame_usuario.grab_release()
                     messagebox.showinfo("GUARDAR","Usuario actualizado exitosamente", parent= self.frame_usuario)
                     self.frame_usuario.grab_set()
+                    self.db.cerrar_bd()
                     self.frame_usuario.destroy()
                 except:
                     self.frame_usuario.grab_release()
                     messagebox.showinfo("GUARDAR", "No se ha podido guardar el usuario", parent= self.frame_usuario)
+                    self.db.cerrar_bd()
                     self.frame_usuario.grab_set()
                     return
         else:
@@ -207,8 +213,10 @@ class Usuario:
                 self.miCursor.execute("DELETE FROM usuarios WHERE nombre_usuario = ?", (nombre,))
                 self.miConexion.commit()
                 messagebox.showinfo("ELIMINAR","Usuario eliminado exitosamente")
+                self.db.cerrar_bd()
             except:
                 messagebox.showinfo("ELIMINAR", "No se ha podido eliminar el usuario")
+                self.db.cerrar_bd()
 
     def Salir(self):
         self.frame_usuario.grab_release()
@@ -217,6 +225,7 @@ class Usuario:
         #FUNCIONA
         if answer:
             self.miConexion.close()
+            self.db.cerrar_bd()
             self.frame_usuario.destroy()
 
     # Mejor validación de nombre de usuario

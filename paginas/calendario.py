@@ -11,7 +11,7 @@ from bd.conexion import Conexion
 color_fuente = 'black'
 color_fondo2 = 'gray90'
 
-class TKCalendar():
+class Calendario():
 
     def __init__(self):
         super().__init__()
@@ -41,8 +41,6 @@ class TKCalendar():
             mes_turno= "0"+mes_turno
         """Carga el año y lo transforma a string"""
         anio_turno= str(self.anio)
-        #date_str = start_date.strftime('%d-%m-%Y')
-        #print(mes_turno)
 
         self.dias_turno = []
         self.conn = self.db.conectar()
@@ -52,9 +50,8 @@ class TKCalendar():
             self.cur.execute(self.query, (anio_turno, mes_turno, ))
             self.dias_turno  = [fila[0] for fila in self.cur.fetchall()]
             self.conn.commit()
-            #print(self.dias_turno)
         except:
-            messagebox.showinfo("Turnos","Error al cargar turnos")
+            messagebox.showinfo("Turnos", "Error al cargar turnos")
 
     def crear_encabezado(self, frame):
         """ Crea el encabezado """
@@ -89,16 +86,13 @@ class TKCalendar():
         for i, j in enumerate(self.fechas):  # Configura el texto del boton para mostrar la fecha
             if j == 0:
                 self.botones_fecha[i].configure(text= "", state= DISABLED, bg= "#808080") #botones sin fecha
-                #print(i)
             else:
                 if i == 6 or i == 13 or i == 20 or i == 27 or i == 34:
                     self.botones_fecha[i].configure(text= j, state= DISABLED, bg= self.color_fondo2) #DIA DOMINGO
                 else:    
                     self.botones_fecha[i].configure(text= j, command= partial(self.info_dia, j), bg= "white", state= NORMAL)
                     for dia in self.dias_turno:
-                        #print(type(dia), type(j))
                         if j == int(dia) :
-                            #print(j, dia, i)
                             self.botones_fecha[i].configure(bg="sky blue")
             if i == 40:
                 self.botones_fecha[i].configure(text= "TURNOS\nASIGNADOS", state= DISABLED, bg= "sky blue", disabledforeground= "black")#Marca si hay turnos

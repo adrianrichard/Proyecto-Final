@@ -1,9 +1,7 @@
-#import sqlite3
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import datetime
-#from functools import partial
 import util.config as utl
 from bd.conexion import Conexion
 from PIL import Image, ImageGrab, ImageDraw, ImageTk
@@ -31,7 +29,7 @@ class Odontograma:
         self.ventana_odontograma= tk.Toplevel()
         self.ventana_odontograma.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.ventana_odontograma.focus_set() # Mantiene el foco cuando se abre la ventana.
-        #self.ventana_odontograma = tk.Tk()
+
         self.ventana_odontograma.geometry('750x500')
         self.ventana_odontograma.grid_columnconfigure(0, weight= 1)
         self.ventana_odontograma.configure(bg= "gray")
@@ -46,7 +44,7 @@ class Odontograma:
         fechanac= self.convertir_fecha(self.paciente[3])
         obra_social= self.paciente[4]
         nrosocio= self.paciente[5]
-        #print(nombre, apellido, obra_social, dni)
+
         self.frame_datos_paciente=Frame(self.ventana_odontograma, border= 1, borderwidth= 2, bg= "gray90")
         self.frame_datos_paciente.grid(column= 0, row= 1, sticky= "nsew")
         Label(self.frame_datos_paciente, text= 'Nombre Completo:', font= self.fuenteb, bg= "gray90").grid(column= 0, row= 0, sticky= 'e', padx= (5, 0))
@@ -60,20 +58,18 @@ class Odontograma:
         Label(self.frame_datos_paciente, text= 'Nº socio: ',  font= self.fuenteb, bg= "gray90").grid(column= 2, row= 1, sticky= 'e', padx= (5, 0))
         Label(self.frame_datos_paciente, text= nrosocio, font= self.fuenten, bg= "gray90").grid(column= 3, row= 1, sticky= 'w', padx= (0, 10))
         self.ancho = 700
-        
+
         self.cargar_odontologos()
         self.selector_odontologo= ttk.Combobox(self.frame_datos_paciente, state= "readonly", values= self.odontologos, width= 15, justify= CENTER, background= "white")
         self.selector_odontologo.grid(column= 5, row= 1, sticky= 'w', padx= (10, 10))
         self.selector_odontologo.set("Odontólogo")
         self.aviso_odontologo = Label(self.frame_datos_paciente, text= '', font= self.fuenteb, bg= "gray90")
         self.aviso_odontologo.grid(column= 4, row= 1, sticky= 'e', padx= (5, 0))
-        #self.selector_odontologo.bind("<<ComboboxSelected>>", lambda e: print(self.selector_odontologo.get()))
 
         self.frame_dientes = Frame(self.ventana_odontograma)
         self.frame_dientes.grid(column= 0, row= 3, pady= (10, 10))
         self.iniciar_odontograma()
         self.cargar_odontograma()
-        #print(self.ID_odonto)
         self.cargar_dientes(self.ID_odonto)
         self.canvas = tk.Canvas(self.frame_dientes, width= self.ancho-20, height= 300)
         self.canvas.grid(row= 0, column= 0, columnspan=3, padx= 10)
@@ -137,7 +133,6 @@ class Odontograma:
             self.cur.execute("SELECT Apellido_odontologo FROM odontologos")
             self.lista_odontologos = self.cur.fetchall()
             self.odontologos = [odontologo[0] for odontologo in self.lista_odontologos]
-            #print(apellidos)
             self.miConexion.commit()
         except:
             self.ventana_odontograma.grab_release()
@@ -147,14 +142,13 @@ class Odontograma:
     def cargar_paciente(self, dni):
         self.dni_paciente = dni
         try:
-            #self.miConexion=sqlite3.connect("./bd/DBpaciente.sqlite3")
             self.miCursor=self.miConexion.cursor()
             self.miCursor.execute("SELECT apellido, nombre, ID, fechanacimiento, obrasocial, nrosocio FROM Pacientes WHERE ID=?", (dni,))
             self.paciente = self.miCursor.fetchone()
             self.miConexion.commit()
         except:
             self.ventana_odontograma.grab_release()
-            messagebox.showinfo("Paciente", "No se cargo el paciente" parent= self.ventana_odontograma)
+            messagebox.showinfo("Paciente", "No se cargo el paciente", parent= self.ventana_odontograma)
             self.ventana_odontograma.grab_set()
 
     def convertir_fecha(self, fecha):
@@ -181,7 +175,6 @@ class Odontograma:
 
     def cargar_odontograma(self):
         self.miCursor= self.miConexion.cursor()
-        #print(self.dni_paciente)
         self.agregar_prestacion= True
         if self.crear_odontograma or self.agregar_prestacion:
             try:
@@ -191,7 +184,7 @@ class Odontograma:
                 self.ID_odonto = self.ID_odonto_actual[0]
             except:
                 self.ventana_odontograma.grab_release()
-                messagebox.showinfo("Odontograma", "Crear odontograma" parent= self.ventana_odontograma)
+                messagebox.showinfo("Odontograma", "Crear odontograma", parent= self.ventana_odontograma)
                 self.ventana_odontograma.grab_set()
         #UTIL PARA CUANDO PODAMOS ELEGIR UN ODONTOGRAMA ANTERIOR
         else:
@@ -265,7 +258,6 @@ class Odontograma:
         nrosocio= self.paciente[5]
         # Crear el PDF con ReportLab e insertar la imagen
         nombre_archivo = nombre+apellido+self.fecha_actual+".pdf"
-        #print(nombre_archivo)
         pdf = pdf_canvas.Canvas(nombre_archivo, pagesize=A4)
         ancho_pagina, alto_pagina = A4
         logo_path = "./imagenes/LOGO11.png"
@@ -390,7 +382,6 @@ class Odontograma:
         return ImageTk.PhotoImage(img)
 
     def editar_diente(self, numero):
-        #print('prueba', numero)
         self.numero_actual = numero
         self.ventana_secundaria = tk.Toplevel()
         self.ventana_secundaria.title("Editar diente")
@@ -605,7 +596,6 @@ class Odontograma:
             self.canvas2.tag_bind('CO', '<Button-1>', lambda event, num= numero: self.cambiar_color(event, num, 'CO'))
 
     def corona(self, color):
-        #print(color)
 
         if color == "red":
             self.diente_actual[9] = "red"
@@ -667,7 +657,6 @@ class Odontograma:
         for i in range (3, 10):
             if i != 8:
                 self.diente_actual[i] = 'white'
-        #self.diente_actual=[numero, 'white', 'white', 'white', 'white', 'white', self.diente_actual[6], 'white']
 
     def restablecer_diente(self, numero):
         self.cargar_diente(numero)
@@ -696,7 +685,6 @@ class Odontograma:
                 datos= self.diente_actual[1], self.ID_odonto+1, self.diente_actual[3], self.diente_actual[4], self.diente_actual[5], self.diente_actual[6], self.diente_actual[7], self.diente_actual[8], self.diente_actual[9]
                 self.miCursor.execute(sql, datos)
                 self.miConexion.commit()
-                #self.ID_odonto_actual= self.miCursor.fetchone()
                 messagebox.showinfo("GUARDAR","Diente guardado exitosamente", parent= self.ventana_secundaria)                
                 self.canvas.delete("all")
                 self.cargar_dientes_modificados(self.ID_odonto+1)
@@ -729,18 +717,14 @@ class Odontograma:
             self.dientes=[]
         else:
             try:
-                #self.miConexion = sqlite3.connect("./bd/DBpaciente.sqlite3")
                 self.miCursor = self.miConexion.cursor()
-                #sql = "SELECT * from Diente WHERE ID_odontograma = ? ORDER BY ID_odontograma"
                 self.miCursor.execute("SELECT DISTINCT nro, nro_diente, id_odonto, d, v, m, i, o, extraccion, corona FROM dientes INNER JOIN Odontogramas ON dientes.id_odonto=Odontogramas.id_odontograma WHERE Odontogramas.dni_paciente=? AND dientes.id_odonto <=? ORDER BY dientes.id_odonto DESC", (self.dni_paciente, id_odonto,))            
                 self.miConexion.commit()
                 self.dientes= self.miCursor.fetchall()
-                #print(self.dientes)
             except:
                 self.ventana_odontograma.grab_release()
                 messagebox.showinfo("Dientes", "No se pudieron cargar prestaciones", parent= self.ventana_odontograma)
                 self.ventana_odontograma.grab_set()
-            
 
     def buscar_valor(self, valor):
         indice = 0
@@ -752,7 +736,7 @@ class Odontograma:
                     indice+=1
         except ValueError:
             return None
-    
+
     def change_cursor_enter(self, event):
         # Cambiar el cursor al pasar sobre un cuadrado
         self.canvas.config(cursor= "hand2")
@@ -765,7 +749,6 @@ class Odontograma:
         if self.diente_actual[8] == 'white' and self.diente_actual[9] == 'white':
             item = self.canvas2.find_closest(event.x, event.y)
             current_color = self.canvas2.itemcget(item, "fill")
-        #i=0
     # Cambiar el color del cuadrado según su estado actual
             if current_color == "white":
                 self.canvas2.itemconfig(item, fill="red")
@@ -788,7 +771,6 @@ class Odontograma:
                     or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
                     self.diente_actual[5]=color_actual    
             if tag =='C2':
-                #i=2
                 if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
                     or numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
                     or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
@@ -811,7 +793,6 @@ class Odontograma:
                     or numero == 71 or numero == 72 or numero == 73 or numero == 74 or numero == 75:
                     self.diente_actual[3]=color_actual    
             if tag =='C4':
-                #i=4
                 if numero == 11 or numero == 12 or numero == 13 or numero == 14 or numero == 15 or numero == 16 or numero == 17 or numero == 18 \
                     or numero == 21 or numero == 22 or numero == 23 or numero == 24 or numero == 25 or numero == 26 or numero == 27 or numero == 28 \
                     or numero == 51 or numero == 52 or numero == 53 or numero == 54 or numero == 55\
@@ -824,7 +805,6 @@ class Odontograma:
                     self.diente_actual[4]=color_actual 
             if tag =='CO':
                 self.diente_actual[7]=color_actual
-        #print (numero, tag, self.diente[i])
 
     def crear_dientes(self):
         width = 30
@@ -840,15 +820,12 @@ class Odontograma:
             y1 = 30
             x2 = x1 + width
             y2 = y1 + height
-            #print(hilera1)
             tag_diente = 'D' + str(hilera1)
 
             indice = self.buscar_valor(hilera1)
-            
+
             self.texto1 = self.canvas.create_text(x1+ width/2, 15, text= hilera1, fill= "black", font= ('Helvetica 10 bold'))
             if(indice is not None):
-                #print(indice)
-                #print(self.dientes[indice])
                 if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
@@ -896,11 +873,9 @@ class Odontograma:
             x2 = x1 + width
             y2 = y1 + height
             indice = self.buscar_valor(hilera2)
-            #print('hilera2',indice)
             self.texto2= self.canvas.create_text(x1+ width/2, 15, text= hilera2, fill= "black", font= ('Helvetica 10 bold'))            
             tag_diente = 'D' + str(hilera2)
             if(indice is not None):
-                #print(indice)
                 if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
@@ -943,11 +918,9 @@ class Odontograma:
             x2 = x1 + width
             y2 = y1 + height
             indice = self.buscar_valor(hilera4)
-            #print('hilera2',indice)
             self.texto4 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera4, fill= "black", font=('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera4)
             if(indice is not None):
-                #print(indice)
                 if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
@@ -981,6 +954,7 @@ class Odontograma:
             self.canvas.tag_bind(tag_diente, '<Button-1>', lambda event, numero= hilera4: self.editar_diente(numero))
             hilera4-=1
         x1 = x1+10
+
         #3ra hilera
         hilera3 = 31
         for i in range(num_buttons):
@@ -991,7 +965,6 @@ class Odontograma:
             self.texto3 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera3, fill= "black", font= ('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera3)
             if(indice is not None):
-                #print(indice)
                 if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
@@ -1035,7 +1008,6 @@ class Odontograma:
             self.texto5 = self.canvas.create_text(x1+ width/2, y1-15, text= hilera5, fill= "black", font= ('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera5)
             if(indice is not None):
-                #print(indice)
                 if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
@@ -1080,7 +1052,6 @@ class Odontograma:
             self.texto6 = self.canvas.create_text(x1+ width/2, y1-15, text= hilera6, fill= "black", font= ('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera6)
             if(indice is not None):
-                #print(indice)
                 if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
@@ -1128,7 +1099,6 @@ class Odontograma:
             self.texto8 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera8, fill= "black", font= ('Helvetica 10 bold'))
 
             if(indice is not None):
-                #print(indice)
                 if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")
@@ -1172,7 +1142,6 @@ class Odontograma:
             self.texto3 = self.canvas.create_text(x1+ width/2, y2+15, text= hilera7, fill= "black", font= ('Helvetica 10 bold'))
             tag_diente = 'D' + str(hilera7)
             if(indice is not None):
-                #print(indice)
                 if self.dientes[indice][9] == 'red' or self.dientes[indice][9] == 'blue' or self.dientes[indice][9] == 'green':
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x1, y2, fill= "white", outline = "black")
                     self.canvas.create_polygon(x1, y1, x1 + width/2, y1 + height/2, x2, y1, fill= "white", outline = "black")

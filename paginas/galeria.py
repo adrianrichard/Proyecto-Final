@@ -4,7 +4,7 @@ from tkinter import filedialog, messagebox, Frame
 import util.config as utl
 from bd.conexion import Conexion
 from tkinter import *
-from PIL import Image, ImageTk, ExifTags
+from PIL import Image, ImageTk
 import os
 
 class Galeria:
@@ -41,8 +41,7 @@ class Galeria:
         self.folder_path = os.path.abspath(self.folder_name)
         try:
             if not os.path.exists(self.folder_name):
-                answer = messagebox.askokcancel('Crear carpeta', '¿Desea crear la galeria?', icon= 'warning')
-                
+                answer = messagebox.askokcancel('Crear carpeta', '¿Desea crear la galeria?', icon= 'warning')                
                 if answer:
                     os.makedirs(self.folder_name)
                     messagebox.showinfo("Galeria", "Carpeta creada exitosamente")
@@ -93,7 +92,6 @@ class Galeria:
     
     # Programar la carga después de que la ventana esté visible
         self.ventana_galeria.after(100, cargar_primera_imagen)
-
         self.ventana_galeria.mainloop()
 
     def cargar_paciente(self, dni):
@@ -103,7 +101,6 @@ class Galeria:
             self.miCursor.execute("SELECT apellido, nombre, ID, fechanacimiento, obrasocial, nrosocio FROM Pacientes WHERE ID=?", (self.dni_paciente,))
             self.paciente = self.miCursor.fetchone()
             self.miConexion.commit()
-            #print(self.paciente)
         except:
             self.ventana_galeria.grab_release()
             messagebox.showinfo("Galeria", "No se cargo el paciente")
@@ -117,8 +114,7 @@ class Galeria:
 
     def salir(self):
         self.ventana_galeria.grab_release()
-        answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon= 'warning', parent= self.ventana_galeria)
-        
+        answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon= 'warning', parent= self.ventana_galeria)        
         if answer:
             self.ventana_galeria.destroy()
         else: 
@@ -127,23 +123,23 @@ class Galeria:
 
     def create_widgets(self):
         # Frame superior para la imagen principal
-        self.frame_imagen = tk.Frame(self.frame_visor, bg="gray90")
-        self.frame_imagen.grid(column=0, row=0)
-        self.frame_imagen.grid_columnconfigure(0, weight=1)
-        self.frame_imagen.grid_rowconfigure(0, weight=1)
+        self.frame_imagen = tk.Frame(self.frame_visor, bg= "gray90")
+        self.frame_imagen.grid(column= 0, row= 0)
+        self.frame_imagen.grid_columnconfigure(0, weight= 1)
+        self.frame_imagen.grid_rowconfigure(0, weight= 1)
         
         # Canvas para mostrar la imagen principal con scrollbars
-        self.canvas = tk.Canvas(self.frame_imagen, bg='black', width=self.ancho*0.97, height=350)
-        self.h_scroll = tk.Scrollbar(self.frame_imagen, orient=tk.HORIZONTAL, command=self.canvas.xview)
-        self.v_scroll = tk.Scrollbar(self.frame_imagen, orient=tk.VERTICAL, command=self.canvas.yview)
-        self.canvas.configure(xscrollcommand=self.h_scroll.set, yscrollcommand=self.v_scroll.set)
+        self.canvas = tk.Canvas(self.frame_imagen, bg= 'black', width= self.ancho*0.97, height= 350)
+        self.h_scroll = tk.Scrollbar(self.frame_imagen, orient= tk.HORIZONTAL, command= self.canvas.xview)
+        self.v_scroll = tk.Scrollbar(self.frame_imagen, orient= tk.VERTICAL, command= self.canvas.yview)
+        self.canvas.configure(xscrollcommand= self.h_scroll.set, yscrollcommand= self.v_scroll.set)
 
         # Grid layout para canvas y scrollbars
-        self.canvas.grid(row=0, column=0, sticky="nsew")
-        self.v_scroll.grid(row=0, column=1, sticky="ns")
-        self.h_scroll.grid(row=1, column=0, sticky="ew")
+        self.canvas.grid(row= 0, column= 0, sticky= "nsew")
+        self.v_scroll.grid(row= 0, column= 1, sticky= "ns")
+        self.h_scroll.grid(row= 1, column= 0, sticky= "ew")
 
-        # ✅ INICIALIZAR TEXTO INFORMATIVO (SOLO UNA VEZ)
+        # INICIALIZAR TEXTO INFORMATIVO (SOLO UNA VEZ)
         self.inicializar_texto_info()
 
         # Configurar eventos
@@ -206,60 +202,41 @@ class Galeria:
     def cargar_imagenes(self):
         self.lista_imagenes = []
         valid_extensions = ('.jpg', '.jpeg', '.png', '.JPG', '.JPEG', '.PNG')
-        #print(self.folder_path)
 
         for filename in os.listdir(self.folder_path):
             if filename.lower().endswith(valid_extensions):
                 self.lista_imagenes.append(os.path.join(self.folder_path, filename))
-        #print( "LISTA", self.lista_imagenes)
         self.lista_imagenes.sort()
 
     def mostrar_imagen(self, index):
         if 0 <= index < len(self.lista_imagenes):
             self.indice_actual = index
             image_path = self.lista_imagenes[index]
-
             try:
                 # Cargar la imagen original
                 self.original_image = Image.open(image_path)
-                
-                # ✅ ESPERAR A QUE EL CANVAS ESTÉ DISPONIBLE
+                # ESPERAR A QUE EL CANVAS ESTÉ DISPONIBLE
                 self.canvas.update_idletasks()
-                
-                # ✅ OBTENER DIMENSIONES REALES DEL CANVAS
+                # OBTENER DIMENSIONES REALES DEL CANVAS
                 canvas_width = max(1, self.canvas.winfo_width())
                 canvas_height = max(1, self.canvas.winfo_height())
-                
-                # # Debug: mostrar dimensiones
-                # print(f"Canvas: {canvas_width}x{canvas_height}")
-                # print(f"Imagen: {self.original_image.width}x{self.original_image.height}")
-                
                 if canvas_width <= 1 or canvas_height <= 1:
-                    # ✅ SI EL CANVAS NO TIENE TAMAÑO, USAR ZOOM POR DEFECTO
+                    # SI EL CANVAS NO TIENE TAMAÑO, USAR ZOOM POR DEFECTO
                     self.nivel_zoom = 1.0
                 else:
-                    # ✅ CALCULAR ZOOM PARA AJUSTAR AL CANVAS (usar el 90% del espacio disponible)
+                    # CALCULAR ZOOM PARA AJUSTAR AL CANVAS (usar el 90% del espacio disponible)
                     img_width, img_height = self.original_image.size
-                    
                     # Calcular ratios manteniendo relación de aspecto
                     width_ratio = (canvas_width * 0.9) / img_width
                     height_ratio = (canvas_height * 0.9) / img_height
-                    
                     # Usar el ratio más pequeño para mantener la relación de aspecto
                     self.nivel_zoom = min(width_ratio, height_ratio, 1.0)
-                
-                #print(f"Zoom inicial: {self.nivel_zoom * 100}%")
-                
                 self.posicion_imagen = [0, 0]
-                
                 # Aplicar zoom y actualizar
                 self.apply_zoom()
-                
-                # ✅ ACTUALIZAR TEXTO INFORMATIVO
+                # ACTUALIZAR TEXTO INFORMATIVO
                 self.actualizar_info_imagen()
-                
                 self.highlight_selected_thumbnail()            
-       
             except Exception as e:
                 self.ventana_galeria.grab_release()
                 messagebox.showerror("Error", f"No se pudo abrir la imagen: {e}", parent=self.ventana_galeria)
@@ -270,32 +247,35 @@ class Galeria:
             try:
                 width = max(1, int(self.original_image.width * self.nivel_zoom * 0.98))
                 height = max(1, int(self.original_image.height * self.nivel_zoom * 0.98))
-                
+
                 self.imagen_actual = self.original_image.resize((width, height), Image.LANCZOS)
                 self.tk_img = ImageTk.PhotoImage(self.imagen_actual)
-                
+
                 self.canvas.delete("all")
-                
+
                 # PRIMERO DIBUJAR LA IMAGEN
                 x_pos = max(0, self.posicion_imagen[0])
                 y_pos = max(0, self.posicion_imagen[1])
-                self.image_on_canvas = self.canvas.create_image(x_pos, y_pos, anchor=tk.NW, image=self.tk_img)
-                
+                self.image_on_canvas = self.canvas.create_image(x_pos, y_pos, anchor= tk.NW, image= self.tk_img)
+
                 # LUEGO DIBUJAR EL TEXTO Y FONDO (SOBRE LA IMAGEN)
                 self.inicializar_texto_info()
-                
+
                 self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-                
+
                 # FORZAR QUE EL TEXTO ESTÉ SIEMPRE EN PRIMER PLANO
                 self.canvas.tag_raise(self.info_text)
                 self.canvas.tag_raise(self.info_bg)
-                
+
                 # ACTUALIZAR INFORMACIÓN
                 self.actualizar_info_imagen()
                 self.actualizar_posicion_texto()
-                
+
             except Exception as e:
-                print(f"Error en apply_zoom: {e}")
+                self.ventana_galeria.grab_release()
+                messagebox.showerror("Error", f"Error en apply_zoom: {e}", parent= self.ventana_galeria)
+                self.ventana_galeria.focus_set()
+                self.ventana_galeria.grab_set()
 
     def ajustar_zoom(self, factor_change):
         new_zoom = self.nivel_zoom + factor_change
@@ -305,7 +285,6 @@ class Galeria:
         if new_zoom != self.nivel_zoom:
             self.nivel_zoom = new_zoom
             self.apply_zoom()
-            #self.update_info_label()
 
     def zoom_rueda_mouse(self, event):
         # Zoom in/out con la rueda del mouse
@@ -318,7 +297,6 @@ class Galeria:
         self.nivel_zoom = 1.0
         self.posicion_imagen = [0, 0]
         self.apply_zoom()
-        #self.update_info_label()
 
     def reset_image_position(self, event=None):
         """Centrar la imagen cuando se redimensiona el canvas"""
@@ -344,11 +322,14 @@ class Galeria:
                     ]
                 else:
                     self.posicion_imagen = [0, 0]
-                
+
                 # VOLVER A APLICAR EL ZOOM CON LA NUEVA POSICIÓN
                 self.apply_zoom()
             except Exception as e:
-                print(f"Error en reset_image_position: {e}")
+                self.ventana_galeria.grab_release()
+                messagebox.showerror("Error", f"Error en reset_image_position: {e}", parent= self.ventana_galeria)
+                self.ventana_galeria.focus_set()
+                self.ventana_galeria.grab_set()
 
     def start_pan(self, event):
         """Iniciar el desplazamiento de la imagen"""
@@ -367,13 +348,6 @@ class Galeria:
             self.canvas.move(self.image_on_canvas, dx, dy)
             self.pan_start_x = event.x
             self.pan_start_y = event.y
-
-    def update_info_label(self):
-        if 0 <= self.indice_actual < len(self.lista_imagenes):
-            image_path = self.lista_imagenes[self.indice_actual]
-            # self.info_label.config(
-            #     text=f"Imagen {self.indice_actual + 1} de {len(self.lista_imagenes)}: {os.path.basename(image_path)} | Zoom: {int(self.nivel_zoom*100)}%"
-            # )
 
     def cargar_miniaturas(self):
         # Limpiar miniaturas anteriores
@@ -520,7 +494,7 @@ class Galeria:
             stipple="gray50",  # Patrón de transparencia (50% opacidad)
             tags="info_bg"
         )
-        # ✅ PONER EL FONDO DETRÁS DEL TEXTO
+        # PONER EL FONDO DETRÁS DEL TEXTO
         self.canvas.tag_lower(self.info_bg, self.info_text)
         # Programar posicionamiento correcto después de que el canvas esté listo
         self.ventana_galeria.after(500, self.actualizar_posicion_texto)
@@ -533,7 +507,10 @@ class Galeria:
                 # ESPERAR UN MOMENTO ANTES DE REAJUSTAR (evita flickering)
                 self.ventana_galeria.after(100, self.reset_image_position)
         except Exception as e:
-            print(f"Error en on_canvas_configure: {e}")
+            self.ventana_galeria.grab_release()
+            messagebox.showerror("Error", f"Error en on_canvas_configure: {e}", parent= self.ventana_galeria)
+            self.ventana_galeria.focus_set()
+            self.ventana_galeria.grab_set()
 
     def actualizar_posicion_texto(self, event=None):
         """Posicionar texto en esquina INFERIOR DERECHA"""
@@ -541,23 +518,23 @@ class Galeria:
             self.canvas.update_idletasks()
             canvas_width = max(1, self.canvas.winfo_width())
             canvas_height = max(1, self.canvas.winfo_height())
-            
+
             if canvas_width > 50 and canvas_height > 50:
-                # ✅ ESQUINA INFERIOR DERECHA
+                # ESQUINA INFERIOR DERECHA
                 text_x = canvas_width - 15
                 text_y = canvas_height - 15
-                
+
                 # Actualizar posición del texto
                 self.canvas.coords(self.info_text, text_x, text_y)
                 self.canvas.itemconfig(self.info_text, anchor=tk.SE)
-                
-                # ✅ AJUSTAR FONDO SEMITRANSPARENTE AL TEXTO
+
+                # AJUSTAR FONDO SEMITRANSPARENTE AL TEXTO
                 bbox = self.canvas.bbox(self.info_text)
                 if bbox:
                     # Agregar márgenes más generosos
                     padding_x = 12
                     padding_y = 8
-                    
+
                     self.canvas.coords(
                         self.info_bg,
                         bbox[0] - padding_x, 
@@ -565,16 +542,18 @@ class Galeria:
                         bbox[2] + padding_x, 
                         bbox[3] + padding_y
                     )
-                    
-                    # ✅ ASEGURAR QUE EL FONDO ESTÉ DETRÁS DEL TEXTO
+
+                    # ASEGURAR QUE EL FONDO ESTÉ DETRÁS DEL TEXTO
                     self.canvas.tag_lower(self.info_bg, self.info_text)
-                    
+
             # Reintentar si el canvas es muy pequeño
             elif canvas_width <= 50 or canvas_height <= 50:
                 self.ventana_galeria.after(100, self.actualizar_posicion_texto)
-            
         except Exception as e:
-            print(f"Error posicionando texto: {e}")
+            self.ventana_galeria.grab_release()
+            messagebox.showerror("Error", f"Error en  posicionando texto: {e}", parent= self.ventana_galeria)
+            self.ventana_galeria.focus_set()
+            self.ventana_galeria.grab_set()
 
     def actualizar_info_imagen(self):
         """Actualizar el contenido del texto informativo"""
@@ -582,26 +561,29 @@ class Galeria:
             if (hasattr(self, 'lista_imagenes') and 
                 self.lista_imagenes and 
                 0 <= self.indice_actual < len(self.lista_imagenes)):
-                
+
                 image_path = self.lista_imagenes[self.indice_actual]
                 filename = os.path.basename(image_path)
-                
+
                 # Obtener fecha de modificación
                 try:
                     mod_time = os.path.getmtime(image_path)
                     file_date = datetime.fromtimestamp(mod_time).strftime("%d/%m/%Y %H:%M")
                 except:
                     file_date = "Fecha desconocida"
-                
+
                 # FORMATEAR ZOOM CON 0 DECIMALES
                 zoom_percent = int(round(self.nivel_zoom * 100))
                 info_text = f"{filename}\n{file_date}\nZoom: {zoom_percent}%"
-                
+
                 # Actualizar texto en canvas
                 self.canvas.itemconfig(self.info_text, text=info_text)
-                
+
                 # Forzar actualización de posición
                 self.actualizar_posicion_texto()
-                
+
         except Exception as e:
-            print(f"Error actualizando info imagen: {e}")
+            self.ventana_galeria.grab_release()
+            messagebox.showerror("Error", f"Error actualizando info imagen: {e}", parent= self.ventana_galeria)
+            self.ventana_galeria.focus_set()
+            self.ventana_galeria.grab_set()

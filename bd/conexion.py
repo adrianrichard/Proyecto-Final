@@ -4,7 +4,7 @@ from tkinter import messagebox
 
 class Conexion():
     #maneja la ruta de la base de datos como una variable de clase o un parámetro para hacerla más flexible
-    def __init__(self, ruta_bd='./bd/consultorio_odontologico.sqlite3'):
+    def __init__(self, ruta_bd='./bd/consultorioMyM.sqlite3'):
         self.ruta_bd = ruta_bd
 
     def comprobar_bd(self):
@@ -26,11 +26,6 @@ class Conexion():
         except sqlite3.Error as e:
             messagebox.showerror(title = "Advertencia", message =f"Error al conectar a la base de datos \n {e}")            
 
-    # def determinar_usuario(self, username, password):
-    #     self.cur.execute('SELECT tipo_usuario FROM usuarios WHERE nombre_usuario = ? AND pass_usuario = ?', (username, password))
-    #     tipo_usuario = self.cur.fetchall()
-    #     return tipo_usuario
-    
     def cerrar_bd(self):
         if hasattr(self, 'cur'):
             self.cur.close()
