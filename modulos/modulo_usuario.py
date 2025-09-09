@@ -20,7 +20,6 @@ class Usuario:
         self.fuenten= utl.definir_fuente()
         self.color_fondo1, self.color_fondo2= utl.definir_color_fondo()
         self.db= Conexion()
-        self.db.cerrar_bd()
         self.miConexion= self.db.conectar()
         self.miCursor= self.miConexion.cursor()
 

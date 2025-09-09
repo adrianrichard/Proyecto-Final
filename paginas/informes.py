@@ -1,6 +1,5 @@
 import sqlite3  # O el conector de tu base de datos
 import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 from tkinter import filedialog
@@ -12,12 +11,12 @@ from reportlab.lib.utils import ImageReader
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Image
 #from PIL import Image
 from io import BytesIO
-import datetime
 import shutil
 from datetime import datetime
 from tkinter import ttk, messagebox
 import os
 import util.config as utl
+from bd.conexion import Conexion
 canvas = None
 
 class Informes:
@@ -26,9 +25,12 @@ class Informes:
         self.informe_seleccionado = ''  # Variable para almacenar la base de datos seleccionada
         self.fuenteb = utl.definir_fuente_bold()
         self.fuenten = utl.definir_fuente()
+        self.db= Conexion()
+        self.miConexion= self.db.conectar()
+        self.miCursor= self.miConexion.cursor()
 
     def configurar_interfaz(self, frame):
-        self.frame=frame
+        self.frame= frame
         # Estilo de la tabla
         self.estilo_tablai = ttk.Style(self.frame)
         self.estilo_tablai.theme_use('alt')
@@ -36,9 +38,9 @@ class Informes:
         self.estilo_tablai.configure('TablaInforme.Treeview.Heading', background= '#1F704B', foreground= 'white', padding= 3, font= self.fuenteb)
 
         # Crear la tabla para mostrar las bases de datos
-        self.tabla = ttk.Treeview(self.frame, columns=("Informe", "Descripcion"), show="headings", height=6, style="TablaInforme.Treeview")
-        self.tabla.heading("Informe", text="Informe")
-        self.tabla.heading("Descripcion", text="Descripción")
+        self.tabla = ttk.Treeview(self.frame, columns=("Informe", "Descripcion"), show= "headings", height=6, style= "TablaInforme.Treeview")
+        self.tabla.heading("Informe", text= "Informe")
+        self.tabla.heading("Descripcion", text= "Descripción")
         self.tabla.column('Informe', width= 200 , anchor= 'w')
         self.tabla.column('Descripcion',  width= 350 , anchor= 'w')
         [frame.columnconfigure(i, weight= 1) for i in range(frame.grid_size()[0]-1)]
@@ -50,15 +52,18 @@ class Informes:
         self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_desde_tabla)
         self.tabla.bind("<Double-1>", self.graficar_ventana)
 
-        # btn_crear_grafico = tk.Button(frame, text="Crear gráfica", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.graficar_ventana)
-        # btn_crear_grafico.grid(column= 0, row= 6, padx=(10, 10), pady=(10, 10))
+        btn_crear_grafico = tk.Button(frame, text= "Crear gráfica", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.graficar_ventana)
+        btn_crear_grafico.grid(column= 0, row= 6, padx=(10, 10), pady=(5, 5))
         # # Botón para crear una copia de seguridad
 
         # btn_guardar_copia = tk.Button(frame, text="Crear copia de seguridad", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command=self.crear_backup)
         # btn_guardar_copia.grid(column= 1, row=6, padx=(10, 10), pady=(10, 10))
 
-    def graficar_ventana(self, event):
+    def graficar_ventana(self, event=None):
         # Crear una nueva ventana
+        # if not self.informe_seleccionado:
+        #     messagebox.showwarning("Advertencia", "Por favor, seleccione un informe primero")
+        # return
         self.nueva_ventana = tk.Toplevel(self.frame)
         self.nueva_ventana.title('Informes')
         self.nueva_ventana.resizable(width= 0, height= 0)
@@ -67,13 +72,13 @@ class Informes:
         self.nueva_ventana.focus_set() # Mantiene el foco cuando se abre la ventana.
         titulo = tk.Label(self.nueva_ventana, text= "Informes", font= ("Arial", 16))
         titulo.grid(column= 0, row= 0)
-        anios=self.obtener_anios()
+        anios= self.obtener_anios()
         meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
         self.selector_mes= ttk.Combobox(self.nueva_ventana, state= "readonly", values= meses, width= 20, background= "white")
         self.selector_mes.grid(column= 0, row= 1, padx= (10, 10), pady= (0, 5))
         self.selector_mes.set(meses[0])
         if self.informe_seleccionado == 'Cantidad de turnos' or self.informe_seleccionado == 'Horario de turnos por año' or self.informe_seleccionado == 'Día de turnos':
-            self.selector_mes.config(state="disabled")
+            self.selector_mes.config(state= "disabled")
         self.selector_anio= ttk.Combobox(self.nueva_ventana, state= "readonly", values= anios, width= 20, background= "white")
         self.selector_anio.grid(column= 1, row= 1, padx= (10, 10), pady= (0, 5))
         self.selector_anio.set(anios[0])
@@ -200,29 +205,25 @@ class Informes:
         self.create_bar_chart()
         
 # Función para obtener los datos agrupados por mes y año
-    def obtener_anios(self):
-        conn = sqlite3.connect('./bd/consultorio2.sqlite3')
-        cursor = conn.cursor()
+    def obtener_anios(self):        
         # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
-        cursor.execute("SELECT DISTINCT strftime('%Y', Fecha) AS Año FROM Turnos ORDER BY Año DESC")
-        años_unicos = cursor.fetchall()
+        self.miCursor.execute("SELECT DISTINCT strftime('%Y', Fecha) AS Año FROM Turnos ORDER BY Año DESC")
+        años_unicos = self.miCursor.fetchall()
         # Convertir los resultados a una lista de años
         años_unicos = [año[0] for año in años_unicos]
-        conn.close()
+        #self.miConexion.close()
         return años_unicos
 
     def obtener_datos_por_mes_anio(self):
     # Conexión a la base de datos (ajusta la ruta si usas sqlite)
-        datos=['Vacio']
+        datos= ['Vacio']
         try:
-            conn = sqlite3.connect('./bd/consultorio2.sqlite3')
-            cursor = conn.cursor()
             # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
-            cursor.execute(""" SELECT strftime('%m', Fecha) AS Mes, COUNT(*) AS CantidadTurnos FROM Turnos WHERE strftime('%Y', Fecha) = ? GROUP BY Mes ORDER BY Mes""", (self.selector_anio.get(),))
-            datos = cursor.fetchall()
-            conn.close()
+            self.miCursor.execute(""" SELECT strftime('%m', Fecha) AS Mes, COUNT(*) AS CantidadTurnos FROM Turnos WHERE strftime('%Y', Fecha) = ? GROUP BY Mes ORDER BY Mes""", (self.selector_anio.get(),))
+            datos = self.miCursor.fetchall()
+            self.miConexion.close()
         except:
-            print('no carga')
+            print('no carga años')
             
         return datos
     def mes_a_numero(self, nombre_mes):
@@ -245,35 +246,26 @@ class Informes:
     def obtener_horario_mes(self):
     # Conexión a la base de datos (ajusta la ruta si usas sqlite)
         datos=['Vacio']
-        mes=self.mes_a_numero(self.selector_mes.get())
+        mes= self.mes_a_numero(self.selector_mes.get())
         try:
-            conn = sqlite3.connect('./bd/consultorio2.sqlite3')
-            cursor = conn.cursor()
             # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
-            cursor.execute(""" SELECT Hora, COUNT(*) AS Cantidad_Turnos FROM Turnos WHERE strftime('%Y', Fecha) = ? AND strftime('%m', Fecha) = ? GROUP BY Hora ORDER BY Hora ASC""", (self.selector_anio.get(),mes,))
-            datos = cursor.fetchall()
-            conn.close()
+            self.miCursor.execute(""" SELECT Hora, COUNT(*) AS Cantidad_Turnos FROM Turnos WHERE strftime('%Y', Fecha) = ? AND strftime('%m', Fecha) = ? GROUP BY Hora ORDER BY Hora ASC""", (self.selector_anio.get(),mes,))
+            datos = self.miCursor.fetchall()
+            self.miConexion.close()
         except:
-            print('no carga')
+            print('no carga horario')
             
         return datos
-    
+
     def obtener_horario_anio(self):
-    # Conexión a la base de datos (ajusta la ruta si usas sqlite)
-        datos=['Vacio']
-        
+        datos= ['Vacio']        
         try:
-            conn = sqlite3.connect('./bd/consultorio2.sqlite3')
-            cursor = conn.cursor()
-            # mes=self.selector_mes.get()
-            # anio=self.selector_anio.get()
-            # print('obtener datos')
             # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
-            cursor.execute(""" SELECT Hora, COUNT(*) AS Cantidad_Turnos FROM Turnos WHERE strftime('%Y', Fecha) = ? GROUP BY Hora ORDER BY Hora ASC""", (self.selector_anio.get(),))
-            datos = cursor.fetchall()
-            conn.close()
+            self.miCursor.execute(""" SELECT Hora, COUNT(*) AS Cantidad_Turnos FROM Turnos WHERE strftime('%Y', Fecha) = ? GROUP BY Hora ORDER BY Hora ASC""", (self.selector_anio.get(),))
+            datos = self.miCursor.fetchall()
+            self.miConexion.close()
         except:
-            print('no carga')
+            print('no carga hora año')
         return datos
     
     def get_image_size(self, image_path, max_width, max_height):
@@ -292,11 +284,8 @@ class Informes:
         return img_width, img_height
 
     def contar_dias_semana(self):
-        
-        conn = sqlite3.connect('./bd/consultorio2.sqlite3')
-        cursor = conn.cursor()
         # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
-        cursor.execute("SELECT CASE strftime('%w', Fecha)  WHEN '0' THEN 'Domingo'\
+        self.miCursor.execute("SELECT CASE strftime('%w', Fecha)  WHEN '0' THEN 'Domingo'\
             WHEN '1' THEN 'Lunes'\
             WHEN '2' THEN 'Martes'\
             WHEN '3' THEN 'Miércoles'\
@@ -305,11 +294,11 @@ class Informes:
             WHEN '6' THEN 'Sábado'\
             END,\
             COUNT(*) AS Cantidad_Turnos FROM Turnos WHERE strftime('%Y', Fecha) = ? GROUP BY strftime('%w', Fecha) ORDER BY strftime('%w', Fecha)""", (self.selector_anio.get(),))
-        datos = cursor.fetchall()
+        datos = self.miCursor.fetchall()
         # Convertir los resultados a una lista de años
-        dias = [day[0] for day in datos]
-        cantidad=[cant[1] for cant in datos]
-        conn.close()
+        dias= [day[0] for day in datos]
+        cantidad= [cant[1] for cant in datos]
+        self.miConexion.close()
         #return años_unicos
         print(dias, cantidad)
         # dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
