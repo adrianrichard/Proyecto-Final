@@ -1,23 +1,21 @@
-import sqlite3  # O el conector de tu base de datos
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
-from tkinter import filedialog
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib.units import inch, cm
 from reportlab.pdfgen import canvas as pdf_canvas
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.utils import ImageReader
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Image
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, Spacer
 #from PIL import Image
 from io import BytesIO
-import shutil
-from datetime import datetime
+# import shutil
+# from datetime import datetime
 from tkinter import ttk, messagebox
 import os
 import util.config as utl
 from bd.conexion import Conexion
-canvas = None
+#canvas = None
 
 class Informes:
     def __init__(self):
@@ -38,7 +36,7 @@ class Informes:
         self.estilo_tablai.configure('TablaInforme.Treeview.Heading', background= '#1F704B', foreground= 'white', padding= 3, font= self.fuenteb)
 
         # Crear la tabla para mostrar las bases de datos
-        self.tabla = ttk.Treeview(self.frame, columns=("Informe", "Descripcion"), show= "headings", height=6, style= "TablaInforme.Treeview")
+        self.tabla = ttk.Treeview(self.frame, columns=("Informe", "Descripcion"), show= "headings", height= 6, style= "TablaInforme.Treeview")
         self.tabla.heading("Informe", text= "Informe")
         self.tabla.heading("Descripcion", text= "Descripción")
         self.tabla.column('Informe', width= 200 , anchor= 'w')
@@ -53,44 +51,43 @@ class Informes:
         self.tabla.bind("<Double-1>", self.graficar_ventana)
 
         btn_crear_grafico = tk.Button(frame, text= "Crear gráfica", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.graficar_ventana)
-        btn_crear_grafico.grid(column= 0, row= 6, padx=(10, 10), pady=(5, 5))
+        btn_crear_grafico.grid(column= 0, row= 6, padx= (10, 10), pady= (5, 5))
         # # Botón para crear una copia de seguridad
 
         # btn_guardar_copia = tk.Button(frame, text="Crear copia de seguridad", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command=self.crear_backup)
         # btn_guardar_copia.grid(column= 1, row=6, padx=(10, 10), pady=(10, 10))
 
-    def graficar_ventana(self, event=None):
-        # Crear una nueva ventana
-        # if not self.informe_seleccionado:
-        #     messagebox.showwarning("Advertencia", "Por favor, seleccione un informe primero")
-        # return
+    def graficar_ventana(self, event= None):
+        if not self.informe_seleccionado:
+            messagebox.showwarning("Advertencia", "Por favor, seleccione un informe primero", parent= self.frame)
+            return
         self.nueva_ventana = tk.Toplevel(self.frame)
         self.nueva_ventana.title('Informes')
         self.nueva_ventana.resizable(width= 0, height= 0)
-        utl.centrar_ventana(self.nueva_ventana, 500, 500)
+        utl.centrar_ventana(self.nueva_ventana, 520, 520)
         self.nueva_ventana.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.nueva_ventana.focus_set() # Mantiene el foco cuando se abre la ventana.
-        titulo = tk.Label(self.nueva_ventana, text= "Informes", font= ("Arial", 16))
-        titulo.grid(column= 0, row= 0)
+        titulo = tk.Label(self.nueva_ventana, text= self.informe_seleccionado, relief= "raised", bd=2, font= ("Arial", 16), anchor='center')
+        titulo.grid(column= 0, row= 0, columnspan= 3, pady= (5, 5), sticky='ew')
         anios= self.obtener_anios()
         meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
         self.selector_mes= ttk.Combobox(self.nueva_ventana, state= "readonly", values= meses, width= 20, background= "white")
         self.selector_mes.grid(column= 0, row= 1, padx= (10, 10), pady= (0, 5))
         self.selector_mes.set(meses[0])
-        if self.informe_seleccionado == 'Cantidad de turnos' or self.informe_seleccionado == 'Horario de turnos por año' or self.informe_seleccionado == 'Día de turnos':
+        if self.informe_seleccionado == 'Cantidad de turnos' or self.informe_seleccionado == 'Horario de turnos por año' or self.informe_seleccionado == 'Prestaciones':
             self.selector_mes.config(state= "disabled")
         self.selector_anio= ttk.Combobox(self.nueva_ventana, state= "readonly", values= anios, width= 20, background= "white")
         self.selector_anio.grid(column= 1, row= 1, padx= (10, 10), pady= (0, 5))
         self.selector_anio.set(anios[0])
         # Frame para el gráfico en la nueva ventana
-        self.frame_grafico = tk.Frame(self.nueva_ventana, background='white', relief="raised", width=450, height=350)
-        self.frame_grafico.grid(column= 0, row= 3, columnspan=3, pady=(10, 10), padx=(10, 10))
-
-        boton_graficar = tk.Button(self.nueva_ventana, text="Graficar", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.crear_grafica)
+        self.frame_grafico = tk.Frame(self.nueva_ventana, background= 'white', relief= "raised", width= 500, height= 400)
+        self.frame_grafico.grid(column= 0, row= 3, columnspan= 3, pady= (10, 10), padx= (10, 10))
+        self.frame_grafico.grid_propagate(False)
+        boton_graficar = tk.Button(self.nueva_ventana, text= "Graficar", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.crear_grafica)
         boton_graficar.grid(column= 0, row= 2)
-        boton_pdf = tk.Button(self.nueva_ventana, text="Crear PDF", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.create_pdf)
+        boton_pdf = tk.Button(self.nueva_ventana, text= "Crear PDF", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.create_pdf)
         boton_pdf.grid(column= 1, row= 2)
-        boton_salir = tk.Button(self.nueva_ventana, text="Salir", command= self.salir, bg= "orange", width= 8, font = self.fuenteb,  bd= 2, borderwidth= 2)
+        boton_salir = tk.Button(self.nueva_ventana, text= "Salir", command= self.salir, bg= "orange", width= 8, font = self.fuenteb, bd= 2, borderwidth= 2)
         boton_salir.grid(column= 2, row= 2)
 
     def salir(self):
@@ -114,118 +111,145 @@ class Informes:
         if selected_item:
             item = self.tabla.item(selected_item)
             self.informe_seleccionado=item['values'][0]
-            #print(self.informe_seleccionado)
-
-    def turnosxmes(self):
-        global canvas
-        # Obtener los datos de la base de datos
-        datos = self.obtener_datos_por_mes_anio()
-        # # Procesar los datos para graficar
-        meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-        conteos = [fila[1] for fila in datos]
-        # Crear la figura
-        self.fig, ax = plt.subplots(figsize=(4.5, 3.8))
-        ax.bar(meses, conteos, color='skyblue')  # Gráfico de barras
-        ax.set_xlabel('Meses')
-        ax.set_ylabel('Cantidad de turnos')
-        ax.set_title('Turnos por Mes')
- 
-        # Ajustar los ticks del eje X para que no se solapen
-        plt.xticks(rotation=45, ha='right')
-        plt.tight_layout()
-
-        # Crear el canvas de matplotlib en Tkinter y asignarlo al frame de la nueva ventana
-        canvas = FigureCanvasTkAgg(self.fig, self.frame_grafico)
-        #self.canvas.get_tk_widget().destroy()
-        canvas.draw()
-        canvas.get_tk_widget().grid(row=0, column=0, columnspan=3)
-
-        # Cerrar los recursos de la figura
-        plt.close(self.fig)
     
     def create_bar_chart(self):
         datos=[]
         valoresx=[]
         valoresy=[]
-        self.fig, ax = plt.subplots(figsize=(4.5, 3.8))
+        self.fig, ax = plt.subplots(figsize=(4, 4))
         if self.informe_seleccionado == 'Cantidad de turnos':
             titulo='Cantidad de turnos por mes en '+self.selector_anio.get()
             datos = self.obtener_datos_por_mes_anio()
             valoresx = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
             valoresy = [fila[1] for fila in datos]
-            ax.bar(valoresx, valoresy, color='skyblue')  # Gráfico de barras
+            if not valoresy :  # Verificar si datos está vacío
+                ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color= 'gray')
+            else:
+                ax.bar(valoresx, valoresy, color= 'skyblue')  # Gráfico de barras
+                ax.set_title(titulo, fontsize= 8, fontweight= 'bold', pad= 10)
+                plt.xticks(rotation= 60, ha= 'right')
             ax.set_xlabel('Meses')
             ax.set_ylabel('Cantidad de turnos')
-            ax.set_title(titulo)
-            plt.xticks(rotation=60, ha='right')
-
         if self.informe_seleccionado == 'Horario de turnos por mes':
             titulo='Turnos por horario en el mes de '+self.selector_mes.get()+'-'+self.selector_anio.get()
             datos = self.obtener_horario_mes()
-            valoresy = [fila[1] for fila in datos]
-            valoresx = [fila[0] for fila in datos]
-            ax.bar(valoresx, valoresy, color='skyblue')  # Gráfico de barras
+            if len(datos) == 0 :  # Verificar si datos está vacío
+                ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color= 'gray')
+            else:
+                valoresy = [fila[1] for fila in datos]
+                valoresx = [fila[0] for fila in datos]
+                ax.bar(valoresx, valoresy, color= 'skyblue')  # Gráfico de barras
             ax.set_xlabel('Horario')
             ax.set_ylabel('Cantidad de turnos')
-            ax.set_title(titulo)
-            plt.xticks(rotation=90, ha='right')
+            ax.set_title(titulo, fontsize= 8, fontweight= 'bold', pad= 10)
+            plt.xticks(rotation= 90, ha= 'right')
 
         if self.informe_seleccionado == 'Horario de turnos por año':
-            titulo='Turnos por horario en el año '+self.selector_anio.get()
+            titulo= 'Turnos por horario en el año '+self.selector_anio.get()
             datos = self.obtener_horario_anio()
-            #print(datos)
-            valoresy = [fila[1] for fila in datos]
-            valoresx = [fila[0] for fila in datos]
-            ax.bar(valoresx, valoresy, color='skyblue')  # Gráfico de barras
+            if not datos :  # Verificar si datos está vacío
+                ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color='gray')
+            else:
+                valoresy = [fila[1] for fila in datos]
+                valoresx = [fila[0] for fila in datos]
+                ax.bar(valoresx, valoresy, color= 'skyblue')  # Gráfico de barras
+                ax.set_title(titulo, fontsize= 8, fontweight= 'bold', pad= 10)
+                plt.xticks(rotation= 90, ha= 'right')
             ax.set_xlabel('Horario')
             ax.set_ylabel('Cantidad de turnos')
-            ax.set_title(titulo)
-            plt.xticks(rotation=90, ha='right')
         if self.informe_seleccionado == 'Día de turnos':
-            self.contar_dias_semana()
-       
+            titulo= 'Día de turnos en '+self.selector_mes.get()+'-'+self.selector_anio.get()
+            datos = self.contar_dias_semana()            
+            if not datos :  # Verificar si datos está vacío
+                ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color='gray')
+            else:
+                valoresy = [fila[1] for fila in datos]
+                valoresx = [fila[0] for fila in datos]
+                ax.bar(valoresx, valoresy, color= 'skyblue')
+                ax.set_title(titulo)
+                plt.xticks(rotation= 45, ha= 'right')
+            ax.set_xlabel('Días de la semana')
+            ax.set_ylabel('Cantidad de turnos')
+        if self.informe_seleccionado == 'Prestaciones':
+            titulo= 'Prestaciones-'+self.selector_anio.get()
+            datos = self.obtener_prestaciones_anio()   
+            print(datos)         
+            if not datos :  # Verificar si datos está vacío
+                ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color='gray')
+            else:
+                valoresy = [fila[1] for fila in datos]
+                valoresx = [fila[0] for fila in datos]
+                ax.bar(valoresx, valoresy, color= 'skyblue')
+                ax.set_title(titulo)
+                plt.xticks(rotation= 45, ha= 'right')
+            ax.set_xlabel('Prestaciones')
+            ax.set_ylabel('Cantidad')
+
         plt.tight_layout()
 
         # Crear el canvas de matplotlib en Tkinter y asignarlo al frame de la nueva ventana
         canvas = FigureCanvasTkAgg(self.fig, self.frame_grafico)
-        #self.canvas.get_tk_widget().destroy()
         canvas.draw()
-        canvas.get_tk_widget().grid(row=0, column=0, columnspan=3)
+        canvas.get_tk_widget().grid(row= 0, column= 0, columnspan= 3)
 
         # Cerrar los recursos de la figura
         buffer = BytesIO()
-        plt.savefig(buffer, format='png', bbox_inches='tight')
+        plt.savefig(buffer, format= 'png', dpi= 300, bbox_inches= 'tight')
         plt.close(self.fig)
         buffer.seek(0)
         return buffer
 
     def crear_grafica(self):
+        # Limpiar el frame del gráfico primero
+        for widget in self.frame_grafico.winfo_children():
+            widget.destroy()
         plt.clf()
         plt.close('all')
         self.create_bar_chart()
         
 # Función para obtener los datos agrupados por mes y año
     def obtener_anios(self):        
-        # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
-        self.miCursor.execute("SELECT DISTINCT strftime('%Y', Fecha) AS Año FROM Turnos ORDER BY Año DESC")
-        años_unicos = self.miCursor.fetchall()
-        # Convertir los resultados a una lista de años
-        años_unicos = [año[0] for año in años_unicos]
-        #self.miConexion.close()
-        return años_unicos
-
-    def obtener_datos_por_mes_anio(self):
-    # Conexión a la base de datos (ajusta la ruta si usas sqlite)
-        datos= ['Vacio']
+        anios_unicos= []
         try:
             # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
-            self.miCursor.execute(""" SELECT strftime('%m', Fecha) AS Mes, COUNT(*) AS CantidadTurnos FROM Turnos WHERE strftime('%Y', Fecha) = ? GROUP BY Mes ORDER BY Mes""", (self.selector_anio.get(),))
-            datos = self.miCursor.fetchall()
-            self.miConexion.close()
-        except:
-            print('no carga años')
+            self.miCursor.execute("SELECT DISTINCT strftime('%Y', Fecha) AS Año FROM Turnos ORDER BY Año DESC")
+            anios_unicos = self.miCursor.fetchall()
+            # Convertir los resultados a una lista de años
+            anios_unicos = [anio[0] for anio in anios_unicos]
+        except Exception as e:
+            self.nueva_ventana.grab_release()
+            messagebox.showwarning("Error", "f'Error al obtener datos: {e}'", parent= self.frame)
+            self.nueva_ventana.grab_set()
+        
+        return anios_unicos
+
+    def obtener_datos_por_mes_anio(self):
+        try:
+            # Consulta para obtener todos los meses, incluso los que no tienen turnos
+            self.miCursor.execute("""
+                WITH meses AS (
+                    SELECT '01' as mes UNION SELECT '02' UNION SELECT '03' UNION SELECT '04'
+                    UNION SELECT '05' UNION SELECT '06' UNION SELECT '07' UNION SELECT '08'
+                    UNION SELECT '09' UNION SELECT '10' UNION SELECT '11' UNION SELECT '12'
+                )
+                SELECT m.mes, COALESCE(COUNT(t.Fecha), 0) AS CantidadTurnos
+                FROM meses m
+                LEFT JOIN Turnos t ON m.mes = strftime('%m', t.Fecha) 
+                    AND strftime('%Y', t.Fecha) = ?
+                GROUP BY m.mes
+                ORDER BY m.mes
+            """, (self.selector_anio.get(),))
             
-        return datos
+            datos = self.miCursor.fetchall()
+            return datos
+            
+        except Exception as e:
+            self.nueva_ventana.grab_release()
+            messagebox.showwarning("Error", "f'Error al obtener datos por mes: {e}'", parent= self.frame)
+            self.nueva_ventana.grab_set()
+            # Retornar array con 12 meses y 0 turnos en caso de error
+            return [(str(i).zfill(2), 0) for i in range(1, 13)]
+
     def mes_a_numero(self, nombre_mes):
         meses = {
             "enero": '01',
@@ -245,29 +269,45 @@ class Informes:
    
     def obtener_horario_mes(self):
     # Conexión a la base de datos (ajusta la ruta si usas sqlite)
-        datos=['Vacio']
+        datos=[]
         mes= self.mes_a_numero(self.selector_mes.get())
         try:
             # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
             self.miCursor.execute(""" SELECT Hora, COUNT(*) AS Cantidad_Turnos FROM Turnos WHERE strftime('%Y', Fecha) = ? AND strftime('%m', Fecha) = ? GROUP BY Hora ORDER BY Hora ASC""", (self.selector_anio.get(),mes,))
             datos = self.miCursor.fetchall()
-            self.miConexion.close()
+            #self.miConexion.close()
         except:
-            print('no carga horario')
-            
+            self.nueva_ventana.grab_release()
+            messagebox.showwarning("Error", "No se pudo cargar", parent= self.frame)
+            self.nueva_ventana.grab_set()
         return datos
 
     def obtener_horario_anio(self):
-        datos= ['Vacio']        
+        datos= []
         try:
             # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
             self.miCursor.execute(""" SELECT Hora, COUNT(*) AS Cantidad_Turnos FROM Turnos WHERE strftime('%Y', Fecha) = ? GROUP BY Hora ORDER BY Hora ASC""", (self.selector_anio.get(),))
             datos = self.miCursor.fetchall()
-            self.miConexion.close()
+            #self.miConexion.close()
         except:
-            print('no carga hora año')
+            self.nueva_ventana.grab_release()
+            messagebox.showwarning("Error", "No se pudo cargar", parent= self.frame)
+            self.nueva_ventana.grab_set()
         return datos
-    
+
+    def obtener_prestaciones_anio(self):
+        datos= []
+        try:
+            # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
+            self.miCursor.execute(""" SELECT DISTINCT Prestacion, COUNT(*) AS Cantidad_prestaciones FROM Turnos WHERE strftime('%Y', Fecha) = ? GROUP BY Prestacion""", (self.selector_anio.get(),))
+            datos = self.miCursor.fetchall()
+            #self.miConexion.close()
+        except:
+            self.nueva_ventana.grab_release()
+            messagebox.showwarning("Error", "No se pudo cargar", parent= self.frame)
+            self.nueva_ventana.grab_set()
+        return datos
+
     def get_image_size(self, image_path, max_width, max_height):
         image_reader = ImageReader(image_path)
         img_width, img_height = image_reader.getSize()
@@ -284,114 +324,98 @@ class Informes:
         return img_width, img_height
 
     def contar_dias_semana(self):
-        # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
-        self.miCursor.execute("SELECT CASE strftime('%w', Fecha)  WHEN '0' THEN 'Domingo'\
-            WHEN '1' THEN 'Lunes'\
-            WHEN '2' THEN 'Martes'\
-            WHEN '3' THEN 'Miércoles'\
-            WHEN '4' THEN 'Jueves'\
-            WHEN '5' THEN 'Viernes'\
-            WHEN '6' THEN 'Sábado'\
-            END,\
-            COUNT(*) AS Cantidad_Turnos FROM Turnos WHERE strftime('%Y', Fecha) = ? GROUP BY strftime('%w', Fecha) ORDER BY strftime('%w', Fecha)""", (self.selector_anio.get(),))
-        datos = self.miCursor.fetchall()
-        # Convertir los resultados a una lista de años
-        dias= [day[0] for day in datos]
-        cantidad= [cant[1] for cant in datos]
-        self.miConexion.close()
-        #return años_unicos
-        print(dias, cantidad)
-        # dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
-        # conteo = {dia: 0 for dia in dias_semana}
-        # for fecha in fechas:
-        #     dia_semana = dias_semana[fecha.weekday()]
-        #     conteo[dia_semana] += 1
-        # print(conteo)
-        # return conteo
-# Función para guardar el gráfico como un PDF
-    def guardar_grafico_pdf(self):
-        print('guardarPDF')
-    # Pedir al usuario que elija dónde guardar el archivo
-        file_path = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF files", "*.pdf")])
-
-        if file_path:
-            # Guardar la figura de matplotlib como una imagen temporal
-            imagen_temporal = "grafico_temporal.png"
-            self.fig.savefig(imagen_temporal)
-
-            # Crear el PDF con reportlab
-            c = pdf_canvas.Canvas(file_path, pagesize=letter)
-            c.drawString(100, 750, "Gráfico de Turnos por Mes")
-
-            # Cargar la imagen temporal
-            img = Image.open(imagen_temporal)
-            img_width, img_height = img.size
-
-            # Ajustar la imagen en el tamaño de la página del PDF
-            max_width = 500
-            max_height = 400
-            scale = min(max_width / img_width, max_height / img_height)
-            new_width = int(img_width * scale)
-            new_height = int(img_height * scale)
-
-            # Insertar la imagen en el PDF
-            c.drawImage(imagen_temporal, 50, 300, new_width, new_height)
-
-            # Guardar y cerrar el PDF
-            c.save()
-
-            # Eliminar la imagen temporal
-            img.close()
+        try:
+            # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
+            mes= self.mes_a_numero(self.selector_mes.get())
+            self.miCursor.execute("SELECT CASE strftime('%w', Fecha)  WHEN '0' THEN 'Domingo'\
+                WHEN '1' THEN 'Lunes'\
+                WHEN '2' THEN 'Martes'\
+                WHEN '3' THEN 'Miércoles'\
+                WHEN '4' THEN 'Jueves'\
+                WHEN '5' THEN 'Viernes'\
+                WHEN '6' THEN 'Sábado'\
+                END,\
+                COUNT(*) AS Cantidad_Turnos FROM Turnos WHERE strftime('%Y', Fecha) = ? and strftime('%m', Fecha)= ? GROUP BY strftime('%w', Fecha) ORDER BY strftime('%w', Fecha)""", (self.selector_anio.get(),mes,))
+            datos = self.miCursor.fetchall()
+        except Exception as e:
+            self.nueva_ventana.grab_release()
+            messagebox.showwarning("Error", "f'Error al obtener datos: {e}'", parent= self.frame)
+            self.nueva_ventana.grab_set()
+            
+        return datos
 
     def create_pdf(self):
         #name=''
-        if self.informe_seleccionado == 'Cantidad de turnos':
-            pdf_filename='CantidadTurnos'+self.selector_anio.get()+'.pdf'
-        if self.informe_seleccionado == 'Horario de turnos por mes':
-            pdf_filename='HorarioTurnos'+self.selector_mes.get()+self.selector_anio.get()+'.pdf'
-        if self.informe_seleccionado == 'Horario de turnos por año':
-            pdf_filename='HorarioTurnos'+self.selector_anio.get()+'.pdf'
-        print(pdf_filename)
-        # pdf_filename = "documento_con_graficas.pdf"
-        document = SimpleDocTemplate(pdf_filename, pagesize=A4)
+        try:
+            carpeta_informes = os.path.join(os.path.expanduser("."), "informes")
+            if self.informe_seleccionado == 'Cantidad de turnos':
+                pdf_filename='CantidadTurnos'+self.selector_anio.get()+'.pdf'
+            if self.informe_seleccionado == 'Horario de turnos por mes':
+                pdf_filename='HorarioTurnos'+self.selector_mes.get()+self.selector_anio.get()+'.pdf'
+            if self.informe_seleccionado == 'Horario de turnos por año':
+                pdf_filename='HorarioTurnos'+self.selector_anio.get()+'.pdf'
+            if self.informe_seleccionado == 'Día de turnos':
+                pdf_filename='Día de turnos'+self.selector_mes.get()+self.selector_anio.get()+'.pdf'
 
-        # Obtener los estilos de muestra
-        styles = getSampleStyleSheet()
+            # pdf_filename = "documento_con_graficas.pdf"
+            file_path = os.path.join(carpeta_informes, pdf_filename)
+            document = SimpleDocTemplate(file_path, pagesize= A4)
 
-        # Contenido del PDF
-        content = []
-        
-        # Añadir una imagen externa y mantener la relación de aspecto
-        image_path = "./Extras/LOGO.png"  # Cambia "logo.png" al nombre de tu imagen
-        max_width = 20 * cm
-        max_height = 10 * cm
-        if os.path.exists(image_path):
-            img_width, img_height =self.get_image_size(image_path, max_width, max_height)
-            logo_image = Image(image_path, width=img_width, height=img_height)
-            content.append(logo_image)
-        else:
-            title = Paragraph("MyM Odontología", styles['Title'])
+            # Obtener los estilos de muestra
+            styles = getSampleStyleSheet()
+
+            # Contenido del PDF
+            content = []
+            
+            # Añadir una imagen externa y mantener la relación de aspecto
+            image_path = "./imagenes/logo.png"  # Cambia "logo.png" al nombre de tu imagen
+            max_width = 20 * cm
+            max_height = 10 * cm
+            if os.path.exists(image_path):
+                img_width, img_height =self.get_image_size(image_path, max_width, max_height)
+                logo_image = Image(image_path, width=img_width, height=img_height)
+                content.append(logo_image)
+                content.append(Paragraph("<font size='30'>&nbsp;</font>", styles['Normal']))
+            else:
+                title = Paragraph("MyM Odontología", styles['Title'])
+                content.append(title)
+                content.append(Paragraph("<font size='30'>&nbsp;</font>", styles['Normal']))
+
+            # Título
+            title = Paragraph("Informe", styles['Title'])
             content.append(title)
-        
-        # Título
-        title = Paragraph("Informe", styles['Title'])
-        content.append(title)
-        
-        # Crear gráficos y añadirlos al PDF
-        bar_chart_buffer = self.create_bar_chart()
-        bar_chart_image = Image(bar_chart_buffer, width=12 * cm, height=10* cm)
-        content.append(bar_chart_image)
+            content.append(Spacer(1, 60))
 
-        # line_chart_buffer = create_line_chart()
-        # line_chart_image = Image(line_chart_buffer, width=4*inch, height=3*inch)
-        # # content.append(line_chart_image)
+            # Crear gráficos y añadirlos al PDF
+            bar_chart_buffer = self.create_bar_chart()
+        # Calcular dimensiones proporcionales
+            bar_chart_buffer.seek(0)
+            img_reader = ImageReader(bar_chart_buffer)
+            img_width, img_height = img_reader.getSize()
+            aspect_ratio = img_width / img_height
 
-        # pie_chart_buffer = create_pie_chart()
-        # pie_chart_image = Image(pie_chart_buffer, width=4*inch, height=3*inch)
-        # content.append(pie_chart_image)
+            # Usar 80% del ancho de página y altura proporcional
+            page_width = A4[0]
+            max_chart_width = page_width * 0.8
+            chart_height = max_chart_width / aspect_ratio
 
-        # Construir el documento PDF
-        document.build(content)
+            bar_chart_image = Image(bar_chart_buffer, width= max_chart_width, height= chart_height)
+            content.append(bar_chart_image)
 
-        # Abrir el PDF con el visor predeterminado del sistema
-        os.startfile(pdf_filename)  # Para Windows
+            # line_chart_buffer = create_line_chart()
+            # line_chart_image = Image(line_chart_buffer, width=4*inch, height=3*inch)
+            # # content.append(line_chart_image)
+
+            # pie_chart_buffer = create_pie_chart()
+            # pie_chart_image = Image(pie_chart_buffer, width=4*inch, height=3*inch)
+            # content.append(pie_chart_image)
+
+            # Construir el documento PDF
+            document.build(content)
+
+            # Abrir el PDF con el visor predeterminado del sistema
+            os.startfile(pdf_filename)  # Para Windows
+        except Exception as e:
+            self.nueva_ventana.grab_release()
+            messagebox.showwarning("Error", "f'Error al crear el informe: {e}'", parent= self.nueva_ventana)
+            self.nueva_ventana.grab_set()
