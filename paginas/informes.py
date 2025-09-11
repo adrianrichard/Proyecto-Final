@@ -41,9 +41,9 @@ class Informes:
         self.tabla.heading("Descripcion", text= "Descripción")
         self.tabla.column('Informe', width= 200 , anchor= 'w')
         self.tabla.column('Descripcion',  width= 350 , anchor= 'w')
-        [frame.columnconfigure(i, weight= 1) for i in range(frame.grid_size()[0]-1)]
+        [self.frame.columnconfigure(i, weight= 1) for i in range(self.frame.grid_size()[0]-1)]
         self.tabla.grid(column= 0, row= 5, columnspan= 2, padx= (10,0), sticky= 'nsew')
-        ladoy = ttk.Scrollbar(frame, orient ='vertical', command = self.tabla.yview)
+        ladoy = ttk.Scrollbar(frame, orient= 'vertical', command = self.tabla.yview)
         ladoy.grid(column= 3, row= 5, sticky='ns')
         self.listar_informes()
         # Bind para seleccionar la base de datos desde la tabla
@@ -52,10 +52,6 @@ class Informes:
 
         btn_crear_grafico = tk.Button(frame, text= "Crear gráfica", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.graficar_ventana)
         btn_crear_grafico.grid(column= 0, row= 6, padx= (10, 10), pady= (5, 5))
-        # # Botón para crear una copia de seguridad
-
-        # btn_guardar_copia = tk.Button(frame, text="Crear copia de seguridad", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command=self.crear_backup)
-        # btn_guardar_copia.grid(column= 1, row=6, padx=(10, 10), pady=(10, 10))
 
     def graficar_ventana(self, event= None):
         if not self.informe_seleccionado:
@@ -67,18 +63,20 @@ class Informes:
         utl.centrar_ventana(self.nueva_ventana, 520, 520)
         self.nueva_ventana.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.nueva_ventana.focus_set() # Mantiene el foco cuando se abre la ventana.
-        titulo = tk.Label(self.nueva_ventana, text= self.informe_seleccionado, relief= "raised", bd=2, font= ("Arial", 16), anchor='center')
-        titulo.grid(column= 0, row= 0, columnspan= 3, pady= (5, 5), sticky='ew')
+        titulo = tk.Label(self.nueva_ventana, text= self.informe_seleccionado, fg='white', bg='#1F704B', relief= "raised", bd= 2, font= ("Arial", 16), anchor='center')
+        titulo.grid(column= 0, row= 0, columnspan= 3, pady= (5, 5), padx= (5, 5), sticky='ew')
         anios= self.obtener_anios()
         meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-        self.selector_mes= ttk.Combobox(self.nueva_ventana, state= "readonly", values= meses, width= 20, background= "white")
-        self.selector_mes.grid(column= 0, row= 1, padx= (10, 10), pady= (0, 5))
-        self.selector_mes.set(meses[0])
+        if self.informe_seleccionado != 'Rango etario pacientes':
+            self.selector_mes= ttk.Combobox(self.nueva_ventana, state= "readonly", values= meses, width= 20, background= "white")
+            self.selector_mes.grid(column= 0, row= 1, padx= (10, 10), pady= (0, 5))
+            self.selector_mes.set(meses[0])
+            self.selector_anio= ttk.Combobox(self.nueva_ventana, state= "readonly", values= anios, width= 20, background= "white")
+            self.selector_anio.grid(column= 1, row= 1, padx= (10, 10), pady= (0, 5))
+            self.selector_anio.set(anios[0])
         if self.informe_seleccionado == 'Cantidad de turnos' or self.informe_seleccionado == 'Horario de turnos por año' or self.informe_seleccionado == 'Prestaciones':
             self.selector_mes.config(state= "disabled")
-        self.selector_anio= ttk.Combobox(self.nueva_ventana, state= "readonly", values= anios, width= 20, background= "white")
-        self.selector_anio.grid(column= 1, row= 1, padx= (10, 10), pady= (0, 5))
-        self.selector_anio.set(anios[0])
+
         # Frame para el gráfico en la nueva ventana
         self.frame_grafico = tk.Frame(self.nueva_ventana, background= 'white', relief= "raised", width= 500, height= 400)
         self.frame_grafico.grid(column= 0, row= 3, columnspan= 3, pady= (10, 10), padx= (10, 10))
@@ -104,7 +102,7 @@ class Informes:
         self.tabla.insert("", "end", values=('Horario de turnos por año', 'Horarios con más demanda por año'))
         self.tabla.insert("", "end", values=('Día de turnos', 'Días con más demanda por mes y año'))
         self.tabla.insert("", "end", values=('Prestaciones', 'Prestaciones más frecuentes por año'))
-        self.tabla.insert("", "end", values=('Pacientes', 'Distribución por edad'))
+        self.tabla.insert("", "end", values=('Rango etario pacientes', 'Distribución por edad'))
 
     def seleccionar_desde_tabla(self, event):#
         selected_item = self.tabla.selection()
@@ -130,6 +128,7 @@ class Informes:
                 plt.xticks(rotation= 60, ha= 'right')
             ax.set_xlabel('Meses')
             ax.set_ylabel('Cantidad de turnos')
+
         if self.informe_seleccionado == 'Horario de turnos por mes':
             titulo='Turnos por horario en el mes de '+self.selector_mes.get()+'-'+self.selector_anio.get()
             datos = self.obtener_horario_mes()
@@ -148,7 +147,7 @@ class Informes:
             titulo= 'Turnos por horario en el año '+self.selector_anio.get()
             datos = self.obtener_horario_anio()
             if not datos :  # Verificar si datos está vacío
-                ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color='gray')
+                ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color= 'gray')
             else:
                 valoresy = [fila[1] for fila in datos]
                 valoresx = [fila[0] for fila in datos]
@@ -157,11 +156,12 @@ class Informes:
                 plt.xticks(rotation= 90, ha= 'right')
             ax.set_xlabel('Horario')
             ax.set_ylabel('Cantidad de turnos')
+
         if self.informe_seleccionado == 'Día de turnos':
             titulo= 'Día de turnos en '+self.selector_mes.get()+'-'+self.selector_anio.get()
             datos = self.contar_dias_semana()            
             if not datos :  # Verificar si datos está vacío
-                ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color='gray')
+                ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color= 'gray')
             else:
                 valoresy = [fila[1] for fila in datos]
                 valoresx = [fila[0] for fila in datos]
@@ -170,10 +170,10 @@ class Informes:
                 plt.xticks(rotation= 45, ha= 'right')
             ax.set_xlabel('Días de la semana')
             ax.set_ylabel('Cantidad de turnos')
+
         if self.informe_seleccionado == 'Prestaciones':
             titulo= 'Prestaciones-'+self.selector_anio.get()
             datos = self.obtener_prestaciones_anio()   
-            print(datos)         
             if not datos :  # Verificar si datos está vacío
                 ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color='gray')
             else:
@@ -184,6 +184,21 @@ class Informes:
                 plt.xticks(rotation= 45, ha= 'right')
             ax.set_xlabel('Prestaciones')
             ax.set_ylabel('Cantidad')
+
+        if self.informe_seleccionado == 'Rango etario pacientes':
+            titulo = 'Distribución de pacientes por edad'
+            datos = self.obtener_distribucion_etaria()
+            if not datos :  # Verificar si datos está vacío
+                ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color= 'gray')
+            else:
+                valoresy = [fila[1] for fila in datos]
+                valoresx = [fila[0] for fila in datos]
+                ax.bar(valoresx, valoresy, color= 'skyblue')
+                
+            ax.set_xlabel('Rango etario')
+            ax.set_ylabel('Cantidad de pacientes')
+            ax.set_title(titulo)
+            plt.xticks(rotation= 45, ha= 'right')
 
         plt.tight_layout()
 
@@ -208,7 +223,7 @@ class Informes:
         self.create_bar_chart()
         
 # Función para obtener los datos agrupados por mes y año
-    def obtener_anios(self):        
+    def obtener_anios(self):
         anios_unicos= []
         try:
             # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
@@ -220,10 +235,11 @@ class Informes:
             self.nueva_ventana.grab_release()
             messagebox.showwarning("Error", "f'Error al obtener datos: {e}'", parent= self.frame)
             self.nueva_ventana.grab_set()
-        
+
         return anios_unicos
 
     def obtener_datos_por_mes_anio(self):
+        datos=[]
         try:
             # Consulta para obtener todos los meses, incluso los que no tienen turnos
             self.miCursor.execute("""
@@ -239,10 +255,10 @@ class Informes:
                 GROUP BY m.mes
                 ORDER BY m.mes
             """, (self.selector_anio.get(),))
-            
+
             datos = self.miCursor.fetchall()
             return datos
-            
+
         except Exception as e:
             self.nueva_ventana.grab_release()
             messagebox.showwarning("Error", "f'Error al obtener datos por mes: {e}'", parent= self.frame)
@@ -266,7 +282,7 @@ class Informes:
             "diciembre": '12'
         }
         return meses.get(nombre_mes.lower(), "Mes no válido")
-   
+
     def obtener_horario_mes(self):
     # Conexión a la base de datos (ajusta la ruta si usas sqlite)
         datos=[]
@@ -324,6 +340,7 @@ class Informes:
         return img_width, img_height
 
     def contar_dias_semana(self):
+        datos=[]
         try:
             # Consulta SQL para agrupar por mes y año (en formato YYYY-MM)
             mes= self.mes_a_numero(self.selector_mes.get())
@@ -341,8 +358,53 @@ class Informes:
             self.nueva_ventana.grab_release()
             messagebox.showwarning("Error", "f'Error al obtener datos: {e}'", parent= self.frame)
             self.nueva_ventana.grab_set()
-            
+
         return datos
+
+    def obtener_distribucion_etaria(self):
+        datos=[]
+        try:
+            query = """
+            SELECT
+                CASE
+                    WHEN edad BETWEEN 5 AND 15 THEN '5-15'
+                    WHEN edad BETWEEN 16 AND 25 THEN '16-25'
+                    WHEN edad BETWEEN 26 AND 35 THEN '26-35'
+                    WHEN edad BETWEEN 36 AND 50 THEN '36-50'
+                    WHEN edad BETWEEN 51 AND 100 THEN '51-100'
+                    ELSE 'Fuera de rango'
+                END AS rango_etario,
+                COUNT(*) AS cantidad_pacientes
+            FROM pacientes
+            GROUP BY 
+                CASE
+                    WHEN edad BETWEEN 5 AND 15 THEN '5-15'
+                    WHEN edad BETWEEN 16 AND 25 THEN '16-25'
+                    WHEN edad BETWEEN 26 AND 35 THEN '26-35'
+                    WHEN edad BETWEEN 36 AND 50 THEN '36-50'
+                    WHEN edad BETWEEN 51 AND 100 THEN '51-100'
+                    ELSE 'Fuera de rango'
+                END
+            ORDER BY 
+                CASE
+                    WHEN rango_etario = '5-15' THEN 1
+                    WHEN rango_etario = '16-25' THEN 2
+                    WHEN rango_etario = '26-35' THEN 3
+                    WHEN rango_etario = '36-50' THEN 4
+                    WHEN rango_etario = '51-100' THEN 5
+                    ELSE 6
+                END
+            """
+
+            self.miCursor.execute(query)
+            datos = self.miCursor.fetchall()
+
+            return datos
+
+        except Exception as e:
+            self.nueva_ventana.grab_release()
+            messagebox.showwarning("Error", "f'Error al obtener datos: {e}'", parent= self.frame)
+            self.nueva_ventana.grab_set()
 
     def create_pdf(self):
         #name=''

@@ -129,7 +129,7 @@ class MasterPanel:
 
     def pantalla_herramientas(self):
         self.paginas.select([self.frame_herramientas])
-        backup= Backup()
+        backup= Backup(master_panel=self)
         backup.configurar_interfaz(self.frame_herramientas)
         backup.listar_bases_datos()
         informes = Informes()
@@ -145,7 +145,7 @@ class MasterPanel:
     def salir(self):
         answer = messagebox.askokcancel('Salir', '¿Desea salir?', icon= 'warning', parent= self.ventana)
         if answer:
-            self.db.cerrar_bd()
+            #self.db.cerrar_bd()
             self.ventana.destroy()
             from modulos.modulo_login import Login
             Login()
@@ -219,7 +219,7 @@ class MasterPanel:
             messagebox.showerror("ERROR", f"Error inesperado: {e}", parent= self.ventana)
 
     def cargar_tabla_pacientes(self):
-        self.db.cerrar_bd()
+        #self.db.cerrar_bd()
         self.miConexion = self.db.conectar()
         """Carga todos los pacientes desde la base de datos."""
         try:
@@ -274,7 +274,7 @@ class MasterPanel:
         self.boton_pos.config(state= 'normal', bg= self.color_fondo1)
         self.boton_previo.config(state= 'disabled', bg= self.color_fondo1)
         self.indice_paciente= 0
-        self.db.cerrar_bd()
+        #self.db.cerrar_bd()
         self.miConexion = self.db.conectar()
         self.miCursor = self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido"
