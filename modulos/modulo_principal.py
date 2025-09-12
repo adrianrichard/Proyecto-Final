@@ -3,7 +3,9 @@ import sqlite3
 import util.config as utl
 from tkinter import  Button, messagebox, Label, ttk, PhotoImage
 from tkinter import  StringVar, Frame
-import re
+import os
+import sys
+import subprocess
 from modulos.modulo_paciente import Paciente
 from modulos.modulo_usuario import Usuario
 from modulos.modulo_odontologo import Odontologo
@@ -521,9 +523,27 @@ class MasterPanel:
             pass
         self.mostrar_odontologos()
 
+    def abrir_ayuda_chm(self):
+        # Ruta fija de tu archivo CHM
+        chm_path = r".\util\AyudaMyM.chm"
+        
+        if not os.path.exists(chm_path):
+            messagebox.showerror("Error", "El archivo de ayuda no se encuentra en la ubicación esperada.")
+            return
+        
+        try:
+            if sys.platform == "win32":
+                os.startfile(chm_path)
+            else:
+                # Métodos alternativos para otros SO
+                subprocess.Popen(["hh", chm_path])
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo abrir la ayuda: {str(e)}")
+
     def widgets(self):
         self.imagen_usuario = utl.leer_imagen('usuario_icono.png', (38, 38))
         self.imagen_paciente = utl.leer_imagen('agregar3.png', (38, 38))
+        self.imagen_ayuda = utl.leer_imagen('ayuda.png', (20, 20))
         self.imagen_paciente = PhotoImage(file= './imagenes/agregar3.png')
         self.imagen_calendario = PhotoImage(file= './imagenes/calendario-removebg-preview.png')
         self.imagen_historia_clinica = PhotoImage(file= './imagenes/historial3.png')
@@ -592,9 +612,12 @@ class MasterPanel:
 
 		##############################         PAGINAS       #############################################
 		######################## FRAME TITULO #################
+        self.frame_top.grid_columnconfigure(0, weight=1)  # Columna 0 se expande
+        self.frame_top.grid_columnconfigure(1, weight=0)  # Columna 1 no se expande
         self.titulo = Label(self.frame_top, text= 'Consultorio Odontológico MyM', bg= self.color_fondo1, fg= 'white', font= ('Comic Sans MS', 15, 'bold'))
-        self.titulo.pack(expand= 1)
-
+        self.titulo.grid(column= 0, row= 0, sticky='ew')
+        self.boton_ayuda= Button(self.frame_top, image= self.imagen_ayuda, text= 'Ayuda', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, command= self.abrir_ayuda_chm, relief= 'flat', borderwidth= 0, highlightthickness= 0, cursor= 'hand2', activebackground=self.color_fondo1)
+        self.boton_ayuda.grid(column= 1, row= 0, sticky= 'e', padx= 10, pady= 5)
 		######################## VENTANA PRINCIPAL #################
         Label(self.frame_principal, image= self.logo, bg= self.color_fondo2).pack(expand= 1)
 
