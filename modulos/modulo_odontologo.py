@@ -210,22 +210,15 @@ class Odontologo:
         try:
             self.cargar_datos_odontologo(matricula)
         except:
-            self.frame_odontologo.grab_release()
-            messagebox.showinfo("AVISO", "No se ha podido encontrar el odontólogo", parent= self.frame_odontologo)
-            self.frame_odontologo.grab_set()
-        
-        self.frame_odontologo.grab_release()
-        msg_box = messagebox.askquestion('Eliminar odontólogo', f'¿Desea eliminar a {self.apellido_odontologo}, {self.nombre_odontologo}?', icon='warning', parent= self.frame_odontologo)
+            messagebox.showinfo("AVISO", "No se ha podido encontrar el odontólogo")        
+        msg_box = messagebox.askquestion('Eliminar odontólogo', f'¿Desea eliminar a {self.apellido_odontologo}, {self.nombre_odontologo}?', icon='warning')
         if msg_box == 'yes':
             try:
                 self.miCursor.execute("DELETE FROM odontologos WHERE matricula = ?", (matricula,))
-                self.miConexion.commit()
-                
-                messagebox.showinfo("ELIMINAR","Odontólogo eliminado exitosamente", parent= self.frame_odontologo)
-                self.frame_odontologo.grab_set()
+                self.miConexion.commit()                
+                messagebox.showinfo("ELIMINAR","Odontólogo eliminado exitosamente")
             except:
-                messagebox.showinfo("ELIMINAR", "No se ha podido eliminar el odontólogo", parent= self.frame_odontologo)
-                self.frame_odontologo.grab_set()
+                messagebox.showinfo("ELIMINAR", "No se ha podido eliminar el odontólogo")
 
     def Salir(self):
         self.frame_odontologo.grab_release()

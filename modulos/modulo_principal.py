@@ -519,9 +519,10 @@ class MasterPanel:
         try:
             profesional = Odontologo()
             profesional.eliminar_odontologo(self.matricula)
+            self.mostrar_odontologos()
         except:
             pass
-        self.mostrar_odontologos()
+        
 
     def abrir_ayuda_chm(self):
         # Ruta fija de tu archivo CHM
@@ -578,7 +579,7 @@ class MasterPanel:
 
         if self.tipo_usuario == 'administrador' or self.tipo_usuario == 'odontologo':
             Button(self.frame_menu, image= self.imagen_historia_clinica, bg= self.color_fondo1,activebackground= 'white', bd= 0, command= self.pantalla_historia).grid(column= 0, row= 4, pady= 20, padx= 10)
-            Label(self.frame_menu, text= 'Historia \nClinica', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 4, pady= 20, padx= 2)
+            Label(self.frame_menu, text= 'Odontograma', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 4, pady= 20, padx= 2)
             Button(self.frame_menu, image= self.imagen_herramientas, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.pantalla_herramientas).grid(column= 0, row= 7, pady= 20, padx= 10)
             Label(self.frame_menu, text= 'Herramientas', bg= self.color_fondo1, fg= 'white', font= (self.fuente_titulo, 10, 'bold')).grid(column= 1, row= 7, pady= 20, padx= 2)
             Button(self.frame_menu, image= self.imagen_galeria, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.pantalla_galeria).grid(column= 0, row= 5, pady= 20, padx= 10)
@@ -616,8 +617,8 @@ class MasterPanel:
         self.frame_top.grid_columnconfigure(1, weight=0)  # Columna 1 no se expande
         self.titulo = Label(self.frame_top, text= 'Consultorio Odontológico MyM', bg= self.color_fondo1, fg= 'white', font= ('Comic Sans MS', 15, 'bold'))
         self.titulo.grid(column= 0, row= 0, sticky='ew')
-        self.boton_ayuda= Button(self.frame_top, image= self.imagen_ayuda, text= 'Ayuda', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, command= self.abrir_ayuda_chm, relief= 'flat', borderwidth= 0, highlightthickness= 0, cursor= 'hand2', activebackground=self.color_fondo1)
-        self.boton_ayuda.grid(column= 1, row= 0, sticky= 'e', padx= 10, pady= 5)
+        self.boton_ayuda= Button(self.frame_top, image= self.imagen_ayuda, text= 'Ayuda', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, command= self.abrir_ayuda_chm, relief= 'flat', borderwidth= 0, highlightthickness= 0, cursor= 'hand2', activebackground= self.color_fondo1)
+        self.boton_ayuda.grid(column= 1, row= 0, sticky= 'e', padx= 10, pady= 10)
 		######################## VENTANA PRINCIPAL #################
         Label(self.frame_principal, image= self.logo, bg= self.color_fondo2).pack(expand= 1)
 
