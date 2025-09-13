@@ -19,7 +19,7 @@ class Paciente:
         self.apellido_paciente = StringVar()
         self.dni_paciente_anterior =  StringVar()
         self.dni_paciente =  StringVar()
-        self.nacimiento_paciente =  StringVar()
+        self.nacimiento_paciente =  StringVar(value= 'Formato: DD-MM-AAAA')
         self.edad_paciente =  StringVar()
         self.domicilio_paciente =  StringVar()
         self.telefono_paciente =  StringVar()
@@ -86,6 +86,7 @@ class Paciente:
         Label(self.frame_principal, text= 'Fecha de nacimiento', bg= 'gray90', fg= 'black', anchor= "e", width= self.ancho, font= self.fuenteb).grid(column= 0, row= 4, pady= 5, padx= 2)
         self.entry_fecha = Entry(self.frame_principal, textvariable= self.nacimiento_paciente, width= 25, font= self.fuenten)
         self.entry_fecha.grid(column= 1, row= 4, pady= 5)
+        self.entry_fecha.bind("<FocusIn>", self.seleccionar_todo)
         self.fecha_valida = Label(self.frame_principal, text= '*', anchor= "w", width= 30, bg= 'gray90', fg= 'red', font= self.fuenten)
         self.fecha_valida.grid(column= 2, row= 4, pady= 5)
 
@@ -141,7 +142,11 @@ class Paciente:
         Button(self.frame_principal, text= 'Cerrar', font= self.fuenteb, fg= 'black', bg= 'orange', activebackground= 'gray', width= 15, bd= 2, command= self.Salir).grid(column= 2, row= 12, pady= 5)
 
         self.frame_paciente.mainloop()
-
+    
+    def seleccionar_todo(self, event):
+        event.widget.select_range(0, tk.END)
+        event.widget.icursor(tk.END)
+    
     def validar_email(self, email):
         email = self.entry_correo.get()
         if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):

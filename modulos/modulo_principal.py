@@ -746,7 +746,7 @@ class MasterPanel:
         self.tabla_historia.heading("D.N.I.", text= "D.N.I.")
         self.tabla_historia.heading("ObraSocial", text= "Obra social")
 
-        self.tabla_historia.bind("<Double-1>", self.editar_odontograma)
+        self.tabla_historia.bind("<ButtonRelease-1>", self.editar_odontograma)
 
 		######################## GALERIA #################
         Label(self.frame_galeria, text= 'GALERIA', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, sticky= 'W')
