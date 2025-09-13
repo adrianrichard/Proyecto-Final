@@ -73,7 +73,6 @@ class Odontograma:
         self.cargar_dientes(self.ID_odonto)
         self.canvas = tk.Canvas(self.frame_dientes, width= self.ancho-20, height= 300)
         self.canvas.grid(row= 0, column= 0, columnspan=3, padx= 10)
-        # self.colores=["red", "green", "blue", "white"]
         self.crear_dientes()
         # self.frame_tabla = Frame(self.ventana_odontograma)
         # self.frame_tabla.grid(column= 0, row= 4, pady= (10, 10))
@@ -113,7 +112,6 @@ class Odontograma:
         self.ventana_odontograma.grab_release()
         answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon= 'warning', parent= self.ventana_odontograma)
         if answer:
-            #print(self.ID_odonto+1)
             self.ID_odonto= self.ID_odonto+1
             try:
                 self.miCursor.execute("DELETE FROM Dientes WHERE id_odonto=?", (self.ID_odonto,))

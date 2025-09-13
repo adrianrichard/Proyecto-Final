@@ -71,7 +71,7 @@ class DayTopWindow(Toplevel):
         [self.columnconfigure(i, weight= 1) for i in range(self.grid_size()[0])]
         [self.frame_tabla.rowconfigure(i, weight= 1) for i in range(self.grid_size()[1])]
         [self.rowconfigure(i, weight= 1) for i in range(self.grid_size()[1])]
-        
+
         # Definir los encabezados de las columnas
         self.tabla_turnos.heading("Horario", text= "Horario")
         self.tabla_turnos.heading("Paciente", text= "Paciente")
@@ -84,7 +84,7 @@ class DayTopWindow(Toplevel):
         self.tabla_turnos.column("Prestacion", width= 250)
         self.tabla_turnos.column("Odontologo", width= 200)
 
-        self.tabla_turnos.bind("<Double-1>", self.editar_turno)
+        self.tabla_turnos.bind("<ButtonRelease-1>", self.editar_turno)
 
     def cargar_turnos(self):
         start_date = date(self.anio, self.mes, self.dia)
@@ -145,7 +145,11 @@ class DayTopWindow(Toplevel):
             odontologo = self.cur.fetchone()
         except:
             pass
-        Label(self.ventana_secundaria, text= "EDITAR TURNO", font= ("Arial", 15, 'bold'), bg= "gray90", width= 60).pack(pady= 5)
+        if self.paciente == '':
+            Label(self.ventana_secundaria, text= "GUARDAR TURNO", font= ("Arial", 15, 'bold'), bg= "gray90", width= 60).pack(pady= 5)
+        else:
+            Label(self.ventana_secundaria, text= "EDITAR TURNO", font= ("Arial", 15, 'bold'), bg= "gray90", width= 60).pack(pady= 5)
+        
         Label(self.ventana_secundaria, text= f"FECHA: {self.dia}/{self.mes}/{self.anio} - HORARIO: "+self.horario, font= ("Arial", 13, 'bold'), bg= "gray90", width= 60).pack(pady= 5)
 
         self.nombre_entry = Entry(self.ventana_secundaria, width= 42, justify= CENTER)
@@ -174,7 +178,10 @@ class DayTopWindow(Toplevel):
         self.button_frame.pack(pady= (30, 0))
 
         Button(self.button_frame, text= 'Guardar', command= self.guardar_turno, font= self.fuenteb, bg= "green", width= 10).grid(row= 0, column= 0, padx= 10)
-        Button(self.button_frame, text= 'Eliminar', command= self.eliminar_turno, font= self.fuenteb, bg= "red", width= 10).grid(row= 0, column= 1, padx= 10)
+        self.boton_eliminar= Button(self.button_frame, text= 'Eliminar', command= self.eliminar_turno, font= self.fuenteb, bg= "red", width= 10)
+        self.boton_eliminar.grid(row= 0, column= 1, padx= 10)
+        if self.nombre_entry.get() == 'Paciente':
+            self.boton_eliminar["state"] = DISABLED
         Button(self.button_frame, text= 'Salir', command= self.cancelar_turno, font= self.fuenteb, bg= "orange", width= 10).grid(row= 0, column= 2, padx= 10)
 
     def cancelar_turno(self):
@@ -227,7 +234,7 @@ class DayTopWindow(Toplevel):
             messagebox.showerror("Odontólogo", "Elija odontólogo", parent= self.ventana_secundaria)
             self.ventana_secundaria.grab_set()
             return
-        else:            
+        else:
             datos = start_date, self.horario, self.nombre_entry.get().upper(), self.matricula, self.selector_prestacion.get().upper()
             answer = messagebox.askokcancel('Guardar', '¿Desea guardar el turno?', icon='warning', parent= self.ventana_secundaria)
             if answer:

@@ -154,7 +154,7 @@ class MasterPanel:
 
     def agregar_paciente(self):
         paciente= Paciente()
-        paciente.ventana_paciente()
+        paciente.ventana_paciente(master_panel_ref=self)
 
     def editar_paciente(self, event):
         item = self.tabla_paciente.focus()
@@ -213,8 +213,8 @@ class MasterPanel:
                 self.miCursor.execute("DELETE FROM Pacientes WHERE ID = ?", (self.dni_paciente,))
                 self.miConexion.commit()
                 messagebox.showinfo("ELIMINAR","Paciente eliminado exitosamente")
-                self.dni_paciente=[]
                 self.mostrar_pacientes()
+                self.dni_paciente=[]
         except sqlite3.Error as e:
             messagebox.showerror("ERROR", f"No se pudo eliminar el paciente: {e}", parent= self.ventana)
         except Exception as e:
@@ -276,7 +276,6 @@ class MasterPanel:
         self.boton_pos.config(state= 'normal', bg= self.color_fondo1)
         self.boton_previo.config(state= 'disabled', bg= self.color_fondo1)
         self.indice_paciente= 0
-        #self.db.cerrar_bd()
         self.miConexion = self.db.conectar()
         self.miCursor = self.miConexion.cursor()
         bd = "SELECT Apellido, Nombre, ID, Telefono, ObraSocial FROM Pacientes ORDER BY Apellido"
@@ -292,7 +291,7 @@ class MasterPanel:
             for i in range(0, len(datos)):
                     self.tabla_paciente.insert('', i, text= datos[i][0], values= datos[i][0:])
 
-    def buscar_paciente(self, event=None):
+    def buscar_paciente(self, event= None):
         """Busca pacientes por nombre o apellido y muestra mensaje si no hay resultados."""
         buscar = self.dato_paciente.get()
         try:
@@ -668,7 +667,7 @@ class MasterPanel:
         self.frame_tabla_odontologos = Frame(self.frame_usuarios, bg= self.color_fondo2)
         self.frame_tabla_odontologos.grid(columnspan= 3, row= 7, sticky= 'nsew')
         self.tabla_odontologos = ttk.Treeview(self.frame_tabla_odontologos, columns= ("Apellido", "Nombre", 'Matricula'), show= "headings", selectmode = 'browse', height= 6, style= "TablaUsuario.Treeview")
-        self.tabla_odontologos.grid(column= 0, row= 7, columnspan= 3, sticky='nsew')
+        self.tabla_odontologos.grid(column= 0, row= 7, columnspan= 3, sticky= 'nsew')
         ladoyy = ttk.Scrollbar(self.frame_tabla_odontologos, orient= 'vertical', command = self.tabla_odontologos.yview)
         ladoyy.grid(column = 4, row = 7, sticky= 'ns')
         self.tabla_odontologos.configure(yscrollcommand = ladoyy.set)
@@ -726,7 +725,7 @@ class MasterPanel:
         self.busqueda2 = ttk.Entry(self.frame_historia, textvariable= self.dato_paciente2, width= 20, font= self.fuenten)
         self.busqueda2.grid(column= 2, row= 1, pady= 5, sticky= "e")
         self.busqueda3 = Button(self.frame_historia, text= 'Buscar', bg= self.color_fondo1, fg= 'white', font= self.fuenteb, command= self.buscar_historia)
-        self.busqueda3.grid(column= 3, row= 1, padx= (10, 5), pady= 5, sticky= "e")
+        self.busqueda3.grid(column= 3, row= 1, padx= (10, 5), pady= 5)
         self.busqueda2.bind('<Return>', (lambda event: self.buscar_historia()))#es para apretar Intro y se ejecute, una opción a el botón
 
         self.frame_tabla_historia= Frame(self.frame_historia, bg= self.color_fondo2)

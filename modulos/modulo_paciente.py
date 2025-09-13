@@ -341,7 +341,7 @@ class Paciente:
                 self.miCursor.execute(sql, datos)
                 self.miConexion.commit()
                 if self.master_panel_ref:  # Si tenemos referencia al panel principal
-                        self.master_panel_ref.mostrar_pacientes()
+                    self.master_panel_ref.mostrar_pacientes()
                 self.frame_paciente.grab_release()
                 messagebox.showinfo("GUARDAR","Paciente actualizado exitosamente", parent= self.frame_paciente)
                 self.frame_paciente.destroy()
@@ -390,6 +390,8 @@ class Paciente:
         try:
             self.miCursor.execute("INSERT INTO Pacientes VALUES(?,?,?,?,?,?,?,?,?,?)", datos)
             self.miConexion.commit()
+            if self.master_panel_ref:  # Si tenemos referencia al panel principal
+                self.master_panel_ref.mostrar_pacientes()
             self.frame_paciente.grab_release()
             messagebox.showinfo("Éxito", "Paciente guardado exitosamente", parent= self.frame_paciente)
             self.frame_paciente.destroy()
@@ -397,8 +399,7 @@ class Paciente:
             self.frame_paciente.grab_release()
             messagebox.showerror("Error", f"No se pudo guardar el paciente. Error: {str(e)}", parent= self.frame_paciente)
             self.frame_paciente.grab_set()
-            # Opcional: hacer rollback si es necesario
-            self.miConexion.rollback()
+
     def Salir(self):
         self.frame_paciente.grab_release()
         answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon='warning', parent= self.frame_paciente)

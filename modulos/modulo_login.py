@@ -9,7 +9,7 @@ import re
 
 class Login:
 
-    def verificar(self, event=None):
+    def verificar(self, event= None):
         """Ingreso de usuario y contraseña"""
         username = self.nombre_usuario.get()
         password = self.pass_usuario.get()
@@ -21,7 +21,7 @@ class Login:
             db.conectar()
             db.obtener_cursor()
             """Busca el usuario y contraseña"""
-            usuario=db.buscar_usuario(username, password)
+            usuario= db.buscar_usuario(username, password)
             if usuario is not None:
                 """Si es administrador"""
                 if  usuario[2] == 'administrador':
@@ -50,7 +50,8 @@ class Login:
                 """Si usuario y/o contraseña son incorrectos"""
                 messagebox.showerror("Advertencia", "Usuario o contraseña incorrectos", parent= self.frame_login)
         else:
-            messagebox.showerror("Advertencia", "Error de conexión a base de datos", parent= self.frame_login)
+            db.crear_bd_login()
+            messagebox.showwarning("Ingreso", "Base de datos creada\nIntente ingresar nuevamente", parent= self.frame_login)
 
     """Sólo acepta Letras"""
     def validar_nombre(self, value):
