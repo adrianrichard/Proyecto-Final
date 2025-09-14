@@ -85,7 +85,7 @@ class Informes:
         boton_graficar.grid(column= 0, row= 2)
         boton_pdf = tk.Button(self.nueva_ventana, text= "Crear PDF", fg= 'white', font = self.fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, command= self.create_pdf)
         boton_pdf.grid(column= 1, row= 2)
-        boton_salir = tk.Button(self.nueva_ventana, text= "Salir", command= self.salir, bg= "orange", width= 8, font = self.fuenteb, bd= 2, borderwidth= 2)
+        boton_salir = tk.Button(self.nueva_ventana, text= "Salir", command= self.salir, fg= 'white', bg= "orange", width= 8, font = self.fuenteb, bd= 2, borderwidth= 2)
         boton_salir.grid(column= 2, row= 2)
 
     def salir(self):

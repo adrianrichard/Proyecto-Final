@@ -56,7 +56,7 @@ class DayTopWindow(Toplevel):
         """ Crea botones para cambiar fecha """
         Button(self, text= ">", command= self.avanzar_dia,fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 2)
         Button(self, text= "<", command= self.retroceder_dia, fg= 'white', font = fuenteb, bg= '#1F704B', bd= 2, borderwidth= 2, width= 5).grid(row= 0, column= 0)
-        Button(self, text= "Salir", font= self.fuenteb, bg= "orange", width= 8, command= self.destroy).grid(row= 0, column= 3, pady= (5,5))
+        Button(self, text= "Salir", font= self.fuenteb, fg= 'white', bg= "orange", width= 8, command= self.destroy).grid(row= 0, column= 3, pady= (5,5))
 
     def crear_lista_turnos(self):
         estilo_tabla2 = ttk.Style(self)
@@ -132,6 +132,7 @@ class DayTopWindow(Toplevel):
         self.cur= self.conn.cursor()
         self.turno_seleccionado = self.tabla_turnos.selection()[0]
         self.data = self.tabla_turnos.item(self.turno_seleccionado)
+        odontologo= ''
         self.horario = self.data['values'][0]
         self.paciente = self.data['values'][1]
         self.prestacion = self.data['values'][2]
@@ -177,12 +178,12 @@ class DayTopWindow(Toplevel):
         self.button_frame = Frame(self.ventana_secundaria, bg= "gray")
         self.button_frame.pack(pady= (30, 0))
 
-        Button(self.button_frame, text= 'Guardar', command= self.guardar_turno, font= self.fuenteb, bg= "green", width= 10).grid(row= 0, column= 0, padx= 10)
-        self.boton_eliminar= Button(self.button_frame, text= 'Eliminar', command= self.eliminar_turno, font= self.fuenteb, bg= "red", width= 10)
+        Button(self.button_frame, text= 'Guardar', command= self.guardar_turno, font= self.fuenteb, fg= 'white', bg= "green", width= 10).grid(row= 0, column= 0, padx= 10)
+        self.boton_eliminar= Button(self.button_frame, text= 'Eliminar', command= self.eliminar_turno, font= self.fuenteb, fg= 'white', bg= "red", width= 10)
         self.boton_eliminar.grid(row= 0, column= 1, padx= 10)
         if self.nombre_entry.get() == 'Paciente':
             self.boton_eliminar["state"] = DISABLED
-        Button(self.button_frame, text= 'Salir', command= self.cancelar_turno, font= self.fuenteb, bg= "orange", width= 10).grid(row= 0, column= 2, padx= 10)
+        Button(self.button_frame, text= 'Salir', command= self.cancelar_turno, font= self.fuenteb, fg= 'white', bg= "orange", width= 10).grid(row= 0, column= 2, padx= 10)
 
     def cancelar_turno(self):
         self.ventana_secundaria.grab_release()

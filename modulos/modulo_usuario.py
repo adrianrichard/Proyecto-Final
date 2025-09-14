@@ -74,7 +74,7 @@ class Usuario:
         Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 20, bg= self.color_fondo2, fg= 'red', font= self.fuenten).grid(column= 2, row= 4, pady= 5, padx= 2)
 
         Label(self.frame_principal, text= 'Contraseña: debe poseer un mínimo de 8 caracteres\n al menos una minuscula\n al menos una mayuscula\n al menos un digito', width= 50, borderwidth= 2, relief= "solid", bg= self.color_fondo2, fg= 'black', font= self.fuenten).grid(column= 0, columnspan= 3, row= 5, pady= 10)
-        Button(self.frame_principal, text= 'Cerrar',  font= self.fuenteb, bg= "orange", width= 10, command= self.Salir).grid(column= 2, row= 6, pady= 5, padx= (0, 10))
+        Button(self.frame_principal, text= 'Cerrar',  font= self.fuenteb, fg= 'white', bg= "orange", width= 10, command= self.Salir).grid(column= 2, row= 6, pady= 5, padx= (0, 10))
         self.frame_usuario.protocol("WM_DELETE_WINDOW", self.Salir)
 
         self.frame_usuario.mainloop()

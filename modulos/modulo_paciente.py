@@ -139,7 +139,7 @@ class Paciente:
         else:
             self.titulo = Label(self.frame_top, text= 'Actualizar paciente', bg= self.color_fondo1, fg= 'white', font= self.fuenteb).grid(column= 0, row= 0, pady= 20, padx= 10)
             Button(self.frame_principal, text= 'Actualizar', font= self.fuenteb, fg= 'white', bg= self.color_fondo1, width= 15, activebackground= 'gray', bd= 2, command= self.actualizar).grid(column= 0, row= 12, pady= 5, padx= 20)
-        Button(self.frame_principal, text= 'Cerrar', font= self.fuenteb, fg= 'black', bg= 'orange', activebackground= 'gray', width= 15, bd= 2, command= self.Salir).grid(column= 2, row= 12, pady= 5)
+        Button(self.frame_principal, text= 'Cerrar', font= self.fuenteb, fg= 'white', bg= 'orange', activebackground= 'gray', width= 15, bd= 2, command= self.Salir).grid(column= 2, row= 12, pady= 5)
 
         self.frame_paciente.mainloop()
     

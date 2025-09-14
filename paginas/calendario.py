@@ -95,9 +95,9 @@ class Calendario():
                         if j == int(dia) :
                             self.botones_fecha[i].configure(bg="sky blue")
             if i == 40:
-                self.botones_fecha[i].configure(text= "TURNOS\nASIGNADOS", state= DISABLED, bg= "sky blue", disabledforeground= "black")#Marca si hay turnos
+                self.botones_fecha[i].configure(text= "TURNOS\nASIGNADOS", font = self.fuenteb, state= DISABLED, bg= "sky blue", disabledforeground= "black")#Marca si hay turnos
             if i == 41:
-                self.botones_fecha[i].configure(text= "DÍA ACTUAL", state= DISABLED, bg= "orange", disabledforeground= "black")#Marca la fecha actual
+                self.botones_fecha[i].configure(text= "DÍA ACTUAL", font = self.fuenteb, state= DISABLED, bg= "orange", disabledforeground= "black")#Marca la fecha actual
             if j == datetime.today().day \
                     and self.mes == datetime.today().month \
                     and self.anio == datetime.today().year:

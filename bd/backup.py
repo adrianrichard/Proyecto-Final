@@ -52,16 +52,15 @@ class Backup:
                                    command=self.cargar_backup)
         btn_cargar_copia.grid(column=0, row=0, padx=(10, 5), pady=(5, 5))
 
-        btn_guardar_copia = tk.Button(self.frame_botones, text="Crear copia de seguridad", fg='white', 
-                                    font=self.fuenteb, bg=self.color_fondo1, bd=2, borderwidth=2, 
-                                    command=self.crear_backup)
-        btn_guardar_copia.grid(column=1, row=0, padx=5, pady=(5, 5))
+        btn_guardar_copia = tk.Button(self.frame_botones, text= "Crear backup", fg= 'white', 
+                                    font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, 
+                                    command= self.crear_backup)
+        btn_guardar_copia.grid(column= 1, row= 0, padx= 5, pady= (5, 5))
 
-        # Botón para eliminar la base de datos seleccionada
-        btn_eliminar_copia = tk.Button(self.frame_botones, text="Eliminar copia de seguridad", fg='white', 
-                                     font=self.fuenteb, bg='#d9534f', bd=2, borderwidth=2,
-                                     command=self.eliminar_backup)
-        btn_eliminar_copia.grid(column=2, row=0, padx=5, pady=(5, 5))
+        btn_eliminar_copia = tk.Button(self.frame_botones, text= "Eliminar backup", fg='white', 
+                                     font= self.fuenteb, bg='#d9534f', bd= 2, borderwidth= 2,
+                                     command= self.eliminar_backup)
+        btn_eliminar_copia.grid(column= 2, row= 0, padx= 5, pady= (5, 5))
 
     def obtener_carpeta_script(self):
         """Obtiene la ruta del directorio donde se encuentra el script Backup"""
@@ -202,7 +201,7 @@ class Backup:
         if self.master_panel and hasattr(self.master_panel, 'ventana'):
             # Cerrar la ventana principal
             self.master_panel.salir()
-            
+
             # Opcional: Forzar cierre completo del proceso
             import sys
             sys.exit(0)

@@ -74,7 +74,7 @@ class Odontologo:
 
         Label(self.frame_principal, text= '* Campos obligatorios', anchor= "w", width= 25, bg= self.color_fondo2, fg= 'red', font= self.fuenten).grid(column= 1, row= 4, pady= 5, padx= 2)
 
-        Button(self.frame_principal, text= 'Cerrar', font= self.fuenteb, bg= "orange", width= 10, command= self.Salir).grid(column= 2, row= 5, pady= 5, padx= (0, 10))
+        Button(self.frame_principal, text= 'Cerrar', font= self.fuenteb, fg= 'white', bg= "orange", width= 10, command= self.Salir).grid(column= 2, row= 5, pady= 5, padx= (0, 10))
         self.frame_odontologo.protocol("WM_DELETE_WINDOW", self.Salir)
 
         self.frame_odontologo.mainloop()

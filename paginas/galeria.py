@@ -79,7 +79,7 @@ class Galeria:
 
         self.frame_visor= Frame(self.ventana_galeria, border= 1, borderwidth= 2, bg= "gray")
         self.frame_visor.grid(column= 0, row= 2)
-        self.boton_salir_odonto= Button(self.frame_datos_paciente, text= 'Salir', command= self.salir, font= self.fuenteb, bg= "orange", width= 8)
+        self.boton_salir_odonto= Button(self.frame_datos_paciente, text= 'Salir', command= self.salir, font= self.fuenteb, fg= 'white', bg= "orange", width= 8)
         self.boton_salir_odonto.grid(row= 0, column= 4, padx= (300, 10), sticky= "e")
 
         self.create_widgets()
@@ -114,7 +114,7 @@ class Galeria:
 
     def salir(self):
         self.ventana_galeria.grab_release()
-        answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon= 'warning', parent= self.ventana_galeria)        
+        answer = messagebox.askokcancel('Salir', '¿Desea salir?', icon= 'warning', parent= self.ventana_galeria)        
         if answer:
             self.ventana_galeria.destroy()
         else: 
@@ -171,7 +171,7 @@ class Galeria:
 
         # Botón para agregar imagen
         self.add_btn = tk.Button(self.control_frame, image= self.agregar_imagen_icono, text= "Agregar Imagen", command= self.add_image, bg= self.color_fondo1)
-        self.add_btn.grid(column= 5, row= 0,  padx= (0, 25))
+        self.add_btn.grid(column= 5, row= 0, padx= (0, 25))
 
         # Botón para eliminar imagen
         self.del_btn = tk.Button(self.control_frame, image= self.eliminar_imagen_icono, text= "Eliminar Imagen", command= self.delete_image, bg= self.color_fondo1)
@@ -307,10 +307,10 @@ class Galeria:
                 
                 canvas_width = max(1, self.canvas.winfo_width())
                 canvas_height = max(1, self.canvas.winfo_height())
-                
+
                 if canvas_width <= 1 or canvas_height <= 1:
                     return  # Canvas no está listo aún
-                    
+
                 img_width = max(1, int(self.original_image.width * self.nivel_zoom))
                 img_height = max(1, int(self.original_image.height * self.nivel_zoom))
 

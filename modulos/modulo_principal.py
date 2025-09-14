@@ -357,7 +357,7 @@ class MasterPanel:
 
         except Exception as e:
             messagebox.showerror("ERROR", f"Error en la búsqueda: {e}", parent= self.ventana)
-            
+
     def seleccionar_paciente(self, event):
         item = self.tabla_paciente.focus()
         self.data = self.tabla_paciente.item(item)
@@ -426,7 +426,6 @@ class MasterPanel:
                 selected_item = self.tabla_usuario.selection()
                 item = self.tabla_usuario.item(selected_item)
                 self.usuario= item['values'][0]
-                #self.usuario = self.tabla_usuario.item(sel, "text")
                 if self.usuario != 'Usuario':
                     user = Usuario()
                     user.cargar_datos(self.usuario)
@@ -521,7 +520,6 @@ class MasterPanel:
             self.mostrar_odontologos()
         except:
             pass
-        
 
     def abrir_ayuda_chm(self):
         # Ruta fija de tu archivo CHM
@@ -530,7 +528,7 @@ class MasterPanel:
         if not os.path.exists(chm_path):
             messagebox.showerror("Error", "El archivo de ayuda no se encuentra en la ubicación esperada.")
             return
-        
+
         try:
             if sys.platform == "win32":
                 os.startfile(chm_path)
@@ -542,19 +540,17 @@ class MasterPanel:
 
     def widgets(self):
         self.imagen_usuario = utl.leer_imagen('usuario_icono.png', (38, 38))
-        self.imagen_paciente = utl.leer_imagen('agregar3.png', (38, 38))
+        self.imagen_paciente = utl.leer_imagen('paciente.png', (38, 38))
         self.imagen_ayuda = utl.leer_imagen('ayuda.png', (20, 20))
-        self.imagen_paciente = PhotoImage(file= './imagenes/agregar3.png')
-        self.imagen_calendario = PhotoImage(file= './imagenes/calendario-removebg-preview.png')
-        self.imagen_historia_clinica = PhotoImage(file= './imagenes/historial3.png')
-        self.imagen_galeria = PhotoImage(file= './imagenes/foto-removebg-preview.png')
+        self.imagen_calendario = utl.leer_imagen('calendario.png', (38, 38))
+        self.imagen_historia_clinica = utl.leer_imagen('odontograma.png', (38, 38))
+        self.imagen_galeria = utl.leer_imagen('galeria.png', (38, 38))
         self.imagen_herramientas = utl.leer_imagen('statistics-removebg.png', (38, 38))
-        self.imagen_agregar_paciente = PhotoImage(file= './imagenes/agregar_paciente.png')
-        self.imagen_editar_paciente = PhotoImage(file= './imagenes/editar_paciente.png')
-        self.imagen_editar = utl.leer_imagen('editar22.png', (38, 38))
-        self.imagen_eliminar_paciente = PhotoImage(file= './imagenes/eliminar22.png')
-        self.imagen_salir = PhotoImage(file= './imagenes/salir.png')
-        self.logo = PhotoImage(file= './imagenes/logo1.png')
+        self.imagen_agregar =  utl.leer_imagen('agregar.png', (30, 30))
+        self.imagen_editar = utl.leer_imagen('editar.png', (38, 38))
+        self.imagen_eliminar = utl.leer_imagen('eliminar.png', (30, 30))
+        self.imagen_salir = utl.leer_imagen('salir.png', (38, 38))
+        self.logo = utl.leer_imagen('logo1.png', (400, 400))
 
         try:
             self.imagen_inicio = PhotoImage(file ='./imagenes/home-removebg-preview.png')
@@ -631,9 +627,9 @@ class MasterPanel:
 
         ######################## USUARIOS #################
         Label(self.frame_usuarios, text= 'USUARIOS', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 3, padx= 5, sticky="W")       
-        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 1, pady= 5)
+        Button(self.frame_usuarios, image= self.imagen_agregar, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_usuario).grid(column= 0, row= 1, pady= 5)
         Label(self.frame_usuarios, text= 'Agregar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 2)
-        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 1, pady= 5)
+        Button(self.frame_usuarios, image= self.imagen_eliminar, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_usuario).grid(column= 1, row= 1, pady= 5)
         Label(self.frame_usuarios, text= 'Eliminar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 1, row= 2)
         Button(self.frame_usuarios, image= self.imagen_editar, text= 'Editar', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.editar_user).grid(column= 2, row= 1, pady= 5)
         Label(self.frame_usuarios, text= 'Editar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
@@ -656,9 +652,9 @@ class MasterPanel:
 
         ######################## ODONTÓLOGOS #################
         Label(self.frame_usuarios, text= 'ODONTÓLOGOS', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 4, columnspan= 3, padx= 5, sticky= "W")       
-        Button(self.frame_usuarios, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_odontologo).grid(column= 0, row= 5, pady= 5)
+        Button(self.frame_usuarios, image= self.imagen_agregar, text= 'AGREGAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_odontologo).grid(column= 0, row= 5, pady= 5)
         Label(self.frame_usuarios, text= 'Agregar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 6)
-        Button(self.frame_usuarios, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_odontologo).grid(column= 1, row= 5, pady= 5)
+        Button(self.frame_usuarios, image= self.imagen_eliminar, text= 'ELIMINAR', fg= 'black', font= self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_odontologo).grid(column= 1, row= 5, pady= 5)
         Label(self.frame_usuarios, text= 'Eliminar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 1, row= 6)
         Button(self.frame_usuarios, image= self.imagen_editar, text= 'Editar', fg= 'black', font = self.fuenteb, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.editar_profesional).grid(column= 2, row= 5, pady= 5)
         Label(self.frame_usuarios, text= 'Editar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 2, row= 6)
@@ -680,9 +676,9 @@ class MasterPanel:
 
 		######################## PACIENTES #################
         Label(self.frame_pacientes, text= 'PACIENTES', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(column= 0, row= 0, columnspan= 4, padx= 5, sticky= "W")       
-        Button(self.frame_pacientes, image= self.imagen_agregar_paciente, text= 'AGREGAR', fg= 'black', font= self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 0, row= 1, pady= 5)
+        Button(self.frame_pacientes, image= self.imagen_agregar, text= 'AGREGAR', fg= 'black', font= self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.agregar_paciente).grid(column= 0, row= 1, pady= 5)
         Label(self.frame_pacientes, text= 'Agregar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 0, row= 2)
-        Button(self.frame_pacientes, image= self.imagen_eliminar_paciente, text= 'ELIMINAR', fg= 'black', font= self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 1, row= 1, pady= 5)
+        Button(self.frame_pacientes, image= self.imagen_eliminar, text= 'ELIMINAR', fg= 'black', font= self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.eliminar_paciente).grid(column= 1, row= 1, pady= 5)
         Label(self.frame_pacientes, text= 'Eliminar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 1, row= 2)
         Button(self.frame_pacientes, image= self.imagen_editar, text= 'Editar', fg= 'black', font = self.fuenten, bg= self.color_fondo1, bd= 2, borderwidth= 2, command= self.editar_paciente2).grid(column= 2, row= 1, pady= 5)
         Label(self.frame_pacientes, text= 'Editar', bg= self.color_fondo2, fg= 'black', font= self.fuenteb).grid(column= 2, row= 2)
@@ -768,7 +764,7 @@ class MasterPanel:
         self.tabla_galeria.heading("D.N.I.", text= "D.N.I.")
         self.tabla_galeria.heading("Obra social", text= "Obra social")
 
-        self.tabla_galeria.bind("<Double-1>", self.abrir_galeria)
+        self.tabla_galeria.bind("<ButtonRelease-1>", self.abrir_galeria)
 
         ######################## herramientas #################
         Label(self.frame_herramientas, text= 'HERRAMIENTAS', bg= self.color_fondo2, fg= self.color_fondo1, font= ('Comic Sans MS', 15, 'bold')).grid(columnspan= 3, row= 0, sticky= 'W')

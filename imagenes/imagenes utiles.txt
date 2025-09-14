@@ -1,2 +1,0 @@
-imagenes
-LOGIN= LOGO1.png
