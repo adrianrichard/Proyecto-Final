@@ -88,8 +88,8 @@ class Backup:
         if not respuesta:
             return
 
-        carpeta_script = self.obtener_carpeta_script()
-        ruta_backup = os.path.join(carpeta_script, self.bd_seleccionada)
+        #carpeta_script = self.obtener_carpeta_script()
+        ruta_backup = os.path.join('bd', self.bd_seleccionada)
 
         # Verificar que el archivo existe
         if not os.path.exists(ruta_backup):
@@ -133,14 +133,14 @@ class Backup:
         if not respuesta:
             return
 
-        carpeta_script = self.obtener_carpeta_script()
+        #carpeta_script = self.obtener_carpeta_script()
         
         # Definir nombres de archivos
         bd_principal = "consultorioMyM.sqlite3"
         bd_backup = self.bd_seleccionada
         
-        ruta_backup = os.path.join(carpeta_script, bd_backup)
-        ruta_principal = os.path.join(carpeta_script, bd_principal)
+        ruta_backup = os.path.join('bd', bd_backup)
+        ruta_principal = os.path.join('bd', bd_principal)
         
         # Verificar que el backup existe
         if not os.path.exists(ruta_backup):
@@ -243,13 +243,15 @@ class Backup:
 
     def crear_backup(self):
         """Crea una copia de seguridad de la base de datos"""
-        carpeta_script = self.obtener_carpeta_script()
+        
+        #carpeta_script = self.obtener_carpeta_script()
+        #print()
         fecha_actual = datetime.now().strftime("%Y%m%d_%H%M")
         nombre = 'consultorioMyM'
 
-        ruta_original = os.path.join(carpeta_script, nombre + ".sqlite3")
+        ruta_original = os.path.join('bd', nombre + ".sqlite3")
         base_nombre = f"{nombre}_{fecha_actual}.sqlite3"
-        ruta_copia = os.path.join(carpeta_script, base_nombre)
+        ruta_copia = os.path.join('bd', base_nombre)
 
         try:
             # Verificar que la base de datos original existe
@@ -275,11 +277,11 @@ class Backup:
 
     def listar_bases_datos(self):
         """Lista todas las bases de datos .sqlite3 excepto la principal consultorioMyM.sqlite3"""
-        carpeta_origen = self.obtener_carpeta_script()
+        #carpeta_origen = self.obtener_carpeta_script()
 
         # Obtener todos los archivos .sqlite3 excluyendo la BD principal
         bases_datos = [
-            f for f in os.listdir(carpeta_origen) 
+            f for f in os.listdir('bd') 
             if f.endswith(".sqlite3") and f != "consultorioMyM.sqlite3"
         ]
 
@@ -289,7 +291,7 @@ class Backup:
 
         # Insertar las bases de datos en la tabla
         for base_datos in bases_datos:
-            ruta_archivo = os.path.join(carpeta_origen, base_datos)
+            ruta_archivo = os.path.join('bd', base_datos)
             try:
                 fecha_creacion = datetime.fromtimestamp(os.path.getctime(ruta_archivo)).strftime('%Y-%m-%d %H:%M:%S')
                 nombre_sin_extension = os.path.splitext(base_datos)[0]

@@ -20,6 +20,7 @@ class Odontograma:
         super().__init__(*args, **kwargs)
         self.dni_paciente = StringVar()
         self.ID_odonto = StringVar()
+        self.ID_odonto= 0
         self.fuenten= utl.definir_fuente()
         self.fuenteb= utl.definir_fuente_bold()
         self.db = Conexion()
@@ -241,95 +242,124 @@ class Odontograma:
             self.ventana_odontograma.grab_set()
 
     def crear_pdf(self):
-        # Captura la ventana y guarda el área del Canvas
-        x0 = self.frame_dientes.winfo_rootx() + self.canvas.winfo_x()
-        y0 = self.frame_dientes.winfo_rooty() + self.canvas.winfo_y()
-        x1 = x0 + self.canvas.winfo_width()
-        y1 = y0 + self.canvas.winfo_height()
-        imagen_canvas = ImageGrab.grab((x0, y0, x1, y1))
-        imagen_canvas.save("canvas_image.png")
-        apellido= self.paciente[0]
-        nombre= self.paciente[1]
-        dni= self.paciente[2]
-        fechanac= self.convertir_fecha(self.paciente[3])
-        obra_social= self.paciente[4]
-        nrosocio= self.paciente[5]
-        # Crear el PDF con ReportLab e insertar la imagen
-        nombre_archivo = nombre+apellido+self.fecha_actual+".pdf"
-        pdf = pdf_canvas.Canvas(nombre_archivo, pagesize=A4)
-        ancho_pagina, alto_pagina = A4
-        logo_path = "./imagenes/LOGO11.png"
-        alto_imagen= 500
-        if os.path.exists(logo_path):
-            with Image.open(logo_path) as img:
-                logo_width, logo_height = img.size
-                escala_logo = min(alto_imagen / logo_width, alto_imagen / logo_height)  # Escalar a máximo 80x80
-                logo_width = int(logo_width * escala_logo)
-                logo_height = int(logo_height * escala_logo)
-                logo_x = (ancho_pagina - logo_width) / 2  # Centrar en X
-                logo_y = alto_pagina - 120  # Posición en Y desde la parte superior
-
-            pdf.drawImage(logo_path, logo_x, logo_y, width=logo_width, height=logo_height)
-
-        pdf.setFont("Helvetica", 15)
-        pdf.setStrokeColor("black")
-        pdf.setLineWidth(1)
-        # Título
-        pdf.setFont("Helvetica-Bold", 16)
-        pdf.drawCentredString(ancho_pagina/2, alto_pagina - 150, "FICHA ODONTOLÓGICA")
-       
-        pdf.line(50, alto_pagina - 130, ancho_pagina - 50, alto_pagina - 130)
-        datos_paciente = [
-            ["APELLIDO/S Y NOMBRE/S", apellido+", "+nombre],
-            ["D.N.I.", dni],
-            ["OBRA SOCIAL", obra_social],
-            ["N° SOCIO", nrosocio],
-            ["FECHA INFORME", self.fecha_actual]
-        ]
-
-        tabla_paciente = Table(datos_paciente, colWidths=[160, 335])
-        tabla_paciente.setStyle(TableStyle([
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
-            ('ALIGN', (1, 0), (1, -1), 'LEFT'),
-            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-            ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
-        ]))
-        tabla_paciente.wrapOn(pdf, ancho_pagina, alto_pagina)
-        tabla_paciente.drawOn(pdf, 50, alto_pagina - 250)
-        # pdf.drawString(50, alto_pagina - 150, f"Apellido/s y Nombre/s: {apellido}, {nombre}")
-        # pdf.drawString(50, alto_pagina - 170, f"DNI: {dni} ")
-        # pdf.drawString(50, alto_pagina - 190, f"Obra Social: {obra_social}")
-        # pdf.drawString(ancho_pagina - 300, alto_pagina - 190, f"N° de Socio: {nrosocio}")
-        # Línea divisoria antes de la imagen
-        pdf.line(50, alto_pagina - 270, ancho_pagina - 50, alto_pagina - 270)
-        captura_path = "canvas_image.png"
-        if os.path.exists(captura_path):
-            with Image.open(captura_path) as img:
-                img_width, img_height = img.size
-                max_width = ancho_pagina - 100
-                max_height = alto_pagina - 200
-                escala_canvas = min(max_width / img_width, max_height / img_height)
-                img_width = int(img_width * escala_canvas)
-                img_height = int(img_height * escala_canvas)
-                captura_x = (ancho_pagina - img_width) / 2  # Centrar en X
-                captura_y = alto_pagina - 500  # Margen inferior de 50
-            pdf.drawImage(captura_path, captura_x, captura_y, width=img_width, height=img_height)
-        
-        pdf.line(50, 50, ancho_pagina - 50, 50)
-        pdf.setFont("Helvetica-Bold", 10)
-        pdf.drawCentredString(ancho_pagina/2, 30, f"MyM Odontología | {self.fecha_actual}")
         try:
-            pdf.save()
+            # Crear carpeta "odontogramas" en la raíz si no existe
+            carpeta_odontogramas = "odontogramas"
+            if not os.path.exists(carpeta_odontogramas):
+                os.makedirs(carpeta_odontogramas)
+            
+            # Captura la ventana y guarda el área del Canvas
+            x0 = self.frame_dientes.winfo_rootx() + self.canvas.winfo_x()
+            y0 = self.frame_dientes.winfo_rooty() + self.canvas.winfo_y()
+            x1 = x0 + self.canvas.winfo_width()
+            y1 = y0 + self.canvas.winfo_height()
+            imagen_canvas = ImageGrab.grab((x0, y0, x1, y1))
+            
+            # Guardar imagen temporal en la carpeta odontogramas
+            temp_image_path = os.path.join(carpeta_odontogramas, "canvas_image.png")
+            imagen_canvas.save(temp_image_path)
+            
+            apellido = self.paciente[0]
+            nombre = self.paciente[1]
+            dni = self.paciente[2]
+            fechanac = self.convertir_fecha(self.paciente[3])
+            obra_social = self.paciente[4]
+            nrosocio = self.paciente[5]
+            
+            # Crear el nombre del archivo PDF en la carpeta odontogramas
+            nombre_archivo = nombre + apellido + self.fecha_actual + ".pdf"
+            pdf_path = os.path.join(carpeta_odontogramas, nombre_archivo)
+            
+            pdf = pdf_canvas.Canvas(pdf_path, pagesize=A4)
+            ancho_pagina, alto_pagina = A4
+            
+            logo_path = "LOGO11.png"
+            alto_imagen = 500
+            
+            if os.path.exists(logo_path):
+                with Image.open(logo_path) as img:
+                    logo_width, logo_height = img.size
+                    escala_logo = min(alto_imagen / logo_width, alto_imagen / logo_height)
+                    logo_width = int(logo_width * escala_logo)
+                    logo_height = int(logo_height * escala_logo)
+                    logo_x = (ancho_pagina - logo_width) / 2
+                    logo_y = alto_pagina - 120
+
+                pdf.drawImage(logo_path, logo_x, logo_y, width=logo_width, height=logo_height)
+
+            pdf.setFont("Helvetica", 15)
+            pdf.setStrokeColor("black")
+            pdf.setLineWidth(1)
+            
+            # Título
+            pdf.setFont("Helvetica-Bold", 16)
+            pdf.drawCentredString(ancho_pagina/2, alto_pagina - 150, "FICHA ODONTOLÓGICA")
+        
+            pdf.line(50, alto_pagina - 130, ancho_pagina - 50, alto_pagina - 130)
+            
+            datos_paciente = [
+                ["APELLIDO/S Y NOMBRE/S", apellido + ", " + nombre],
+                ["D.N.I.", dni],
+                ["OBRA SOCIAL", obra_social],
+                ["N° SOCIO", nrosocio],
+                ["FECHA INFORME", self.fecha_actual]
+            ]
+
+            tabla_paciente = Table(datos_paciente, colWidths=[160, 335])
+            tabla_paciente.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+                ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                ('BACKGROUND', (0, 0), (0, -1), colors.lightgrey),
+            ]))
+            tabla_paciente.wrapOn(pdf, ancho_pagina, alto_pagina)
+            tabla_paciente.drawOn(pdf, 50, alto_pagina - 250)
+            
+            # Línea divisoria antes de la imagen
+            pdf.line(50, alto_pagina - 270, ancho_pagina - 50, alto_pagina - 270)
+            
+            # Usar la imagen temporal guardada en la carpeta odontogramas
+            if os.path.exists(temp_image_path):
+                with Image.open(temp_image_path) as img:
+                    img_width, img_height = img.size
+                    max_width = ancho_pagina - 100
+                    max_height = alto_pagina - 200
+                    escala_canvas = min(max_width / img_width, max_height / img_height)
+                    img_width = int(img_width * escala_canvas)
+                    img_height = int(img_height * escala_canvas)
+                    captura_x = (ancho_pagina - img_width) / 2
+                    captura_y = alto_pagina - 500
+                pdf.drawImage(temp_image_path, captura_x, captura_y, width=img_width, height=img_height)
+            
+            pdf.line(50, 50, ancho_pagina - 50, 50)
+            pdf.setFont("Helvetica-Bold", 10)
+            pdf.drawCentredString(ancho_pagina/2, 30, f"MyM Odontología | {self.fecha_actual}")
+            
+            try:
+                pdf.save()
+                # Limpiar imagen temporal
+                if os.path.exists(temp_image_path):
+                    os.remove(temp_image_path)
+                    
+                self.ventana_odontograma.grab_release()
+                messagebox.showinfo("Odontograma", "Informe creado exitosamente", parent=self.ventana_odontograma)
+                self.ventana_odontograma.grab_set()
+                self.abrir_carpeta_contenedora(pdf_path)  # Pasar la ruta completa del PDF
+            except Exception as e:
+                # Limpiar imagen temporal en caso de error
+                if os.path.exists(temp_image_path):
+                    os.remove(temp_image_path)
+                    
+                self.ventana_odontograma.grab_release()
+                messagebox.showwarning("Odontograma", f"No se pudo crear el informe: {e}", parent=self.ventana_odontograma)
+                self.ventana_odontograma.grab_set()
+                
+        except Exception as e:
             self.ventana_odontograma.grab_release()
-            messagebox.showinfo("Odontograma", "Informe creado exitosamente", parent= self.ventana_odontograma)
-            self.ventana_odontograma.grab_set()
-            self.abrir_carpeta_contenedora(nombre_archivo)
-        except:
-            self.ventana_odontograma.grab_release()
-            messagebox.showwarning("Odontograma", "No se pudo crear el informe", parent= self.ventana_odontograma)
+            messagebox.showwarning("Odontograma", f"Error al crear el PDF: {e}", parent=self.ventana_odontograma)
             self.ventana_odontograma.grab_set()
     
     def abrir_carpeta_contenedora(self, filepath):

@@ -130,10 +130,10 @@ class Odontologo:
                 self.miConexion.commit()
                 if self.master_panel_ref:  # Si tenemos referencia al panel principal
                     self.master_panel_ref.mostrar_odontologos()
-                messagebox.showinfo("GUARDAR", "Guardado exitosamente", parent= self.frame_odontologo)                
-                self.frame_odontologo.destroy()
                 self.frame_odontologo.grab_release()
+                messagebox.showinfo("GUARDAR", "Guardado exitosamente", parent= self.frame_odontologo)                
                 self.frame_odontologo.grab_set()
+                self.frame_odontologo.destroy()                
             except:
                 self.frame_odontologo.grab_release()
                 messagebox.showinfo("GUARDAR", "No se ha podido guardar el odontólogo", parent= self.frame_odontologo)

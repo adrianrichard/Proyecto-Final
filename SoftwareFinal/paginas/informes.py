@@ -73,7 +73,11 @@ class Informes:
             self.selector_mes.set(meses[0])
             self.selector_anio= ttk.Combobox(self.nueva_ventana, state= "readonly", values= anios, width= 20, background= "white")
             self.selector_anio.grid(column= 1, row= 1, padx= (10, 10), pady= (0, 5))
-            self.selector_anio.set(anios[0])
+            if anios != []:
+                self.selector_anio.set(anios[0])
+            else:
+                self.selector_anio.set("No hay datos")
+                self.selector_anio.config(state= "disabled")
         if self.informe_seleccionado == 'Cantidad de turnos' or self.informe_seleccionado == 'Horario de turnos por año' or self.informe_seleccionado == 'Prestaciones':
             self.selector_mes.config(state= "disabled")
 
@@ -122,6 +126,7 @@ class Informes:
             valoresy = [fila[1] for fila in datos]
             if not valoresy :  # Verificar si datos está vacío
                 ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color= 'gray')
+                ax.set_title('NO HAY DATOS')
             else:
                 ax.bar(valoresx, valoresy, color= 'skyblue')  # Gráfico de barras
                 ax.set_title(titulo, fontsize= 8, fontweight= 'bold', pad= 10)
@@ -134,6 +139,7 @@ class Informes:
             datos = self.obtener_horario_mes()
             if len(datos) == 0 :  # Verificar si datos está vacío
                 ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color= 'gray')
+                ax.set_title('NO HAY DATOS')
             else:
                 valoresy = [fila[1] for fila in datos]
                 valoresx = [fila[0] for fila in datos]
@@ -148,6 +154,7 @@ class Informes:
             datos = self.obtener_horario_anio()
             if not datos :  # Verificar si datos está vacío
                 ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color= 'gray')
+                ax.set_title('NO HAY DATOS')
             else:
                 valoresy = [fila[1] for fila in datos]
                 valoresx = [fila[0] for fila in datos]
@@ -162,6 +169,7 @@ class Informes:
             datos = self.contar_dias_semana()            
             if not datos :  # Verificar si datos está vacío
                 ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color= 'gray')
+                ax.set_title('NO HAY DATOS')
             else:
                 valoresy = [fila[1] for fila in datos]
                 valoresx = [fila[0] for fila in datos]
@@ -176,6 +184,7 @@ class Informes:
             datos = self.obtener_prestaciones_anio()   
             if not datos :  # Verificar si datos está vacío
                 ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color='gray')
+                ax.set_title('NO HAY DATOS')
             else:
                 valoresy = [fila[1] for fila in datos]
                 valoresx = [fila[0] for fila in datos]
@@ -190,6 +199,7 @@ class Informes:
             datos = self.obtener_distribucion_etaria()
             if not datos :  # Verificar si datos está vacío
                 ax.text(0.5, 0.5, 'No hay datos disponibles\npara este período', ha= 'center', va= 'center', fontsize= 10, color= 'gray')
+                ax.set_title('NO HAY DATOS')
             else:
                 valoresy = [fila[1] for fila in datos]
                 valoresx = [fila[0] for fila in datos]
@@ -410,14 +420,22 @@ class Informes:
         #name=''
         try:
             carpeta_informes = os.path.join(os.path.expanduser("."), "informes")
+            if not os.path.exists(carpeta_informes):
+                os.makedirs(carpeta_informes)
             if self.informe_seleccionado == 'Cantidad de turnos':
                 pdf_filename='CantidadTurnos'+self.selector_anio.get()+'.pdf'
-            if self.informe_seleccionado == 'Horario de turnos por mes':
+            elif self.informe_seleccionado == 'Horario de turnos por mes':
                 pdf_filename='HorarioTurnos'+self.selector_mes.get()+self.selector_anio.get()+'.pdf'
-            if self.informe_seleccionado == 'Horario de turnos por año':
+            elif self.informe_seleccionado == 'Horario de turnos por año':
                 pdf_filename='HorarioTurnos'+self.selector_anio.get()+'.pdf'
-            if self.informe_seleccionado == 'Día de turnos':
+            elif self.informe_seleccionado == 'Día de turnos':
                 pdf_filename='Día de turnos'+self.selector_mes.get()+self.selector_anio.get()+'.pdf'
+            elif self.informe_seleccionado == 'Prestaciones':
+                pdf_filename='Prestaciones-'+self.selector_anio.get()+'.pdf'
+            elif self.informe_seleccionado == 'Rango etario pacientes':
+                pdf_filename='Rango etario pacientes.pdf'
+            else:
+                pdf_filename='informe_generico.pdf'
 
             # pdf_filename = "documento_con_graficas.pdf"
             file_path = os.path.join(carpeta_informes, pdf_filename)
@@ -430,7 +448,7 @@ class Informes:
             content = []
             
             # Añadir una imagen externa y mantener la relación de aspecto
-            image_path = "./imagenes/logo.png"  # Cambia "logo.png" al nombre de tu imagen
+            image_path = "LOGO.png"  # Cambia "logo.png" al nombre de tu imagen
             max_width = 20 * cm
             max_height = 10 * cm
             if os.path.exists(image_path):
@@ -446,7 +464,7 @@ class Informes:
             # Título
             title = Paragraph("Informe", styles['Title'])
             content.append(title)
-            content.append(Spacer(1, 60))
+            content.append(Spacer(1, 5))
 
             # Crear gráficos y añadirlos al PDF
             bar_chart_buffer = self.create_bar_chart()
@@ -476,8 +494,8 @@ class Informes:
             document.build(content)
 
             # Abrir el PDF con el visor predeterminado del sistema
-            os.startfile(pdf_filename)  # Para Windows
+            os.startfile(file_path)  # Para Windows
         except Exception as e:
             self.nueva_ventana.grab_release()
-            messagebox.showwarning("Error", "f'Error al crear el informe: {e}'", parent= self.nueva_ventana)
+            messagebox.showwarning("Error", f'Error al crear el informe: {e}', parent= self.nueva_ventana)
             self.nueva_ventana.grab_set()
