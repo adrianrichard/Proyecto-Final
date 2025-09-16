@@ -20,4 +20,6 @@ Pillow 11.0.0
 Reportlab 4.2.5
 Mtplotlib 3.9.2
 
-Autor: Rodrigo Adrián Richard
+Autor
+-------------------------------
+Rodrigo Adrián Richard
