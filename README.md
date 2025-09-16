@@ -23,3 +23,7 @@ Mtplotlib 3.9.2
 Autor
 -------------------------------
 Rodrigo Adrián Richard
+
+Contacto
+-----------------------------
+rodrigoadrianrichard@gmail.com
