@@ -182,9 +182,7 @@ class Odontograma:
                 self.ID_odonto_actual= self.miCursor.fetchone()
                 self.ID_odonto = self.ID_odonto_actual[0]
             except:
-                self.ventana_odontograma.grab_release()
-                messagebox.showinfo("Odontograma", "Crear odontograma", parent= self.ventana_odontograma)
-                self.ventana_odontograma.grab_set()
+                return
         #UTIL PARA CUANDO PODAMOS ELEGIR UN ODONTOGRAMA ANTERIOR
         else:
             try:
