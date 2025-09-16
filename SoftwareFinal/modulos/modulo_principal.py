@@ -551,15 +551,11 @@ class MasterPanel:
         self.imagen_eliminar = utl.leer_imagen('imagenes/eliminar.png', (30, 30), True)
         self.imagen_salir = utl.leer_imagen('imagenes/salir.png', (38, 38), True)
         self.logo = utl.leer_imagen('imagenes/logo1.png', (400, 400), True)
-
-        try:
-            self.imagen_inicio = utl.leer_imagen('imagenes/home-removebg-preview.png', (35, 35), True)
-            self.imagen_menu = utl.leer_imagen('imagenes/menu4.png', (38, 38), True)
-            self.bt_inicio = Button(self.frame_inicio, image= self.imagen_inicio, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.menu_lateral)
-            self.bt_cerrar = Button(self.frame_inicio, image= self.imagen_menu, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.menu_lateral)
-        except:
-            self.bt_inicio = Button(self.frame_inicio, text= 'INICIO', font= (self.fuente_titulo, 12, 'bold'), bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.menu_lateral)
-            self.bt_cerrar = Button(self.frame_inicio, text= '☰', font= ('Comic Sans MS', 12, 'bold'), bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.menu_lateral)
+        self.imagen_inicio = utl.leer_imagen('imagenes/home.png', (35, 35), mantener_proporciones=True)
+        self.imagen_menu = utl.leer_imagen('imagenes/menu4.png', (38, 38), mantener_proporciones=True)
+        
+        self.bt_inicio = Button(self.frame_inicio, text= 'INICIO', image= self.imagen_inicio, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.menu_lateral)
+        self.bt_cerrar = Button(self.frame_inicio, text= '☰', image= self.imagen_menu, bg= self.color_fondo1, activebackground= 'white', bd= 0, command= self.menu_lateral)
 
         self.bt_inicio.grid(column= 0, row= 0, padx= 5, pady= 10)
         self.bt_cerrar.grid(column= 0, row= 0, padx= 5, pady= 10)

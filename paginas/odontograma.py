@@ -258,7 +258,7 @@ class Odontograma:
         nombre_archivo = nombre+apellido+self.fecha_actual+".pdf"
         pdf = pdf_canvas.Canvas(nombre_archivo, pagesize=A4)
         ancho_pagina, alto_pagina = A4
-        logo_path = "./imagenes/LOGO11.png"
+        logo_path = "LOGO11.png"
         alto_imagen= 500
         if os.path.exists(logo_path):
             with Image.open(logo_path) as img:

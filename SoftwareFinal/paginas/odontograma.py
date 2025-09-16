@@ -243,8 +243,11 @@ class Odontograma:
 
     def crear_pdf(self):
         try:
-            # Crear carpeta "odontogramas" en la raíz si no existe
-            carpeta_odontogramas = "odontogramas"
+            # Obtener la ruta del directorio donde está main.py
+            directorio_actual = os.path.dirname(os.path.abspath(__file__))
+            directorio_padre = os.path.dirname(directorio_actual)
+            carpeta_odontogramas = os.path.join(directorio_padre, "odontogramas")
+            
             if not os.path.exists(carpeta_odontogramas):
                 os.makedirs(carpeta_odontogramas)
             
@@ -256,13 +259,13 @@ class Odontograma:
             imagen_canvas = ImageGrab.grab((x0, y0, x1, y1))
             
             # Guardar imagen temporal en la carpeta odontogramas
-            temp_image_path = os.path.join(carpeta_odontogramas, "canvas_image.png")
+            temp_image_path = os.path.join(directorio_padre, "canvas_image.png")
             imagen_canvas.save(temp_image_path)
             
             apellido = self.paciente[0]
             nombre = self.paciente[1]
             dni = self.paciente[2]
-            fechanac = self.convertir_fecha(self.paciente[3])
+            #fechanac = self.convertir_fecha(self.paciente[3])
             obra_social = self.paciente[4]
             nrosocio = self.paciente[5]
             
@@ -273,7 +276,8 @@ class Odontograma:
             pdf = pdf_canvas.Canvas(pdf_path, pagesize=A4)
             ancho_pagina, alto_pagina = A4
             
-            logo_path = "LOGO11.png"
+            # Ruta del logo relativa al directorio actual
+            logo_path = os.path.join(directorio_padre, "LOGO11.png")
             alto_imagen = 500
             
             if os.path.exists(logo_path):
@@ -322,8 +326,9 @@ class Odontograma:
             pdf.line(50, alto_pagina - 270, ancho_pagina - 50, alto_pagina - 270)
             
             # Usar la imagen temporal guardada en la carpeta odontogramas
-            if os.path.exists(temp_image_path):
-                with Image.open(temp_image_path) as img:
+            temp_image_full_path = os.path.join(carpeta_odontogramas, "canvas_image.png")
+            if os.path.exists(temp_image_full_path):
+                with Image.open(temp_image_full_path) as img:
                     img_width, img_height = img.size
                     max_width = ancho_pagina - 100
                     max_height = alto_pagina - 200
@@ -332,7 +337,7 @@ class Odontograma:
                     img_height = int(img_height * escala_canvas)
                     captura_x = (ancho_pagina - img_width) / 2
                     captura_y = alto_pagina - 500
-                pdf.drawImage(temp_image_path, captura_x, captura_y, width=img_width, height=img_height)
+                pdf.drawImage(temp_image_full_path, captura_x, captura_y, width=img_width, height=img_height)
             
             pdf.line(50, 50, ancho_pagina - 50, 50)
             pdf.setFont("Helvetica-Bold", 10)
@@ -341,17 +346,17 @@ class Odontograma:
             try:
                 pdf.save()
                 # Limpiar imagen temporal
-                if os.path.exists(temp_image_path):
-                    os.remove(temp_image_path)
+                if os.path.exists(temp_image_full_path):
+                    os.remove(temp_image_full_path)
                     
                 self.ventana_odontograma.grab_release()
-                messagebox.showinfo("Odontograma", "Informe creado exitosamente", parent=self.ventana_odontograma)
+                messagebox.showinfo("Odontograma", f"Informe creado exitosamente en:\n{pdf_path}", parent=self.ventana_odontograma)
                 self.ventana_odontograma.grab_set()
-                self.abrir_carpeta_contenedora(pdf_path)  # Pasar la ruta completa del PDF
+                self.abrir_carpeta_contenedora(pdf_path)
             except Exception as e:
                 # Limpiar imagen temporal en caso de error
-                if os.path.exists(temp_image_path):
-                    os.remove(temp_image_path)
+                if os.path.exists(temp_image_full_path):
+                    os.remove(temp_image_full_path)
                     
                 self.ventana_odontograma.grab_release()
                 messagebox.showwarning("Odontograma", f"No se pudo crear el informe: {e}", parent=self.ventana_odontograma)
@@ -361,7 +366,7 @@ class Odontograma:
             self.ventana_odontograma.grab_release()
             messagebox.showwarning("Odontograma", f"Error al crear el PDF: {e}", parent=self.ventana_odontograma)
             self.ventana_odontograma.grab_set()
-    
+        
     def abrir_carpeta_contenedora(self, filepath):
         try:
             sistema = platform.system()
