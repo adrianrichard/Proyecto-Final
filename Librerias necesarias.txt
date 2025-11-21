@@ -1,0 +1,9 @@
+LIBRERIAS NECESARIAS
+---------------------------------------------------------
+- MAIN: Python, Pillow, 
+- LOGIN (REVISADO)
+- PRINCIPAL (REVISADO)
+- CONEXION (REVISADO - PERO SE PUEDEN AGREGAR COSAS)
+- CONFIG 
+- PACIENTE (REVISADO)
+- USUARIO 

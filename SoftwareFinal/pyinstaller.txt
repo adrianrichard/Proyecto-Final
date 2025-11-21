@@ -1,1 +1,0 @@
-pyinstaller --onefile --windowed --name=DentalMatic --icon=imagenes/tooth.ico --add-data "imagenes;imagenes" --add-data "util;util" --add-data "bd;bd" --add-data "paginas;paginas" --add-data "informes;informes" --add-data "galeria;galeria" --hidden-import=sqlite3 --hidden-import=matplotlib --hidden-import=numpy --hidden-import=matplotlib.backends.backend_tkagg main.py
