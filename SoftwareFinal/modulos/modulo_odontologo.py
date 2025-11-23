@@ -3,6 +3,7 @@ import util.config as utl
 from bd.conexion import Conexion
 import re
 from tkinter import messagebox, Button, Entry, Label, StringVar, Frame
+#import sqlite3
 
 class Odontologo:
 
@@ -27,7 +28,7 @@ class Odontologo:
         self.frame_odontologo= tk.Toplevel()
         self.frame_odontologo.grab_set_global() # Obliga a las ventanas estar deshabilitadas y deshabilitar todos los eventos e interacciones con la ventana
         self.frame_odontologo.focus_set() # Mantiene el foco cuando se abre la ventana.
-        self.imagen_ventana = utl.leer_imagen('imagenes/tooth.jpg', (38, 38), mantener_proporciones=True)
+        self.imagen_ventana = utl.leer_imagen('tooth.jpg', (38, 38))
         self.frame_odontologo.iconphoto(False, self.imagen_ventana)
         self.frame_odontologo.title('DentalMatic')
         self.frame_odontologo.geometry('500x300')
@@ -114,7 +115,6 @@ class Odontologo:
             self.matricula_valida.config(fg= "green", text= "Válido")
             self.entry_matricula.config(bg= "green")
             matricula = True
-        datos = self.matricula.get(), self.apellido_odontologo.get().upper(), self.nombre_odontologo.get().upper()
         if apellido and nombre and matricula:
             datos = self.matricula.get(), self.apellido_odontologo.get().upper(), self.nombre_odontologo.get().upper()
             if self.verificar_matricula_existente(self.matricula.get()):
@@ -128,11 +128,11 @@ class Odontologo:
                 self.miCursor.execute("INSERT INTO Odontologos VALUES(?,?,?)", (datos))
                 self.miConexion.commit()
                 if self.master_panel_ref:  # Si tenemos referencia al panel principal
-                    self.master_panel_ref.mostrar_odontologos()
+                    self.master_panel_ref.mostrar_odontologos()                               
                 self.frame_odontologo.grab_release()
-                messagebox.showinfo("GUARDAR", "Guardado exitosamente", parent= self.frame_odontologo)                
+                messagebox.showinfo("GUARDAR", "Guardado exitosamente", parent= self.frame_odontologo) 
                 self.frame_odontologo.grab_set()
-                self.frame_odontologo.destroy()                
+                self.frame_odontologo.destroy()
             except:
                 self.frame_odontologo.grab_release()
                 messagebox.showinfo("GUARDAR", "No se ha podido guardar el odontólogo", parent= self.frame_odontologo)
@@ -187,9 +187,11 @@ class Odontologo:
         if apellido_valido and nombre_valido:
             if int(self.matricula.get()) != self.matricula_anterior:
                 if self.verificar_matricula_existente(self.matricula.get()):
+                    self.frame_odontologo.grab_release()
                     messagebox.showerror("Error", "La matrícula ya existe")
                     self.matricula_valida.config(fg= "red", text= "Ya existe")
                     self.entry_matricula.config(bg= "red")
+                    self.frame_odontologo.grab_set()
                     return
             try:
                 sql = "UPDATE Odontologos SET Apellido_odontologo = ?, Nombre_odontologo = ?, Matricula = ? WHERE Matricula = ?"
@@ -222,6 +224,7 @@ class Odontologo:
     def Salir(self):
         self.frame_odontologo.grab_release()
         answer = messagebox.askokcancel('Salir', '¿Desea salir sin guardar?', icon='warning')
+        self.frame_odontologo.grab_set()
         if answer:
             self.miConexion.close()
             self.frame_odontologo.destroy()
