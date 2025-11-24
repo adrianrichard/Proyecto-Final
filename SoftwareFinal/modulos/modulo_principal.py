@@ -114,6 +114,7 @@ class MasterPanel:
         [self.frame_tabla_paciente.columnconfigure(i, weight= 1) for i in range(self.frame_pacientes.grid_size()[0])]
         [self.frame_pacientes.columnconfigure(i, weight= 1) for i in range(self.frame_pacientes.grid_size()[0])]
         [self.frame_tabla_paciente.rowconfigure(i, weight= 1) for i in range(self.frame_pacientes.grid_size()[1])]
+        self.mostrar_pacientes()
 
     def pantalla_calendario(self):
         self.paginas.select([self.frame_calendario])
@@ -155,7 +156,7 @@ class MasterPanel:
 
     def agregar_paciente(self):
         paciente= Paciente()
-        paciente.ventana_paciente(master_panel_ref=self)
+        paciente.ventana_paciente(master_panel_ref= self)
 
     def editar_paciente(self, event):
         item = self.tabla_paciente.focus()
@@ -165,7 +166,7 @@ class MasterPanel:
                 self.dni_paciente = self.data['values'][2]
                 paciente = Paciente()
                 paciente.cargar_datos(self.dni_paciente)
-                paciente.ventana_paciente(master_panel_ref=self)
+                paciente.ventana_paciente(master_panel_ref= self)
             except Exception as e:
                 messagebox.showerror("ERROR", f"No se pudo cargar el paciente: {e}", parent= self.ventana)
 
@@ -177,16 +178,14 @@ class MasterPanel:
                 self.dni_paciente = self.data['values'][2]
                 paciente = Paciente()
                 paciente.cargar_datos(self.dni_paciente)
-                paciente.ventana_paciente(master_panel_ref=self)
+                paciente.ventana_paciente(master_panel_ref= self)
             except Exception as e:
                 messagebox.showerror("ERROR", f"No se pudo cargar el paciente: {e}", parent= self.ventana)
     
     def abrir_galeria(self, event):
-        """Abre la galería del paciente seleccionado"""
         item = self.tabla_galeria.focus()
         if not item:
-            return
-            
+            return            
         try:
             self.data = self.tabla_galeria.item(item)
             if not self.data['values'] or len(self.data['values']) < 3:
@@ -227,7 +226,7 @@ class MasterPanel:
     def eliminar_paciente(self):
         try:
             self.miCursor = self.miConexion.cursor()
-            msg_box = messagebox.askquestion('Eliminar paciente', '¿Desea elminar al paciente?', icon='warning', parent= self.ventana)
+            msg_box = messagebox.askquestion('Eliminar paciente', f'¿Desea elminar al paciente\n{self.apellido_paciente}, {self.nombre_paciente}?', icon='warning', parent= self.ventana)
             if msg_box == 'yes':
                 self.miCursor.execute("DELETE FROM Pacientes WHERE ID = ?", (self.dni_paciente,))
                 self.miConexion.commit()
@@ -363,6 +362,8 @@ class MasterPanel:
         self.data = self.tabla_paciente.item(item)
         try:
             self.dni_paciente = self.data['values'][2]
+            self.nombre_paciente = self.data['values'][1]
+            self.apellido_paciente = self.data['values'][0]
         except:
             pass
 
