@@ -219,15 +219,15 @@ def main():
     conn = conectar_bd()
     if conn is None:
         return
-    insertar_odontologos(conn)
-    try:
-        cantidad = int(input("\n¿Cuántos pacientes deseas generar? (default: 100): ") or "100")
-    except ValueError:
-        cantidad = 100
+    # insertar_odontologos(conn)
+    # try:
+    #     cantidad = int(input("\n¿Cuántos pacientes deseas generar? (default: 100): ") or "100")
+    # except ValueError:
+    #     cantidad = 100
 
-    if cantidad > 0:
-        insertar_pacientes(conn, cantidad)
-    cantidad = 1000
+    # if cantidad > 0:
+    #     insertar_pacientes(conn, cantidad)
+    cantidad = 2000
     generar_turnos(conn, cantidad)
     conn.close()
 
