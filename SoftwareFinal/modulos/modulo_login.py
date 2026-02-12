@@ -55,19 +55,19 @@ class Login:
             self.usuario.delete(0, tk.END)
             self.password.delete(0, tk.END)
             db.crear_bd_login()
-            messagebox.showwarning("Ingreso", "Base de datos creada\nIntente ingresar nuevamente", parent= self.frame_login)
+            messagebox.showinfo("Ingreso", "Base de datos creada\nIntente ingresar nuevamente", parent= self.frame_login)
 
     """Sólo acepta Letras"""
     def validar_nombre(self, value):
-        pattern = r'^[A-Za-z_]+$'  #r'\b[A-Za-z_]\b'  cambiado por sugerencia de chatgpt
+        pattern = r'^[A-Za-z_]+$'
         if re.fullmatch(pattern, value) is None:
             messagebox.showerror("Error", "El nombre de usuario solo puede contener letras y guiones bajos.", parent= self.frame_login)
-            return False 
+            return False
         return True
 
     """Sólo acepta alfanuméricos"""
     def validar_pass(self, value):
-        pattern = r'^[A-Za-z0-9_]+$' #r'\b[A-Za-z0-9_]\b'  cambiado por sugerencia de chatgpt
+        pattern = r'^[A-Za-z0-9_]+$'
         if re.fullmatch(pattern, value) is None:
             messagebox.showerror("Error", "La contraseña solo puede contener letras, números y guiones bajos.", parent= self.frame_login)
             return False
@@ -90,7 +90,7 @@ class Login:
         self.color_fondo1, self.color_fondo2 = utl.definir_color_fondo()
         self.nombre_usuario = StringVar()
         self.pass_usuario = StringVar()
-        """frame_logo"""        
+        """frame_logo"""
         frame_logo = tk.Frame(self.frame_login, bd= 0, width= 300, relief= tk.SOLID, padx= 10, pady= 10, bg= self.color_fondo1)
         frame_logo.pack(side= "left", expand= tk.YES, fill= tk.BOTH)
         logo = utl.leer_imagen("LOGO1.png", (250, 350))
