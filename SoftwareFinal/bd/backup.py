@@ -20,16 +20,16 @@ class Backup:
         # Estilo de la tabla
         self.estilo_tablab = ttk.Style(frame)
         self.estilo_tablab.theme_use('alt')
-        self.estilo_tablab.configure('TablaBackup.Treeview', font=self.fuenten, foreground='black', rowheight=20)
-        self.estilo_tablab.configure('TablaBackup.Treeview.Heading', background=self.color_fondo1, foreground='white', padding=3, font=self.fuenteb)
+        self.estilo_tablab.configure('TablaBackup.Treeview', font= self.fuenten, foreground= 'black', rowheight= 20)
+        self.estilo_tablab.configure('TablaBackup.Treeview.Heading', background= self.color_fondo1, foreground= 'white', padding= 3, font= self.fuenteb)
 
         # Crear la tabla para mostrar las bases de datos
-        self.tabla = ttk.Treeview(frame, columns=("Nombre", "Fecha"), show="headings", height=8, style="TablaBackup.Treeview")
-        self.tabla.heading("Nombre", text="Nombre BD")
-        self.tabla.heading("Fecha", text="Fecha de creación")
-        self.tabla.column('Nombre', width=350, anchor='w')
-        self.tabla.column('Fecha', width=200, anchor='w')
-        
+        self.tabla = ttk.Treeview(frame, columns= ("Nombre", "Fecha"), show= "headings", height= 8, style= "TablaBackup.Treeview")
+        self.tabla.heading("Nombre", text= "Nombre BD")
+        self.tabla.heading("Fecha", text= "Fecha de creación")
+        self.tabla.column('Nombre', width= 350, anchor= 'w')
+        self.tabla.column('Fecha', width= 200, anchor= 'w')
+
         # Configurar grid
         self.tabla.grid(column=0, row=2, columnspan=3, padx=(10, 0), sticky='nsew')
         ladoy = ttk.Scrollbar(frame, orient='vertical', command=self.tabla.yview)
